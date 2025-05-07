@@ -1,0 +1,369 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Contrail+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=League+Gothic&family=League+Spartan:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@font-face {
+  font-family: 'TT Bluescreens';
+  src: url('../../../assets/Fonts/TTBluescreensTrlCnd-Rg.woff2') format('woff2'),
+       url('../../../assets/Fonts/TTBluescreensTrlCnd-Rg.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TT Bluescreens Condensed';
+  src: url('../../../assets/Fonts/TTBluescreensTrial-XBd.woff2') format('woff2');
+  font-weight: bolder;
+  font-style: normal;
+}
+
+.best-sellers-section {
+  padding: 2rem;
+  background: #fff;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.section-header button {
+  background: #002f87;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.section-header button:hover {
+  background: #001e5a;
+}
+
+.products-container {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  justify-content: center;
+  align-items: center;
+  overflow-y: hidden;
+}
+
+.promo-banner {
+  background: #002f87;
+  color: #fff;
+  padding: 3rem;
+  text-align: center;
+  width: 25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 22rem;
+}
+
+
+.promo-banner-discount {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.promo-banner-discount h1 {
+  font-family: 'Six Caps', sans-serif;
+  font-size: 18rem;
+  line-height: 1;
+  font-weight: lighter;
+}
+
+
+.promo-banner-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.promo-banner-text-percent {
+  width: 100%;
+  height: 100%;
+  text-align: left;
+}
+
+.percent {
+  font-family: 'TT Bluescreens Condensed', sans-serif;
+  font-size: 5rem;
+  text-align: left;
+  color: black;
+  font-weight: bold;
+}
+
+.off {
+  color: white;
+  font-size: 3.5rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: bold;
+  text-align: left;
+  padding-top: 3rem;
+}
+
+.on {
+  color: black;
+  font-size: 1.3rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+}
+
+.promo-banner-text-products {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  width: 15rem;
+  text-align: center;
+  background: #fff;
+  flex-shrink: 0;
+  position: relative;
+  height: 22rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.image-container {
+  position: relative;
+  height: 14rem;
+}
+
+.product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #002f87;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+}
+
+.brand {
+  font-size: 0.75rem;
+  color: #555;
+  margin: 0.5rem 0;
+  text-align: left;
+}
+
+.title {
+  font-size: 0.9rem;
+  text-align: left;
+  font-weight: bold;
+  color: #222;
+  margin: 0.5rem 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;                
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3rem;
+  height: 4rem;              
+}
+
+.rating {
+  margin: 0.5rem 0;
+  text-align: left;
+}
+
+.fa-star {
+  color: #002f87;
+  font-size: 1rem;
+  margin-right: 2px;
+}
+
+.price {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+  text-align: left;
+}
+
+@media (min-width: 481px) and (max-width: 820px) {
+  .products-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: unset;
+  }
+
+  .promo-banner {
+    width: 100%;
+  }
+
+  .product-card {
+    width: 100%;
+    max-width: 22rem;
+    height: auto;
+  }
+
+  .product-card img {
+    height: auto;
+    max-height: 14rem;
+    object-fit: contain;
+  }
+
+  .promo-banner-discount {
+    justify-content: right;
+    padding-right: 4rem;
+  }
+
+  .promo-banner-text{
+    padding-right: 10rem;
+  }
+}
+
+
+@media (min-width: 432px) and (max-width: 481px) {
+
+  .products-container {
+    flex-direction: column;
+  }
+  
+  .promo-banner {
+    width: 25rem;
+    height: 18rem;
+    padding: 2rem;
+  }
+
+  .product-card {
+    width: 25rem;
+    height: auto;
+  }
+
+  .discount-badge{
+    margin-right: 1rem;
+  }
+
+  .promo-banner-discount {
+    justify-content: right;
+    padding-right: 2rem;
+  }
+
+  .promo-banner-text{
+    padding-right: 3rem;
+  }
+
+  .promo-banner h1 {
+    font-size: 12rem;
+  }
+
+  .percent {
+    font-size: 4rem;
+  }
+
+  .off {
+    font-size: 2.5rem;
+    padding-top: 1rem;
+  }
+
+  .on {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 395px) and (max-width: 431px) {
+
+  .products-container {
+    flex-direction: column;
+  }
+
+  .promo-banner {
+    width: 22rem;
+    height: 17rem;
+    padding: 1.8rem;
+  }
+
+  .product-card {
+    width: 22rem;
+    height: auto;
+  }
+
+  .discount-badge{
+    margin-top: 0.5rem;
+  }
+
+  .promo-banner h1 {
+    font-size: 11rem;
+  }
+
+  .percent {
+    font-size: 3.5rem;
+  }
+
+  .off {
+    font-size: 2.3rem;
+    padding-top: 0.8rem;
+  }
+
+  .on {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 393px) {
+
+  .products-container {
+    flex-direction: column;
+  }
+
+  .promo-banner {
+    width: 20rem;
+    height: 16rem;
+    padding: 1.5rem;
+  }
+
+  .product-card{
+    width: 20rem;
+  }
+
+  .promo-banner-discount{
+    justify-content: right;
+    padding-right: 1.5rem;
+  }
+
+  .promo-banner-text{
+    padding-right: 2.5rem;
+  }
+
+  .promo-banner h1 {
+    font-size: 10rem;
+  }
+
+  .percent {
+    font-size: 3rem;
+  }
+
+  .off {
+    font-size: 2rem;
+    padding-top: 0.5rem;
+  }
+
+  .on {
+    font-size: 0.9rem;
+  }
+}
