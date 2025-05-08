@@ -1,0 +1,239 @@
+.welcome-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(3px);
+}
+
+.welcome-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.welcome-modal-box {
+    position: relative;
+    width: 50rem;
+    height: 30rem;
+    background-image: url('../../../assets/images/img-welcome.png');
+    background-size: cover;
+    background-position: center;
+    border-radius: 20px;
+    display: flex;
+    overflow: visible;
+    opacity: 0;
+    transform: scale(0.85);
+    /*transform: translateY(-30px);*/
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(50px) scale(0.9);
+    transition: all 0.4s ease-out;
+    animation: slideBounce 0.6s ease-out forwards;
+}
+
+.welcome-modal-box.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+@keyframes slideBounce {
+    0% {
+      opacity: 0;
+      transform: translateY(80px) scale(0.9);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
+  }
+ 
+  .welcome-modal-box.animated {
+    animation: slideBounce 0.6s ease-out forwards;
+  }
+
+.close-btn {
+    position: absolute;
+    top: -40px;
+    right: -30px;
+    width: 40px;
+    height: 40px;
+    background-color: #999;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+    z-index: 1000;
+}
+
+.close-btn:hover {
+    background-color: #555;
+}
+
+.welcome-modal-form-container {
+    width: 50%;
+    height: 100%;
+    padding: 40px 30px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.welcome-modal-form-container p{
+    text-align: center;
+}
+
+.welcome-modal-form-container h2 {
+    font-size: 40px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.welcome-group-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 2.5rem;
+}
+
+.welcome-submit-btn {
+    background: url("../../../assets/images/img-btn-flama.png") no-repeat center center;
+    background-size: cover;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    transition: all 0.3s ease;
+    width: 12rem;
+    height: 3.5rem;
+    margin-right: 3.5rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.welcome-submit-btn span {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding-right: 2.4rem;
+    text-transform: uppercase;
+}
+
+.welcome-submit-btn:hover {
+    background: url("../../../assets/images/img2-btn-flama.png") no-repeat center center;
+    background-size: cover;
+}
+
+@media (max-width: 394px){
+    .welcome-modal-box {
+        background-image: url("../../../assets/images/img-welcome-mobile3.png");
+        flex-direction: column;
+        width: 84%;
+        height: 60%;
+    }
+
+    .welcome-modal-form-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .welcome-modal-form-container h2 {
+        font-size: 30px;
+        margin-top: 1rem;
+    }
+}
+
+@media (min-width: 395px) and (max-width: 431px){
+    .welcome-modal-box {
+        background-image: url("../../../assets/images/img-welcome-mobile3.png");
+        flex-direction: column;
+        width: 84%;
+        height: 50%;
+    }
+
+    .welcome-modal-form-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .welcome-modal-form-container h2 {
+        font-size: 32px;    
+    }
+}
+
+@media (min-width: 432px) and (max-width: 481px){
+    .welcome-modal-box {
+        background-image: url("../../../assets/images/img-welcome-mobile3.png");
+        flex-direction: column;
+        width: 84%;
+        height: 50%;
+    }
+
+    .welcome-modal-form-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .welcome-modal-form-container h2 {
+        font-size: 38px;    
+        margin-top: 0;
+    }
+
+    .welcome-modal-form-container p {
+        font-size: 18px;
+        margin-top: 0;
+    }
+}
+
+@media (min-width: 482px) and (max-width: 822px){
+    .welcome-modal-box {
+        flex-direction: column;
+        width: 75%;
+        height: 35%;
+    }
+
+    .welcome-modal-form-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .welcome-modal-form-container h2 {
+        font-size: 38px;    
+        margin-top: 0;
+    }
+
+    .welcome-modal-form-container p {
+        font-size: 18px;
+        margin-top: 0;
+    }
+
+    .welcome-submit-btn{
+        margin-right: 4.5rem;
+    }
+}

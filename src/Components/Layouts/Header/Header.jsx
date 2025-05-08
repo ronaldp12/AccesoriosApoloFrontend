@@ -9,11 +9,13 @@ import { MainNav } from "../MainNav/MainNav.jsx";
 import { UserActions } from "../UserActions/UserActions.jsx";
 import { RegisterModal } from "../../Layouts/RegisterModal/RegisterModal.jsx";
 import { LoginModal } from "../LoginModal/LoginModal.jsx";
+import { WelcomeModal } from "../WelcomeModal/WelcomeModal.jsx";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [welcomeOpen, setWelcomeOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
@@ -31,6 +33,9 @@ export const Header = () => {
   };
 
   const closeLogin = () => setLoginOpen(false);
+
+  const showWelcome = () => setWelcomeOpen(true);
+  const closeWelcome = () => setWelcomeOpen(false);
 
   return (
     <header>
@@ -67,7 +72,8 @@ export const Header = () => {
 
       <HamburgerMenu isOpen={menuOpen} onClose={closeMenu} onOpenRegister={openRegister} onOpenLogin={openLogin} />
       <RegisterModal isOpen={registerOpen} onClose={closeRegister} />
-      <LoginModal isOpen={loginOpen} onClose={closeLogin} />
+      <LoginModal isOpen={loginOpen} onClose={closeLogin} onLoginSuccess={showWelcome} />
+      <WelcomeModal isOpen={welcomeOpen} onClose={closeWelcome} />
     </header>
   );
 };

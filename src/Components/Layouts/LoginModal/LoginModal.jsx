@@ -3,7 +3,15 @@ import "./LoginModal.css";
 import iconGoogle from "../../../assets/icons/google.png";
 import iconFacebook from "../../../assets/icons/facebook.png";
 
-export const LoginModal = ({ isOpen, onClose }) => {
+export const LoginModal = ({ isOpen, onClose, onLoginSuccess}) => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Simular login exitoso
+        onClose(); // cerrar el modal de login
+        onLoginSuccess(); // mostrar modal de bienvenida
+    };
+
     return (
         <div className={`modal-overlay ${isOpen ? "active" : ""}`}>
             <div className={`login-modal-box ${isOpen ? "active" : ""}`}>
@@ -11,7 +19,7 @@ export const LoginModal = ({ isOpen, onClose }) => {
 
                 <div className="modal-form-container">
                     <h2>INICIAR SESIÓN</h2>
-                    <form>
+                    <form onSubmit={handleSubmit}>
 
                         <div className="input-group">
                             <div className="input-field">
