@@ -19,11 +19,11 @@
     pointer-events: auto;
 }
 
-.modal-box {
+.login-modal-box {
     position: relative;
     width: 58rem;
-    height: 35rem;
-    background-image: url('../../../assets/images/img-register.png');
+    height: 33rem;
+    background-image: url('../../../assets/images/img-login.png');
     background-size: cover;
     background-position: center;
     border-radius: 20px;
@@ -34,9 +34,11 @@
     /*transform: translateY(-30px);*/
     transition: all 0.35s ease;
     z-index: 10000;
+    display: flex;
+    justify-content: right;
 }
 
-.modal-box.active {
+.login-modal-box.active {
     opacity: 1;
     transform: scale(1);
 }
@@ -77,6 +79,7 @@
 .modal-form-container h2 {
     font-size: 28px;
     font-weight: bold;
+    margin-bottom: 30px;
     text-align: center;
 }
 
@@ -89,12 +92,16 @@ form {
 .input-group {
     display: flex;
     gap: 15px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .input-field {
     flex: 1;
     display: flex;
     flex-direction: column;
+    width: 75%;
 }
 
 .input-field label {
@@ -130,7 +137,7 @@ form {
     align-items: center;
     justify-content: right;
     transition: all 0.3s ease;
-    width: 11rem;
+    width: 12rem;
     height: 3.5rem;
     margin-right: 2.7rem;
     text-align: center;
@@ -139,7 +146,7 @@ form {
 .submit-btn span {
     position: relative;
     z-index: 1;
-    padding-right: 1.5rem;
+    padding-right: 1.3rem;
 }
 
 .submit-btn:hover {
@@ -200,7 +207,7 @@ form {
 }
 
 @media (max-width: 394px){
-    .modal-box {
+    .login-modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
         width: 84%;
@@ -218,7 +225,7 @@ form {
 }
 
 @media (min-width: 395px) and (max-width: 431px){
-    .modal-box {
+    .login-modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
         width: 84%;
@@ -236,7 +243,7 @@ form {
 }
 
 @media (min-width: 432px) and (max-width: 481px){
-    .modal-box {
+    .login-modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
         width: 84%;
@@ -253,9 +260,8 @@ form {
     }
 }
 
-@media (min-width: 482px) and (max-width: 821px){
-    .modal-box {
-        flex-direction: column;
+@media (min-width: 482px) and (max-width: 822px){
+    .login-modal-box{
         width: 84%;
         height: auto;
     }

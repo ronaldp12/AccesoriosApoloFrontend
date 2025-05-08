@@ -8,10 +8,12 @@ import { Item } from "../../Ui/Item/Item.jsx";
 import { MainNav } from "../MainNav/MainNav.jsx";
 import { UserActions } from "../UserActions/UserActions.jsx";
 import { RegisterModal } from "../../Layouts/RegisterModal/RegisterModal.jsx";
+import { LoginModal } from "../LoginModal/LoginModal.jsx";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
@@ -22,6 +24,13 @@ export const Header = () => {
   };
 
   const closeRegister = () => setRegisterOpen(false);
+
+  const openLogin = () => {
+    setLoginOpen(true);
+    setMenuOpen(false);
+  };
+
+  const closeLogin = () => setLoginOpen(false);
 
   return (
     <header>
@@ -52,12 +61,13 @@ export const Header = () => {
         </div>
 
         <div className="container-icon2">
-          <UserActions toggleMenu={toggleMenu} />
+          <UserActions toggleMenu={toggleMenu} onOpenRegister={openRegister} onOpenLogin={openLogin} />
         </div>
       </div>
 
-      <HamburgerMenu isOpen={menuOpen} onClose={closeMenu} onOpenRegister={openRegister} />
+      <HamburgerMenu isOpen={menuOpen} onClose={closeMenu} onOpenRegister={openRegister} onOpenLogin={openLogin} />
       <RegisterModal isOpen={registerOpen} onClose={closeRegister} />
+      <LoginModal isOpen={loginOpen} onClose={closeLogin} />
     </header>
   );
 };
