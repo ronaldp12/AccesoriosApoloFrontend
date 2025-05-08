@@ -21,6 +21,7 @@ export const LoginModal = ({ isOpen, onClose }) => {
                             <div className="input-field">
                                 <label>Contraseña *</label>
                                 <input type="password" placeholder="Contraseña" required />
+                                <u>¿Olvidaste tu contraseña?</u>
                             </div>
                         </div>
 
