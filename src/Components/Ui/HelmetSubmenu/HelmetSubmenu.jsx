@@ -6,14 +6,14 @@ export const HelmetSubmenu = () => {
   return (
     <>
 
-      <div className="cascos-submenu">
+      <div className="helmets-submenu">
 
         <div className='submenu-title'>
           <h2>Cascos</h2>
           <span>Ver más </span>
         </div>
 
-        <div className="container-cascos2">
+        <div className="container-helmets2">
           {[1, 2, 3, 4, 5].map((_, i) => (
             <div className="submenu-item" key={i}>
               <img src={img1} alt={`Casco${i + 1}`} />
