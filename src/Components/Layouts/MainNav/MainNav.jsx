@@ -5,7 +5,17 @@ import { HelmetSubmenu } from '../../Ui/HelmetSubmenu/HelmetSubmenu.jsx';
 
 export const MainNav = ({ styleContainer }) => {
   const [showHelmetSubmenu, setShowHelmetSubmenu] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 820);
   const submenuRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth > 820);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -18,22 +28,27 @@ export const MainNav = ({ styleContainer }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleToggleSubmenu = () => {
+    if (!isDesktop) {
+      setShowHelmetSubmenu(prev => !prev);
+    }
+  };
+
   return (
     <div className={styleContainer}>
       <Item styleLi="item">
         <NavLink className="navlink" to="/">Inicio</NavLink>
       </Item>
 
-      <div className="container-cascos"
+      <div
+        className="container-cascos"
         ref={submenuRef}
+        onMouseEnter={() => isDesktop && setShowHelmetSubmenu(true)}
+        onMouseLeave={() => isDesktop && setShowHelmetSubmenu(false)}
+        onClick={handleToggleSubmenu}
       >
-        <Item styleLi="item"
-          onClick={() => setShowHelmetSubmenu(prev => !prev)}>
-          <span
-            className="nav-cascos"
-          >
-            Cascos
-          </span>
+        <Item styleLi="item">
+          <span className="nav-cascos">Cascos</span>
         </Item>
 
         {showHelmetSubmenu && <HelmetSubmenu />}

@@ -541,7 +541,8 @@ header {
         width: 100%;
         position: relative;
         overflow: visible;
-        padding-right: 1rem;
+        padding-right: 2.8rem;
+        padding-bottom: 0.8rem;
     }
 
     .search-container {
@@ -605,8 +606,8 @@ header {
         height: 1.8rem;
         font-size: 0.7rem;
         position: absolute;
-        right: 5rem;
-        top: -0.5rem;
+        right: 6rem;
+        top: -1.2rem;
     }
 
     .login {
@@ -614,8 +615,8 @@ header {
         height: 1.8rem;
         font-size: 0.7rem;
         position: absolute;
-        right: -3rem;
-        top: -0.5rem;
+        right: -2rem;
+        top: -1.2rem;
     }
 
     .container-list {
