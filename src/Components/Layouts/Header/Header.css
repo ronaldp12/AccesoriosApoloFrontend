@@ -5,6 +5,9 @@ header {
     width: 100%;
 }
 
+.container-cascos {
+    position: relative;
+}
 
 .topnav {
     display: flex;
@@ -191,6 +194,11 @@ header {
     cursor: pointer;
     color: whitesmoke;
     border-radius: 2px;
+}
+
+.navlink{
+    text-decoration: none;
+    color: black;
 }
 
 .hamburger-close {
