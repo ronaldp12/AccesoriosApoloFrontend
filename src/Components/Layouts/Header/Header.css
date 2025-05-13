@@ -5,7 +5,11 @@ header {
     width: 100%;
 }
 
-.container-cascos {
+.container-helmets {
+    position: relative;
+}
+
+.container-equipment {
     position: relative;
 }
 
@@ -17,6 +21,7 @@ header {
     padding: 0 20px;
     gap: 1rem;
     margin-top: 0.6rem;
+    margin-bottom: 0.6rem;
 }
 
 .item-top {
@@ -541,7 +546,7 @@ header {
         width: 100%;
         position: relative;
         overflow: visible;
-        padding-right: 2.8rem;
+        padding-right: 3rem;
         padding-bottom: 0.8rem;
     }
 

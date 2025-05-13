@@ -1,38 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
+import { useSubmenu } from '../../UseSubmenu/UseSubemenu.jsx';
 import { Item } from '../../Ui/Item/Item.jsx';
 import { NavLink } from 'react-router-dom';
 import { HelmetSubmenu } from '../../Ui/HelmetSubmenu/HelmetSubmenu.jsx';
+import { EquipmentRideSubmenu } from '../../Ui/EquipmentRideSubmenu/EquipmentRideSubmenu.jsx';
 
 export const MainNav = ({ styleContainer }) => {
-  const [showHelmetSubmenu, setShowHelmetSubmenu] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 820);
-  const submenuRef = useRef(null);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth > 820);
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (submenuRef.current && !submenuRef.current.contains(event.target)) {
-        setShowHelmetSubmenu(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleToggleSubmenu = () => {
-    if (!isDesktop) {
-      setShowHelmetSubmenu(prev => !prev);
-    }
-  };
+  const helmetMenu = useSubmenu();
+  const equipmentMenu = useSubmenu();
 
   return (
     <div className={styleContainer}>
@@ -41,20 +15,31 @@ export const MainNav = ({ styleContainer }) => {
       </Item>
 
       <div
-        className="container-cascos"
-        ref={submenuRef}
-        onMouseEnter={() => isDesktop && setShowHelmetSubmenu(true)}
-        onMouseLeave={() => isDesktop && setShowHelmetSubmenu(false)}
-        onClick={handleToggleSubmenu}
+        className="container-helmets"
+        ref={helmetMenu.submenuRef}
+        onMouseEnter={() => helmetMenu.handleHover(true)}
+        onMouseLeave={() => helmetMenu.handleHover(false)}
+        onClick={helmetMenu.handleClick}
       >
         <Item styleLi="item">
           <span className="nav-cascos">Cascos</span>
         </Item>
-
-        {showHelmetSubmenu && <HelmetSubmenu />}
+        {helmetMenu.isOpen && <HelmetSubmenu />}
       </div>
 
-      <Item styleLi="item-extend" contenido="Equipacion Carretera" />
+      <div
+        className="container-equipment"
+        ref={equipmentMenu.submenuRef}
+        onMouseEnter={() => equipmentMenu.handleHover(true)}
+        onMouseLeave={() => equipmentMenu.handleHover(false)}
+        onClick={equipmentMenu.handleClick}
+      >
+        <Item styleLi="item-extend">
+          <span className="nav-cascos">Equipacion Carretera</span>
+        </Item>
+        {equipmentMenu.isOpen && <EquipmentRideSubmenu />}
+      </div>
+
       <Item styleLi="item" contenido="Accesorios" />
       <Item styleLi="item" contenido="Marcas" />
       <Item styleLi="item" contenido="Calcomanias" />

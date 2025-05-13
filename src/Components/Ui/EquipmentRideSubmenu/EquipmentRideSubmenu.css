@@ -1,7 +1,7 @@
-.helmets-submenu {
+.equipment-submenu {
   position: absolute;
   top: 100%;
-  left: -24rem;
+  left: -29rem;
   width: 100rem;
   padding-top: 2rem;
   background-color: white;
@@ -15,39 +15,40 @@
   display: flex;
 }
 
-.container-helmets2 {
+.container-equipment2 {
   display: flex;
   flex-direction: row;
   justify-content: left;
   align-items: center;
   flex-wrap: wrap;
-  padding-left: 25rem;
+  padding-left: 23rem;
+  padding-top: 1rem;
 }
 
-.submenu-title {
-  width: 80%;
+.submenu-title-equipment {
+  width: 100%;
   text-align: left;
   text-transform: uppercase;
   display: flex;
   gap: 6px;
-  padding-left: 4rem;
+  padding-left: 5rem
 }
 
-.submenu-title span {
+.submenu-title-equipment span {
   width: 15%;
   font-size: 12px;
   padding-top: 1.1rem;
   color: #014aad;
 }
 
-.submenu-title span:hover{
+.submenu-title-equipment span:hover{
   text-decoration: underline;
   cursor: pointer;
 }
 
 .submenu-item {
   text-align: center;
-  margin-right: 10rem;
+  margin-right: 12rem;
   margin-bottom: 2rem;
   cursor: pointer;
 }
@@ -91,7 +92,7 @@
 }
 
 @media (max-width: 394px) {
-  .helmets-submenu {
+  .equipment-submenu {
     position: static;
     width: 90%;
     margin-top: 0;
@@ -101,7 +102,7 @@
     margin-bottom: 6px;
   }
 
-  .container-helmets2 {
+  .container-equipment2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -113,14 +114,14 @@
     margin: 10px 0;
   }
 
-  .submenu-title {
+  .submenu-title-equipment {
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding-left: 0;
   }
 
-  .submenu-title span {
+  .submenu-title-equipment span {
     width: auto;
     padding-top: 0.5rem;
   }
@@ -149,7 +150,7 @@
 }
 
 @media (min-width: 395px) and (max-width: 431px) {
-  .helmets-submenu {
+  .equipment-submenu {
     position: static;
     width: 15.2rem;
     margin-top: 0;
@@ -159,7 +160,7 @@
     margin-bottom: 8px;
   }
 
-  .container-helmets2 {
+  .container-equipment2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -171,14 +172,14 @@
     margin: 10px 0;
   }
 
-  .submenu-title {
+  .submenu-title-equipment {
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding-left: 0;
   }
 
-  .submenu-title span {
+  .submenu-title-equipment span {
     width: auto;
     padding-top: 0.5rem;
   }
@@ -207,7 +208,7 @@
 }
 
 @media (min-width: 432px) and (max-width: 481px) {
-  .helmets-submenu {
+  .equipment-submenu {
     position: static;
     width: 16.3rem;
     margin-top: 0;
@@ -217,7 +218,7 @@
     margin-bottom: 8px;
   }
 
-  .container-helmets2 {
+  .container-equipment2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -229,14 +230,14 @@
     margin: 10px 0;
   }
 
-  .submenu-title {
+  .submenu-title-equipment {
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding-left: 0;
   }
 
-  .submenu-title span {
+  .submenu-title-equipment span {
     width: auto;
     padding-top: 0.5rem;
   }
@@ -265,7 +266,7 @@
 }
 
 @media (min-width: 482px) and (max-width: 821px) {
-  .helmets-submenu {
+  .equipment-submenu {
     position: static;
     width: 18rem;
     margin-top: 0;
@@ -275,7 +276,7 @@
     margin-bottom: 8px;
   }
 
-  .container-helmets2 {
+  .container-equipment2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -287,7 +288,7 @@
     margin: 10px 0;
   }
 
-  .submenu-title {
+  .submenu-title-equipment {
     flex-direction: column;
     align-items: center;
     text-align: center;
@@ -295,7 +296,7 @@
     padding-left: 0;
   }
 
-  .submenu-title span {
+  .submenu-title-equipment span {
     width: auto;
     padding-top: 0.5rem;
     font-size: 15px;
