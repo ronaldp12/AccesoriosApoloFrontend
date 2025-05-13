@@ -4,11 +4,13 @@ import { NavLink } from 'react-router-dom';
 import { HelmetSubmenu } from '../../Ui/HelmetSubmenu/HelmetSubmenu.jsx';
 import { EquipmentRideSubmenu } from '../../Ui/EquipmentRideSubmenu/EquipmentRideSubmenu.jsx';
 import { StickerSubmenu } from '../../Ui/StickerSubmenu/StickerSubmenu.jsx';
+import { LightsSubmenu } from '../../Ui/LightsSubmenu/LightsSubmenu.jsx';
 
 export const MainNav = ({ styleContainer }) => {
   const helmetMenu = useSubmenu();
   const equipmentMenu = useSubmenu();
   const stickerMenu = useSubmenu();
+  const lightMenu = useSubmenu();
 
   return (
     <div className={styleContainer}>
@@ -58,7 +60,19 @@ export const MainNav = ({ styleContainer }) => {
         {stickerMenu.isOpen && <StickerSubmenu />}
       </div>
 
-      <Item styleLi="item" contenido="Luces" />
+      <div
+        className="container-light"
+        ref={lightMenu.submenuRef}
+        onMouseEnter={() => lightMenu.handleHover(true)}
+        onMouseLeave={() => lightMenu.handleHover(false)}
+        onClick={lightMenu.handleClick}
+      >
+        <Item styleLi="item">
+          <span className="nav-cascos">Luces</span>
+        </Item>
+        {lightMenu.isOpen && <LightsSubmenu />}
+      </div>
+
       <Item styleLi="item" contenido="Limpieza" />
     </div>
   );
