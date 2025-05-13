@@ -4,6 +4,13 @@ import iconGoogle from "../../../assets/icons/google.png";
 import iconFacebook from "../../../assets/icons/facebook.png";
 
 export const RegisterModal = ({ isOpen, onClose }) => {
+
+    const handleRegister = (e) => {
+        e.preventDefault();
+        onClose();
+        window.open("/verify-account", "_blank");
+    };
+
     return (
         <div className={`modal-overlay ${isOpen ? "active" : ""}`}>
             <div className={`modal-box ${isOpen ? "active" : ""}`}>
@@ -11,7 +18,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
                 <div className="modal-form-container">
                     <h2>REGISTRATE</h2>
-                    <form>
+                    <form onSubmit={handleRegister}>
                         <div className="input-group">
                             <div className="input-field">
                                 <label>Nombre *</label>
