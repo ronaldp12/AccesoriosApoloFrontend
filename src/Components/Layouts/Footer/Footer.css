@@ -90,7 +90,8 @@ footer {
 
 .footer-links-explorer ul {
   list-style: none;
-  padding: 0;
+  padding-left: 3.5rem;
+  text-align: center;
 }
 
 .footer-links-explorer li {
@@ -114,7 +115,11 @@ footer {
 
 .footer-links ul {
   list-style: none;
-  padding: 0;
+  padding-left: 2rem;
+}
+
+.footer-h4{
+  padding-left: 2.21rem;
 }
 
 .footer-links li {
@@ -238,6 +243,10 @@ footer {
     align-items: center;
   }
 
+  .footer-links ul{
+    padding-left: 0;
+  }
+
   .logo-container {
     display: flex;
     justify-content: center;
@@ -320,6 +329,10 @@ footer {
     align-items: center;
   }
 
+  .footer-links ul{
+    padding-left: 0;
+  }
+
   .logo-container {
     display: flex;
     justify-content: center;
@@ -384,6 +397,10 @@ footer {
     align-items: center;
   }
 
+  .footer-links ul{
+    padding-left: 0;
+  }
+
   .logo-container {
     display: flex;
     justify-content: center;
@@ -408,6 +425,7 @@ footer {
 @media (max-width: 393px) {
   .company-info p {
     font-size: 12px;
+    text-align: center;
   }
 
   .footer-links h4,
@@ -445,6 +463,10 @@ footer {
     width: auto;
     flex-direction: column;
     align-items: center;
+  }
+
+  .footer-links ul{
+    padding-left: 0;
   }
 
   .logo-container {

@@ -1,6 +1,6 @@
-export const FooterLinks = ({ title, links, style }) => (
+export const FooterLinks = ({ title, links, style, styleH4 }) => (
     <div className={style}>
-        <h4 >{title}</h4>
+        <h4 className={styleH4} >{title}</h4>
         <ul>
             {links.map(link => (
                 <li key={link}>{link}</li>

@@ -3,10 +3,12 @@ import { Item } from '../../Ui/Item/Item.jsx';
 import { NavLink } from 'react-router-dom';
 import { HelmetSubmenu } from '../../Ui/HelmetSubmenu/HelmetSubmenu.jsx';
 import { EquipmentRideSubmenu } from '../../Ui/EquipmentRideSubmenu/EquipmentRideSubmenu.jsx';
+import { StickerSubmenu } from '../../Ui/StickerSubmenu/StickerSubmenu.jsx';
 
 export const MainNav = ({ styleContainer }) => {
   const helmetMenu = useSubmenu();
   const equipmentMenu = useSubmenu();
+  const stickerMenu = useSubmenu();
 
   return (
     <div className={styleContainer}>
@@ -42,7 +44,20 @@ export const MainNav = ({ styleContainer }) => {
 
       <Item styleLi="item" contenido="Accesorios" />
       <Item styleLi="item" contenido="Marcas" />
-      <Item styleLi="item" contenido="Calcomanias" />
+
+      <div
+        className="container-sticker"
+        ref={stickerMenu.submenuRef}
+        onMouseEnter={() => stickerMenu.handleHover(true)}
+        onMouseLeave={() => stickerMenu.handleHover(false)}
+        onClick={stickerMenu.handleClick}
+      >
+        <Item styleLi="item">
+          <span className="nav-cascos">Calcomanías</span>
+        </Item>
+        {stickerMenu.isOpen && <StickerSubmenu />}
+      </div>
+
       <Item styleLi="item" contenido="Luces" />
       <Item styleLi="item" contenido="Limpieza" />
     </div>

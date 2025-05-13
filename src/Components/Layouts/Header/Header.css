@@ -13,6 +13,10 @@ header {
     position: relative;
 }
 
+.container-sticker{
+    position: relative;
+}
+
 .topnav {
     display: flex;
     text-align: center;
