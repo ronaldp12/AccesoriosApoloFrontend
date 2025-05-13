@@ -2,13 +2,17 @@ import React from "react";
 import "./RegisterModal.css";
 import iconGoogle from "../../../assets/icons/google.png";
 import iconFacebook from "../../../assets/icons/facebook.png";
+import { useState } from "react";
 
 export const RegisterModal = ({ isOpen, onClose }) => {
+
+    const [email, setEmail] = useState("");
 
     const handleRegister = (e) => {
         e.preventDefault();
         onClose();
-        window.open("/verify-account", "_blank");
+        window.open(`/verify-account?email=${encodeURIComponent(email)}`, "_blank");
+
     };
 
     return (
@@ -33,8 +37,11 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                         <div className="input-group">
                             <div className="input-field">
                                 <label>Correo *</label>
-                                <input type="email" placeholder="example@example.com" required />
+                                <input type="email" placeholder="example@example.com" required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)} />
                             </div>
+
                             <div className="input-field">
                                 <label>Contraseña *</label>
                                 <input type="password" placeholder="Contraseña" required />
