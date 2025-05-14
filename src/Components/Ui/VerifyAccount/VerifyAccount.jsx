@@ -3,6 +3,7 @@ import "../../Ui/VerifyAccount/VerifyAccount.css";
 import { Logo } from "../../Ui/Logo/Logo";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
+import img1 from "../../../assets/images/img1-auth.png";
 
 export const VerifyAccount = () => {
     const [code, setCode] = useState(["", "", "", "", "", ""]);
@@ -45,11 +46,18 @@ export const VerifyAccount = () => {
     return (
         <div className="verify-container">
             <div className="verify-header">
-                <button className="back-btn"><i className="hgi hgi-stroke hgi-arrow-left-01"></i></button>
+                <button className="back-btn">
+                    <iconify-icon icon="fluent:ios-arrow-24-filled" className="arrow-back" />
+                </button>
                 <Logo />
             </div>
 
-            <h1 className="verify-title">Verifica tu <span>Cuenta</span></h1>
+            <div className="verify-title">
+                <h1>Verifica tu <span>Cuenta</span>
+                    <img src={img1} alt="img1-auth" />
+                </h1>
+            </div>
+
 
             <p className="verify-text">
                 Hemos enviado un código de verificación a tu correo electrónico: <b>{formatEmail(email)}</b>
@@ -75,7 +83,7 @@ export const VerifyAccount = () => {
                     <button className="resend-btn" onClick={() => {
                         setSeconds(30);
                         setCanResend(false);
-                        
+
                     }}>Reenviar código</button>
                 ) : (
                     <>Reenviar código en <b>{seconds} segundos</b></>
