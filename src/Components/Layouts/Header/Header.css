@@ -21,6 +21,10 @@ header {
     position: relative;
 }
 
+.container-cleaning{
+    position: relative;
+}
+
 .topnav {
     display: flex;
     text-align: center;

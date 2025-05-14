@@ -86,9 +86,35 @@
   width: 50%;
 }
 
-.container-brands img {
-  width: 80px;
-  height: 80px;
+.logo1 {
+    width: 4.5rem !important;
+    height: 2.5rem !important;
+    cursor: pointer;
+}
+
+.logo2 {
+    width: 4rem;
+    height: 4rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+}
+
+.logo3 {
+    width: 4rem !important;
+    height: 2rem !important;
+    cursor: pointer;
+}
+
+.logo4 {
+    width: 4rem !important;
+    height: 2rem !important;
+    cursor: pointer;
+}
+
+.logo5 {
+    width: 4rem !important;
+    height: 2rem !important;
+    cursor: pointer;
 }
 
 @media (max-width: 394px) {

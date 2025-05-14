@@ -1,4 +1,4 @@
-import '../LightsSubmenu/LightsSubmenu.css';
+import '../CleaningSubmenu/CleaningSubmenu.css';
 import img1 from '../../../assets/images/img1-light.png';
 import img2 from '../../../assets/images/img2-light.png';
 import img3 from '../../../assets/images/img3-light.png';
@@ -11,18 +11,18 @@ import logo3 from '../../../assets/images/logo3-brand.png';
 import logo4 from '../../../assets/images/logo4-brand.png';
 import logo5 from '../../../assets/images/logo5-brand.png';
 
-export const LightsSubmenu = () => {
+export const CleaningSubmenu = () => {
     return (
         <>
 
-            <div className="light-submenu">
+            <div className="cleaning-submenu">
 
-                <div className='submenu-title-light'>
-                    <h2>Luces</h2>
+                <div className='submenu-title-cleaning'>
+                    <h2>Limpieza</h2>
                     <span>Ver más </span>
                 </div>
 
-                <div className="container-lights2">
+                <div className="container-cleaning2">
 
                     <div className="submenu-item">
                         <img src={img1} alt="Bombillos" />

@@ -5,12 +5,14 @@ import { HelmetSubmenu } from '../../Ui/HelmetSubmenu/HelmetSubmenu.jsx';
 import { EquipmentRideSubmenu } from '../../Ui/EquipmentRideSubmenu/EquipmentRideSubmenu.jsx';
 import { StickerSubmenu } from '../../Ui/StickerSubmenu/StickerSubmenu.jsx';
 import { LightsSubmenu } from '../../Ui/LightsSubmenu/LightsSubmenu.jsx';
+import { CleaningSubmenu } from '../../Ui/CleaningSubmenu/CleaningSubmenu.jsx';
 
 export const MainNav = ({ styleContainer }) => {
   const helmetMenu = useSubmenu();
   const equipmentMenu = useSubmenu();
   const stickerMenu = useSubmenu();
   const lightMenu = useSubmenu();
+  const cleaningMenu = useSubmenu();
 
   return (
     <div className={styleContainer}>
@@ -73,7 +75,19 @@ export const MainNav = ({ styleContainer }) => {
         {lightMenu.isOpen && <LightsSubmenu />}
       </div>
 
-      <Item styleLi="item" contenido="Limpieza" />
+      <div
+        className="container-cleaning"
+        ref={cleaningMenu.submenuRef}
+        onMouseEnter={() => cleaningMenu.handleHover(true)}
+        onMouseLeave={() => cleaningMenu.handleHover(false)}
+        onClick={cleaningMenu.handleClick}
+      >
+        <Item styleLi="item">
+          <span className="nav-cascos">Limpieza</span>
+        </Item>
+        {cleaningMenu.isOpen && <CleaningSubmenu />}
+      </div>
+      
     </div>
   );
 };
