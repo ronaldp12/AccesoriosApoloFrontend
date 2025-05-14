@@ -1,5 +1,9 @@
 import '../HelmetSubmenu/HelmetSubmenu.css';
 import img1 from '../../../assets/images/img1-helmet.png';
+import img2 from '../../../assets/images/img2-helmet.png';
+import img3 from '../../../assets/images/img3-helmet.png';
+import img4 from '../../../assets/images/img4-helmet.png';
+import img5 from '../../../assets/images/img5-helmet.png';
 
 import logo1 from '../../../assets/images/logo1-brand.png';
 import logo2 from '../../../assets/images/logo2-brand.png';
@@ -19,12 +23,32 @@ export const HelmetSubmenu = () => {
         </div>
 
         <div className="container-helmets2">
-          {[1, 2, 3, 4, 5].map((_, i) => (
-            <div className="submenu-item" key={i}>
-              <img src={img1} alt={`Casco${i + 1}`} />
-              <p>Novedades</p>
-            </div>
-          ))}
+
+          <div className="submenu-item">
+            <img src={img1} alt="Helmet 1" />
+            <p>Novedades</p>
+          </div>
+
+          <div className="submenu-item">
+            <img src={img2} alt="Helmet 1" />
+            <p>Novedades</p>
+          </div>
+
+          <div className="submenu-item">
+            <img src={img3} alt="Helmet 1" />
+            <p>Novedades</p>
+          </div>
+
+          <div className="submenu-item">
+            <img src={img4} alt="Helmet 1" />
+            <p>Novedades</p>
+          </div>
+
+          <div className="submenu-item" >
+            <img src={img5} alt="Helmet 1" />
+            <p>Novedades</p>
+          </div>
+
         </div>
 
         <div className="container-brands">
