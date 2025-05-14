@@ -6,10 +6,12 @@ import { EquipmentRideSubmenu } from '../../Ui/EquipmentRideSubmenu/EquipmentRid
 import { StickerSubmenu } from '../../Ui/StickerSubmenu/StickerSubmenu.jsx';
 import { LightsSubmenu } from '../../Ui/LightsSubmenu/LightsSubmenu.jsx';
 import { CleaningSubmenu } from '../../Ui/CleaningSubmenu/CleaningSubmenu.jsx';
+import { BrandSubmenu } from '../../Ui/BrandSubmenu/BrandSubmenu.jsx';
 
 export const MainNav = ({ styleContainer }) => {
   const helmetMenu = useSubmenu();
   const equipmentMenu = useSubmenu();
+  const brandMenu = useSubmenu();
   const stickerMenu = useSubmenu();
   const lightMenu = useSubmenu();
   const cleaningMenu = useSubmenu();
@@ -47,7 +49,19 @@ export const MainNav = ({ styleContainer }) => {
       </div>
 
       <Item styleLi="item" contenido="Accesorios" />
-      <Item styleLi="item" contenido="Marcas" />
+
+      <div
+        className="container-brand"
+        ref={brandMenu.submenuRef}
+        onMouseEnter={() => brandMenu.handleHover(true)}
+        onMouseLeave={() => brandMenu.handleHover(false)}
+        onClick={brandMenu.handleClick}
+      >
+        <Item styleLi="item">
+          <span className="nav-cascos">Marcas</span>
+        </Item>
+        {brandMenu.isOpen && <BrandSubmenu />}
+      </div>
 
       <div
         className="container-sticker"

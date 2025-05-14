@@ -6,13 +6,12 @@ import img4 from '../../../assets/images/img4-equipment.png';
 import img5 from '../../../assets/images/img5-equipment.png';
 import img6 from '../../../assets/images/img6-equipment.png';
 import img7 from '../../../assets/images/img7-equipment.png';
-import img8 from '../../../assets/images/img8-equipment.png';
 
-import logo1 from '../../../assets/images/logo1-brand.png';
-import logo2 from '../../../assets/images/logo2-brand.png';
-import logo3 from '../../../assets/images/logo3-brand.png';
-import logo4 from '../../../assets/images/logo4-brand.png';
-import logo5 from '../../../assets/images/logo5-brand.png';
+import logo1 from '../../../assets/images/img1-marca.png';
+import logo2 from '../../../assets/images/img2-marca.png';
+import logo3 from '../../../assets/images/img3-marca.png';
+import logo4 from '../../../assets/images/img4-marca.png';
+import logo5 from '../../../assets/images/img5-marca.png';
 
 export const EquipmentRideSubmenu = () => {
   return (
@@ -29,43 +28,39 @@ export const EquipmentRideSubmenu = () => {
 
           <div className="submenu-item">
             <img src={img1} alt="equipment1" />
-            <p>Novedades</p>
+            <p>Chaquetas</p>
           </div>
 
           <div className="submenu-item">
             <img src={img2} alt="equipment1" />
-            <p>Novedades</p>
+            <p>Impermeables</p>
           </div>
 
           <div className="submenu-item">
             <img src={img3} alt="equipment1" />
-            <p>Novedades</p>
+            <p>Cuello y Rostro</p>
           </div>
 
           <div className="submenu-item">
             <img src={img4} alt="equipment1" />
-            <p>Novedades</p>
+            <p>Chaleco</p>
           </div>
 
           <div className="submenu-item">
             <img src={img5} alt="equipment1" />
-            <p>Novedades</p>
+            <p>Guantes</p>
           </div>
 
           <div className="submenu-item">
             <img src={img6} alt="equipment1" />
-            <p>Novedades</p>
+            <p>Mangas</p>
           </div>
 
           <div className="submenu-item">
             <img src={img7} alt="equipment1" />
-            <p>Novedades</p>
+            <p>Botas</p>
           </div>
 
-          <div className="submenu-item">
-            <img src={img8} alt="equipment1" />
-            <p>Novedades</p>
-          </div>
         </div>
 
         <div className="container-brands">

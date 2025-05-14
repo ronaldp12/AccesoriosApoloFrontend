@@ -1,7 +1,7 @@
-.sticker-submenu {
+.brand-submenu {
     position: absolute;
     top: 100%;
-    left: -57rem;
+    left: -54rem;
     width: 100rem;
     padding-top: 2rem;
     background-color: white;
@@ -15,17 +15,17 @@
     display: flex;
 }
 
-.container-stickers2 {
+.container-brand2 {
     display: flex;
     flex-direction: row;
     justify-content: left;
     align-items: center;
     flex-wrap: wrap;
-    padding-left: 12rem;
+    padding-left: 30rem;
     padding-top: 1rem;
 }
 
-.submenu-title-sticker {
+.submenu-title-brand {
     width: 100%;
     text-align: left;
     text-transform: uppercase;
@@ -34,18 +34,18 @@
     padding-left: 5rem
 }
 
-.submenu-title-sticker h2{
-    padding-left: 7rem;
+.submenu-title-brand h2 {
+    padding-left: 13rem;
 }
 
-.submenu-title-sticker span {
+.submenu-title-brand span {
     width: 15%;
     font-size: 12px;
     padding-top: 1.1rem;
     color: #014aad;
 }
 
-.submenu-title-sticker span:hover {
+.submenu-title-brand span:hover {
     text-decoration: underline;
     cursor: pointer;
 }
@@ -69,60 +69,8 @@
     color: #333;
 }
 
-.container-brands {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    background-color: #e6e6e6;
-    width: 100%;
-    height: 3rem;
-}
-
-.container-brands p {
-    width: 50%;
-    text-align: center;
-    text-transform: uppercase;
-    font-family: 'Open Sans', sans-serif;
-}
-
-.brands-logos {
-    width: 50%;
-}
-
-.logo1 {
-    width: 3rem !important;
-    height: 1.3rem !important;
-    cursor: pointer;
-}
-
-.logo2 {
-    width: 4rem !important;
-    height: 1rem !important;
-    cursor: pointer;
-    margin-bottom: 0.4rem;
-}
-
-.logo3 {
-    width: 5rem !important;
-    height: 2rem !important;
-    cursor: pointer;
-}
-
-.logo4 {
-    width: 4rem !important;
-    height: 2rem !important;
-    cursor: pointer;
-}
-
-.logo5 {
-    width: 4rem !important;
-    height: 2rem !important;
-    cursor: pointer;
-}
-
 @media (max-width: 394px) {
-    .sticker-submenu {
+    .brand-submenu {
         position: static;
         width: 90%;
         margin-top: 0;
@@ -132,7 +80,7 @@
         margin-bottom: 6px;
     }
 
-    .container-stickers2 {
+    .container-brand2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -144,47 +92,26 @@
         margin: 10px 0;
     }
 
-    .submenu-title-sticker {
+    .submenu-title-brand {
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding-left: 0;
     }
 
-    .submenu-title-sticker h2{
+    .submenu-title-brand h2 {
         padding-left: 0;
     }
 
-    .submenu-title-sticker span {
+    .submenu-title-brand span {
         width: auto;
         padding-top: 0.5rem;
     }
 
-    .container-brands {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 0;
-    }
-
-    .container-brands p {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .brands-logos {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .container-brands img {
-        width: 60px;
-        height: 60px;
-    }
 }
 
 @media (min-width: 395px) and (max-width: 431px) {
-    .sticker-submenu {
+    .brand-submenu {
         position: static;
         width: 15.2rem;
         margin-top: 0;
@@ -194,7 +121,7 @@
         margin-bottom: 8px;
     }
 
-    .container-stickers2 {
+    .container-brand2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -206,47 +133,26 @@
         margin: 10px 0;
     }
 
-    .submenu-title-sticker {
+    .submenu-title-brand {
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding-left: 0;
     }
 
-    .submenu-title-sticker h2{
+    .submenu-title-brand h2 {
         padding-left: 0;
     }
 
-    .submenu-title-sticker span {
+    .submenu-title-brand span {
         width: auto;
         padding-top: 0.5rem;
     }
 
-    .container-brands {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 0;
-    }
-
-    .container-brands p {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .brands-logos {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .container-brands img {
-        width: 60px;
-        height: 60px;
-    }
 }
 
 @media (min-width: 432px) and (max-width: 481px) {
-    .sticker-submenu {
+    .brand-submenu {
         position: static;
         width: 16.3rem;
         margin-top: 0;
@@ -256,7 +162,7 @@
         margin-bottom: 8px;
     }
 
-    .container-stickers2 {
+    .container-brand2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -268,47 +174,26 @@
         margin: 10px 0;
     }
 
-    .submenu-title-sticker {
+    .submenu-title-brand {
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding-left: 0;
     }
 
-    .submenu-title-sticker h2{
+    .submenu-title-brand h2 {
         padding-left: 0;
     }
 
-    .submenu-title-sticker span {
+    .submenu-title-brand span {
         width: auto;
         padding-top: 0.5rem;
     }
 
-    .container-brands {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 0;
-    }
-
-    .container-brands p {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .brands-logos {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .container-brands img {
-        width: 60px;
-        height: 60px;
-    }
 }
 
 @media (min-width: 482px) and (max-width: 821px) {
-    .sticker-submenu {
+    .brand-submenu {
         position: static;
         width: 18rem;
         margin-top: 0;
@@ -318,7 +203,7 @@
         margin-bottom: 8px;
     }
 
-    .container-stickers2 {
+    .container-brand2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -330,7 +215,7 @@
         margin: 10px 0;
     }
 
-    .submenu-title-sticker {
+    .submenu-title-brand {
         flex-direction: column;
         align-items: center;
         text-align: center;
@@ -338,35 +223,14 @@
         padding-left: 0;
     }
 
-    .submenu-title-sticker h2{
+    .submenu-title-brand h2 {
         padding-left: 0;
     }
 
-    .submenu-title-sticker span {
+    .submenu-title-brand span {
         width: auto;
         padding-top: 0.5rem;
         font-size: 15px;
     }
 
-    .container-brands {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 0;
-    }
-
-    .container-brands p {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .brands-logos {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .container-brands img {
-        width: 60px;
-        height: 60px;
-    }
 }

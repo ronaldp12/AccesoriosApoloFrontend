@@ -86,20 +86,20 @@
 }
 
 .logo1 {
-    width: 4.5rem !important;
-    height: 2.5rem !important;
+    width: 3rem !important;
+    height: 1.3rem !important;
     cursor: pointer;
 }
 
 .logo2 {
-    width: 4rem;
-    height: 4rem;
+    width: 4rem !important;
+    height: 1rem !important;
     cursor: pointer;
-    margin-bottom: 0.5rem;
+    margin-top: 0.4rem;
 }
 
 .logo3 {
-    width: 4rem !important;
+    width: 5rem !important;
     height: 2rem !important;
     cursor: pointer;
 }

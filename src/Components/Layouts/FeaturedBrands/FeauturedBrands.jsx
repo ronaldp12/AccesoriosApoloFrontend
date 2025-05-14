@@ -1,6 +1,6 @@
 import React from 'react';
 import '../FeaturedBrands/FeaturedBrands.css';
-import logo1 from '../../../assets/images/logo1-brand.png';
+import logo1 from '../../../assets/images/img1-marca.png';
 import img1 from '../../../assets/images/img1-brand.jpg';
 
 export const FeaturedBrands = () => {

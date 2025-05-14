@@ -5,11 +5,11 @@ import img3 from '../../../assets/images/img3-helmet.png';
 import img4 from '../../../assets/images/img4-helmet.png';
 import img5 from '../../../assets/images/img5-helmet.png';
 
-import logo1 from '../../../assets/images/logo1-brand.png';
-import logo2 from '../../../assets/images/logo2-brand.png';
-import logo3 from '../../../assets/images/logo3-brand.png';
-import logo4 from '../../../assets/images/logo4-brand.png';
-import logo5 from '../../../assets/images/logo5-brand.png';
+import logo1 from '../../../assets/images/img1-marca.png';
+import logo2 from '../../../assets/images/img2-marca.png';
+import logo3 from '../../../assets/images/img3-marca.png';
+import logo4 from '../../../assets/images/img4-marca.png';
+import logo5 from '../../../assets/images/img5-marca.png';
 
 export const HelmetSubmenu = () => {
   return (
