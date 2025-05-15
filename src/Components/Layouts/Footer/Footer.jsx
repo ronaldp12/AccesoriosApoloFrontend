@@ -12,7 +12,7 @@ export const Footer = () => (
                 <FooterLinks style={"footer-links"} title="NUESTRA COMPAÑÍA" links={["QUIENES SOMOS", "VALORES", "VISIÓN", "MISIÓN"]} />
             </div>
             <div className="footer-company-info2">
-                <FooterLinks style={"footer-links"} styleH4={"footer-h4"} title="SERVICIOS" links={["CONTACTANOS", "MI CUENTA", "AYUDA"]} />
+                <FooterLinks style={"footer-links2"} styleH4={"footer-h4"} title="SERVICIOS" links={["CONTACTANOS", "MI CUENTA", "AYUDA"]} />
                 <FooterLinks style={"footer-links-explorer"} title="MÁS PARA EXPLORAR" links={["OFERTAS", "MI CUENTA"]} />
             </div>
             <div className="footer-company-info3">
