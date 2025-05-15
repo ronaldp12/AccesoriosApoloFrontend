@@ -11,6 +11,8 @@ import { RegisterModal } from "../../Layouts/RegisterModal/RegisterModal.jsx";
 import { LoginModal } from "../LoginModal/LoginModal.jsx";
 import { WelcomeModal } from "../WelcomeModal/WelcomeModal.jsx";
 import { Trunk } from "../../Ui/Trunk/Trunk.jsx";
+import { context } from "../../../Context/Context.jsx";
+import { useContext } from "react";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,6 +20,8 @@ export const Header = () => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [isTrunkOpen, setIsTrunkOpen] = useState(false);
+
+  const { cartProducts, handleRemoveProduct, handleQuantityChange } = useContext(context);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
@@ -84,7 +88,14 @@ export const Header = () => {
       <RegisterModal isOpen={registerOpen} onClose={closeRegister} />
       <LoginModal isOpen={loginOpen} onClose={closeLogin} onLoginSuccess={showWelcome} />
       <WelcomeModal isOpen={welcomeOpen} onClose={closeWelcome} />
-      <Trunk isOpen={isTrunkOpen} onClose={closeTrunk} />
+      <Trunk
+        isOpen={isTrunkOpen}
+        onClose={closeTrunk}
+        products={cartProducts}
+        onRemove={handleRemoveProduct}
+        onQuantityChange={handleQuantityChange}
+      />
+
     </header>
   );
 };

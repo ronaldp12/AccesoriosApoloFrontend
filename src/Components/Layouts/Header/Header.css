@@ -136,6 +136,19 @@ header {
     font-size: 0.6rem;
 }
 
+.price{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+.price img{
+    width: 1.5em;
+    height: 1.5em;
+}
+
 .container-icon2 {
     display: none;
 }

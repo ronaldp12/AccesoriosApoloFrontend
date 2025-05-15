@@ -8,7 +8,6 @@ import logo4 from '../../../assets/images/img42-marca.png';
 import img1 from '../../../assets/images/img1-brand.jpg';
 import img2 from '../../../assets/images/img2-brand.jpg';
 import img3 from '../../../assets/images/img3-brand.jpg';
-import img4 from '../../../assets/images/img4-brand.jpg';
 import img5 from '../../../assets/images/img5-brand.jpg';
 
 
