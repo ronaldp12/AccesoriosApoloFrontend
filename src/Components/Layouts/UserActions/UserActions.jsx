@@ -1,10 +1,22 @@
 import { Item } from "../../Ui/Item/Item";
 
 export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin }) => {
+
+  const scrollToMap = () => {
+    const mapSection = document.getElementById("location-map");
+    if (mapSection) {
+      mapSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <div className="container-icon-actions">
-        <Item styleLi="item-action" children={<i className="hgi hgi-stroke hgi-location-01"></i>} contenido="Lugar" />
+        <Item styleLi="item-action"
+          children={<i className="hgi hgi-stroke hgi-location-01"></i>}
+          onClick={scrollToMap}
+          contenido="Lugar" />
+
         <Item styleLi="item-action" children={<i className="hgi hgi-stroke hgi-baseball-helmet"></i>} contenido="Cuenta" />
         <Item styleLi="item-action" children={<i className="hgi hgi-stroke hgi-sharp hgi-backpack-03"></i>} contenido="Maletero" />
         <button className="hamburger-btn-actions" onClick={toggleMenu}>☰</button>

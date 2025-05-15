@@ -1,5 +1,5 @@
 export const LocationMap = () => (
-    <div className="location-map">
+    <div id="location-map" className="location-map">
         <h4>UBICACIÓN</h4>
         <iframe
             title="Ubicación"

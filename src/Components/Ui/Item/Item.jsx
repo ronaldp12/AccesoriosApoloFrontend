@@ -5,10 +5,10 @@ export const Item = ({ styleLi, styleUl, contenido, children, onClick }) => {
         <div className='container-item'>
             <ul className={styleUl}>
                 <li className={styleLi} onClick={onClick}>
-                    {children} 
+                    {children}
                     <span className='item-content'>
                         {contenido}
-                    </span> 
+                    </span>
                 </li>
             </ul>
         </div>
