@@ -1,6 +1,9 @@
 import React from 'react'
 import { DiscountCard } from '../DiscountCard/DiscountCard.jsx'
 import img1 from '../../../assets/images/img1-discount.jpg'
+import img2 from '../../../assets/images/img2-discount.jpg'
+import img3 from '../../../assets/images/img3-discount.jpg'
+import img4 from '../../../assets/images/img4-discount.jpg'
 import '../DiscountSection/DiscountSection.css'
 
 export const DiscountSection = () => {
@@ -12,9 +15,9 @@ export const DiscountSection = () => {
 
       <div className="cards-container">
         <DiscountCard imagen={img1} titulo={"cascos"}/>
-        <DiscountCard imagen={img1} titulo={"chaquetas"}/>
-        <DiscountCard imagen={img1} titulo={"guantes"}/>
-        <DiscountCard imagen={img1} titulo={"gafas"}/>
+        <DiscountCard imagen={img2} titulo={"chaquetas"}/>
+        <DiscountCard imagen={img3} titulo={"guantes"}/>
+        <DiscountCard imagen={img4} titulo={"gafas"}/>
       </div>
 
       <button className="ver-btn">VER</button>

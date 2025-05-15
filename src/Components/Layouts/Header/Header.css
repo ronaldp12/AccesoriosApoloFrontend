@@ -69,6 +69,7 @@ header {
 .logo {
     width: 4rem;
     height: auto;
+    cursor: pointer;
 }
 
 /* Buscador */
