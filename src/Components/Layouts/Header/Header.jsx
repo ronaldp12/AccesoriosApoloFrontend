@@ -10,15 +10,23 @@ import { UserActions } from "../UserActions/UserActions.jsx";
 import { RegisterModal } from "../../Layouts/RegisterModal/RegisterModal.jsx";
 import { LoginModal } from "../LoginModal/LoginModal.jsx";
 import { WelcomeModal } from "../WelcomeModal/WelcomeModal.jsx";
+import { Trunk } from "../../Ui/Trunk/Trunk.jsx";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
+  const [isTrunkOpen, setIsTrunkOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
+
+  const handleTrunk = () => {
+    setIsTrunkOpen(!isTrunkOpen);
+  }
+
+  const closeTrunk = () => setIsTrunkOpen(false);
 
   const openRegister = () => {
     setRegisterOpen(true);
@@ -59,6 +67,7 @@ export const Header = () => {
             styleLi="item-action"
             children={<i className="hgi hgi-stroke hgi-sharp hgi-backpack-03"></i>}
             contenido="Maletero"
+            onClick={handleTrunk}
           />
           <button className="hamburger-btn" onClick={toggleMenu}>
             ☰
@@ -66,7 +75,8 @@ export const Header = () => {
         </div>
 
         <div className="container-icon2">
-          <UserActions toggleMenu={toggleMenu} onOpenRegister={openRegister} onOpenLogin={openLogin} />
+          <UserActions toggleMenu={toggleMenu} onOpenRegister={openRegister}
+            onOpenLogin={openLogin} handleTrunk={handleTrunk} />
         </div>
       </div>
 
@@ -74,6 +84,7 @@ export const Header = () => {
       <RegisterModal isOpen={registerOpen} onClose={closeRegister} />
       <LoginModal isOpen={loginOpen} onClose={closeLogin} onLoginSuccess={showWelcome} />
       <WelcomeModal isOpen={welcomeOpen} onClose={closeWelcome} />
+      <Trunk isOpen={isTrunkOpen} onClose={closeTrunk} />
     </header>
   );
 };
