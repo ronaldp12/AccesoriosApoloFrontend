@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../Ui/VerifyAccount/VerifyAccount.css";
 import { Logo } from "../../Ui/Logo/Logo";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
 import img1 from "../../../assets/images/img1-auth.png";
+import { WelcomeModal } from "../../Layouts/WelcomeModal/WelcomeModal";
+import { NavLink } from "react-router-dom";
 
 export const VerifyAccount = () => {
     const [code, setCode] = useState(["", "", "", "", "", ""]);
-
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email");
+    const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
+
+    const [seconds, setSeconds] = useState(30);
+    const [canResend, setCanResend] = useState(false);
+
+    useEffect(() => {
+        if (seconds > 0) {
+            const timer = setTimeout(() => setSeconds(seconds - 1), 1000);
+            return () => clearTimeout(timer);
+        } else {
+            setCanResend(true);
+        }
+    }, [seconds]);
 
     const handleInputChange = (e, index) => {
         const value = e.target.value;
@@ -30,25 +43,67 @@ export const VerifyAccount = () => {
         return `${visiblePart}***@${domain}`;
     };
 
-    const [seconds, setSeconds] = useState(30);
-    const [canResend, setCanResend] = useState(false);
+    const handleVerifyCode = async () => {
 
-    useEffect(() => {
-        if (seconds > 0) {
-            const timer = setTimeout(() => setSeconds(seconds - 1), 1000);
-            return () => clearTimeout(timer);
-        } else {
-            setCanResend(true);
+        try {
+            const response = await fetch("http://localhost:3000/verificar-otp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ correo: email, codigo_otp: code.join("") })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Código verificado correctamente");
+                setIsWelcomeOpen(true);
+            } else {
+                alert(data.mensaje || "Código incorrecto, intenta de nuevo.");
+            }
+        } catch (error) {
+            console.error("Error al verificar código:", error);
+            alert("Ocurrió un error al verificar el código.");
         }
-    }, [seconds]);
+    };
 
+    const handleResendCode = async () => {
+        try {
+            const response = await fetch("http://localhost:3000/reenviar-otp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ correo: email })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("Respuesta del servidor:", errorText);
+                throw new Error(`Error ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log(data.message);
+            setSeconds(30);
+            setCanResend(false);
+
+        } catch (error) {
+            console.error("Error en la petición de reenviar OTP:", error);
+        }
+    };
 
     return (
         <div className="verify-container">
             <div className="verify-header">
-                <button className="back-btn">
-                    <iconify-icon icon="fluent:ios-arrow-24-filled" className="arrow-back" />
-                </button>
+
+                <NavLink to="/">
+                    <button className="back-btn">
+                        <iconify-icon icon="fluent:ios-arrow-24-filled" className="arrow-back" />
+                    </button>
+                </NavLink>
+
                 <Logo />
             </div>
 
@@ -57,7 +112,6 @@ export const VerifyAccount = () => {
                     <img src={img1} alt="img1-auth" />
                 </h1>
             </div>
-
 
             <p className="verify-text">
                 Hemos enviado un código de verificación a tu correo electrónico: <b>{formatEmail(email)}</b>
@@ -80,21 +134,21 @@ export const VerifyAccount = () => {
 
             <p className="resend-text">
                 {canResend ? (
-                    <button className="resend-btn" onClick={() => {
-                        setSeconds(30);
-                        setCanResend(false);
-
-                    }}>Reenviar código</button>
+                    <button className="resend-btn" onClick={handleResendCode}>
+                        Reenviar código
+                    </button>
                 ) : (
                     <>Reenviar código en <b>{seconds} segundos</b></>
                 )}
             </p>
 
-            <button className="verify-btn">VERIFICAR</button>
+            <button className="verify-btn" onClick={handleVerifyCode}>VERIFICAR</button>
 
             <p className="change-email">
                 ¿Es incorrecto tu correo? <a href="#">Cambiar Correo</a>
             </p>
+
+            <WelcomeModal isOpen={isWelcomeOpen} onClose={() => setIsWelcomeOpen(false)} />
         </div>
     );
 };

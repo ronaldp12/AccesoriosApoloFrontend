@@ -1,18 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import "./RegisterModal.css";
 import iconGoogle from "../../../assets/icons/google.png";
 import iconFacebook from "../../../assets/icons/facebook.png";
-import { useState } from "react";
+import { useContext } from "react";
+import { context } from "../../../Context/Context.jsx";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterModal = ({ isOpen, onClose }) => {
-
     const [email, setEmail] = useState("");
+    const {name, setName } = useContext(context);
+    const [phone, setPhone] = useState("");
+    const [password, setPassword] = useState("");
+    const navigate= useNavigate();
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
-        onClose();
-        window.open(`/verify-account?email=${encodeURIComponent(email)}`, "_blank");
+        
+        const requestData = {
+            nombre: name,
+            correo: email,
+            telefono: phone,
+            contrasena: password,
+            id_rol: "user" 
+        };
 
+        try {
+            const response = await fetch("http://localhost:3000/solicitar-otp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(requestData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                
+                onClose();
+                navigate(`/verify-account?email=${encodeURIComponent(email)}`, "_blank");
+            } else {
+                alert(data.mensaje); 
+            }
+        } catch (error) {
+            console.error("Error al registrar:", error);
+            alert("Hubo un error al registrar el usuario.");
+        }
     };
 
     return (
@@ -26,11 +59,15 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                         <div className="input-group-register">
                             <div className="input-field">
                                 <label>Nombre *</label>
-                                <input type="text" placeholder="Nombre" required />
+                                <input type="text" placeholder="Nombre" required 
+                                    value={name} 
+                                    onChange={(e) => setName(e.target.value)} />
                             </div>
                             <div className="input-field">
                                 <label>Teléfono *</label>
-                                <input type="tel" placeholder="Teléfono" required />
+                                <input type="tel" placeholder="Teléfono" required 
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)} />
                             </div>
                         </div>
 
@@ -44,7 +81,9 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
                             <div className="input-field">
                                 <label>Contraseña *</label>
-                                <input type="password" placeholder="Contraseña" required />
+                                <input type="password" placeholder="Contraseña" required 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)} />
                             </div>
                         </div>
 

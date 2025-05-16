@@ -7,6 +7,8 @@ export const Provider = ({ children }) => {
 
     const [cartProducts, setCartProducts] = useState([]);
 
+    const [name, setName] = useState("");
+
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
         if (existingProduct) {
@@ -29,17 +31,19 @@ export const Provider = ({ children }) => {
     };
 
     return (
-    <context.Provider value={{ 
-    
-        cartProducts, 
-        setCartProducts, 
-        handleAddToCart, 
-        handleRemoveProduct, 
-        handleQuantityChange
+        <context.Provider value={{
 
-    }}>
-      {children}
-    </context.Provider>
-  );
+            cartProducts,
+            setCartProducts,
+            handleAddToCart,
+            handleRemoveProduct,
+            handleQuantityChange,
+            name,
+            setName
+
+        }}>
+            {children}
+        </context.Provider>
+    );
 }
 
