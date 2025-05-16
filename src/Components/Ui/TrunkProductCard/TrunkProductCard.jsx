@@ -8,6 +8,9 @@ export const TrunkProductCard = ({ product, onRemove, onQuantityChange }) => {
     if (newQuantity > 0) {
       onQuantityChange(id, newQuantity);
     }
+    if (newQuantity === 0) {
+      onRemove(id);
+    }
   };
 
   return (
@@ -17,7 +20,9 @@ export const TrunkProductCard = ({ product, onRemove, onQuantityChange }) => {
       <div className="product-details">
         <p className="product-brand">{brand}</p>
         <h4 className="product-name">{title}</h4>
-        <p className="product-price">${price.toFixed(2)}</p>
+        <p className="product-price">
+          ${(price * quantity).toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </p>
 
         <div className="quantity-section">
           <label>Cantidad:</label>

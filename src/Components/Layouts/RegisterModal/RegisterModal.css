@@ -87,9 +87,10 @@ form {
     gap: 20px;
 }
 
-.input-group {
+.input-group-register {
     display: flex;
     gap: 15px;
+    flex-direction: row;
 }
 
 .input-field {
@@ -213,8 +214,11 @@ form {
         padding: 20px;
     }
 
-    .input-group {
+    .input-group-register {
         flex-direction: column;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -231,8 +235,11 @@ form {
         padding: 20px;
     }
 
-    .input-group {
+    .input-group-register {
         flex-direction: column;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -249,8 +256,11 @@ form {
         padding: 20px;
     }
 
-    .input-group {
+    .input-group-register {
         flex-direction: column;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 
@@ -261,7 +271,7 @@ form {
         height: auto;
     }
 
-    .input-group input{
+    .input-group-register input{
         width: 95%;
     }
 
@@ -270,7 +280,10 @@ form {
         padding: 20px;
     }
 
-    .input-group {
+    .input-group-register {
         flex-direction: column;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }

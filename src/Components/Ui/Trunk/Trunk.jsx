@@ -36,11 +36,22 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange })
                         />
                     ))
                 )}
+            </div>
 
-            </div>
-            <div className="drawer-total">
-                <p>Total: <strong>${totalPrice.toFixed(2)}</strong></p>
-            </div>
+            {products.length > 0 && (
+                <>
+                    <div className="drawer-total">
+                        <p>Total:
+                            <strong>${totalPrice.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                        </p>
+
+                    </div>
+
+                    <div className="drawer-actions">
+                        <button className="buy-button">Comprar</button>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

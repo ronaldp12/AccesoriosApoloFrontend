@@ -76,7 +76,7 @@
 }
 
 .remove-button {
-  background: #ff4d4f;
+  background-color: #040d7d !important;
   color: #fff;
   border: none;
   padding: 8px 10px;
@@ -88,7 +88,7 @@
 }
 
 .remove-button:hover {
-  background: #e04143;
+  background: #040d7d;
 }
 
 @media (max-width: 820px) {

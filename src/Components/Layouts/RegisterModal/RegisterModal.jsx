@@ -23,7 +23,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 <div className="modal-form-container">
                     <h2>REGISTRATE</h2>
                     <form onSubmit={handleRegister}>
-                        <div className="input-group">
+                        <div className="input-group-register">
                             <div className="input-field">
                                 <label>Nombre *</label>
                                 <input type="text" placeholder="Nombre" required />
@@ -34,7 +34,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                             </div>
                         </div>
 
-                        <div className="input-group">
+                        <div className="input-group-register">
                             <div className="input-field">
                                 <label>Correo *</label>
                                 <input type="email" placeholder="example@example.com" required

@@ -21,7 +21,7 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
       <p className="brand">{brand}</p>
       <p className="title">{title}</p>
       <p className="price">
-        ${price}
+        ${price.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         <img
           src={iconBack}
           alt="icon Backpack"

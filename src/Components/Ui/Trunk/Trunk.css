@@ -49,10 +49,32 @@ hr{
 
 .drawer-total {
   padding: 16px;
-  border-top: 2px solid #bec0db;
+  border-top: 1px solid #ccc;
   background-color: #f9f9f9;
   text-align: right;
   font-size: 16px;
+}
+
+.drawer-actions {
+  padding: 16px;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  text-align: center;
+}
+
+.buy-button {
+  background-color: #004aad;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.buy-button:hover {
+  background-color: #040d7d;
 }
 
 .product-count {
