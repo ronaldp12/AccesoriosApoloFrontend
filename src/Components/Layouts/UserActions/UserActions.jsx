@@ -1,7 +1,9 @@
-
+import { useContext } from "react";
+import { context } from "../../../Context/Context";
 import { Item } from "../../Ui/Item/Item";
 
 export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTrunk }) => {
+  const { userLogin } = useContext(context);
 
   const scrollToMap = () => {
     const mapSection = document.getElementById("location-map");
@@ -37,10 +39,17 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
       </div>
 
       <div className="container-icon-actions">
-        <button className="register" onClick={onOpenRegister}>registrarse</button>
-        <button className="login" onClick={onOpenLogin}>iniciar sesion</button>
+        {
+          userLogin ? (
+            <span className="user-name">{userLogin}</span>
+          ) : (
+            <>
+              <button className="register" onClick={onOpenRegister}>registrarse</button>
+              <button className="login" onClick={onOpenLogin}>iniciar sesión</button>
+            </>
+          )
+        }
       </div>
-
     </>
   );
 };

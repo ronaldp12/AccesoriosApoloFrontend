@@ -6,8 +6,9 @@ export const context = createContext();
 export const Provider = ({ children }) => {
 
     const [cartProducts, setCartProducts] = useState([]);
-
     const [name, setName] = useState("");
+    const [token, setToken] = useState("");
+    const [userLogin, setUserLogin] = useState(null);
 
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
@@ -39,7 +40,11 @@ export const Provider = ({ children }) => {
             handleRemoveProduct,
             handleQuantityChange,
             name,
-            setName
+            setName,
+            token,
+            setToken, 
+            userLogin,
+            setUserLogin
 
         }}>
             {children}

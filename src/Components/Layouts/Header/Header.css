@@ -285,11 +285,27 @@ header {
     align-items: center;
 }
 
-
+.user-name{
+    background: #014aad;
+    color: white;
+    text-align: center;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 10rem;
+    height: 2rem;
+    text-transform: uppercase;
+    position: absolute;
+}
 
 @media (max-width: 820px) {
     .search-container {
         width: 12rem;
+    }
+
+    .user-name{
+        margin-right: 2.8rem;
     }
 }
 

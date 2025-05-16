@@ -20,7 +20,7 @@ export const WelcomeModal = ({ isOpen, onClose}) => {
 
                     <div className="welcome-group-bottom">
                         <button type="submit" className="welcome-submit-btn">
-                            <span>Entrar</span>
+                            <span onClick={onClose}>Entrar</span>
                         </button>
                     </div>
 
