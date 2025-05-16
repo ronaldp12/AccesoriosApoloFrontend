@@ -1,9 +1,24 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import iconBack from "../../../assets/icons/backpack.png";
 import { context } from "../../../Context/Context.jsx";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const ProductCard = ({ id, image, brand, title, price, rating, discount }) => {
   const { handleAddToCart } = useContext(context);
+  const [isAdding, setIsAdding] = useState(false);
+  const [addedMessage, setAddedMessage] = useState(false);
+
+  const handleAddClick = () => {
+    setIsAdding(true);
+    setTimeout(() => {
+      handleAddToCart({ id, image, brand, title, price });
+      setIsAdding(false);
+      setAddedMessage(true);
+      setTimeout(() => {
+        setAddedMessage(false);
+      }, 1200); 
+    }, 800); //cargando
+  };
 
   return (
     <div className="product-card">
@@ -11,6 +26,7 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
         <img src={image} alt={title} />
         {discount && <span className="discount-badge">{discount}</span>}
       </div>
+
       <div className="rating">
         {Array.from({ length: rating }).map((_, index) => (
           <span key={index} className="star">
@@ -18,15 +34,27 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
           </span>
         ))}
       </div>
+
       <p className="brand">{brand}</p>
       <p className="title">{title}</p>
+
       <p className="price">
         ${price.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        <img
-          src={iconBack}
-          alt="icon Backpack"
-          onClick={() => handleAddToCart({ id, image, brand, title, price })}
-        />
+
+
+        <span className="icon-backpack-container">
+          {isAdding ? (
+            <img src={wheelIcon} alt="cargando" className="wheel-loader" />
+          ) : addedMessage ? (
+            <span className="added-message">Agregado</span>
+          ) : (
+            <img
+              src={iconBack}
+              alt="icon Backpack"
+              onClick={handleAddClick}
+            />
+          )}
+        </span>
       </p>
     </div>
   );
