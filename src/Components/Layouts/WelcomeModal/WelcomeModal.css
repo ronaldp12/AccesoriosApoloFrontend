@@ -49,21 +49,39 @@
 
 @keyframes slideBounce {
     0% {
-      opacity: 0;
-      transform: translateY(80px) scale(0.9);
+        opacity: 0;
+        transform: translateY(80px) scale(0.9);
     }
+
     60% {
-      opacity: 1;
-      transform: translateY(-10px) scale(1.02);
+        opacity: 1;
+        transform: translateY(-10px) scale(1.02);
     }
+
     100% {
-      transform: translateY(0) scale(1);
+        transform: translateY(0) scale(1);
     }
-  }
- 
-  .welcome-modal-box.animated {
+}
+
+@keyframes slideOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(80px) scale(0.9);
+    }
+}
+
+.welcome-modal-box.animated {
     animation: slideBounce 0.6s ease-out forwards;
-  }
+}
+
+.welcome-modal-box.closing {
+    animation: slideOut 0.5s ease-out forwards;
+}
 
 .close-btn {
     position: absolute;
@@ -98,7 +116,7 @@
     justify-content: flex-end;
 }
 
-.welcome-modal-form-container p{
+.welcome-modal-form-container p {
     text-align: center;
 }
 
@@ -150,7 +168,7 @@
     background-size: cover;
 }
 
-@media (max-width: 394px){
+@media (max-width: 394px) {
     .welcome-modal-box {
         background-image: url("../../../assets/images/img-welcome-mobile3.png");
         flex-direction: column;
@@ -169,7 +187,7 @@
     }
 }
 
-@media (min-width: 395px) and (max-width: 431px){
+@media (min-width: 395px) and (max-width: 431px) {
     .welcome-modal-box {
         background-image: url("../../../assets/images/img-welcome-mobile3.png");
         flex-direction: column;
@@ -183,11 +201,11 @@
     }
 
     .welcome-modal-form-container h2 {
-        font-size: 32px;    
+        font-size: 32px;
     }
 }
 
-@media (min-width: 432px) and (max-width: 481px){
+@media (min-width: 432px) and (max-width: 481px) {
     .welcome-modal-box {
         background-image: url("../../../assets/images/img-welcome-mobile3.png");
         flex-direction: column;
@@ -201,7 +219,7 @@
     }
 
     .welcome-modal-form-container h2 {
-        font-size: 38px;    
+        font-size: 38px;
         margin-top: 0;
     }
 
@@ -211,7 +229,7 @@
     }
 }
 
-@media (min-width: 482px) and (max-width: 822px){
+@media (min-width: 482px) and (max-width: 822px) {
     .welcome-modal-box {
         flex-direction: column;
         width: 75%;
@@ -224,7 +242,7 @@
     }
 
     .welcome-modal-form-container h2 {
-        font-size: 38px;    
+        font-size: 38px;
         margin-top: 0;
     }
 
@@ -233,7 +251,7 @@
         margin-top: 0;
     }
 
-    .welcome-submit-btn{
+    .welcome-submit-btn {
         margin-right: 4.5rem;
     }
 }

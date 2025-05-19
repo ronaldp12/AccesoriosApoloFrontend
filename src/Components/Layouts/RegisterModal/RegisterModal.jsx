@@ -4,18 +4,19 @@ import iconGoogle from "../../../assets/icons/google.png";
 import iconFacebook from "../../../assets/icons/facebook.png";
 import { context } from "../../../Context/Context.jsx";
 import { useNavigate } from "react-router-dom";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const RegisterModal = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState("");
-    const {name, setName } = useContext(context);
+    const { name, setName } = useContext(context);
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const {isLoading, setIsLoading} = useContext(context);
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        setIsLoading(true); 
+        setIsLoading(true);
 
         const requestData = {
             nombre: name,
@@ -46,7 +47,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             console.error("Error al registrar:", error);
             alert("Hubo un error al registrar el usuario.");
         } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
         }
     };
 
@@ -107,7 +108,11 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
                         <div className="group-bottom">
                             <button type="submit" className="submit-btn" disabled={isLoading}>
-                                {isLoading ? <span className="spinner"></span> : <span>Registrarse</span>}
+                                {isLoading ? (
+                                    <img src={wheelIcon} alt="Cargando..." className="spinner" />
+                                ) : (
+                                    <span>Registrarse</span>
+                                )}
                             </button>
 
                             <div className="divider">o</div>

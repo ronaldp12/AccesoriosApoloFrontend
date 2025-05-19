@@ -9,6 +9,7 @@ export const Provider = ({ children }) => {
     const [name, setName] = useState("");
     const [token, setToken] = useState("");
     const [userLogin, setUserLogin] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
@@ -44,7 +45,9 @@ export const Provider = ({ children }) => {
             token,
             setToken, 
             userLogin,
-            setUserLogin
+            setUserLogin,
+            isLoading,
+            setIsLoading,
 
         }}>
             {children}

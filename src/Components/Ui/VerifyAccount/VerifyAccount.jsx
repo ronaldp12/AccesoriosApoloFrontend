@@ -51,7 +51,7 @@ export const VerifyAccount = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ correo: email, codigo_otp: code.join("") })
+                body: JSON.stringify({ correo: email, codigo: code.join("") })
             });
 
             const data = await response.json();

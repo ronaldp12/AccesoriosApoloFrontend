@@ -1,7 +1,16 @@
 import React from 'react';
 import '../JoinBanner/JoinBanner.css';
+import { context } from '../../../Context/Context.jsx';
+import { useContext } from 'react';
 
 export const JoinBanner = () => {
+
+    const { userLogin} = useContext(context);
+
+    if (userLogin) {
+        return null;
+    }
+
     return (
         <section className="join-banner">
             <div className="join-content">

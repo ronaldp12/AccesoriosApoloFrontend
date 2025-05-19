@@ -8,9 +8,9 @@ export const FooterBottom = () => (
         </div>
 
         <div className="social-icons">
-            <i class="hgi hgi-stroke hgi-facebook-02"></i>
-            <i class="hgi hgi-stroke hgi-instagram"></i>
-            <i class="hgi hgi-stroke hgi-new-twitter"></i>
+            <i className="hgi hgi-stroke hgi-facebook-02"></i>
+            <i className="hgi hgi-stroke hgi-instagram"></i>
+            <i className="hgi hgi-stroke hgi-new-twitter"></i>
         </div>
     </div>
 );

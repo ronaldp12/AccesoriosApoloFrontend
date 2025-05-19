@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { context } from "../../../Context/Context";
 import { Item } from "../../Ui/Item/Item";
+import { useNavigate } from "react-router-dom";
 
 export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTrunk }) => {
   const { userLogin } = useContext(context);
+  const navigate = useNavigate();
 
   const scrollToMap = () => {
     const mapSection = document.getElementById("location-map");
@@ -11,6 +13,12 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
       mapSection.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const handleProfile = () => {
+    if (userLogin) {
+      navigate("/profile");
+    } 
+  }
 
   return (
     <>
@@ -26,6 +34,7 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
           styleLi="item-action"
           children={<i className="hgi hgi-stroke hgi-baseball-helmet"></i>}
           contenido="Cuenta"
+          onClick={handleProfile}
         />
 
         <Item
