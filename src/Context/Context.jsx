@@ -6,9 +6,10 @@ export const context = createContext();
 export const Provider = ({ children }) => {
 
     const [cartProducts, setCartProducts] = useState([]);
-    const [name, setName] = useState("");
-    const [token, setToken] = useState("");
-    const [userLogin, setUserLogin] = useState(null);
+    const [name, setName] = useState(localStorage.getItem("usuarioLogueado") || "");
+    const [token, setToken] = useState(localStorage.getItem("token") || "");
+    const [userLogin, setUserLogin] = useState(localStorage.getItem("usuarioLogueado") || null);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const handleAddToCart = (product) => {
@@ -32,6 +33,15 @@ export const Provider = ({ children }) => {
         ));
     };
 
+    const handleLogout = () => {
+        setName("");
+        setToken("");
+        setUserLogin(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("usuarioLogueado");
+    };
+
+
     return (
         <context.Provider value={{
 
@@ -43,11 +53,12 @@ export const Provider = ({ children }) => {
             name,
             setName,
             token,
-            setToken, 
+            setToken,
             userLogin,
             setUserLogin,
             isLoading,
             setIsLoading,
+            handleLogout
 
         }}>
             {children}

@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "../../Ui/VerifyAccount/VerifyAccount.css";
 import { Logo } from "../../Ui/Logo/Logo";
 import { useSearchParams } from "react-router-dom";
 import img1 from "../../../assets/images/img1-auth.png";
 import { WelcomeModal } from "../../Layouts/WelcomeModal/WelcomeModal";
 import { NavLink } from "react-router-dom";
+import { context } from "../../../Context/Context";
 
 export const VerifyAccount = () => {
     const [code, setCode] = useState(["", "", "", "", "", ""]);
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email");
     const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
+    const {setUserLogin, setToken, setName} =useContext(context);
 
     const [seconds, setSeconds] = useState(30);
     const [canResend, setCanResend] = useState(false);
@@ -58,6 +60,14 @@ export const VerifyAccount = () => {
 
             if (response.ok) {
                 console.log("Código verificado correctamente");
+
+                setUserLogin(data.usuario.nombre);
+                setToken(data.token);
+                setName(data.usuario.nombre);
+
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("usuarioLogueado", data.usuario.nombre);
+                
                 setIsWelcomeOpen(true);
             } else {
                 alert(data.mensaje || "Código incorrecto, intenta de nuevo.");

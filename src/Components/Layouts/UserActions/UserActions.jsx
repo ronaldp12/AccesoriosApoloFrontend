@@ -17,7 +17,7 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
   const handleProfile = () => {
     if (userLogin) {
       navigate("/profile");
-    } 
+    }
   }
 
   return (

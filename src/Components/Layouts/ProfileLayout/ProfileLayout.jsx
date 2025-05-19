@@ -9,7 +9,7 @@ import { context } from '../../../Context/Context';
 export const ProfileLayout = () => {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
-    const { name } = useContext(context);
+    const { name, handleLogout } = useContext(context);
     const location = useLocation();
 
     return (
@@ -26,18 +26,23 @@ export const ProfileLayout = () => {
                 <nav className="profile-menu">
                     <button onClick={() => navigate('/profile')}
                         className={location.pathname === '/profile' ? 'active' : ''}
-                        >Perfil
+                    >Perfil
                     </button>
                     <button onClick={() => navigate('/profile/orders')}
                         className={location.pathname === '/profile/orders' ? 'active' : ''}
-                        >Pedidos
+                    >Pedidos
                     </button>
                     <button onClick={() => navigate('/profile/wish-list')}
                         className={location.pathname === '/profile/wish-list' ? 'active' : ''}
-                        >Lista de deseos
+                    >Lista de deseos
                     </button>
 
-                    <button onClick={() => navigate('/')}>Salir</button>
+                    <button onClick={() => {
+                        handleLogout();
+                        navigate('/')
+                    }
+                    }>Salir
+                    </button>
                 </nav>
             </aside>
 
