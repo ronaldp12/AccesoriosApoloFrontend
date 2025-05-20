@@ -137,7 +137,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     onChange={(e) => setContrasena(e.target.value)}
                                     required
                                 />
-                                <u onClick={() => navigate("/recover-password")} style={{ cursor: "pointer" }}>
+                                <u onClick={() => navigate("/request-email")} style={{ cursor: "pointer" }}>
                                     ¿Olvidaste tu contraseña?
                                 </u>
                             </div>
