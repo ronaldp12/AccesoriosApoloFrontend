@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef, useEffect, use } from "react";
 import "./RegisterModal.css";
 import iconGoogle from "../../../assets/icons/google.png";
 import iconFacebook from "../../../assets/icons/facebook.png";
@@ -12,6 +12,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [password, setPassword] = useState("");
     const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen, 
     setIsIntermediateLoading } = useContext(context);
+    const [userName, setUserName] = useState("");
 
     const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         setIsLoading(true);
 
         const requestData = {
-            nombre: name,
+            nombre: userName,
             correo: email,
             telefono: phone,
             contrasena: password,
@@ -59,6 +60,8 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             const data = await response.json();
 
             if (response.ok) {
+                setName(userName)
+                
                 onClose();
                 navigate(`/verify-account?email=${encodeURIComponent(email)}`);
             } else {
@@ -128,8 +131,8 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                     type="text"
                                     placeholder="Nombre"
                                     required
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={userName}
+                                    onChange={(e) => setUserName(e.target.value)}
                                 />
                             </div>
                             <div className="input-field">

@@ -58,6 +58,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                     onClose();
                     onLoginSuccess();
                 }, 1000);
+                
             } else {
                 alert(data.mensaje);
                 setIsLoading(false);

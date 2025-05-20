@@ -75,6 +75,17 @@
   cursor: pointer;
 }
 
+.logout{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.bi-box-arrow-left{
+  font-size: 25px;
+  margin-right: 1rem;
+  color: #014aad;
+}
 
 @media (max-width: 820px) {
   .profile-sidebar {

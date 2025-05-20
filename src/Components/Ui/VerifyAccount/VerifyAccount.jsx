@@ -6,13 +6,14 @@ import img1 from "../../../assets/images/img1-auth.png";
 import { WelcomeModal } from "../../Layouts/WelcomeModal/WelcomeModal";
 import { NavLink } from "react-router-dom";
 import { context } from "../../../Context/Context";
+import wheelIcon from "../../../assets/icons/img1-loader.png"
 
 export const VerifyAccount = () => {
     const [code, setCode] = useState(["", "", "", "", "", ""]);
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email");
     const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
-    const {setUserLogin, setToken, setName} =useContext(context);
+    const { setUserLogin, setToken, setName, isLoading, setIsLoading } = useContext(context);
 
     const [seconds, setSeconds] = useState(30);
     const [canResend, setCanResend] = useState(false);
@@ -46,6 +47,7 @@ export const VerifyAccount = () => {
     };
 
     const handleVerifyCode = async () => {
+        setIsLoading(true);
 
         try {
             const response = await fetch("http://localhost:3000/verificar-otp", {
@@ -67,14 +69,16 @@ export const VerifyAccount = () => {
 
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
-                
+
                 setIsWelcomeOpen(true);
             } else {
                 alert(data.mensaje || "Código incorrecto, intenta de nuevo.");
+                setIsLoading(false);
             }
         } catch (error) {
             console.error("Error al verificar código:", error);
             alert("Ocurrió un error al verificar el código.");
+            setIsLoading(false);
         }
     };
 
@@ -152,7 +156,13 @@ export const VerifyAccount = () => {
                 )}
             </p>
 
-            <button className="verify-btn" onClick={handleVerifyCode}>VERIFICAR</button>
+            <button className="verify-btn" onClick={handleVerifyCode}>
+                {isLoading ? (
+                    <img src={wheelIcon} alt="Cargando..." className="verify-spinner" />
+                ) : (
+                    <span>Verificar</span>
+                )}
+            </button>
 
             <p className="change-email">
                 ¿Es incorrecto tu correo? <a href="#">Cambiar Correo</a>

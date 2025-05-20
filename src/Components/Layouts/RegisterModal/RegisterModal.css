@@ -186,8 +186,8 @@ form {
 .spinner {
   border: 3px solid #f3f3f3;
   border-radius: 50%;
-  width: 16px;
-  height: 16px;
+  width: 30px;
+  height: 30px;
   animation: spin 1s linear infinite;
   display: inline-block;
   margin-right: 3.5rem;

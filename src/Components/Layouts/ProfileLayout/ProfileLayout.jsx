@@ -37,11 +37,11 @@ export const ProfileLayout = () => {
                     >Lista de deseos
                     </button>
 
-                    <button onClick={() => {
+                    <button className='logout' onClick={() => {
                         handleLogout();
                         navigate('/')
                     }
-                    }>Salir
+                    }> <span><i class="bi bi-box-arrow-left"></i></span>Salir
                     </button>
                 </nav>
             </aside>
