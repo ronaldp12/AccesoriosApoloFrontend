@@ -14,7 +14,7 @@ export const ProfileData = () => {
 
         const fetchProfile = async () => {
             try {
-                const response = await fetch('http://localhost:3000/perfil', {
+                const response = await fetch('https://accesoriosapolobackend.onrender.com/perfil', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

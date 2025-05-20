@@ -49,7 +49,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         };
 
         try {
-            const response = await fetch("http://localhost:3000/solicitar-otp", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/solicitar-otp", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         const token = response.credential;
 
         try {
-            const res = await fetch("http://localhost:3000/login-google", {
+            const res = await fetch("https://accesoriosapolobackend.onrender.com/login-google", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token }),

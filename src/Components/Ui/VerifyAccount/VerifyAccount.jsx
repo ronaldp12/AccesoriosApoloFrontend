@@ -50,7 +50,7 @@ export const VerifyAccount = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://localhost:3000/verificar-otp", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/verificar-otp", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -84,7 +84,7 @@ export const VerifyAccount = () => {
 
     const handleResendCode = async () => {
         try {
-            const response = await fetch("http://localhost:3000/reenviar-otp", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/reenviar-otp", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -118,7 +118,7 @@ export const VerifyAccount = () => {
                     </button>
                 </NavLink>
 
-                <Logo />
+                <Logo styleContainer="container-logo-verify" styleLogo="logo-verify-account" />
             </div>
 
             <div className="verify-title">

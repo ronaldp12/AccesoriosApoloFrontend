@@ -1,53 +1,67 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import "./ChangePassword.css";
 import { NavLink, useSearchParams, useNavigate } from "react-router-dom";
 import { Logo } from "../Logo/Logo";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
+import { context } from "../../../Context/Context.jsx"
 
 export const ChangePassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [status, setStatus] = useState("idle");
+    const [message, setMessage] = useState("");
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const { setUserLogin} = useContext(context)
 
     const token = searchParams.get("token");
 
     useEffect(() => {
         if (!token) {
-            alert("Token inválido o ausente");
+            setMessage("Token inválido o ausente");
+            setStatus("error");
         }
-    }, [token, navigate]);
+    }, [token]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            alert("Las contraseñas no coinciden");
+            setMessage("Las contraseñas no coinciden");
+            setStatus("error");
             return;
         }
 
+        setStatus("loading");
+        setMessage("");
+
         try {
-            const response = await fetch("http://localhost:3000/cambiar-contrasena", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/cambiar-contrasena", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     token,
-                    nuevaContrasena: newPassword
+                    nuevaContrasena: newPassword,
                 }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                alert("Contraseña actualizada correctamente");
-                navigate("/"); 
+                setStatus("success");
+                setMessage("Contraseña actualizada correctamente. Redireccionando...");
+                setUserLogin(null);
+                setTimeout(() => navigate("/"), 2000);
             } else {
-                alert(data.mensaje || "Error al cambiar la contraseña");
+                setStatus("error");
+                setMessage(data.mensaje || "Error al cambiar la contraseña.");
             }
         } catch (error) {
             console.error("Error al cambiar contraseña:", error);
-            alert("Error de red");
+            setStatus("error");
+            setMessage("Error de red. Intenta de nuevo.");
         }
     };
 
@@ -61,7 +75,7 @@ export const ChangePassword = () => {
                 </NavLink>
 
                 <div className="logo">
-                    <Logo />
+                    <Logo styleContainer="container-logo-reset" styleLogo="logo-reset-email" />
                 </div>
             </div>
 
@@ -70,7 +84,9 @@ export const ChangePassword = () => {
 
             <form className="form" onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label>Nueva Contraseña<span>*</span></label>
+                    <label>
+                        Nueva Contraseña<span>*</span>
+                    </label>
                     <div className="input-container">
                         <input
                             type={showNewPassword ? "text" : "password"}
@@ -78,12 +94,15 @@ export const ChangePassword = () => {
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
                             required
+                            disabled={status === "loading" || status === "success"}
                         />
                     </div>
                 </div>
 
                 <div className="form-group">
-                    <label>Confirmar Contraseña<span>*</span></label>
+                    <label>
+                        Confirmar Contraseña<span>*</span>
+                    </label>
                     <div className="input-container">
                         <input
                             type={showConfirmPassword ? "text" : "password"}
@@ -91,13 +110,46 @@ export const ChangePassword = () => {
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
+                            disabled={status === "loading" || status === "success"}
                         />
                     </div>
                 </div>
 
-                <button type="submit" className="submit-btn-password">
-                    Restablecer Contraseña
-                </button>
+
+                {status !== "idle" && (
+                    <div className={`status-message ${status}`}>
+                        {status === "loading" && (
+                            <div className="status-content-loading">
+                                <span>Restableciendo</span>
+                                <img src={wheelIcon} alt="Cargando..." className="change-spinner" />
+                            </div>
+                        )}
+
+                        {(status === "success" || status === "error") && (
+                            <div className="status-content">
+                                {status === "success" && (
+                                    <>
+                                        <span>{message}</span>
+                                        <i className="bi bi-check-circle"></i>
+
+                                    </>
+                                )}
+                                {status === "error" && (
+                                    <>
+                                        <span>{message}</span>
+                                        <i className="bi bi-x-circle"></i>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {status === "idle" && (
+                    <button type="submit" className="submit-btn-password">
+                        Restablecer Contraseña
+                    </button>
+                )}
             </form>
         </div>
     );

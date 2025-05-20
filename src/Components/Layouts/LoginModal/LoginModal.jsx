@@ -37,7 +37,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         setIsLoading(true);
 
         try {
-            const response = await fetch("http://localhost:3000/login", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ correo, contrasena }),
@@ -74,7 +74,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         const token = response.credential;
 
         try {
-            const res = await fetch("http://localhost:3000/login-google", {
+            const res = await fetch("https://accesoriosapolobackend.onrender.com/login-google", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token }),

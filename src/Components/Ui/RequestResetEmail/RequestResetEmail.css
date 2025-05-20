@@ -10,13 +10,48 @@
 
 .reset-email-header {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   margin-bottom: 20px;
   align-items: center;
 }
 
 .reset-email-logo {
   width: 90px;
+}
+
+.logo-reset-email{
+  width: 8rem;
+}
+
+.reset-spinner {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.check-icon {
+  width: 22px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.reset-email-message {
+  margin-top: 20px;
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
 }
 
 .reset-email-title {
@@ -39,6 +74,39 @@
   gap: 20px;
   justify-content: center;
   align-items: center;
+}
+
+.status-content-request {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.status-content-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.status-content-success{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.bi-check-circle {
+  font-size: 22px;
+  color: #014aad;
 }
 
 .input-field {
@@ -85,6 +153,9 @@
   cursor: pointer;
   transition: 0.3s;
   width: 14rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .reset-email-btn:hover {
@@ -118,6 +189,12 @@
 
   .reset-email-subtitle {
     font-size: 13px;
+  }
+}
+
+@media (min-width: 822px) and (max-width: 1600px){
+  .reset-email-header{
+    justify-content: flex-start;
   }
 }
 
