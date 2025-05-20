@@ -1,5 +1,4 @@
 .verify-container {
-    max-width: 500px;
     margin: 0 auto;
     padding: 30px 20px;
     text-align: center;
@@ -10,6 +9,8 @@
     display: flex;
     justify-content: left;
     align-items: center;
+    width: 100%;
+    padding-left: 3rem;
 }
 
 .back-btn {
@@ -153,6 +154,50 @@
   100% { transform: rotate(360deg); }
 }
 
+.status-message-verify {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 16px;
+  text-align: center;
+  width: 100%;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.3s ease;
+}
+
+.status-message-verify.success {
+  background-color: #a7c0e3;
+  color: #013072;
+  border: 1px solid #a5c5de;
+}
+
+.status-message-verify.error {
+  background-color: #fdecea;
+  color: #c62828;
+  border: 1px solid #f5c6cb;
+}
+
+.status-message-verify i {
+  font-size: 18px;
+}
+
+.container-logo-verify{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.logo-verify-account{
+    width: 8rem;
+}
+
 @media (max-width: 820px) {
     .verify-container {
         padding: 20px 15px;
@@ -170,6 +215,20 @@
     .verify-btn {
         padding: 10px 35px;
         font-size: 15px;
+    }
+
+    .container-logo-verify{
+        justify-content: center;
+        width: 100%;
+    }
+
+    .back-btn{
+        position: absolute;
+        left: 0;
+    }
+
+    .logo-verify-account{
+        margin: 0 auto;
     }
 }
 
@@ -205,6 +264,21 @@
 
     .verify-btn {
         width: 100%;
+    }
+
+    .container-logo-verify{
+        justify-content: flex-end;
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+    .back-btn{
+        position: absolute;
+        left: 0;
+    }
+
+    .logo-verify-account{
+        margin: 0 auto;
     }
 
 }

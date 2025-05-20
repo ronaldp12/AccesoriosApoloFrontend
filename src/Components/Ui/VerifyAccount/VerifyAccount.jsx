@@ -13,7 +13,12 @@ export const VerifyAccount = () => {
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email");
     const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
-    const { setUserLogin, setToken, setName, isLoading, setIsLoading } = useContext(context);
+    const { setUserLogin, setToken, setName, getErrorMessage } = useContext(context);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [isResending, setIsResending] = useState(false);
+
 
     const [seconds, setSeconds] = useState(30);
     const [canResend, setCanResend] = useState(false);
@@ -26,6 +31,17 @@ export const VerifyAccount = () => {
             setCanResend(true);
         }
     }, [seconds]);
+
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => {
+                setSuccessMessage("");
+                setIsResending(false);
+            }, 4000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage]);
 
     const handleInputChange = (e, index) => {
         const value = e.target.value;
@@ -47,7 +63,7 @@ export const VerifyAccount = () => {
     };
 
     const handleVerifyCode = async () => {
-        setIsLoading(true);
+        setIsVerifying(true);
 
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/verificar-otp", {
@@ -72,17 +88,19 @@ export const VerifyAccount = () => {
 
                 setIsWelcomeOpen(true);
             } else {
-                alert(data.mensaje || "Código incorrecto, intenta de nuevo.");
-                setIsLoading(false);
+                setErrorMessage(getErrorMessage(data, "Código incorrecto, intenta de nuevo."));
+                setIsVerifying(false);
             }
         } catch (error) {
             console.error("Error al verificar código:", error);
-            alert("Ocurrió un error al verificar el código.");
-            setIsLoading(false);
+            setErrorMessage("Ocurrió un error al verificar el código.");
+            setIsVerifying(false);
         }
     };
 
     const handleResendCode = async () => {
+        setIsResending(true);
+
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/reenviar-otp", {
                 method: "POST",
@@ -100,11 +118,15 @@ export const VerifyAccount = () => {
 
             const data = await response.json();
             console.log(data.message);
+            setSuccessMessage(data.message || "Código reenviado correctamente.");
             setSeconds(30);
             setCanResend(false);
 
         } catch (error) {
             console.error("Error en la petición de reenviar OTP:", error);
+            setErrorMessage("Ocurrió un error al reenviar el código.");
+            setIsResending(false);
+            setSuccessMessage("");
         }
     };
 
@@ -149,20 +171,40 @@ export const VerifyAccount = () => {
             <p className="resend-text">
                 {canResend ? (
                     <button className="resend-btn" onClick={handleResendCode}>
-                        Reenviar código
+                        {isResending ? (
+                            <img src={wheelIcon} alt="Cargando..." className="verify-spinner" />
+                        ) : (
+                            <span>Reenviar código</span>
+                        )}
                     </button>
+
                 ) : (
                     <>Reenviar código en <b>{seconds} segundos</b></>
                 )}
             </p>
 
             <button className="verify-btn" onClick={handleVerifyCode}>
-                {isLoading ? (
+                {isVerifying ? (
                     <img src={wheelIcon} alt="Cargando..." className="verify-spinner" />
                 ) : (
                     <span>Verificar</span>
                 )}
             </button>
+
+            {errorMessage && (
+                <div className="status-message-verify error">
+                    <span>{errorMessage}</span>
+                    <i className="bi bi-x-circle"></i>
+                </div>
+            )}
+
+            {successMessage && (
+                <div className="status-message-verify success">
+                    <span>{successMessage}</span>
+                    <i className="bi bi-check-circle"></i>
+                </div>
+            )}
+
 
             <p className="change-email">
                 ¿Es incorrecto tu correo? <a href="#">Cambiar Correo</a>

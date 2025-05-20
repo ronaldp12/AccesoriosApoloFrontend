@@ -10,7 +10,8 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const [correo, setCorreo] = useState("");
     const [contrasena, setContrasena] = useState("");
     const navigate = useNavigate();
-    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen } = useContext(context);
+    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen, getErrorMessage } = useContext(context);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const googleButtonRef = useRef(null);
 
@@ -60,12 +61,12 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 }, 1000);
 
             } else {
-                alert(data.mensaje);
+                setErrorMessage(getErrorMessage(data, "Error al iniciar sesión."));
                 setIsLoading(false);
             }
         } catch (error) {
             console.error("Error en login:", error);
-            alert("Hubo un error al iniciar sesión");
+            setErrorMessage("Hubo un error al iniciar sesión");
             setIsLoading(false);
         }
     };
@@ -99,11 +100,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 }, 1000);
 
             } else {
-                alert(data.mensaje || "Error al iniciar sesión con Google");
+                setErrorMessage(getErrorMessage(data, "Error al iniciar sesión con Google"));
             }
         } catch (error) {
             console.error("Error al autenticar con backend:", error);
-            alert("Error de red");
+            setErrorMessage("Error de red");
         }
     };
 
@@ -124,7 +125,10 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     type="email"
                                     placeholder="example@example.com"
                                     value={correo}
-                                    onChange={(e) => setCorreo(e.target.value)}
+                                    onChange={(e) => {
+                                        setCorreo(e.target.value)
+                                        setErrorMessage("") 
+                                    }}
                                     required
                                 />
                             </div>
@@ -134,7 +138,10 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     type="password"
                                     placeholder="Contraseña"
                                     value={contrasena}
-                                    onChange={(e) => setContrasena(e.target.value)}
+                                    onChange={(e) => {
+                                        setContrasena(e.target.value)
+                                        setErrorMessage("") 
+                                    }}
                                     required
                                 />
                                 <u onClick={() => {
@@ -154,6 +161,13 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     <span>Iniciar sesión</span>
                                 )}
                             </button>
+
+                            {errorMessage && (
+                                <div className="status-message error">
+                                    <span>{errorMessage}</span>
+                                    <i className="bi bi-x-circle"></i>
+                                </div>
+                            )}
 
                             <div className="divider">o</div>
 
