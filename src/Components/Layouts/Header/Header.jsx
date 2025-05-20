@@ -54,7 +54,7 @@ export const Header = () => {
       <TopNav />
 
       <div className="container-header">
-        <Logo />
+        <Logo styleContainer="container-logo-header" styleLogo="logo-header" />
 
         <div className="container-main">
           <SearchBar />

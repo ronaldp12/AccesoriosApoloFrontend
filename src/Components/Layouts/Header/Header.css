@@ -59,14 +59,14 @@ header {
 }
 
 
-.logo-container {
+.logo-container-header {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     width: 100%;
 }
 
-.logo {
+.logo-header {
     width: 4rem;
     height: auto;
     cursor: pointer;
@@ -318,7 +318,7 @@ header {
 
 @media (min-width: 394px) and (max-width: 431px) {
 
-    .logo-container {
+    .logo-container-header {
         justify-content: center;
     }
 
@@ -363,11 +363,11 @@ header {
 }
 
 @media (min-width: 432px) and (max-width: 481px) {
-    .logo-container {
+    .logo-container-header {
         justify-content: left;
     }
 
-    .logo {
+    .logo-header {
         width: 6rem;
         height: auto;
     }
@@ -438,11 +438,11 @@ header {
 }
 
 @media (min-width: 482px) and (max-width: 821px) {
-    .logo-container {
+    .logo-container-header {
         justify-content: center;
     }
 
-    .logo {
+    .logo-header {
         width: 8rem;
         height: auto;
     }
@@ -557,12 +557,12 @@ header {
         height: 6rem;
     }
 
-    .logo-container {
+    .logo-container-header {
         justify-content: center;
         width: 8rem;
     }
 
-    .logo {
+    .logo-header {
         width: 8rem;
         height: auto;
     }

@@ -1,10 +1,10 @@
 import logoA from "../../../assets/images/logoAccesoriosApolo.png";
 import { NavLink } from "react-router-dom";
 
-export const Logo = () => {
+export const Logo = ({ styleContainer="logo-container", styleLogo="logo" }) => {
   return (
-    <div className="logo-container">
-      <img src={logoA} alt="Accesorios Apolo" className="logo" />
+    <div className={styleContainer}>
+      <img src={logoA} alt="Accesorios Apolo" className={styleLogo} />
       <NavLink className="navlink" to="/"></NavLink>
     </div>
   );
