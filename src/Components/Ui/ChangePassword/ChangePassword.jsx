@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./ChangePassword.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useSearchParams, useNavigate } from "react-router-dom";
 import { Logo } from "../Logo/Logo";
 
 export const ChangePassword = () => {
@@ -8,14 +8,47 @@ export const ChangePassword = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const token = searchParams.get("token");
+
+    useEffect(() => {
+        if (!token) {
+            alert("Token inválido o ausente");
+        }
+    }, [token, navigate]);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (newPassword !== confirmPassword) {
             alert("Las contraseñas no coinciden");
             return;
         }
-        console.log("Contraseña cambiada:", newPassword);
+
+        try {
+            const response = await fetch("http://localhost:3000/cambiar-contrasena", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    token,
+                    nuevaContrasena: newPassword
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("Contraseña actualizada correctamente");
+                navigate("/"); 
+            } else {
+                alert(data.mensaje || "Error al cambiar la contraseña");
+            }
+        } catch (error) {
+            console.error("Error al cambiar contraseña:", error);
+            alert("Error de red");
+        }
     };
 
     return (

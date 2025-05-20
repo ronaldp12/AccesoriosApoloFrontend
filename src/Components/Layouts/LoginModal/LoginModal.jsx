@@ -10,7 +10,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const [correo, setCorreo] = useState("");
     const [contrasena, setContrasena] = useState("");
     const navigate = useNavigate();
-    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen} = useContext(context);
+    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen } = useContext(context);
 
     const googleButtonRef = useRef(null);
 
@@ -58,7 +58,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                     onClose();
                     onLoginSuccess();
                 }, 1000);
-                
+
             } else {
                 alert(data.mensaje);
                 setIsLoading(false);
@@ -137,7 +137,10 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     onChange={(e) => setContrasena(e.target.value)}
                                     required
                                 />
-                                <u onClick={() => navigate("/request-email")} style={{ cursor: "pointer" }}>
+                                <u onClick={() => {
+                                    onClose();
+                                    navigate("/request-email")
+                                }} style={{ cursor: "pointer" }}>
                                     ¿Olvidaste tu contraseña?
                                 </u>
                             </div>

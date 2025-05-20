@@ -13,7 +13,9 @@ import { WelcomeModal } from "./Components/Layouts/WelcomeModal/WelcomeModal.jsx
 import { useContext } from "react";
 import { context } from "./Context/Context.jsx";
 import { IntermediateLoaderModal } from "./Components/Ui/IntermediateLoaderModal/IntermedaiteLoaderModal.jsx";
+import { RequestResetEmail } from "./Components/Ui/RequestResetEmail/RequestResetEmail.jsx";
 import { ChangePassword } from "./Components/Ui/ChangePassword/ChangePassword.jsx";
+
 
 export function App() {
 
@@ -50,7 +52,8 @@ export function App() {
         />
 
         <Route path="/verify-account" element={<VerifyAccount />} />
-        <Route path="/request-email" element={<ChangePassword />} />
+        <Route path="/request-email" element={<RequestResetEmail />} />
+        <Route path="/change-password" element={<ChangePassword />} />
 
         <Route
           path="/profile"

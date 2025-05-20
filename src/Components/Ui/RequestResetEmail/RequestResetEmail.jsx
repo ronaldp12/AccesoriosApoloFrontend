@@ -8,12 +8,32 @@ export const RequestResetEmail = () => {
     const [email, setEmail] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Aquí iría la lógica para enviar correo al backend
-        alert(`Se ha enviado un enlace de recuperación a: ${email}`);
+        try {
+            const response = await fetch('http://localhost:3000/recuperar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ correo: email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.mensaje);
+
+            } else {
+                alert(data.mensaje);
+            }
+        } catch (error) {
+            console.error('Error enviando solicitud de recuperación:', error);
+            alert('Hubo un problema al enviar la solicitud. Intenta de nuevo.');
+        }
     };
+
 
     return (
         <div className="reset-email-container">
@@ -51,7 +71,7 @@ export const RequestResetEmail = () => {
             <div className="reset-email-bottom">
                 <p>
                     ¿Recordaste tu contraseña?{" "}
-                    <span onClick={() => navigate("/login")}>Iniciar Sesión</span>
+                    <span onClick={() => navigate("/")}>Iniciar Sesión</span>
                 </p>
             </div>
         </div>
