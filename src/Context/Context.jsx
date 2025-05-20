@@ -42,6 +42,10 @@ export const Provider = ({ children }) => {
         localStorage.removeItem("usuarioLogueado");
     };
 
+    const getErrorMessage = (data, defaultMsg) => {
+        return data.mensaje || data.message || defaultMsg;
+    };
+
 
     return (
         <context.Provider value={{
@@ -52,9 +56,10 @@ export const Provider = ({ children }) => {
             token, setToken,
             userLogin, setUserLogin,
             isLoading, setIsLoading,
-            handleLogout, 
+            handleLogout,
             isWelcomeOpen, setIsWelcomeOpen,
             isIntermediateLoading, setIsIntermediateLoading,
+            getErrorMessage,
 
         }}>
             {children}

@@ -10,9 +10,10 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
-    const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen, 
-    setIsIntermediateLoading } = useContext(context);
+    const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen,
+        setIsIntermediateLoading, getErrorMessage } = useContext(context);
     const [userName, setUserName] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
 
@@ -27,7 +28,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             google.accounts.id.renderButton(
                 googleButtonRef.current,
                 {
-                    type: "icon",
+                    type: "standard",
                     theme: "filled-blue",
                     size: "medium",
                     shape: "circle",
@@ -61,15 +62,15 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
             if (response.ok) {
                 setName(userName)
-                
+
                 onClose();
                 navigate(`/verify-account?email=${encodeURIComponent(email)}`);
             } else {
-                alert(data.mensaje);
+                setErrorMessage(getErrorMessage(data, "Error al registrar."));
             }
         } catch (error) {
             console.error("Error al registrar:", error);
-            alert("Hubo un error al registrar el usuario.");
+            setErrorMessage("Hubo un error al registrar el usuario.");
         } finally {
             setIsLoading(false);
         }
@@ -97,9 +98,9 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
                 onClose();
 
-                setTimeout(() =>{
+                setTimeout(() => {
                     setIsIntermediateLoading(true)
-                }, 800 )
+                }, 800)
 
                 setTimeout(() => {
                     setIsIntermediateLoading(false)
@@ -108,11 +109,11 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 }, 1000);
 
             } else {
-                alert(data.mensaje || "Error al iniciar sesión con Google");
+                setErrorMessage(getErrorMessage(data, "Error al iniciar sesión con Google"));
             }
         } catch (error) {
             console.error("Error al autenticar con backend:", error);
-            alert("Error de red");
+            setErrorMessage("Error al iniciar sesión con Google");
         }
     };
 
@@ -132,7 +133,10 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                     placeholder="Nombre"
                                     required
                                     value={userName}
-                                    onChange={(e) => setUserName(e.target.value)}
+                                    onChange={(e) => {
+                                        setUserName(e.target.value)
+                                        setErrorMessage("");
+                                    }}
                                 />
                             </div>
                             <div className="input-field">
@@ -142,7 +146,10 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                     placeholder="Teléfono"
                                     required
                                     value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
+                                    onChange={(e) => {
+                                        setPhone(e.target.value)
+                                        setErrorMessage("");
+                                    }}
                                 />
                             </div>
                         </div>
@@ -155,7 +162,10 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                     placeholder="example@example.com"
                                     required
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value)
+                                        setErrorMessage("");
+                                    }}
                                 />
                             </div>
 
@@ -166,7 +176,10 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                     placeholder="Contraseña"
                                     required
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value)
+                                        setErrorMessage("");
+                                    }}
                                 />
                             </div>
                         </div>
@@ -179,6 +192,13 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                     <span>Registrarse</span>
                                 )}
                             </button>
+
+                            {errorMessage && (
+                                <div className="status-message error">
+                                    <span>{errorMessage}</span>
+                                    <i className="bi bi-x-circle"></i>
+                                </div>
+                            )}
 
                             <div className="divider">o</div>
 
