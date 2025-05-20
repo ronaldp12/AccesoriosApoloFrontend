@@ -221,15 +221,6 @@ form {
     height: 2rem;
 }
 
-.google {
-    background: transparent;
-}
-
-.google img {
-    width: 2rem;
-    height: 2rem;
-}
-
 @media (max-width: 394px){
     .login-modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);

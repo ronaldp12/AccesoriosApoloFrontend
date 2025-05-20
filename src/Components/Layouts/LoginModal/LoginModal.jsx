@@ -1,17 +1,36 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import "./LoginModal.css";
 import { context } from "../../../Context/Context.jsx";
-import iconGoogle from "../../../assets/icons/google.png";
-import iconFacebook from "../../../assets/icons/facebook.png";
 import { useNavigate } from "react-router-dom";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
+import iconFacebook from "../../../assets/icons/facebook.png"
 
 export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const { setUserLogin, setToken, setName } = useContext(context);
     const [correo, setCorreo] = useState("");
     const [contrasena, setContrasena] = useState("");
     const navigate = useNavigate();
-    const { isLoading, setIsLoading } = useContext(context);
+    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen} = useContext(context);
+
+    const googleButtonRef = useRef(null);
+
+    useEffect(() => {
+        if (window.google && googleButtonRef.current) {
+            google.accounts.id.initialize({
+                client_id: "840678013716-n8jnouejj8trv0h6t0968vnohsamo9dq.apps.googleusercontent.com",
+                callback: handleGoogleResponse,
+            });
+            google.accounts.id.renderButton(
+                googleButtonRef.current,
+                {
+                    type: "standard",
+                    theme: "filled-blue",
+                    size: "medium",
+                    shape: "circle",
+                }
+            );
+        }
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,7 +46,6 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             const data = await response.json();
 
             if (response.ok) {
-
                 setUserLogin(data.usuario.nombre);
                 setToken(data.token);
                 setName(data.usuario.nombre);
@@ -48,6 +66,43 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             console.error("Error en login:", error);
             alert("Hubo un error al iniciar sesión");
             setIsLoading(false);
+        }
+    };
+
+    const handleGoogleResponse = async (response) => {
+        const token = response.credential;
+
+        try {
+            const res = await fetch("http://localhost:3000/login-google", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setUserLogin(data.usuario.nombre);
+                setToken(data.token);
+                setName(data.usuario.nombre);
+
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("usuarioLogueado", data.usuario.nombre);
+
+                onClose();
+                setIsIntermediateLoading(true);
+
+                setTimeout(() => {
+                    setIsIntermediateLoading(false);
+                    setIsWelcomeOpen(true)
+                }, 1000);
+
+            } else {
+                alert(data.mensaje || "Error al iniciar sesión con Google");
+            }
+        } catch (error) {
+            console.error("Error al autenticar con backend:", error);
+            alert("Error de red");
         }
     };
 
@@ -99,13 +154,15 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                             <div className="divider">o</div>
 
                             <div className="social-icons">
+
                                 <button type="button" className="social facebook">
                                     <img src={iconFacebook} alt="facebook" />
                                 </button>
+
                                 <span className="divider-vertical"></span>
-                                <button type="button" className="social google">
-                                    <img src={iconGoogle} alt="google" />
-                                </button>
+
+
+                                <div ref={googleButtonRef}></div>
                             </div>
                         </div>
                     </form>

@@ -9,8 +9,9 @@ export const Provider = ({ children }) => {
     const [name, setName] = useState(localStorage.getItem("usuarioLogueado") || "");
     const [token, setToken] = useState(localStorage.getItem("token") || "");
     const [userLogin, setUserLogin] = useState(localStorage.getItem("usuarioLogueado") || null);
-
+    const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isIntermediateLoading, setIsIntermediateLoading] = useState(false);
 
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
@@ -45,20 +46,15 @@ export const Provider = ({ children }) => {
     return (
         <context.Provider value={{
 
-            cartProducts,
-            setCartProducts,
-            handleAddToCart,
-            handleRemoveProduct,
-            handleQuantityChange,
-            name,
-            setName,
-            token,
-            setToken,
-            userLogin,
-            setUserLogin,
-            isLoading,
-            setIsLoading,
-            handleLogout
+            cartProducts, setCartProducts,
+            handleAddToCart, handleRemoveProduct, handleQuantityChange,
+            name, setName,
+            token, setToken,
+            userLogin, setUserLogin,
+            isLoading, setIsLoading,
+            handleLogout, 
+            isWelcomeOpen, setIsWelcomeOpen,
+            isIntermediateLoading, setIsIntermediateLoading,
 
         }}>
             {children}

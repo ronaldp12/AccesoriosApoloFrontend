@@ -9,8 +9,15 @@ import { ProfileData } from "./Components/Ui/ProfileData/ProfileData.jsx";
 import { ProfileLayout } from "./Components/Layouts/ProfileLayout/ProfileLayout.jsx";
 import { ProfileOrders } from "./Components/Ui/ProfileOrders/ProfileOrders.jsx";
 import { WishList } from "./Components/Ui/WishList/WishList.jsx";
+import { WelcomeModal } from "./Components/Layouts/WelcomeModal/WelcomeModal.jsx";
+import { useContext } from "react";
+import { context } from "./Context/Context.jsx";
+import { IntermediateLoaderModal } from "./Components/Ui/IntermediateLoaderModal/IntermedaiteLoaderModal.jsx";
 
 export function App() {
+
+  const { isWelcomeOpen, setIsWelcomeOpen} = useContext(context);
+
   return (
     <>
       <Routes>
@@ -62,6 +69,8 @@ export function App() {
         </Route>
 
       </Routes>
+      <IntermediateLoaderModal />
+      <WelcomeModal isOpen={isWelcomeOpen} onClose={() => setIsWelcomeOpen(false)} />
     </>
   );
 }
