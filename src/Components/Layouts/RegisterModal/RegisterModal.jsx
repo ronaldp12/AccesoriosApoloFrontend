@@ -22,7 +22,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     useEffect(() => {
         if (window.google && googleButtonRef.current) {
             google.accounts.id.initialize({
-                client_id: "840678013716-n8jnouejj8trv0h6t0968vnohsamo9dq.apps.googleusercontent.com",
+                client_id: "230268662322-ir35oged9meek539n1ipa77pjtl4f4lg.apps.googleusercontent.com",
                 callback: handleGoogleResponse,
             });
             google.accounts.id.renderButton(
