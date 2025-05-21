@@ -18,6 +18,12 @@
   height: 35rem;
 }
 
+.profile-user{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
 .profile-avatar {
   width: 80px;
@@ -65,14 +71,22 @@
   padding: 2rem;
 }
 
-
 .mobile-menu-icon {
   display: none;
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
+  position: fixed;
+  top: 0.5rem;
+  left: 0.7rem;
   z-index: 1000;
   cursor: pointer;
+  background-color: white; 
+  padding: 0.5rem;
+  border-radius: 60%;
+  width: 45px;
+  height: 45px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  text-align: center;
+  display: flex;
+  align-items: center;
 }
 
 .logout{

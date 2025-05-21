@@ -13,6 +13,7 @@ import { WelcomeModal } from "../WelcomeModal/WelcomeModal.jsx";
 import { Trunk } from "../../Ui/Trunk/Trunk.jsx";
 import { context } from "../../../Context/Context.jsx";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -20,8 +21,9 @@ export const Header = () => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [isTrunkOpen, setIsTrunkOpen] = useState(false);
+  const navigate= useNavigate();
 
-  const { cartProducts, handleRemoveProduct, handleQuantityChange } = useContext(context);
+  const { cartProducts, handleRemoveProduct, handleQuantityChange, userLogin } = useContext(context);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
@@ -49,6 +51,12 @@ export const Header = () => {
   const showWelcome = () => setWelcomeOpen(true);
   const closeWelcome = () => setWelcomeOpen(false);
 
+  const handleProfile = () => {
+    if (userLogin) {
+      navigate("/profile");
+    }
+  }
+
   return (
     <header>
       <TopNav />
@@ -66,6 +74,7 @@ export const Header = () => {
             styleLi="item-action"
             children={<i className="hgi hgi-stroke hgi-baseball-helmet"></i>}
             contenido="Cuenta"
+            onClick={handleProfile}
           />
           <Item
             styleLi="item-action"
