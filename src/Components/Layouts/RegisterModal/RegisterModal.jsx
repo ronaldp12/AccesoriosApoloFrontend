@@ -11,7 +11,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen,
-        setIsIntermediateLoading, getErrorMessage } = useContext(context);
+        setIsIntermediateLoading, getErrorMessage, setAvatar } = useContext(context);
     const [userName, setUserName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -92,9 +92,11 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 setUserLogin(data.usuario.nombre);
                 setToken(data.token);
                 setName(data.usuario.nombre);
+                setAvatar(data.usuario.foto || null);
 
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
+                localStorage.setItem("avatar", data.usuario.foto);
 
                 onClose();
 

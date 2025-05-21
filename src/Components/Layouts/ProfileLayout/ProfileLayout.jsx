@@ -9,7 +9,7 @@ import { context } from '../../../Context/Context';
 export const ProfileLayout = () => {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
-    const { name, handleLogout } = useContext(context);
+    const { name, handleLogout, avatar } = useContext(context);
     const location = useLocation();
 
     return (
@@ -20,7 +20,7 @@ export const ProfileLayout = () => {
 
             <aside className={`profile-sidebar ${showMenu ? 'show' : ''}`}>
                 <div className="profile-user">
-                    <img src={imgUser} alt="Usuario" className="profile-avatar" />
+                    <img src={avatar || imgUser} alt="Usuario" className="profile-avatar" />
                     <h3>{name}</h3>
                 </div>
                 <nav className="profile-menu">

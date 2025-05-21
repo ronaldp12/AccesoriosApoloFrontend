@@ -10,7 +10,8 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const [correo, setCorreo] = useState("");
     const [contrasena, setContrasena] = useState("");
     const navigate = useNavigate();
-    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen, getErrorMessage } = useContext(context);
+    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen, getErrorMessage,
+        setAvatar } = useContext(context);
     const [errorMessage, setErrorMessage] = useState("");
 
     const googleButtonRef = useRef(null);
@@ -87,9 +88,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 setUserLogin(data.usuario.nombre);
                 setToken(data.token);
                 setName(data.usuario.nombre);
+                setAvatar(data.usuario.foto || null);
 
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
+                localStorage.setItem("avatar", data.usuario.foto);
 
                 onClose();
                 setIsIntermediateLoading(true);

@@ -12,6 +12,8 @@ export const Provider = ({ children }) => {
     const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isIntermediateLoading, setIsIntermediateLoading] = useState(false);
+    const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || null);
+
 
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
@@ -60,6 +62,7 @@ export const Provider = ({ children }) => {
             isWelcomeOpen, setIsWelcomeOpen,
             isIntermediateLoading, setIsIntermediateLoading,
             getErrorMessage,
+            avatar, setAvatar,
 
         }}>
             {children}
