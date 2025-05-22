@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import "./dashboardGerente.css";
+import "./DashboardGerente.css";
 import { Outlet } from "react-router-dom";
 import { Logo } from "../../Ui/Logo/Logo.jsx";
 import { FaHome, FaUser, FaBox, FaBars, FaTruck, FaMoneyBill, FaClipboard, FaMagic, FaSignOutAlt } from "react-icons/fa";
