@@ -15,6 +15,8 @@ import { context } from "./Context/Context.jsx";
 import { IntermediateLoaderModal } from "./Components/Ui/IntermediateLoaderModal/IntermedaiteLoaderModal.jsx";
 import { RequestResetEmail } from "./Components/Ui/RequestResetEmail/RequestResetEmail.jsx";
 import { ChangePassword } from "./Components/Ui/ChangePassword/ChangePassword.jsx";
+import { DashboardGerente } from "./Components/Pages/DashboardGerente/DashboardGerente.jsx";
+import { HomeDashboardGerente } from "./Components/Layouts/HomeDashboardGerente/HomeDashboardGerente.jsx";
 
 
 export function App() {
@@ -71,6 +73,21 @@ export function App() {
           <Route index element={<ProfileData />} />
           <Route path="orders" element={<ProfileOrders />} />
           <Route path="wish-list" element={<WishList />} />
+        </Route>
+
+        <Route
+          path="/dashboard"
+          element={
+            <>
+              <Container>
+                <DashboardGerente />
+              </Container>
+            </>
+          }
+        >
+          
+          <Route index element={<HomeDashboardGerente />} />
+          {/*<Route path="orders" element={<ProfileOrders />} />*/}
         </Route>
 
       </Routes>

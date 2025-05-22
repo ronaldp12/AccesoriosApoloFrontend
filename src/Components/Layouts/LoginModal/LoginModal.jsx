@@ -55,11 +55,24 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
 
-                setTimeout(() => {
-                    setIsLoading(false);
-                    onClose();
+                const validateGerente = await fetch("https://accesoriosapolobackend.onrender.com/validar-gerente", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${data.token}`,
+                    },
+                });
+
+                const gerenteData = await validateGerente.json();
+
+                setIsLoading(false);
+                onClose();
+
+                if (validateGerente.ok && gerenteData.esGerente) {
+                    navigate("/dashboard");
+                } else {
                     onLoginSuccess();
-                }, 1000);
+                }
 
             } else {
                 setErrorMessage(getErrorMessage(data, "Error al iniciar sesión."));
@@ -71,6 +84,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             setIsLoading(false);
         }
     };
+
 
     const handleGoogleResponse = async (response) => {
         const token = response.credential;
@@ -130,7 +144,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     value={correo}
                                     onChange={(e) => {
                                         setCorreo(e.target.value)
-                                        setErrorMessage("") 
+                                        setErrorMessage("")
                                     }}
                                     required
                                 />
@@ -143,7 +157,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     value={contrasena}
                                     onChange={(e) => {
                                         setContrasena(e.target.value)
-                                        setErrorMessage("") 
+                                        setErrorMessage("")
                                     }}
                                     required
                                 />
