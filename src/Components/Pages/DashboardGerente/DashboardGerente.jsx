@@ -1,14 +1,16 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, use } from "react";
 import "./DashboardGerente.css";
 import { Outlet } from "react-router-dom";
 import { Logo } from "../../Ui/Logo/Logo.jsx";
 import { FaHome, FaUser, FaBox, FaBars, FaTruck, FaMoneyBill, FaClipboard, FaMagic, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { context } from "../../../Context/Context.jsx";
+import { useNavigate } from "react-router-dom";
 
 export const DashboardGerente = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { name, nameRol } = useContext(context);
+    const { name, nameRol, handleLogout } = useContext(context);
+    const navigate=useNavigate();
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -36,14 +38,17 @@ export const DashboardGerente = () => {
 
                 <div className="menu-items">
                     <Link to="/dashboard"><FaHome /><span>Inicio</span></Link>
-                    <a href="#"><FaUser /><span>Usuario</span></a>
+                    <Link to="/dashboard/manage-users"><FaUser /><span>Usuario</span></Link>
                     <a href="#"><FaBox /><span>Producto</span></a>
                     <a href="#"><FaBars /><span>Categoría</span></a>
                     <a href="#"><FaTruck /><span>Proveedores</span></a>
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
                     <a href="#"><FaMagic /><span>Calcomanías</span></a>
-                    <a href="#"><FaSignOutAlt /><span>Salir</span></a>
+                    <a href="#" onClick={() => {
+                        handleLogout();
+                        navigate("/")
+                    }}><FaSignOutAlt /><span>Salir</span></a>
                 </div>
 
                 <div className="bottom-profile">

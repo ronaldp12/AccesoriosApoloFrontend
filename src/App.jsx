@@ -17,6 +17,7 @@ import { RequestResetEmail } from "./Components/Ui/RequestResetEmail/RequestRese
 import { ChangePassword } from "./Components/Ui/ChangePassword/ChangePassword.jsx";
 import { DashboardGerente } from "./Components/Pages/DashboardGerente/DashboardGerente.jsx";
 import { HomeDashboardGerente } from "./Components/Layouts/HomeDashboardGerente/HomeDashboardGerente.jsx";
+import { ManageUsers } from "./Components/Layouts/ManageUsers/ManageUsers.jsx";
 
 
 export function App() {
@@ -87,7 +88,7 @@ export function App() {
         >
           
           <Route index element={<HomeDashboardGerente />} />
-          {/*<Route path="orders" element={<ProfileOrders />} />*/}
+          <Route path="manage-users" element={<ManageUsers />} />
         </Route>
 
       </Routes>
