@@ -1,5 +1,5 @@
 import React from "react";
-import "./homeDashboardGerente.css";
+import "./HomeDashboardGerente.css";
 import { FaHome, FaUser, FaBox, FaBars, FaTruck, FaMoneyBill, FaClipboard, FaMagic } from "react-icons/fa";
 
 export const HomeDashboardGerente = () => {
