@@ -8,7 +8,7 @@ import { context } from "../../../Context/Context.jsx";
 
 export const DashboardGerente = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { name } = useContext(context);
+    const { name, nameRol } = useContext(context);
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -52,7 +52,7 @@ export const DashboardGerente = () => {
                         <div className="avatar">{getInitials(name)}</div>
                         <div className="profile-info">
                             <strong>{name}</strong>
-                            <small>Gerente</small>
+                            <small>{nameRol}</small>
                         </div>
                     </div>
                 </div>

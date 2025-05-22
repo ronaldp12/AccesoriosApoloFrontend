@@ -11,7 +11,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const [contrasena, setContrasena] = useState("");
     const navigate = useNavigate();
     const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen, getErrorMessage,
-        setAvatar } = useContext(context);
+        setAvatar, setNameRol } = useContext(context);
     const [errorMessage, setErrorMessage] = useState("");
 
     const googleButtonRef = useRef(null);
@@ -69,6 +69,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 onClose();
 
                 if (validateGerente.ok && gerenteData.esGerente) {
+                    const rol = Array.isArray(gerenteData.nombreRol) ? gerenteData.nombreRol[0] : gerenteData.nombreRol;
+
+                    setNameRol(rol);
+                    localStorage.setItem("nameRol", rol);
+
                     navigate("/dashboard");
                 } else {
                     onLoginSuccess();
