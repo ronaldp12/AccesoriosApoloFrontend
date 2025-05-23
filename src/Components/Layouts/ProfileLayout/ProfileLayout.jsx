@@ -41,7 +41,7 @@ export const ProfileLayout = () => {
                         handleLogout();
                         navigate('/')
                     }
-                    }> <span><i class="bi bi-box-arrow-left"></i></span>Salir
+                    }> <span><i className="bi bi-box-arrow-left"></i></span>Salir
                     </button>
                 </nav>
             </aside>
