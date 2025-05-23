@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./UpdateUserModal.css";
+import { context } from "../../../Context/Context.jsx";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
+    const [successMessage, setSuccessMessage] = useState("");
     const [formData, setFormData] = useState({
         nombre: "",
         correo: "",
@@ -31,6 +36,8 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+
         try {
             const token = localStorage.getItem("token");
             const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-usuario", {
@@ -47,13 +54,21 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
 
             const data = await response.json();
             if (data.success) {
-                onUpdateSuccess();
-                handleClose();
+                setSuccessMessage("Usuario actualizado con éxito.");
+                if (onUpdateSuccess) onUpdateSuccess();
+
+                setTimeout(() => {
+                    setSuccessMessage("");
+                    handleClose();
+                }, 2000);
             } else {
-                alert(data.mensaje);
+                setErrorMessage(getErrorMessage(data, "Error al registrar usuario."));
+                setIsLoading(false);
             }
         } catch (error) {
             console.error("Error al actualizar usuario:", error);
+            setErrorMessage("Hubo un error al registrar usuario.");
+            setIsLoading(false);
         }
     };
 
@@ -110,9 +125,29 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
 
                     <div className="modal-buttons">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>
-                        <button type="submit" className="btn-editar">EDITAR</button>
+                        <button type="submit" className="btn-editar">
+                            {isLoading ? (
+                                <img src={wheelIcon} alt="Cargando..." className="update-user-spinner" />
+                            ) : (
+                                <span>EDITAR</span>
+                            )}
+                        </button>
                     </div>
                 </form>
+                {errorMessage && (
+                    <div className="status-message-update error">
+                        <span>{errorMessage}</span>
+                        <i className="bi bi-x-circle"></i>
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="status-message-register success">
+                        <span>{successMessage}</span>
+                        <i className="bi bi-check-circle"></i>
+                        {setIsLoading(false)}
+                    </div>
+                )}
             </div>
         </div>
     );
