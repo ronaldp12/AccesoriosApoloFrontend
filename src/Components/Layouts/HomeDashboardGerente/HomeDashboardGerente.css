@@ -116,12 +116,7 @@
     flex-direction: column;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px);
-}
-
-.card-icon {
-  font-size: 1.7rem;
-  position: relative;
-  z-index: 1;
+    font-size: 1.7rem;
 }
 
 .card span {

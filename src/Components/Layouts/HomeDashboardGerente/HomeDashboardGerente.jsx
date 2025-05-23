@@ -2,9 +2,27 @@ import React from "react";
 import "./HomeDashboardGerente.css";
 import { FaHome, FaUser, FaBox, FaBars, FaTruck, FaMoneyBill, FaClipboard, FaMagic } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export const HomeDashboardGerente = () => {
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] =useState("");
+
+    const modules = [
+        { label: "USUARIOS", icon: <FaUser />, route: "/dashboard/manage-users" },
+        { label: "PRODUCTO", icon: <FaBox /> },
+        { label: "CATEGORÍA", icon: <FaBars /> },
+        { label: "PROVEEDORES", icon: <FaTruck /> },
+        { label: "VENTAS", icon: <FaMoneyBill /> },
+        { label: "INVENTARIO", icon: <FaClipboard /> },
+        { label: "CALCOMANÍAS", icon: <FaMagic /> },
+    ];
+
+    const filteredModules = modules.filter((module) =>
+        module.label.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+
     return (
         <div className="home-container">
             <div className="header-section">
@@ -14,7 +32,9 @@ export const HomeDashboardGerente = () => {
                 <div className="header-options">
                     <h1>Accesorios Apolo</h1>
                     <div className="search-box">
-                        <input type="text" placeholder="Consultar por Módulo" />
+                        <input type="text" placeholder="Consultar por Módulo"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)} />
                         <button><i className="bi bi-search"></i></button>
                     </div>
 
@@ -23,57 +43,18 @@ export const HomeDashboardGerente = () => {
             </div>
 
             <div className="card-grid">
-
-                <div className="card" onClick={() => navigate("/dashboard/manage-users")}>
-                    <div className="card-content">
-                        <FaUser className="card-icon" />
+                {filteredModules.map((module, index) => (
+                    <div
+                        className="card"
+                        key={index}
+                        onClick={() => module.route && navigate(module.route)}
+                    >
+                        <div className="card-content">{module.icon}</div>
+                        <span>{module.label}</span>
                     </div>
-                    <span>USUARIOS</span>
-                </div>
-
-                <div className="card">
-                    <div className="card-content">
-                        <FaBox className="card-icon" />
-                    </div>
-                    <span>PRODUCTO</span>
-                </div>
-
-                <div className="card">
-                    <div className="card-content">
-                        <FaBars className="card-icon" />
-                    </div>
-                    <span>CATEGORÍA</span>
-
-                </div>
-                <div className="card">
-                    <div className="card-content">
-                        <FaTruck className="card-icon" />
-                    </div>
-                    <span>PROVEEDORES</span>
-                </div>
-
-                <div className="card">
-                    <div className="card-content">
-                        <FaMoneyBill className="card-icon" />
-                    </div>
-                    <span>VENTAS</span>
-                </div>
-
-                <div className="card">
-                    <div className="card-content">
-                        <FaClipboard className="card-icon" />
-                    </div>
-                    <span>INVENTARIO</span>
-                </div>
-
-                <div className="card">
-                    <div className="card-content">
-                        <FaMagic className="card-icon" />
-                    </div>
-                    <span>CALCOMANÍAS</span>
-                </div>
-                
+                ))}
             </div>
+
         </div>
     );
 };
