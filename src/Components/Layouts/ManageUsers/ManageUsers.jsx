@@ -6,6 +6,7 @@ import { RegisterUserModal } from "../../Ui/RegisterUserModal/RegisterUserModal"
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
 import { UpdateUserModal } from "../../Ui/UpdateUserModal/UpdateUserModal";
+import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal";
 
 export const ManageUsers = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -25,6 +26,18 @@ export const ManageUsers = () => {
 
     const openUpdateModal = () => setIsModalUpdateOpen(true);
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const openConfirmDeleteModal = (usuario) => {
+        setSelectedUser(usuario);
+        setIsConfirmDeleteOpen(true);
+    };
+
+    const closeConfirmDeleteModal = () => {
+        setIsConfirmDeleteOpen(false);
+        setSelectedUser(null);
+    };
 
     const fetchUsuarios = async () => {
         try {
@@ -120,7 +133,7 @@ export const ManageUsers = () => {
                                     <FaEdit onClick={openUpdateModal} className="icono-editar" />
                                 </td>
                                 <td>
-                                    <FaTrash className="icono-eliminar" />
+                                    <FaTrash onClick={() => openConfirmDeleteModal(usuario)} className="icono-eliminar" />
                                 </td>
                             </tr>
                         ))}
@@ -137,6 +150,12 @@ export const ManageUsers = () => {
             <UpdateUserModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
+            />
+
+            <ConfirmDeleteModal
+                isOpen={isConfirmDeleteOpen}
+                onClose={closeConfirmDeleteModal}
+                usuario={selectedUser}
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
