@@ -14,7 +14,16 @@ export const ChangePassword = () => {
     const [message, setMessage] = useState("");
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { setUserLogin} = useContext(context)
+    const { setUserLogin } = useContext(context)
+
+    const validatePassword = (password) => {
+        return {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            number: /\d/.test(password),
+        };
+    };
+
 
     const token = searchParams.get("token");
 
@@ -87,6 +96,15 @@ export const ChangePassword = () => {
                     <label>
                         Nueva Contraseña<span>*</span>
                     </label>
+                    <div className="password-conditions">
+                        {!validatePassword(newPassword).length && <p>○ Debe tener al menos 8 caracteres</p>}
+                        {!validatePassword(newPassword).uppercase && <p>○ Debe contener una letra mayúscula</p>}
+                        {!validatePassword(newPassword).number && <p>○ Debe contener al menos un número</p>}
+                        {validatePassword(newPassword).length && validatePassword(newPassword).uppercase && validatePassword(newPassword).number && (
+                            <p className="valid-password-change">Contraseña válida <i className="bi bi-check-circle"></i></p>
+                        )}
+                    </div>
+
                     <div className="input-container">
                         <input
                             type={showNewPassword ? "text" : "password"}
@@ -112,6 +130,10 @@ export const ChangePassword = () => {
                             required
                             disabled={status === "loading" || status === "success"}
                         />
+                        <div className="password-match">
+                            {confirmPassword && confirmPassword !== newPassword && <p className="error-message">Las contraseñas no coinciden</p>}
+                            {confirmPassword && confirmPassword === newPassword && <p className="valid-password-change">Contraseña válida <i className="bi bi-check-circle"></i></p>}
+                        </div>
                     </div>
                 </div>
 
