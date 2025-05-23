@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./ManageUsers.css";
-import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome } from "react-icons/fa";
+import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome, FaUndo } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { RegisterUserModal } from "../../Ui/RegisterUserModal/RegisterUserModal";
 import { useNavigate } from "react-router-dom";
@@ -9,11 +9,14 @@ import { UpdateUserModal } from "../../Ui/UpdateUserModal/UpdateUserModal";
 import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
+import { debounce } from "lodash";
+import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
 
 export const ManageUsers = () => {
     const [usuarios, setUsuarios] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPage] = useState(7);
@@ -26,10 +29,16 @@ export const ManageUsers = () => {
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
 
-    const openUpdateModal = () => setIsModalUpdateOpen(true);
+    const openUpdateModal = (usuario) => {
+        setSelectedUserToEdit(usuario);
+        setIsModalUpdateOpen(true);
+    };
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+    const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [filterEmail, setFilterEmail] = useState("");
+    const usersToShow = filterEmail.trim() === "" ? usuariosActuales : usuarios;
     const { isLoading, setIsLoading } = useContext(context);
 
     const openConfirmDeleteModal = (usuario) => {
@@ -39,6 +48,16 @@ export const ManageUsers = () => {
 
     const closeConfirmDeleteModal = () => {
         setIsConfirmDeleteOpen(false);
+        setSelectedUser(null);
+    };
+
+    const openConfirmRestoreModal = (usuario) => {
+        setSelectedUser(usuario);
+        setIsConfirmRestoreOpen(true);
+    };
+
+    const closeConfirmRestoreModal = () => {
+        setIsConfirmRestoreOpen(false);
         setSelectedUser(null);
     };
 
@@ -71,6 +90,39 @@ export const ManageUsers = () => {
         fetchUsuarios();
     }, []);
 
+    const debouncedSearchUserByEmail = debounce(async (correo, fetchUsuarios, setUsuarios, setIsLoading) => {
+        if (correo.trim() === "") {
+            await fetchUsuarios();
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/buscar-usuario-correo?filtro=${correo}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                setUsuarios(data.usuarios);
+            } else {
+                setUsuarios([]);
+            }
+        } catch (error) {
+            console.error("Error al buscar usuarios:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, 200);
+
+    useEffect(() => {
+        debouncedSearchUserByEmail(filterEmail, fetchUsuarios, setUsuarios, setIsLoading);
+    }, [filterEmail]);
+
     return (
         <div className="usuarios-container">
             <div className="breadcrumb">
@@ -89,7 +141,9 @@ export const ManageUsers = () => {
 
             <div className="usuarios-filtros">
                 <div className="filtro-input">
-                    <input type="text" placeholder="Consultar por cédula" />
+                    <input type="text" placeholder="Consultar por correo"
+                        value={filterEmail}
+                        onChange={(e) => setFilterEmail(e.target.value)} />
                     <FaSearch className="icono-buscar" />
                 </div>
                 <select className="filtro-select">
@@ -128,7 +182,7 @@ export const ManageUsers = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {usuariosActuales.map((usuario, index) => (
+                        {usersToShow.map((usuario, index) => (
                             <tr key={usuario.cedula || index}>
                                 <td>{indexPrimerUsuario + index + 1}</td>
                                 <td>{usuario.cedula}</td>
@@ -142,10 +196,20 @@ export const ManageUsers = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    <FaEdit onClick={openUpdateModal} className="icono-editar" />
+                                    <FaEdit onClick={() => openUpdateModal(usuario)} className="icono-editar" />
                                 </td>
                                 <td>
-                                    <FaTrash onClick={() => openConfirmDeleteModal(usuario)} className="icono-eliminar" />
+                                    {usuario.estado === "Activo" ? (
+                                        <FaTrash
+                                            onClick={() => openConfirmDeleteModal(usuario)}
+                                            className="icono-delete"
+                                        />
+                                    ) : (
+                                        <FaUndo
+                                            onClick={() => openConfirmRestoreModal(usuario)}
+                                            className="icono-restore"
+                                        />
+                                    )}
                                 </td>
                             </tr>
                         ))}
@@ -162,13 +226,23 @@ export const ManageUsers = () => {
             <UpdateUserModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
+                usuario={selectedUserToEdit}
+                onUpdateSuccess={fetchUsuarios}
             />
 
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={closeConfirmDeleteModal}
                 usuario={selectedUser}
+                onDeleteSuccess={fetchUsuarios}
             />
+
+            <ConfirmRestoreModal
+                isOpen={isConfirmRestoreOpen}
+                onClose={closeConfirmRestoreModal}
+                usuario={selectedUser}
+                onRestoreSuccess={fetchUsuarios}
+            />  
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </div>

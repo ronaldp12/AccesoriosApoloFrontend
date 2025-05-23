@@ -1,5 +1,5 @@
 .usuarios-container {
-    padding: 1rem;
+    padding-left: 1rem;
     background: #fff;
     position: relative;
 }
@@ -113,6 +113,7 @@
     top: 50%;
     transform: translateY(-50%);
     color: #666;
+    cursor: pointer;
 }
 
 .filtro-select {
@@ -191,7 +192,13 @@
     font-size: 1.2rem;
 }
 
-.icono-eliminar {
+.icono-delete {
+    color: #444;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.icono-restore {
     color: #444;
     cursor: pointer;
     font-size: 1.2rem;
