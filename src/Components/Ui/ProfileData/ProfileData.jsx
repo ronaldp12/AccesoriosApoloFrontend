@@ -4,11 +4,28 @@ import { context } from '../../../Context/Context';
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const ProfileData = () => {
-    const { token, isLoading, setIsLoading } = useContext(context);
+    const { token, isLoading, setIsLoading, getErrorMessage } = useContext(context);
 
     const [profileData, setProfileData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
+    const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => setSuccessMessage(""), 1500);
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage]);
+
+    useEffect(() => {
+        if (errorMessage) {
+            const timer = setTimeout(() => setErrorMessage(""), 1500);
+            return () => clearTimeout(timer);
+        }
+    }, [errorMessage]);
+
 
     useEffect(() => {
         if (!token) return;
@@ -29,7 +46,11 @@ export const ProfileData = () => {
 
                 if (response.ok) {
                     setProfileData(data.usuario);
-                    setEditedData(data.usuario);
+                    setEditedData({
+                        nombre: data.usuario.nombre || '',
+                        cedula: data.usuario.cedula || '',
+                        telefono: data.usuario.telefono || ''
+                    });
                 } else {
                     console.error(data.mensaje);
                 }
@@ -52,9 +73,42 @@ export const ProfileData = () => {
 
     const handleEditToggle = () => setIsEditing(!isEditing);
 
+    const handleSave = async () => {
+        if (!token) return;
+
+        setIsLoading(true);
+        try {
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/editar-perfil', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include',
+                body: JSON.stringify(editedData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                setSuccessMessage("Información editada con éxito.");
+                setProfileData(prev => ({
+                    ...prev,
+                    ...editedData
+                }));
+                setIsEditing(false);
+            } else {
+                setErrorMessage(getErrorMessage(result, "Error al editar información."));
+            }
+        } catch (error) {
+            console.error('Error al guardar perfil:', error);
+            setErrorMessage("Hubo un error al editar información.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
-
-
         <main className="profile-content">
             <h2>Perfil</h2>
             <div className="profile-details">
@@ -65,12 +119,25 @@ export const ProfileData = () => {
                     </div>
                 )}
 
+                {successMessage && (
+                    <div className="alert-profile-data success">
+                        {successMessage}
+                    </div>
+                )}
+
+                {errorMessage && (
+                    <div className="alert-profile-data error">
+                        {errorMessage}
+                    </div>
+                )}
+
+
                 {!isLoading && profileData && (
                     <>
                         <div className='container-user'>
                             <strong>Nombre</strong>
                             {isEditing ? (
-                                <input type="text" name="nombre" value={editedData.nombre} onChange={handleInputChange} />
+                                <input type="text" name="nombre" value={editedData.nombre || ''} onChange={handleInputChange} />
                             ) : (
                                 <p><i>{profileData.nombre}</i></p>
                             )}
@@ -79,7 +146,7 @@ export const ProfileData = () => {
                         <div className='container-user'>
                             <strong>Cédula de ciudadanía</strong>
                             {isEditing ? (
-                                <input type="text" name="cedula" value={editedData.cedula} onChange={handleInputChange} />
+                                <input type="text" name="cedula" value={editedData.cedula || ''} onChange={handleInputChange} />
                             ) : (
                                 <p>{profileData.cedula}</p>
                             )}
@@ -87,17 +154,13 @@ export const ProfileData = () => {
 
                         <div className='container-user'>
                             <strong>Correo</strong>
-                            {isEditing ? (
-                                <input type="email" name="correo" value={editedData.correo} onChange={handleInputChange} />
-                            ) : (
-                                <p><i>{profileData.correo}</i></p>
-                            )}
+                            <p><i>{profileData.correo}</i></p>
                         </div>
 
                         <div className='container-user'>
                             <strong>Teléfono</strong>
                             {isEditing ? (
-                                <input type="text" name="telefono" value={editedData.telefono} onChange={handleInputChange} />
+                                <input type="text" name="telefono" value={editedData.telefono || ''} onChange={handleInputChange} />
                             ) : (
                                 <p><i>{profileData.telefono}</i></p>
                             )}
@@ -114,6 +177,5 @@ export const ProfileData = () => {
                 )}
             </div>
         </main>
-
     );
 };
