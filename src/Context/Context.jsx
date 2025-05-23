@@ -48,6 +48,13 @@ export const Provider = ({ children }) => {
         return data.mensaje || data.message || defaultMsg;
     };
 
+    const validatePassword = (password) => {
+        return {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            number: /\d/.test(password),
+        };
+    };
 
     return (
         <context.Provider value={{
@@ -63,7 +70,8 @@ export const Provider = ({ children }) => {
             isIntermediateLoading, setIsIntermediateLoading,
             getErrorMessage,
             avatar, setAvatar,
-            nameRol, setNameRol
+            nameRol, setNameRol, 
+            validatePassword
 
         }}>
             {children}

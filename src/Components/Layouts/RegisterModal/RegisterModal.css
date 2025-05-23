@@ -233,6 +233,27 @@ form {
     height: 2rem;
 }
 
+.password-conditions p {
+    font-size: 14px;
+    margin: 4px 0;
+    color: #ff4d4f;
+}
+
+.valid-password-change {
+    color: #014aad !important;
+    font-weight: 600;
+}
+
+.error-message {
+    color: #ff4d4f;
+    font-weight: 500;
+}
+
+.password-conditions {
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
 @media (max-width: 394px){
     .modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);

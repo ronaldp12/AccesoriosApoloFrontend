@@ -133,7 +133,6 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                 <input
                                     type="text"
                                     placeholder="Nombre"
-                                    required
                                     value={userName}
                                     onChange={(e) => {
                                         setUserName(e.target.value)
@@ -146,7 +145,6 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                 <input
                                     type="tel"
                                     placeholder="Teléfono"
-                                    required
                                     value={phone}
                                     onChange={(e) => {
                                         setPhone(e.target.value)
@@ -162,7 +160,6 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                 <input
                                     type="email"
                                     placeholder="example@example.com"
-                                    required
                                     value={email}
                                     onChange={(e) => {
                                         setEmail(e.target.value)
@@ -176,7 +173,6 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                 <input
                                     type="password"
                                     placeholder="Contraseña"
-                                    required
                                     value={password}
                                     onChange={(e) => {
                                         setPassword(e.target.value)

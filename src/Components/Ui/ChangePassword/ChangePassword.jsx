@@ -14,16 +14,7 @@ export const ChangePassword = () => {
     const [message, setMessage] = useState("");
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { setUserLogin } = useContext(context)
-
-    const validatePassword = (password) => {
-        return {
-            length: password.length >= 8,
-            uppercase: /[A-Z]/.test(password),
-            number: /\d/.test(password),
-        };
-    };
-
+    const { setUserLogin, validatePassword } = useContext(context)
 
     const token = searchParams.get("token");
 
