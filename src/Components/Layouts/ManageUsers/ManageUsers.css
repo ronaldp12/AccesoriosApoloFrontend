@@ -196,44 +196,6 @@
     font-size: 1.2rem;
 }
 
-.pagination {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-  margin-top: 1rem;
-}
-
-.pagination .prev{
-    background: transparent;
-    border: none;
-}
-
-.pagination .next{
-    background: transparent;
-    border: none;
-}
-
-.pagination button {
-  padding: 0.5rem 0.8rem;
-  border: 1px solid #ccc;
-  background: transparent;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.pagination button:hover {
-  background: #eee;
-}
-
-.pagination button.active {
-  background: #014aad;
-  color: #fff;
-  border: 1px solid #014aad;
-}
-
-
 @media (max-width: 820px) {
   .usuarios-header {
     flex-direction: column;

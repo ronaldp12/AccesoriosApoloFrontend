@@ -1,3 +1,5 @@
+import "../Pagination/Pagination.css";
+
 export const Pagination = ({currentPage, setCurrentPage, totalPages}) => {
     if (totalPages <= 1) return null;
 

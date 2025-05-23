@@ -5,10 +5,12 @@ import img1 from "../../../assets/images/img1-manage-users.png";
 import { RegisterUserModal } from "../../Ui/RegisterUserModal/RegisterUserModal";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
+import { UpdateUserModal } from "../../Ui/UpdateUserModal/UpdateUserModal";
 
 export const ManageUsers = () => {
     const [usuarios, setUsuarios] = useState([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPage] = useState(7);
@@ -18,8 +20,11 @@ export const ManageUsers = () => {
     const usuariosActuales = usuarios.slice(indexPrimerUsuario, indexUltimoUsuario);
     const totalPages = Math.ceil(usuarios.length / usersPage);
 
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+    const openRegisterModal = () => setIsModalRegisterOpen(true);
+    const closeRegisterModal = () => setIsModalRegisterOpen(false);
+
+    const openUpdateModal = () => setIsModalUpdateOpen(true);
+    const closeUpdateModal = () => setIsModalUpdateOpen(false);
 
     const fetchUsuarios = async () => {
         try {
@@ -57,7 +62,7 @@ export const ManageUsers = () => {
 
             <div className="usuarios-header">
                 <h2>Usuarios</h2>
-                <button className="btn-registrar" onClick={openModal}>
+                <button className="btn-registrar" onClick={openRegisterModal}>
                     Registrar Usuario
                 </button>
             </div>
@@ -112,7 +117,7 @@ export const ManageUsers = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    <FaEdit className="icono-editar" />
+                                    <FaEdit onClick={openUpdateModal} className="icono-editar" />
                                 </td>
                                 <td>
                                     <FaTrash className="icono-eliminar" />
@@ -124,9 +129,14 @@ export const ManageUsers = () => {
             </div>
 
             <RegisterUserModal
-                isOpen={isModalOpen}
-                onClose={closeModal}
+                isOpen={isModalRegisterOpen}
+                onClose={closeRegisterModal}
                 onRegisterSuccess={fetchUsuarios}
+            />
+
+            <UpdateUserModal
+                isOpen={isModalUpdateOpen}
+                onClose={closeUpdateModal}
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
