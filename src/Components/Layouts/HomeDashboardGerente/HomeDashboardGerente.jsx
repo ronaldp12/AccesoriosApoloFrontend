@@ -27,7 +27,7 @@ export const HomeDashboardGerente = () => {
         <div className="home-container">
             <div className="header-section">
                 <div>
-                    <a href="#" className="home-link"><FaHome /> Inicio</a>
+                    <p className="home-link"><FaHome /> Inicio</p>
                 </div>
                 <div className="header-options">
                     <h1>Accesorios Apolo</h1>

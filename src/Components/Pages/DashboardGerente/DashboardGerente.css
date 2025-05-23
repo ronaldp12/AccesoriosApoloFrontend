@@ -133,6 +133,7 @@ hr{
   display: flex;
   justify-content: center;
   align-items: center;
+  transform: rotate(180deg);
 }
 
 .toggle-btn:hover {
