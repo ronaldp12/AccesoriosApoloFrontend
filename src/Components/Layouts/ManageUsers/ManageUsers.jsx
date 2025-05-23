@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./ManageUsers.css";
 import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
 import { UpdateUserModal } from "../../Ui/UpdateUserModal/UpdateUserModal";
 import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal";
+import { context } from "../../../Context/Context.jsx";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const ManageUsers = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -28,6 +30,7 @@ export const ManageUsers = () => {
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const { isLoading, setIsLoading } = useContext(context);
 
     const openConfirmDeleteModal = (usuario) => {
         setSelectedUser(usuario);
@@ -40,6 +43,7 @@ export const ManageUsers = () => {
     };
 
     const fetchUsuarios = async () => {
+        setIsLoading(true);
         try {
             const token = localStorage.getItem("token");
 
@@ -58,6 +62,8 @@ export const ManageUsers = () => {
             }
         } catch (error) {
             console.error("Error al consultar la API:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -99,6 +105,12 @@ export const ManageUsers = () => {
                     <img src={img1} alt="img1-manage" />
                 </div>
             </div>
+
+            {isLoading && (
+                <div className="tabla-loader">
+                    <img src={wheelIcon} alt="Cargando..." className="manage-users-spinner" />
+                </div>
+            )}
 
             <div className="tabla-usuarios">
                 <table>
