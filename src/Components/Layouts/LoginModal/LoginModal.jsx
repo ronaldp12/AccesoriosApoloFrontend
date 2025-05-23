@@ -113,15 +113,41 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
                 localStorage.setItem("avatar", data.usuario.foto);
 
+                const validateGerente = await fetch("https://accesoriosapolobackend.onrender.com/validar-gerente", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${data.token}`,
+                    },
+                });
+
+                if (!validateGerente.ok) {
+                    const errorText = await validateGerente.text();
+                    console.error("Error al validar gerente:", errorText);
+                }
+
+                const gerenteData = await validateGerente.json();
+
                 onClose();
-                setIsIntermediateLoading(true);
 
-                setTimeout(() => {
-                    setIsIntermediateLoading(false);
-                    setIsWelcomeOpen(true)
-                }, 1000);
+                if (gerenteData.esGerente) {
+                    const rol = Array.isArray(gerenteData.nombreRol)
+                        ? gerenteData.nombreRol[0]
+                        : gerenteData.nombreRol;
 
-            } else {
+                    setNameRol(rol);
+                    localStorage.setItem("nameRol", rol);
+
+                    navigate("/dashboard");
+                } else {
+                    setIsIntermediateLoading(true);
+                    setTimeout(() => {
+                        setIsIntermediateLoading(false);
+                        setIsWelcomeOpen(true);
+                    }, 1000);
+                }
+            }
+            else {
                 setErrorMessage(getErrorMessage(data, "Error al iniciar sesión con Google"));
             }
         } catch (error) {
