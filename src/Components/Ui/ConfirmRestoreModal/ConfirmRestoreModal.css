@@ -49,6 +49,7 @@
   max-width: 400px;
   text-align: center;
   animation: dropBounceIn 0.5s ease forwards;
+  height: 18rem;
 }
 
 .modal-content-restore h3 {
@@ -90,6 +91,8 @@
 .btn-eliminar {
   background: #e63946;
   color: #fff;
+  width: 8rem;
+  height: 3rem;
 }
 
 .btn-eliminar:hover {
@@ -127,6 +130,59 @@
     opacity: 0;
     transform: translateY(400px) scale(0.95);
   }
+}
+
+.status-message-restore.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #ffe1e1;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.status-message.error i {
+  font-size: 18px;
+}
+
+.status-message-restore {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+}
+
+.status-message-restore.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-message-restore.success {
+  background-color: #d1daf4;
+  color: #014aad;
+  height: 2rem;
+}
+
+.status-message-restore i {
+  font-size: 1.2rem;
+  color: #014aad;
+}
+
+.confirm-restore-user-spinner {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
 }
 
 @media (max-width: 480px) {

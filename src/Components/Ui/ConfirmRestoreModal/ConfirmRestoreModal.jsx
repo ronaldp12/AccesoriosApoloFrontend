@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./ConfirmRestoreModal.css";
+import { context } from "../../../Context/Context.jsx";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const ConfirmRestoreModal = ({ isOpen, onClose, usuario, onRestoreSuccess }) => {
     const [visible, setVisible] = useState(false);
     const [animateOut, setAnimateOut] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         if (isOpen) {
@@ -21,6 +26,7 @@ export const ConfirmRestoreModal = ({ isOpen, onClose, usuario, onRestoreSuccess
     };
 
     const handleRestore = async () => {
+        setIsLoading(true);
         try {
             const token = localStorage.getItem("token");
 
@@ -36,14 +42,21 @@ export const ConfirmRestoreModal = ({ isOpen, onClose, usuario, onRestoreSuccess
             const data = await response.json();
 
             if (data.success) {
+                setSuccessMessage("Usuario recuperado con éxito.");
                 if (onRestoreSuccess) onRestoreSuccess();
-                handleClose();
+
+                setTimeout(() => {
+                    setSuccessMessage("");
+                    handleClose();
+                }, 2000);
             } else {
-                alert(data.mensaje || "No se pudo reactivar el usuario.");
+                setErrorMessage(getErrorMessage(data, "Error al recuperar usuario."));
+                setIsLoading(false);
             }
         } catch (error) {
             console.error("Error al reactivar usuario:", error);
-            alert("Error al intentar reactivar el usuario.");
+            setErrorMessage("Hubo un error al recuperar usuario.");
+            setIsLoading(false);
         }
     };
 
@@ -63,9 +76,27 @@ export const ConfirmRestoreModal = ({ isOpen, onClose, usuario, onRestoreSuccess
                         Cancelar
                     </button>
                     <button className="btn-eliminar" onClick={handleRestore}>
-                        Recuperar
+                        {isLoading ? (
+                            <img src={wheelIcon} alt="Cargando..." className="confirm-restore-user-spinner" />
+                        ) : (
+                            <span>RECUPERAR</span>
+                        )}
                     </button>
                 </div>
+                {errorMessage && (
+                    <div className="status-message-restore error">
+                        <span>{errorMessage}</span>
+                        <i className="bi bi-x-circle"></i>
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="status-message-restore success">
+                        <span>{successMessage}</span>
+                        <i className="bi bi-check-circle"></i>
+                        {setIsLoading(false)}
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -191,7 +191,12 @@
   color: #014aad;
 }
 
-.status-message-update i {
+.status-message-update.error i {
+  font-size: 1.2rem;
+  color: #761616;
+}
+
+.status-message-update.success i {
   font-size: 1.2rem;
   color: #014aad;
 }
