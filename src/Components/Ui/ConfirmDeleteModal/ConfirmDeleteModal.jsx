@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./ConfirmDeleteModal.css";
+import { context } from "../../../Context/Context.jsx";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const ConfirmDeleteModal = ({ isOpen, onClose, usuario, onDeleteSuccess }) => {
     const [visible, setVisible] = useState(false);
     const [animateOut, setAnimateOut] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         if (isOpen) {
@@ -21,6 +26,7 @@ export const ConfirmDeleteModal = ({ isOpen, onClose, usuario, onDeleteSuccess }
     };
 
     const handleDelete = async () => {
+        setIsLoading(true);
         try {
             const token = localStorage.getItem("token");
             const response = await fetch("https://accesoriosapolobackend.onrender.com/eliminar-usuario", {
@@ -34,14 +40,21 @@ export const ConfirmDeleteModal = ({ isOpen, onClose, usuario, onDeleteSuccess }
 
             const data = await response.json();
             if (data.success) {
-                onDeleteSuccess();  
-                handleClose(); 
+                setSuccessMessage("Usuario eliminado con éxito.");
+                if (onDeleteSuccess) onDeleteSuccess();
+
+                setTimeout(() => {
+                    setSuccessMessage("");
+                    handleClose();
+                }, 2000);
             } else {
-                alert(data.mensaje);
+                setErrorMessage(getErrorMessage(data, "Error al eliminar usuario."));
+                setIsLoading(false);
             }
         } catch (error) {
             console.error("Error al eliminar usuario:", error);
-            alert("Ocurrió un error al intentar eliminar el usuario.");
+            setErrorMessage("Hubo un error al eliminar usuario.");
+            setIsLoading(false);
         }
     };
 
@@ -61,9 +74,27 @@ export const ConfirmDeleteModal = ({ isOpen, onClose, usuario, onDeleteSuccess }
                         Cancelar
                     </button>
                     <button className="btn-eliminar" onClick={handleDelete}>
-                        Eliminar
+                        {isLoading ? (
+                            <img src={wheelIcon} alt="Cargando..." className="delete-user-spinner" />
+                        ) : (
+                            <span>ELIMINAR</span>
+                        )}
                     </button>
                 </div>
+                {errorMessage && (
+                    <div className="status-message-delete error">
+                        <span>{errorMessage}</span>
+                        <i className="bi bi-x-circle"></i>
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="status-message-delete success">
+                        <span>{successMessage}</span>
+                        <i className="bi bi-check-circle"></i>
+                        {setIsLoading(false)}
+                    </div>
+                )}
             </div>
         </div>
     );
