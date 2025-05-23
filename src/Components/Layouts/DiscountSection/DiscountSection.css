@@ -20,7 +20,7 @@
     cursor: pointer;
 }
 
-.card {
+.card-discount {
     position: relative;
     width: 260px;
     height: 260px;
@@ -28,7 +28,7 @@
     border-radius: 2px;
 }
 
-.card img {
+.card-discount img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -37,7 +37,7 @@
     transition: filter 0.3s ease;
 }
   
-.card:hover img {
+.card-discount:hover img {
     filter: grayscale(0%);
 }  
 

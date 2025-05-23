@@ -2,48 +2,64 @@ import React, { useEffect, useState } from "react";
 import "./ManageUsers.css";
 import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
+import { RegisterUserModal } from "../../Ui/RegisterUserModal/RegisterUserModal";
+import { useNavigate } from "react-router-dom";
+import { Pagination } from "../../Ui/Pagination/Pagination";
 
 export const ManageUsers = () => {
     const [usuarios, setUsuarios] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [usersPage] = useState(7);
+
+    const indexUltimoUsuario = currentPage * usersPage;
+    const indexPrimerUsuario = indexUltimoUsuario - usersPage;
+    const usuariosActuales = usuarios.slice(indexPrimerUsuario, indexUltimoUsuario);
+    const totalPages = Math.ceil(usuarios.length / usersPage);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+
+    const fetchUsuarios = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/usuarios", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                setUsuarios(data.usuarios);
+            } else {
+                console.error("Error al obtener usuarios");
+            }
+        } catch (error) {
+            console.error("Error al consultar la API:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchUsuarios = async () => {
-            try {
-                const token = localStorage.getItem("token");
-
-                const response = await fetch("https://accesoriosapolobackend.onrender.com/usuarios", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    setUsuarios(data.usuarios);
-                } else {
-                    console.error("Error al obtener usuarios");
-                }
-            } catch (error) {
-                console.error("Error al consultar la API:", error);
-            }
-        };
-
         fetchUsuarios();
     }, []);
-
 
     return (
         <div className="usuarios-container">
             <div className="breadcrumb">
-                <FaHome className="icono-home" />
+                <FaHome onClick={() => navigate("/dashboard")} className="icono-home" />
                 <span className="breadcrumb-separator">/</span>
                 <span className="breadcrumb-actual">Usuarios</span>
             </div>
 
             <div className="usuarios-header">
                 <h2>Usuarios</h2>
-                <button className="btn-registrar">Registrar Usuario</button>
+                <button className="btn-registrar" onClick={openModal}>
+                    Registrar Usuario
+                </button>
             </div>
             <hr className="hr-usuario" />
 
@@ -82,19 +98,16 @@ export const ManageUsers = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {usuarios.map((usuario, index) => (
-                            <tr key={usuario.cedula}>
-                                <td>{index + 1}</td>
+                        {usuariosActuales.map((usuario, index) => (
+                            <tr key={usuario.cedula || index}>
+                                <td>{indexPrimerUsuario + index + 1}</td>
                                 <td>{usuario.cedula}</td>
                                 <td>{usuario.nombre}</td>
                                 <td>{usuario.correo}</td>
                                 <td>{usuario.telefono}</td>
                                 <td>{usuario.rol}</td>
                                 <td>
-                                    <span
-                                        className={`estado ${usuario.estado === "Activo" ? "activo" : "inactivo"
-                                            }`}
-                                    >
+                                    <span className={`estado ${usuario.estado === "Activo" ? "activo" : "inactivo"}`}>
                                         {usuario.estado}
                                     </span>
                                 </td>
@@ -109,6 +122,14 @@ export const ManageUsers = () => {
                     </tbody>
                 </table>
             </div>
+
+            <RegisterUserModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                onRegisterSuccess={fetchUsuarios}
+            />
+
+            <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </div>
     );
 };
