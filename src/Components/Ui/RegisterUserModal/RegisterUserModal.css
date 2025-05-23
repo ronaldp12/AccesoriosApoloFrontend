@@ -19,7 +19,7 @@
   width: 90%;
   max-width: 500px;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-  height: 35rem;
+  height: 37rem;
 }
 
 .modal-content-register-user h2 {
@@ -28,7 +28,7 @@
   color: #0f1881;
   text-align: center;
   margin-bottom: 20px;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .group-register-user{
@@ -101,6 +101,8 @@
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
+  height: 3rem;
+  width: 8rem;
 }
 
 .modal-content-register-user.entry {
@@ -142,6 +144,57 @@
   }
 }
 
+.status-message-register.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background-color: #ffe1e1;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.status-message.error i {
+  font-size: 18px;
+}
+
+.status-message-register {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+}
+
+.status-message-register.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-message-register.success {
+  background-color: #d1daf4;
+  color: #014aad;
+}
+
+.status-message-register i {
+  font-size: 1.2rem;
+  color: #014aad;
+}
+
+.register-user-spinner {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
 
 @media (max-width: 820px) {
   .form-group {

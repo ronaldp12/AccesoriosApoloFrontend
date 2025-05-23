@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./RegisterUserModal.css";
+import { context } from "../../../Context/Context.jsx";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
+    const [successMessage, setSuccessMessage] = useState("");
     const [formData, setFormData] = useState({
         nombre: "",
         cedula: "",
@@ -17,6 +22,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+        setErrorMessage("")
     };
 
     const handleClose = () => {
@@ -29,6 +35,8 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+
         try {
             const token = localStorage.getItem("token");
 
@@ -45,16 +53,24 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
 
             if (data.success) {
                 console.log("Usuario registrado con éxito.");
+                setSuccessMessage("Usuario registrado con éxito.");
                 if (onRegisterSuccess) onRegisterSuccess();
-                onClose();
+
+                setTimeout(() => {
+                    setSuccessMessage("");
+                    handleClose();
+                }, 2000);
             } else {
-                alert("Error: " + data.mensaje);
+                setErrorMessage(getErrorMessage(data, "Error al registrar usuario."));
+                setIsLoading(false);
             }
         } catch (error) {
             console.error("Error al registrar usuario:", error);
-            alert("Error interno al registrar usuario.");
+            setErrorMessage("Hubo un error al registrar usuario.");
+            setIsLoading(false);
         }
     };
+
 
     return (
         <div className="modal-overlay-register-user">
@@ -130,10 +146,29 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             CANCELAR
                         </button>
                         <button type="submit" className="btn-agregar">
-                            AGREGAR
+                            {isLoading ? (
+                                <img src={wheelIcon} alt="Cargando..." className="register-user-spinner" />
+                            ) : (
+                                <span>REGISTRAR</span>
+                            )}
                         </button>
                     </div>
                 </form>
+                {errorMessage && (
+                    <div className="status-message-register error">
+                        <span>{errorMessage}</span>
+                        <i className="bi bi-x-circle"></i>
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className="status-message-register success">
+                        <span>{successMessage}</span>
+                        <i className="bi bi-check-circle"></i>
+                        {setIsLoading(false)}
+                    </div>
+                )}
+
             </div>
         </div>
     );
