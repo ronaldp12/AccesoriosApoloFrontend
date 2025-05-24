@@ -18,16 +18,17 @@ import { ChangePassword } from "./Components/Ui/ChangePassword/ChangePassword.js
 import { DashboardGerente } from "./Components/Pages/DashboardGerente/DashboardGerente.jsx";
 import { HomeDashboardGerente } from "./Components/Layouts/HomeDashboardGerente/HomeDashboardGerente.jsx";
 import { ManageUsers } from "./Components/Layouts/ManageUsers/ManageUsers.jsx";
-
+import { ProtectedRouteClient } from "./Components/ProtectedRouteClient/ProtectedRouteClient.jsx";
+import { ProtectedRouteManager } from "./Components/ProtectedRouteManager/ProtectedRouteManager.jsx";
 
 export function App() {
 
-  const { isWelcomeOpen, setIsWelcomeOpen} = useContext(context);
+  const { isWelcomeOpen, setIsWelcomeOpen } = useContext(context);
 
   return (
     <>
       <Routes>
-        
+
         <Route
           path="/"
           element={
@@ -61,6 +62,7 @@ export function App() {
         <Route
           path="/profile"
           element={
+            <ProtectedRouteClient>
             <>
               <Header />
               <Container>
@@ -68,9 +70,10 @@ export function App() {
               </Container>
               <Footer />
             </>
+            </ProtectedRouteClient>
           }
         >
-          
+
           <Route index element={<ProfileData />} />
           <Route path="orders" element={<ProfileOrders />} />
           <Route path="wish-list" element={<WishList />} />
@@ -79,14 +82,13 @@ export function App() {
         <Route
           path="/dashboard"
           element={
-            <>
+            <ProtectedRouteManager>
               <Container>
                 <DashboardGerente />
               </Container>
-            </>
+            </ProtectedRouteManager>
           }
         >
-          
           <Route index element={<HomeDashboardGerente />} />
           <Route path="manage-users" element={<ManageUsers />} />
         </Route>

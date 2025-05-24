@@ -5,9 +5,9 @@ import { useContext } from 'react';
 
 export const JoinBanner = () => {
 
-    const { userLogin} = useContext(context);
+    const { userLogin, nameRol} = useContext(context);
 
-    if (userLogin) {
+    if (userLogin && nameRol === 'cliente') {
         return null;
     }
 

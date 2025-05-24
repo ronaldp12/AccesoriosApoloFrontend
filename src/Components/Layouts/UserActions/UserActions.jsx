@@ -4,7 +4,7 @@ import { Item } from "../../Ui/Item/Item";
 import { useNavigate } from "react-router-dom";
 
 export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTrunk }) => {
-  const { userLogin } = useContext(context);
+  const { userLogin, nameRol } = useContext(context);
   const navigate = useNavigate();
 
   const scrollToMap = () => {
@@ -49,7 +49,7 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
 
       <div className="container-icon-actions">
         {
-          userLogin ? (
+          userLogin && nameRol === 'cliente' ? (
             <span className="user-name">{userLogin}</span>
           ) : (
             <>

@@ -42,6 +42,8 @@ export const Provider = ({ children }) => {
         setUserLogin(null);
         localStorage.removeItem("token");
         localStorage.removeItem("usuarioLogueado");
+        localStorage.removeItem("nameRol");
+        localStorage.removeItem("avatar");
     };
 
     const getErrorMessage = (data, defaultMsg) => {
@@ -70,7 +72,7 @@ export const Provider = ({ children }) => {
             isIntermediateLoading, setIsIntermediateLoading,
             getErrorMessage,
             avatar, setAvatar,
-            nameRol, setNameRol, 
+            nameRol, setNameRol,
             validatePassword
 
         }}>

@@ -10,7 +10,7 @@ import { context } from '../../../Context/Context.jsx';
 
 export const Home = () => {
 
-  const { handleAddToCart } = useContext(context);
+  const { handleAddToCart} = useContext(context);
 
   return (
     <>

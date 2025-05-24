@@ -11,7 +11,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const [contrasena, setContrasena] = useState("");
     const navigate = useNavigate();
     const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen, getErrorMessage,
-        setAvatar, setNameRol } = useContext(context);
+        setAvatar, setNameRol, nameRol } = useContext(context);
     const [errorMessage, setErrorMessage] = useState("");
 
     const googleButtonRef = useRef(null);
@@ -67,14 +67,14 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
                 setIsLoading(false);
                 onClose();
+                const rol = Array.isArray(gerenteData.nombreRol) ? gerenteData.nombreRol[0] : gerenteData.nombreRol;
+            
+                setNameRol(rol);
+                localStorage.setItem("nameRol", rol);
 
                 if (validateGerente.ok && gerenteData.esGerente) {
-                    const rol = Array.isArray(gerenteData.nombreRol) ? gerenteData.nombreRol[0] : gerenteData.nombreRol;
-
-                    setNameRol(rol);
-                    localStorage.setItem("nameRol", rol);
-
                     navigate("/dashboard");
+
                 } else {
                     onLoginSuccess();
                 }
@@ -130,15 +130,14 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
                 onClose();
 
-                if (gerenteData.esGerente) {
-                    const rol = Array.isArray(gerenteData.nombreRol)
-                        ? gerenteData.nombreRol[0]
-                        : gerenteData.nombreRol;
+                const rol = Array.isArray(gerenteData.nombreRol) ? gerenteData.nombreRol[0] : gerenteData.nombreRol;
 
                     setNameRol(rol);
                     localStorage.setItem("nameRol", rol);
 
+                if (gerenteData.esGerente) {
                     navigate("/dashboard");
+
                 } else {
                     setIsIntermediateLoading(true);
                     setTimeout(() => {
