@@ -52,6 +52,8 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 setToken(data.token);
                 setName(data.usuario.nombre);
 
+                setAvatar(null)
+                localStorage.removeItem("avatar")
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
 
