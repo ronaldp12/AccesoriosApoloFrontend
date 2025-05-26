@@ -229,4 +229,9 @@ hr{
   .sidebar.open {
     width: 200px;
   }
+
+  .menu-items a {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+  }
 }

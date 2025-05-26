@@ -1,6 +1,6 @@
 import React from "react";
 import "./HomeDashboardGerente.css";
-import { FaHome, FaUser, FaBox, FaBars, FaTruck, FaMoneyBill, FaClipboard, FaMagic } from "react-icons/fa";
+import { FaHome, FaUser, FaBox, FaBars, FaList, FaTruck, FaMoneyBill, FaClipboard, FaMagic } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import { context } from "../../../Context/Context.jsx"
@@ -14,8 +14,8 @@ export const HomeDashboardGerente = () => {
         { label: "USUARIOS", icon: <FaUser />, route: "/dashboard/manage-users" },
         { label: "PRODUCTO", icon: <FaBox /> },
         { label: "CATEGORÍA", icon: <FaBars /> },
-        { label: "SUBCATEGORÍA", icon: <FaBars /> },
-        { label: "PROVEEDORES", icon: <FaTruck />, roles: ["gerente"] },
+        { label: "SUBCATEGORÍA", icon: <FaList /> },
+        { label: "PROVEEDORES", icon: <FaTruck />, route: "/dashboard/manage-supliers", roles: ["gerente"] },
         { label: "VENTAS", icon: <FaMoneyBill /> },
         { label: "INVENTARIO", icon: <FaClipboard /> },
         { label: "CALCOMANÍAS", icon: <FaMagic /> },

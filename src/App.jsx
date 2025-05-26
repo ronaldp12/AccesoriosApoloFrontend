@@ -20,6 +20,7 @@ import { HomeDashboardGerente } from "./Components/Layouts/HomeDashboardGerente/
 import { ManageUsers } from "./Components/Layouts/ManageUsers/ManageUsers.jsx";
 import { ProtectedRouteClient } from "./Components/ProtectedRouteClient/ProtectedRouteClient.jsx";
 import { ProtectedRouteDashboard } from "./Components/ProtectedRouteDashboard/ProtectedRouteDashboard.jsx";
+import { ManageSupliers } from "./Components/Layouts/ManageSupliers/ManageSupliers.jsx";
 
 export function App() {
 
@@ -91,6 +92,7 @@ export function App() {
         >
           <Route index element={<HomeDashboardGerente />} />
           <Route path="manage-users" element={<ManageUsers />} />
+          <Route path="manage-supliers" element={<ManageSupliers />} />
         </Route>
 
       </Routes>

@@ -2,7 +2,7 @@ import React, { useState, useContext, use } from "react";
 import "./DashboardGerente.css";
 import { Outlet } from "react-router-dom";
 import { Logo } from "../../Ui/Logo/Logo.jsx";
-import { FaHome, FaUser, FaBox, FaBars, FaTruck, FaMoneyBill, FaClipboard, FaMagic, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUser, FaBox, FaBars, FaList, FaTruck, FaMoneyBill, FaClipboard, FaMagic, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { context } from "../../../Context/Context.jsx";
 import { useNavigate } from "react-router-dom";
@@ -41,8 +41,8 @@ export const DashboardGerente = () => {
                     <Link to="/dashboard/manage-users"><FaUser /><span>Usuario</span></Link>
                     <a href="#"><FaBox /><span>Producto</span></a>
                     <a href="#"><FaBars /><span>Categoría</span></a>
-                    <a href="#"><FaBars /><span>Subcategorías</span></a>
-                    <a href="#"><FaTruck /><span>Proveedores</span></a>
+                    <a href="#"><FaList /><span>Subcategorías</span></a>
+                    <Link to="/dashboard/manage-supliers"><FaTruck /><span>Proveedores</span></Link>
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
                     <a href="#"><FaMagic /><span>Calcomanías</span></a>
