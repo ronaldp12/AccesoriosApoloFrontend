@@ -41,6 +41,7 @@ export const DashboardGerente = () => {
                     <Link to="/dashboard/manage-users"><FaUser /><span>Usuario</span></Link>
                     <a href="#"><FaBox /><span>Producto</span></a>
                     <a href="#"><FaBars /><span>Categoría</span></a>
+                    <a href="#"><FaBars /><span>Subcategorías</span></a>
                     <a href="#"><FaTruck /><span>Proveedores</span></a>
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
                     <a href="#"><FaClipboard /><span>Inventario</span></a>

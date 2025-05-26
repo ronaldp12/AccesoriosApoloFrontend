@@ -19,7 +19,7 @@ import { DashboardGerente } from "./Components/Pages/DashboardGerente/DashboardG
 import { HomeDashboardGerente } from "./Components/Layouts/HomeDashboardGerente/HomeDashboardGerente.jsx";
 import { ManageUsers } from "./Components/Layouts/ManageUsers/ManageUsers.jsx";
 import { ProtectedRouteClient } from "./Components/ProtectedRouteClient/ProtectedRouteClient.jsx";
-import { ProtectedRouteManager } from "./Components/ProtectedRouteManager/ProtectedRouteManager.jsx";
+import { ProtectedRouteDashboard } from "./Components/ProtectedRouteDashboard/ProtectedRouteDashboard.jsx";
 
 export function App() {
 
@@ -82,11 +82,11 @@ export function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRouteManager>
+            <ProtectedRouteDashboard>
               <Container>
                 <DashboardGerente />
               </Container>
-            </ProtectedRouteManager>
+            </ProtectedRouteDashboard>
           }
         >
           <Route index element={<HomeDashboardGerente />} />

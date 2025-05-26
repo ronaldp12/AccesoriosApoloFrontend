@@ -2,25 +2,32 @@ import React from "react";
 import "./HomeDashboardGerente.css";
 import { FaHome, FaUser, FaBox, FaBars, FaTruck, FaMoneyBill, FaClipboard, FaMagic } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { context } from "../../../Context/Context.jsx"
 
 export const HomeDashboardGerente = () => {
     const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] =useState("");
+    const [searchTerm, setSearchTerm] = useState("");
+    const { nameRol } = useContext(context);
 
     const modules = [
         { label: "USUARIOS", icon: <FaUser />, route: "/dashboard/manage-users" },
         { label: "PRODUCTO", icon: <FaBox /> },
         { label: "CATEGORÍA", icon: <FaBars /> },
-        { label: "PROVEEDORES", icon: <FaTruck /> },
+        { label: "SUBCATEGORÍA", icon: <FaBars /> },
+        { label: "PROVEEDORES", icon: <FaTruck />, roles: ["gerente"] },
         { label: "VENTAS", icon: <FaMoneyBill /> },
         { label: "INVENTARIO", icon: <FaClipboard /> },
         { label: "CALCOMANÍAS", icon: <FaMagic /> },
     ];
 
-    const filteredModules = modules.filter((module) =>
-        module.label.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredModules = modules
+        .filter((module) =>
+            !module.roles || module.roles.includes(nameRol)
+        )
+        .filter((module) =>
+            module.label.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
 
     return (

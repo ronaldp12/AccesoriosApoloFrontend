@@ -14,17 +14,41 @@ import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestore
 
 export const ManageUsers = () => {
     const [usuarios, setUsuarios] = useState([]);
-    const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
-    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-    const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
-    const navigate = useNavigate();
+    const [filterEmail, setFilterEmail] = useState("");
+    const [filterRol, setFilterRol] = useState("");
+    const [appliedRol, setAppliedRol] = useState("");
+
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPage] = useState(7);
 
+    const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+    const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
+
+    const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+
+    const { isLoading, setIsLoading } = useContext(context);
+    const navigate = useNavigate();
+
+    const getFilteredUsers = () => {
+        let filtered = usuarios;
+
+        if (appliedRol.trim() !== "") {
+            filtered = filtered.filter(user =>
+                user.rol.toLowerCase() === appliedRol.toLowerCase()
+            );
+        }
+
+        return filtered;
+    };
+
+    const filteredUsers = getFilteredUsers();
     const indexUltimoUsuario = currentPage * usersPage;
     const indexPrimerUsuario = indexUltimoUsuario - usersPage;
-    const usuariosActuales = usuarios.slice(indexPrimerUsuario, indexUltimoUsuario);
-    const totalPages = Math.ceil(usuarios.length / usersPage);
+    const usuariosActuales = filteredUsers.slice(indexPrimerUsuario, indexUltimoUsuario);
+    const totalPages = Math.ceil(filteredUsers.length / usersPage);
 
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
@@ -34,18 +58,11 @@ export const ManageUsers = () => {
         setIsModalUpdateOpen(true);
     };
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-    const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [filterEmail, setFilterEmail] = useState("");
-    const usersToShow = filterEmail.trim() === "" ? usuariosActuales : usuarios;
-    const { isLoading, setIsLoading } = useContext(context);
 
     const openConfirmDeleteModal = (usuario) => {
         setSelectedUser(usuario);
         setIsConfirmDeleteOpen(true);
     };
-
     const closeConfirmDeleteModal = () => {
         setIsConfirmDeleteOpen(false);
         setSelectedUser(null);
@@ -55,7 +72,6 @@ export const ManageUsers = () => {
         setSelectedUser(usuario);
         setIsConfirmRestoreOpen(true);
     };
-
     const closeConfirmRestoreModal = () => {
         setIsConfirmRestoreOpen(false);
         setSelectedUser(null);
@@ -65,7 +81,6 @@ export const ManageUsers = () => {
         setIsLoading(true);
         try {
             const token = localStorage.getItem("token");
-
             const response = await fetch("https://accesoriosapolobackend.onrender.com/usuarios", {
                 headers: {
                     "Content-Type": "application/json",
@@ -85,10 +100,6 @@ export const ManageUsers = () => {
             setIsLoading(false);
         }
     };
-
-    useEffect(() => {
-        fetchUsuarios();
-    }, []);
 
     const debouncedSearchUserByEmail = debounce(async (correo, fetchUsuarios, setUsuarios, setIsLoading) => {
         if (correo.trim() === "") {
@@ -120,8 +131,19 @@ export const ManageUsers = () => {
     }, 200);
 
     useEffect(() => {
+        fetchUsuarios();
+    }, []);
+
+    useEffect(() => {
         debouncedSearchUserByEmail(filterEmail, fetchUsuarios, setUsuarios, setIsLoading);
     }, [filterEmail]);
+
+    const handleFilterClick = () => {
+        setAppliedRol(filterRol);
+        setCurrentPage(1);
+    };
+
+
 
     return (
         <div className="usuarios-container">
@@ -143,16 +165,23 @@ export const ManageUsers = () => {
                 <div className="filtro-input">
                     <input type="text" placeholder="Consultar por correo"
                         value={filterEmail}
-                        onChange={(e) => setFilterEmail(e.target.value)} />
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setFilterRol(value);
+                            if (value === "") {
+                                setAppliedRol(""); 
+                            }
+                        }} />
                     <FaSearch className="icono-buscar" />
                 </div>
-                <select className="filtro-select">
-                    <option>Rol</option>
-                    <option value="">Cliente</option>
-                    <option value="">Gerente</option>
-                    <option value="">Vendedor</option>
+                <select value={filterRol} className="filtro-select"
+                    onChange={(e) => setFilterRol(e.target.value)}>
+                    <option value={""}>Rol</option>
+                    <option value="cliente">Cliente</option>
+                    <option value="gerente">Gerente</option>
+                    <option value="vendedor">Vendedor</option>
                 </select>
-                <button className="btn-filtrar">
+                <button onClick={handleFilterClick} className="btn-filtrar">
                     <span>Filtrar</span> <FaFilter />
                 </button>
                 <div className="img-filtro">
@@ -182,7 +211,7 @@ export const ManageUsers = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {usersToShow.map((usuario, index) => (
+                        {usuariosActuales.map((usuario, index) => (
                             <tr key={usuario.cedula || index}>
                                 <td>{indexPrimerUsuario + index + 1}</td>
                                 <td>{usuario.cedula}</td>
@@ -242,7 +271,7 @@ export const ManageUsers = () => {
                 onClose={closeConfirmRestoreModal}
                 usuario={selectedUser}
                 onRestoreSuccess={fetchUsuarios}
-            />  
+            />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </div>

@@ -73,8 +73,9 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             
                 setNameRol(rol);
                 localStorage.setItem("nameRol", rol);
+                console.log("Rol del usuario:", rol);
 
-                if (validateGerente.ok && gerenteData.esGerente) {
+                if (gerenteData.esGerente || rol === "vendedor") {
                     navigate("/dashboard");
 
                 } else {
