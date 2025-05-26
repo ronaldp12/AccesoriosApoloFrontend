@@ -25,6 +25,10 @@ export const ManageUsers = () => {
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const { getErrorMessage } = useContext(context);
+
 
     const [selectedUserToEdit, setSelectedUserToEdit] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -143,7 +147,39 @@ export const ManageUsers = () => {
         setCurrentPage(1);
     };
 
+    const handleDeleteUser = async () => {
+        setIsLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/eliminar-usuario", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ correo: selectedUser.correo }),
+            });
 
+            const data = await response.json();
+            if (data.success) {
+                setErrorMessage("");
+                setSuccessMessage("Usuario eliminado con éxito.");
+                setTimeout(() => {
+                    setSuccessMessage("");
+                    setIsConfirmDeleteOpen(false);
+                }, 2000);
+            } else {
+                setSuccessMessage("");
+                setErrorMessage(getErrorMessage(data, "Error al eliminar usuario."));
+            }
+        } catch (error) {
+            setSuccessMessage("");
+            console.error(error);
+            setErrorMessage("Hubo un error.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className="usuarios-container">
@@ -167,11 +203,11 @@ export const ManageUsers = () => {
                         value={filterEmail}
                         onChange={(e) => {
                             const value = e.target.value;
-                            setFilterRol(value);
-                            if (value === "") {
-                                setAppliedRol(""); 
-                            }
-                        }} />
+                            setFilterEmail(value);
+                            setFilterRol("");
+                            setAppliedRol("");
+                        }}
+                    />
                     <FaSearch className="icono-buscar" />
                 </div>
                 <select value={filterRol} className="filtro-select"
@@ -262,8 +298,15 @@ export const ManageUsers = () => {
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={closeConfirmDeleteModal}
-                usuario={selectedUser}
-                onDeleteSuccess={fetchUsuarios}
+                title="¿Eliminar usuario?"
+                description={
+                <>
+                    ¿Estás seguro de eliminar a <strong>{selectedUser?.nombre}</strong> con cédula <strong>{selectedUser?.cedula}</strong>?
+                </>}
+                onConfirm={handleDeleteUser}
+                isLoading={isLoading}
+                errorMessage={errorMessage}
+                successMessage={successMessage}
             />
 
             <ConfirmRestoreModal
