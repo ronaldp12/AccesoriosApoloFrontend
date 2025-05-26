@@ -5,11 +5,16 @@ import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
 import { RegisterSuplierModal } from "../../Ui/RegisterSuplierModal/RegisterSuplierModal";
+import { UpdateSuplierModal } from "../../Ui/UpdateSuplierModal/UpdateSuplierModal";
 
 export const ManageSupliers = () => {
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
+
+    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+    const openUpdateModal = () => setIsModalUpdateOpen(true);
+    const closeUpdateModal = () => setIsModalUpdateOpen(false);
     const navigate = useNavigate();
 
     const supliersData = [
@@ -119,7 +124,7 @@ export const ManageSupliers = () => {
                                     </span>
                                 </td>
                                 <td>
-                                    <FaEdit className="icono-editar" />
+                                    <FaEdit onClick={() => openUpdateModal(usuario)} className="icono-editar" />
                                 </td>
                                 <td>
                                     {usuario.estado === "Activo" ? (
@@ -137,6 +142,11 @@ export const ManageSupliers = () => {
             <RegisterSuplierModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
+            />
+
+            <UpdateSuplierModal
+                isOpen={isModalUpdateOpen}
+                onClose={closeUpdateModal}
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />

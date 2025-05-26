@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./RegisterSuplierModal.css";
+import "./UpdateSuplierModal.css";
 
-export const RegisterSuplierModal = ({ isOpen, onClose }) => {
+export const UpdateSuplierModal = ({ isOpen, onClose }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [formData, setFormData] = useState({
         nit: "",
@@ -28,13 +28,13 @@ export const RegisterSuplierModal = ({ isOpen, onClose }) => {
     };
 
     return (
-        <div className="modal-overlay-register-suplier">
-            <div className={`modal-content-register-suplier ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar Proveedor</h2>
-                <form className="form-register-suplier">
-                    <div className="group-register-suplier">
+        <div className="modal-overlay-update-suplier">
+            <div className={`modal-content-update-suplier ${isClosing ? "exit" : "entry"}`}>
+                <h2>Editar Proveedor</h2>
+                <form className="form-update-suplier">
+                    <div className="group-update-suplier">
 
-                        <div className="form-group-register-suplier">
+                        <div className="form-group-update-suplier">
                             <label>Nit</label>
                             <input
                                 type="text"
@@ -45,7 +45,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose }) => {
                             />
                         </div>
 
-                        <div className="form-group-register-suplier">
+                        <div className="form-group-update-suplier">
                             <label>Nombre Representante</label>
                             <input
                                 type="text"
@@ -58,8 +58,8 @@ export const RegisterSuplierModal = ({ isOpen, onClose }) => {
 
                     </div>
 
-                    <div className="group-register-suplier">
-                        <div className="form-group-register-suplier">
+                    <div className="group-update-suplier">
+                        <div className="form-group-update-suplier">
                             <label>Nombre Empresa</label>
                             <input
                                 type="text"
@@ -70,7 +70,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose }) => {
                             />
                         </div>
 
-                        <div className="form-group-register-suplier">
+                        <div className="form-group-update-suplier">
                             <label>Correo</label>
                             <input
                                 type="email"
@@ -83,7 +83,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose }) => {
 
                     </div>
 
-                    <div className="form-group-register-suplier">
+                    <div className="form-group-update-suplier">
                         <label>Teléfono</label>
                         <input
                             type="text"
@@ -104,7 +104,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose }) => {
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="modal-buttons-register-suplier">
+                    <div className="modal-buttons-update-suplier">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>
