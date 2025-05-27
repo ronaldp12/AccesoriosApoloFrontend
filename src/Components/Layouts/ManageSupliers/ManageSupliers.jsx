@@ -58,14 +58,10 @@ export const ManageSupliers = () => {
 
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
-    const openUpdateModal = (usuario) => {
-        setSelectedUser(usuario);
-        setIsModalUpdateOpen(true);
-    };
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
 
-    const openConfirmDeleteModal = (usuario) => {
-        setSelectedUser(usuario);
+    const openConfirmDeleteModal = (proveedor) => {
+        setSelectedUser(proveedor);
         setIsConfirmDeleteOpen(true);
     };
     const closeConfirmDeleteModal = () => {
@@ -73,8 +69,8 @@ export const ManageSupliers = () => {
         setSelectedUser(null);
     };
 
-    const openConfirmRestoreModal = (usuario) => {
-        setSelectedUser(usuario);
+    const openConfirmRestoreModal = (proveedor) => {
+        setSelectedUser(proveedor);
         setIsConfirmRestoreOpen(true);
     };
     const closeConfirmRestoreModal = () => {
@@ -194,7 +190,7 @@ export const ManageSupliers = () => {
                 title="¿Eliminar proveedor?"
                 description={
                     <>
-                        ¿Estás seguro de eliminar a <strong>{selectedUser?.empresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
+                        ¿Estás seguro de eliminar a <strong>{selectedUser?.nombreEmpresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
                     </>
                 }
                 usuario={selectedUser}
@@ -212,14 +208,15 @@ export const ManageSupliers = () => {
                 title="¿Recuperar proveedor?"
                 message={
                     <>
-                        ¿Deseas recuperar al proveedor <strong>{selectedUser?.empresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
+                        ¿Deseas recuperar al proveedor <strong>{selectedUser?.nombreEmpresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
                     </>
                 }
                 confirmText="RECUPERAR"
-                endpoint=""
+                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-proveedor"
                 method="PUT"
-                payloadKey="correo"
+                payloadKey="nit"
             />
+
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </div>
