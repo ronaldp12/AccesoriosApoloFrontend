@@ -62,7 +62,7 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(getErrorMessage(data, "Error al registrar usuario."));
+                setErrorMessage(getErrorMessage(data, "Error al actualizar usuario."));
                 setIsLoading(false);
             }
         } catch (error) {
@@ -145,7 +145,6 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                     <div className="status-message-register success">
                         <span>{successMessage}</span>
                         <i className="bi bi-check-circle"></i>
-                        {setIsLoading(false)}
                     </div>
                 )}
             </div>

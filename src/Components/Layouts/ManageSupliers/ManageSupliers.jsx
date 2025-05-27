@@ -23,7 +23,8 @@ export const ManageSupliers = () => {
     const navigate = useNavigate();
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const {isLoading, setIsLoading, getErrorMessage } = useContext(context);
+    const { isLoading, setIsLoading, getErrorMessage } = useContext(context);
+    const [selectedNit, setSelectedNit] = useState(null);
 
     const fetchProveedores = async () => {
         setIsLoading(true);
@@ -46,7 +47,10 @@ export const ManageSupliers = () => {
         }
     };
 
-
+    const handleEditClick = (nit) => {
+        setSelectedNit(nit);
+        setIsModalUpdateOpen(true);
+    };
 
     useEffect(() => {
         fetchProveedores();
@@ -141,28 +145,28 @@ export const ManageSupliers = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {usuariosActuales.map((usuario, index) => (
-                            <tr key={usuario.nit}>
+                        {usuariosActuales.map((proveedor, index) => (
+                            <tr key={proveedor.nit}>
                                 <td>{indexPrimerUsuario + index + 1}</td>
-                                <td>{usuario.nit}</td>
-                                <td>{usuario.representante}</td>
-                                <td>{usuario.nombreEmpresa}</td>
-                                <td>{usuario.correo}</td>
-                                <td>{usuario.telefono}</td>
-                                <td>{usuario.direccion}</td>
+                                <td>{proveedor.nit}</td>
+                                <td>{proveedor.representante}</td>
+                                <td>{proveedor.nombreEmpresa}</td>
+                                <td>{proveedor.correo}</td>
+                                <td>{proveedor.telefono}</td>
+                                <td>{proveedor.direccion}</td>
                                 <td>
-                                    <span className={`estado ${usuario.estado === 1 ? "activo" : "inactivo"}`}>
-                                        {usuario.estado === 1 ? "Activo" : "Inactivo"}
+                                    <span className={`estado ${proveedor.estado === 1 ? "activo" : "inactivo"}`}>
+                                        {proveedor.estado === 1 ? "Activo" : "Inactivo"}
                                     </span>
                                 </td>
                                 <td>
-                                    <FaEdit onClick={() => openUpdateModal(usuario)} className="icono-editar" />
+                                    <FaEdit onClick={() => handleEditClick(proveedor.nit)} className="icono-editar" />
                                 </td>
                                 <td>
-                                    {usuario.estado === 1 ? (
-                                        <FaTrash onClick={() => openConfirmDeleteModal(usuario)} className="icono-delete" />
+                                    {proveedor.estado === 1 ? (
+                                        <FaTrash onClick={() => openConfirmDeleteModal(proveedor)} className="icono-delete" />
                                     ) : (
-                                        <FaUndo onClick={() => openConfirmRestoreModal(usuario)} className="icono-restore" />
+                                        <FaUndo onClick={() => openConfirmRestoreModal(proveedor)} className="icono-restore" />
                                     )}
                                 </td>
                             </tr>
@@ -180,8 +184,8 @@ export const ManageSupliers = () => {
             <UpdateSuplierModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
-                usuario={selectedUser}
-                onSuccess={fetchProveedores}
+                nitProveedor={selectedNit}
+                onUpdateSuccess={fetchProveedores}
             />
 
             <ConfirmDeleteModal

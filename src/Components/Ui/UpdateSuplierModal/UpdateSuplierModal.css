@@ -145,8 +145,7 @@
   }
 }
 
-
-.status-message-register.error {
+.status-message-update.error {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,7 +163,7 @@
   font-size: 18px;
 }
 
-.status-message-register {
+.status-message-update {
   margin-top: 1rem;
   padding: 0.8rem 1rem;
   border-radius: 8px;
@@ -174,17 +173,26 @@
   font-weight: 500;
 }
 
-.status-message-register.error {
+.status-message-update.error {
   background-color: #f8d7da;
   color: #721c24;
 }
 
-.status-message-register.success {
+.status-message-update.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-message-update.error i {
+  color: #761616;
+}
+
+.status-message-update.success {
   background-color: #d1daf4;
   color: #014aad;
 }
 
-.status-message-register i {
+.status-message-update i {
   font-size: 1.2rem;
   color: #014aad;
 }
