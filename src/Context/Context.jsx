@@ -58,6 +58,14 @@ export const Provider = ({ children }) => {
         };
     };
 
+    const formatPhoneNumber = (value) => {
+        const cleaned = value.replace(/\D/g, "").slice(0, 10);
+        const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,4})$/);
+        if (!match) return cleaned;
+
+        return [match[1], match[2], match[3]].filter(Boolean).join(" ");
+    };
+
     return (
         <context.Provider value={{
 
@@ -73,7 +81,7 @@ export const Provider = ({ children }) => {
             getErrorMessage,
             avatar, setAvatar,
             nameRol, setNameRol,
-            validatePassword
+            validatePassword, formatPhoneNumber
 
         }}>
             {children}

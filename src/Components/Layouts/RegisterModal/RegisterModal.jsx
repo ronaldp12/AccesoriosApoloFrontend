@@ -12,7 +12,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [password, setPassword] = useState("");
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen,
-        setIsIntermediateLoading, getErrorMessage, setAvatar, validatePassword } = useContext(context);
+        setIsIntermediateLoading, getErrorMessage, setAvatar, validatePassword, formatPhoneNumber } = useContext(context);
     const [userName, setUserName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -49,6 +49,12 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             contrasena: password,
             id_rol: "user"
         };
+
+        if (!/^\d{10}$/.test(phone)) {
+            setErrorMessage("El número de teléfono debe tener 10 dígitos.");
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/solicitar-otp", {
@@ -146,9 +152,12 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                 <input
                                     type="tel"
                                     placeholder="Teléfono"
-                                    value={phone}
+                                    pattern="[0-9]*"
+                                    inputMode="numeric"
+                                    value={formatPhoneNumber(phone)}
                                     onChange={(e) => {
-                                        setPhone(e.target.value)
+                                        const rawValue = e.target.value.replace(/\D/g, "");
+                                        setPhone(rawValue);
                                         setErrorMessage("");
                                     }}
                                 />

@@ -6,12 +6,13 @@ import wheelIcon from "../../../assets/icons/img1-loader.png";
 export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const { getErrorMessage, isLoading, setIsLoading, validatePassword } = useContext(context);
+    const { getErrorMessage, isLoading, setIsLoading, validatePassword, formatPhoneNumber } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
+    const [phone, setPhone] = useState("");
     const [formData, setFormData] = useState({
         nombre: "",
         cedula: "",
-        telefono: "",
+        telefono: phone,
         correo: "",
         contrasena: "",
         rol: ""
@@ -36,6 +37,12 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+
+        if (!/^\d{10}$/.test(phone)) {
+            setErrorMessage("El número de teléfono debe tener 10 dígitos.");
+            setIsLoading(false);
+            return;
+        }
 
         try {
             const token = localStorage.getItem("token");
@@ -114,9 +121,15 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             <input
                                 type="text"
                                 name="telefono"
-                                placeholder="+ 57"
-                                value={formData.telefono}
-                                onChange={handleChange}
+                                pattern="[0-9]*"
+                                inputMode="numeric"
+                                value={formatPhoneNumber(phone)}
+                                onChange={(e) => {
+                                    const rawValue = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                    setPhone(rawValue);
+                                    setFormData(prev => ({ ...prev, telefono: rawValue }));
+                                    setErrorMessage("");
+                                }}
                             />
                         </div>
                     </div>
