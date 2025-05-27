@@ -5,12 +5,13 @@ import { Logo } from "../../Ui/Logo/Logo.jsx";
 import { FaHome, FaUser, FaBox, FaBars, FaList, FaTruck, FaMoneyBill, FaClipboard, FaMagic, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { context } from "../../../Context/Context.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const DashboardGerente = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { name, nameRol, handleLogout } = useContext(context);
-    const navigate=useNavigate();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -37,12 +38,18 @@ export const DashboardGerente = () => {
                 <hr />
 
                 <div className="menu-items">
-                    <Link to="/dashboard"><FaHome /><span>Inicio</span></Link>
-                    <Link to="/dashboard/manage-users"><FaUser /><span>Usuario</span></Link>
+                    <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>
+                        <FaHome /><span>Inicio</span>
+                    </Link>
+                    <Link to="/dashboard/manage-users" className={location.pathname.startsWith("/dashboard/manage-users") ? "active" : ""}>
+                        <FaUser /><span>Usuario</span>
+                    </Link>
                     <a href="#"><FaBox /><span>Producto</span></a>
                     <a href="#"><FaBars /><span>Categoría</span></a>
                     <a href="#"><FaList /><span>Subcategorías</span></a>
-                    <Link to="/dashboard/manage-supliers"><FaTruck /><span>Proveedores</span></Link>
+                    <Link to="/dashboard/manage-supliers" className={location.pathname.startsWith("/dashboard/manage-supliers") ? "active" : ""}>
+                        <FaTruck /><span>Proveedores</span>
+                    </Link>
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
                     <a href="#"><FaMagic /><span>Calcomanías</span></a>
