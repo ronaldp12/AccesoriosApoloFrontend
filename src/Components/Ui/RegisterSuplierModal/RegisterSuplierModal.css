@@ -177,6 +177,10 @@
   color: #721c24;
 }
 
+.status-message-register.error i {
+  color: #550f16;
+}
+
 .status-message-register.success {
   background-color: #d1daf4;
   color: #014aad;

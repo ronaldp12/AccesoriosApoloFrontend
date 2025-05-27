@@ -20,7 +20,7 @@ export const EquipmentRideSubmenu = () => {
       <div className="equipment-submenu">
 
         <div className='submenu-title-equipment'>
-          <h2>Equipacion Carretera</h2>
+          <h2>Equipación Carretera</h2>
           <span>Ver más </span>
         </div>
 

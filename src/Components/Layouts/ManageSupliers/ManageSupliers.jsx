@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./ManageSupliers.css";
 import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome, FaUndo } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
@@ -7,23 +7,58 @@ import { Pagination } from "../../Ui/Pagination/Pagination";
 import { RegisterSuplierModal } from "../../Ui/RegisterSuplierModal/RegisterSuplierModal";
 import { UpdateSuplierModal } from "../../Ui/UpdateSuplierModal/UpdateSuplierModal";
 import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal";
+import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal";
 import { context } from "../../../Context/Context.jsx";
-import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const ManageSupliers = () => {
+    const [proveedores, setProveedores] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
-    const openRegisterModal = () => setIsModalRegisterOpen(true);
-    const closeRegisterModal = () => setIsModalRegisterOpen(false);
-
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-    const openUpdateModal = () => setIsModalUpdateOpen(true);
-    const closeUpdateModal = () => setIsModalUpdateOpen(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPage = 7;
     const navigate = useNavigate();
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const {isLoading, setIsLoading, getErrorMessage } = useContext(context);
 
-    const { isLoading, setIsLoading, errorMessage, successMessage } = useContext(context);
+    const fetchProveedores = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/proveedores");
+            if (!response.ok) {
+                throw new Error("Error al obtener proveedores");
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                setProveedores(data.proveedores);
+            } else {
+                console.error("Error al obtener usuarios");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+
+    useEffect(() => {
+        fetchProveedores();
+    }, []);
+
+    const openRegisterModal = () => setIsModalRegisterOpen(true);
+    const closeRegisterModal = () => setIsModalRegisterOpen(false);
+    const openUpdateModal = (usuario) => {
+        setSelectedUser(usuario);
+        setIsModalUpdateOpen(true);
+    };
+    const closeUpdateModal = () => setIsModalUpdateOpen(false);
 
     const openConfirmDeleteModal = (usuario) => {
         setSelectedUser(usuario);
@@ -43,45 +78,10 @@ export const ManageSupliers = () => {
         setSelectedUser(null);
     };
 
-    const supliersData = [
-        {
-            nit: "10101010",
-            representante: "Carlos Pérez",
-            nombreEmpresa: "Pérez S.A.S",
-            correo: "carlos@example.com",
-            telefono: "3001234567",
-            direccion: "calle 34 # 76-23",
-            estado: "Activo"
-        },
-        {
-            nit: "20202020",
-            representante: "Laura Gómez",
-            nombreEmpresa: "Gómez Consultores S.A.S",
-            correo: "laura.gomez@example.com",
-            telefono: "3109876543",
-            direccion: "carrera 45 # 12-34",
-            estado: "Activo"
-        },
-        {
-            nit: "30303030",
-            representante: "Andrés Rodríguez",
-            nombreEmpresa: "Rodríguez Tech S.A.S",
-            correo: "andres.rod@example.com",
-            telefono: "3201122334",
-            direccion: "avenida 10 # 56-78",
-            estado: "Inactivo"
-        }
-
-
-    ];
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const usersPage = 7;
-
     const indexUltimoUsuario = currentPage * usersPage;
     const indexPrimerUsuario = indexUltimoUsuario - usersPage;
-    const usuariosActuales = supliersData.slice(indexPrimerUsuario, indexUltimoUsuario);
-    const totalPages = Math.ceil(supliersData.length / usersPage);
+    const usuariosActuales = proveedores.slice(indexPrimerUsuario, indexUltimoUsuario);
+    const totalPages = Math.ceil(proveedores.length / usersPage);
 
     return (
         <div className="supliers-container">
@@ -118,6 +118,12 @@ export const ManageSupliers = () => {
                 </div>
             </div>
 
+            {isLoading && (
+                <div className="tabla-loader">
+                    <img src={wheelIcon} alt="Cargando..." className="manage-supliers-spinner" />
+                </div>
+            )}
+
             <div className="supliers-table">
                 <table>
                     <thead>
@@ -136,7 +142,7 @@ export const ManageSupliers = () => {
                     </thead>
                     <tbody>
                         {usuariosActuales.map((usuario, index) => (
-                            <tr key={usuario.nit || index}>
+                            <tr key={usuario.nit}>
                                 <td>{indexPrimerUsuario + index + 1}</td>
                                 <td>{usuario.nit}</td>
                                 <td>{usuario.representante}</td>
@@ -145,15 +151,15 @@ export const ManageSupliers = () => {
                                 <td>{usuario.telefono}</td>
                                 <td>{usuario.direccion}</td>
                                 <td>
-                                    <span className={`estado ${usuario.estado === "Activo" ? "activo" : "inactivo"}`}>
-                                        {usuario.estado}
+                                    <span className={`estado ${usuario.estado === 1 ? "activo" : "inactivo"}`}>
+                                        {usuario.estado === 1 ? "Activo" : "Inactivo"}
                                     </span>
                                 </td>
                                 <td>
                                     <FaEdit onClick={() => openUpdateModal(usuario)} className="icono-editar" />
                                 </td>
                                 <td>
-                                    {usuario.estado === "Activo" ? (
+                                    {usuario.estado === 1 ? (
                                         <FaTrash onClick={() => openConfirmDeleteModal(usuario)} className="icono-delete" />
                                     ) : (
                                         <FaUndo onClick={() => openConfirmRestoreModal(usuario)} className="icono-restore" />
@@ -168,11 +174,14 @@ export const ManageSupliers = () => {
             <RegisterSuplierModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
+                onSuccess={fetchProveedores}
             />
 
             <UpdateSuplierModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
+                usuario={selectedUser}
+                onSuccess={fetchProveedores}
             />
 
             <ConfirmDeleteModal
@@ -181,9 +190,11 @@ export const ManageSupliers = () => {
                 title="¿Eliminar proveedor?"
                 description={
                     <>
-                        ¿Estás seguro de eliminar a <strong>{selectedUser?.nombreEmpresa}</strong> con nit <strong>{selectedUser?.nit}</strong>?
-                    </>}
-                onConfirm={null}
+                        ¿Estás seguro de eliminar a <strong>{selectedUser?.empresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
+                    </>
+                }
+                usuario={selectedUser}
+                onConfirmSuccess={fetchProveedores}
                 isLoading={isLoading}
                 errorMessage={errorMessage}
                 successMessage={successMessage}
@@ -193,11 +204,11 @@ export const ManageSupliers = () => {
                 isOpen={isConfirmRestoreOpen}
                 onClose={closeConfirmRestoreModal}
                 usuario={selectedUser}
-                onConfirmSuccess={null}
-                title="¿Recuperar usuario?"
+                onConfirmSuccess={fetchProveedores}
+                title="¿Recuperar proveedor?"
                 message={
                     <>
-                        ¿Deseas recuperar al usuario <strong>{selectedUser?.nombreEmpresa}</strong> con nit <strong>{selectedUser?.nit}</strong>?
+                        ¿Deseas recuperar al proveedor <strong>{selectedUser?.empresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
                     </>
                 }
                 confirmText="RECUPERAR"
