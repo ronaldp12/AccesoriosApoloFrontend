@@ -302,12 +302,16 @@ export const ManageUsers = () => {
                 description={
                     <>
                         ¿Estás seguro de eliminar a <strong>{selectedUser?.nombre}</strong> con cédula <strong>{selectedUser?.cedula}</strong>?
-                    </>}
-                onConfirm={handleDeleteUser}
-                isLoading={isLoading}
-                errorMessage={errorMessage}
-                successMessage={successMessage}
+                    </>
+                }
+                usuario={selectedUser}
+                onConfirmSuccess={fetchUsuarios}
+                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-usuario"
+                method="PUT"
+                payloadKey="correo"
+                confirmText="ELIMINAR"
             />
+
 
             <ConfirmRestoreModal
                 isOpen={isConfirmRestoreOpen}

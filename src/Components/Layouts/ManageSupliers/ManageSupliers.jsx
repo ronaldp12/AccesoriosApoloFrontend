@@ -195,10 +195,12 @@ export const ManageSupliers = () => {
                 }
                 usuario={selectedUser}
                 onConfirmSuccess={fetchProveedores}
-                isLoading={isLoading}
-                errorMessage={errorMessage}
-                successMessage={successMessage}
+                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-proveedor"
+                method="PUT"
+                payloadKey="nit"
+                confirmText="ELIMINAR"
             />
+
 
             <ConfirmRestoreModal
                 isOpen={isConfirmRestoreOpen}
