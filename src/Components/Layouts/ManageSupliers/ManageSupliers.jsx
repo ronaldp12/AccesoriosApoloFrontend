@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./ManageSupliers.css";
 import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome, FaUndo } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
 import { RegisterSuplierModal } from "../../Ui/RegisterSuplierModal/RegisterSuplierModal";
 import { UpdateSuplierModal } from "../../Ui/UpdateSuplierModal/UpdateSuplierModal";
+import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal";
+import { context } from "../../../Context/Context.jsx";
 
 export const ManageSupliers = () => {
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
@@ -15,7 +17,20 @@ export const ManageSupliers = () => {
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
     const openUpdateModal = () => setIsModalUpdateOpen(true);
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const navigate = useNavigate();
+
+    const { isLoading, setIsLoading, errorMessage, successMessage } = useContext(context);
+
+    const openConfirmDeleteModal = (usuario) => {
+        setSelectedUser(usuario);
+        setIsConfirmDeleteOpen(true);
+    };
+    const closeConfirmDeleteModal = () => {
+        setIsConfirmDeleteOpen(false);
+        setSelectedUser(null);
+    };
 
     const supliersData = [
         {
@@ -128,7 +143,7 @@ export const ManageSupliers = () => {
                                 </td>
                                 <td>
                                     {usuario.estado === "Activo" ? (
-                                        <FaTrash className="icono-delete" />
+                                        <FaTrash onClick={() => openConfirmDeleteModal(usuario)} className="icono-delete" />
                                     ) : (
                                         <FaUndo className="icono-restore" />
                                     )}
@@ -147,6 +162,20 @@ export const ManageSupliers = () => {
             <UpdateSuplierModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
+            />
+
+            <ConfirmDeleteModal
+                isOpen={isConfirmDeleteOpen}
+                onClose={closeConfirmDeleteModal}
+                title="¿Eliminar proveedor?"
+                description={
+                    <>
+                        ¿Estás seguro de eliminar a <strong>{selectedUser?.nombreEmpresa}</strong> con nit <strong>{selectedUser?.nit}</strong>?
+                    </>}
+                onConfirm={null}
+                isLoading={isLoading}
+                errorMessage={errorMessage}
+                successMessage={successMessage}
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
