@@ -10,8 +10,9 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen,
-        setIsIntermediateLoading, getErrorMessage, setAvatar } = useContext(context);
+        setIsIntermediateLoading, getErrorMessage, setAvatar, validatePassword } = useContext(context);
     const [userName, setUserName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -170,10 +171,20 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
                             <div className="input-field">
                                 <label>Contraseña *</label>
+                                <div className={`password-conditions-register-modal ${isPasswordFocused ? 'visible' : ''}`}>
+                                    {!validatePassword(password).length && <p>○ Debe tener al menos 8 caracteres</p>}
+                                    {!validatePassword(password).uppercase && <p>○ Debe contener una letra mayúscula</p>}
+                                    {!validatePassword(password).number && <p>○ Debe contener al menos un número</p>}
+                                    {validatePassword(password).length && validatePassword(password).uppercase && validatePassword(password).number && (
+                                        <p className="valid-password-change">Contraseña válida <i className="bi bi-check-circle"></i></p>
+                                    )}
+                                </div>
                                 <input
                                     type="password"
                                     placeholder="Contraseña"
                                     value={password}
+                                    onFocus={() => setIsPasswordFocused(true)}
+                                    onBlur={() => setIsPasswordFocused(false)}
                                     onChange={(e) => {
                                         setPassword(e.target.value)
                                         setErrorMessage("");

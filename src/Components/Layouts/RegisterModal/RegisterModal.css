@@ -242,6 +242,10 @@ form {
 .valid-password-change {
     color: #014aad !important;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
 .error-message {
@@ -249,9 +253,39 @@ form {
     font-weight: 500;
 }
 
-.password-conditions {
-    margin-top: 8px;
-    margin-bottom: 12px;
+.password-conditions-register-modal {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,8);
+  color: #ff3a3d;
+  font-size: 14px;
+  margin-top: 4px;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: all 0.3s ease;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.password-conditions-register-modal.visible {
+  opacity: 1;
+  transform: scaleY(1);
+  pointer-events: auto;
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.input-field {
+  position: relative;
 }
 
 @media (max-width: 394px){
