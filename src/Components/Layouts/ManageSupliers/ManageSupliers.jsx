@@ -174,7 +174,7 @@ export const ManageSupliers = () => {
             <RegisterSuplierModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
-                onSuccess={fetchProveedores}
+                onRegisterSuccess={fetchProveedores}
             />
 
             <UpdateSuplierModal

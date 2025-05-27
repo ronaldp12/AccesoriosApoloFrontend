@@ -3,7 +3,7 @@ import "./RegisterSuplierModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 
-export const RegisterSuplierModal = ({ isOpen, onClose }) => {
+export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
@@ -59,6 +59,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose }) => {
                 console.log("Proveedor registrado con éxito.");
                 setSuccessMessage("Proveedor registrado con éxito.");
                 setErrorMessage("");
+                onRegisterSuccess();
 
                 setTimeout(() => {
                     setSuccessMessage("");

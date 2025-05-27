@@ -49,7 +49,7 @@
   max-width: 400px;
   text-align: center;
   animation: dropBounceIn 0.5s ease forwards;
-  height: 18rem;
+  transition: height 0.3s ease;
 }
 
 .modal-content-restore h3 {
@@ -168,7 +168,6 @@
 .status-message-restore.success {
   background-color: #d1daf4;
   color: #014aad;
-  height: 2rem;
 }
 
 .status-message-restore i {

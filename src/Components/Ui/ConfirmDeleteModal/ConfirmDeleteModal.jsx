@@ -64,7 +64,7 @@ export const ConfirmDeleteModal = ({
                 setTimeout(() => {
                     setSuccessMessage("");
                     handleClose();
-                }, 2000);
+                }, 1000);
             } else {
                 setErrorMessage(getErrorMessage(data, "Error al realizar la acción."));
                 setIsLoading(false);
