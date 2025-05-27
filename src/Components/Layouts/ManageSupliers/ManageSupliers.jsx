@@ -21,10 +21,9 @@ export const ManageSupliers = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPage = 7;
     const navigate = useNavigate();
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const { isLoading, setIsLoading, getErrorMessage } = useContext(context);
+    const { isLoading, setIsLoading } = useContext(context);
     const [selectedNit, setSelectedNit] = useState(null);
+    const [searchNit, setSearchNit] = useState("");
 
     const fetchProveedores = async () => {
         setIsLoading(true);
@@ -46,6 +45,11 @@ export const ManageSupliers = () => {
             setIsLoading(false);
         }
     };
+
+    const filteredProveedores = proveedores.filter((proveedor) =>
+        proveedor.nit.toString().includes(searchNit)
+    );
+
 
     const handleEditClick = (nit) => {
         setSelectedNit(nit);
@@ -80,8 +84,9 @@ export const ManageSupliers = () => {
 
     const indexUltimoUsuario = currentPage * usersPage;
     const indexPrimerUsuario = indexUltimoUsuario - usersPage;
-    const usuariosActuales = proveedores.slice(indexPrimerUsuario, indexUltimoUsuario);
-    const totalPages = Math.ceil(proveedores.length / usersPage);
+    const usuariosActuales = filteredProveedores.slice(indexPrimerUsuario, indexUltimoUsuario);
+    const totalPages = Math.ceil(filteredProveedores.length / usersPage);
+
 
     return (
         <div className="supliers-container">
@@ -101,18 +106,11 @@ export const ManageSupliers = () => {
 
             <div className="supliers-filtros">
                 <div className="filtro-input">
-                    <input type="text" placeholder="Consultar por NIT" />
+                    <input type="text" placeholder="Consultar por NIT"
+                        value={searchNit}
+                        onChange={(e) => setSearchNit(e.target.value)} />
                     <FaSearch className="icono-buscar" />
                 </div>
-                <select className="filtro-select">
-                    <option value={""}>Rol</option>
-                    <option value="cliente">Cliente</option>
-                    <option value="gerente">Gerente</option>
-                    <option value="vendedor">Vendedor</option>
-                </select>
-                <button className="btn-filtrar">
-                    <span>Filtrar</span> <FaFilter />
-                </button>
                 <div className="img-filtro">
                     <img src={img1} alt="img1-manage" />
                 </div>
@@ -121,6 +119,7 @@ export const ManageSupliers = () => {
             {isLoading && (
                 <div className="tabla-loader">
                     <img src={wheelIcon} alt="Cargando..." className="manage-supliers-spinner" />
+                    <p>Cargando proveedores</p>
                 </div>
             )}
 
