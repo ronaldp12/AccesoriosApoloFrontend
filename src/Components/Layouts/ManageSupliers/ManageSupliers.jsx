@@ -8,6 +8,7 @@ import { RegisterSuplierModal } from "../../Ui/RegisterSuplierModal/RegisterSupl
 import { UpdateSuplierModal } from "../../Ui/UpdateSuplierModal/UpdateSuplierModal";
 import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal";
 import { context } from "../../../Context/Context.jsx";
+import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
 
 export const ManageSupliers = () => {
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
@@ -19,6 +20,7 @@ export const ManageSupliers = () => {
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+    const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
     const navigate = useNavigate();
 
     const { isLoading, setIsLoading, errorMessage, successMessage } = useContext(context);
@@ -29,6 +31,15 @@ export const ManageSupliers = () => {
     };
     const closeConfirmDeleteModal = () => {
         setIsConfirmDeleteOpen(false);
+        setSelectedUser(null);
+    };
+
+    const openConfirmRestoreModal = (usuario) => {
+        setSelectedUser(usuario);
+        setIsConfirmRestoreOpen(true);
+    };
+    const closeConfirmRestoreModal = () => {
+        setIsConfirmRestoreOpen(false);
         setSelectedUser(null);
     };
 
@@ -145,7 +156,7 @@ export const ManageSupliers = () => {
                                     {usuario.estado === "Activo" ? (
                                         <FaTrash onClick={() => openConfirmDeleteModal(usuario)} className="icono-delete" />
                                     ) : (
-                                        <FaUndo className="icono-restore" />
+                                        <FaUndo onClick={() => openConfirmRestoreModal(usuario)} className="icono-restore" />
                                     )}
                                 </td>
                             </tr>
@@ -176,6 +187,23 @@ export const ManageSupliers = () => {
                 isLoading={isLoading}
                 errorMessage={errorMessage}
                 successMessage={successMessage}
+            />
+
+            <ConfirmRestoreModal
+                isOpen={isConfirmRestoreOpen}
+                onClose={closeConfirmRestoreModal}
+                usuario={selectedUser}
+                onConfirmSuccess={null}
+                title="¿Recuperar usuario?"
+                message={
+                    <>
+                        ¿Deseas recuperar al usuario <strong>{selectedUser?.nombreEmpresa}</strong> con nit <strong>{selectedUser?.nit}</strong>?
+                    </>
+                }
+                confirmText="RECUPERAR"
+                endpoint=""
+                method="PUT"
+                payloadKey="correo"
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />

@@ -3,12 +3,23 @@ import "./ConfirmRestoreModal.css";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 
-export const ConfirmRestoreModal = ({ isOpen, onClose, usuario, onRestoreSuccess }) => {
+export const ConfirmRestoreModal = ({
+    isOpen,
+    onClose,
+    usuario,
+    onConfirmSuccess,
+    title = "¿Confirmar acción?",
+    message,
+    confirmText = "CONFIRMAR",
+    endpoint,
+    method = "PUT",
+    payloadKey = "correo"
+}) => {
     const [visible, setVisible] = useState(false);
     const [animateOut, setAnimateOut] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
+    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
 
     useEffect(() => {
         if (isOpen) {
@@ -25,37 +36,37 @@ export const ConfirmRestoreModal = ({ isOpen, onClose, usuario, onRestoreSuccess
         }, 500);
     };
 
-    const handleRestore = async () => {
+    const handleConfirm = async () => {
         setIsLoading(true);
         try {
             const token = localStorage.getItem("token");
 
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/reactivar-usuario", {
-                method: "PUT",
+            const response = await fetch(endpoint, {
+                method: method,
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify({ correo: usuario.correo })
+                body: JSON.stringify({ [payloadKey]: usuario[payloadKey] })
             });
 
             const data = await response.json();
 
             if (data.success) {
-                setSuccessMessage("Usuario recuperado con éxito.");
-                if (onRestoreSuccess) onRestoreSuccess();
+                setSuccessMessage("Usuario rcuperado con éxito.");
+                if (onConfirmSuccess) onConfirmSuccess();
 
                 setTimeout(() => {
                     setSuccessMessage("");
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(getErrorMessage(data, "Error al recuperar usuario."));
+                setErrorMessage(getErrorMessage(data, "Error al realizar la acción."));
                 setIsLoading(false);
             }
         } catch (error) {
-            console.error("Error al reactivar usuario:", error);
-            setErrorMessage("Hubo un error al recuperar usuario.");
+            console.error("Error en la acción:", error);
+            setErrorMessage("Hubo un error al realizar la acción.");
             setIsLoading(false);
         }
     };
@@ -65,24 +76,25 @@ export const ConfirmRestoreModal = ({ isOpen, onClose, usuario, onRestoreSuccess
     return (
         <div className={`modal-overlay-restore ${animateOut ? "animate-fadeOut" : ""}`}>
             <div className={`modal-content-restore ${animateOut ? "animate-dropOut" : ""}`}>
-                <h3>Recuperar usuario?</h3>
+                <h3>{title}</h3>
                 <p>
-                    ¿Estás seguro que deseas recuperar al usuario{" "}
-                    <strong>{usuario?.nombre}</strong> con cédula{" "}
-                    <strong>{usuario?.cedula}</strong>?
+                    {message
+                        ? message
+                        : `¿Estás seguro que deseas continuar con ${usuario?.nombre} con cédula ${usuario?.cedula}?`}
                 </p>
                 <div className="modal-buttons-restore">
                     <button className="btn-cancelar-restore" onClick={handleClose}>
-                        Cancelar
+                        CANCELAR
                     </button>
-                    <button className="btn-eliminar" onClick={handleRestore}>
+                    <button className="btn-eliminar" onClick={handleConfirm}>
                         {isLoading ? (
                             <img src={wheelIcon} alt="Cargando..." className="confirm-restore-user-spinner" />
                         ) : (
-                            <span>RECUPERAR</span>
+                            <span>{confirmText}</span>
                         )}
                     </button>
                 </div>
+
                 {errorMessage && (
                     <div className="status-message-restore error">
                         <span>{errorMessage}</span>

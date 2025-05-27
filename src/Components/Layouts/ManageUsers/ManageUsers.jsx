@@ -300,9 +300,9 @@ export const ManageUsers = () => {
                 onClose={closeConfirmDeleteModal}
                 title="¿Eliminar usuario?"
                 description={
-                <>
-                    ¿Estás seguro de eliminar a <strong>{selectedUser?.nombre}</strong> con cédula <strong>{selectedUser?.cedula}</strong>?
-                </>}
+                    <>
+                        ¿Estás seguro de eliminar a <strong>{selectedUser?.nombre}</strong> con cédula <strong>{selectedUser?.cedula}</strong>?
+                    </>}
                 onConfirm={handleDeleteUser}
                 isLoading={isLoading}
                 errorMessage={errorMessage}
@@ -313,8 +313,19 @@ export const ManageUsers = () => {
                 isOpen={isConfirmRestoreOpen}
                 onClose={closeConfirmRestoreModal}
                 usuario={selectedUser}
-                onRestoreSuccess={fetchUsuarios}
+                onConfirmSuccess={fetchUsuarios}
+                title="¿Recuperar usuario?"
+                message={
+                    <>
+                        ¿Deseas recuperar al usuario <strong>{selectedUser?.nombre}</strong> con cédula <strong>{selectedUser?.cedula}</strong>?
+                    </>
+                }
+                confirmText="RECUPERAR"
+                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-usuario"
+                method="PUT"
+                payloadKey="correo"
             />
+
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </div>
