@@ -49,7 +49,7 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
 
       <div className="container-icon-actions">
         {
-          userLogin && nameRol === 'cliente' ? (
+          userLogin || nameRol === 'cliente' ? (
             <span className="user-name">{userLogin}</span>
           ) : (
             <>
