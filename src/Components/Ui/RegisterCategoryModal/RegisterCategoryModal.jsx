@@ -8,14 +8,10 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
-    const [phone, setPhone] = useState("");
     const [formData, setFormData] = useState({
-        nit: "",
-        representante: "",
-        nombreEmpresa: "",
-        correo: "",
-        telefono: phone,
-        direccion: "",
+        nombre_categoria: "",
+        descripcion: "",
+        descuento: "",
     });
 
     if (!isOpen && !isClosing) return null;
@@ -44,21 +40,24 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
         try {
             const token = localStorage.getItem("token");
 
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/registrar-proveedor", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/registrar-categoria", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    nombre_categoria: formData.nombre_categoria,
+                    descripcion: formData.descripcion,
+                    descuento: parseFloat(formData.descuento),
+                }),
             });
 
             const data = await response.json();
             console.log("Respuesta backend:", data);
 
             if (data.success && response.ok) {
-                console.log("Proveedor registrado con éxito.");
-                setSuccessMessage("Proveedor registrado con éxito.");
+                setSuccessMessage("Categoría registrada con éxito.");
                 setErrorMessage("");
                 onRegisterSuccess();
 
@@ -67,18 +66,16 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(getErrorMessage(data, "Error al registrar proveedor."));
+                setErrorMessage(getErrorMessage(data, "Error al registrar categoría."));
             }
 
             setIsLoading(false);
-
         } catch (error) {
-            console.error("Error al registrar proveedor:", error);
-            setErrorMessage("Hubo un error al registrar proveedor.");
+            console.error("Error al registrar categoría:", error);
+            setErrorMessage("Hubo un error al registrar la categoría.");
             setIsLoading(false);
         }
     };
-
 
     return (
         <div className="modal-overlay-register-categorie">
@@ -86,14 +83,13 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
                 <h2>Registrar Categoría</h2>
                 <form className="form-register-categorie" onSubmit={handleSubmit}>
                     <div className="group-register-categorie">
-
                         <div className="form-group-register-categorie">
-                            <label>Nombre</label>
+                            <label>Nombre de categoría *</label>
                             <input
                                 type="text"
-                                name="nit"
-                                placeholder="Escriba el nit"
-                                value={formData.nit}
+                                name="nombre_categoria"
+                                placeholder="Nombre de la categoría"
+                                value={formData.nombre_categoria}
                                 onChange={handleChange}
                             />
                         </div>
@@ -102,38 +98,27 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
                             <label>Descripción</label>
                             <input
                                 type="text"
-                                name="representante"
-                                placeholder="Escriba nombre representante"
-                                value={formData.representante}
+                                name="descripcion"
+                                placeholder="Descripción opcional"
+                                value={formData.descripcion}
                                 onChange={handleChange}
                             />
                         </div>
-
                     </div>
 
                     <div className="group-register-categorie">
                         <div className="form-group-register-categorie">
-                            <label>Promociones</label>
+                            <label>Descuento *</label>
                             <input
-                                type="text"
-                                name="nombreEmpresa"
-                                placeholder="Escriba nombre empresa"
-                                value={formData.nombreEmpresa}
+                                type="number"
+                                name="descuento"
+                                placeholder="Ej: 10"
+                                value={formData.descuento}
                                 onChange={handleChange}
+                                min="0"
                             />
                         </div>
-
-                        <div className="form-group-register-categorie">
-                            <label>Subcategorías</label>
-                            <input
-                                type="email"
-                                name="correo"
-                                placeholder="Escriba su correo"
-                                value={formData.correo}
-                                onChange={handleChange}
-                            />
-                        </div>
-
+                        <p>%</p>
                     </div>
 
                     <div className="modal-buttons-register-categorie">
@@ -149,6 +134,7 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
                         </button>
                     </div>
                 </form>
+
                 {errorMessage && (
                     <div className="status-message-register error">
                         <span>{errorMessage}</span>

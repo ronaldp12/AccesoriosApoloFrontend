@@ -4,8 +4,6 @@ import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome, FaUndo } from "react-icons
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination.jsx";
-import { RegisterSuplierModal } from "../../Ui/RegisterSuplierModal/RegisterSuplierModal.jsx";
-import { UpdateSuplierModal } from "../../Ui/UpdateSuplierModal/UpdateSuplierModal.jsx";
 import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal.jsx";
 import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
 import { context } from "../../../Context/Context.jsx";
@@ -14,32 +12,31 @@ import { RegisterCategorieModal } from "../../Ui/RegisterCategoryModal/RegisterC
 import { UpdateCategoryModal } from "../../Ui/UpdateCategoryModal/UpdateCategoryModal.jsx";
 
 export const ManageCategories = () => {
-    const [proveedores, setProveedores] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPage = 7;
+    const categoriesPerPage = 7;
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
-    const [selectedNit, setSelectedNit] = useState(null);
-    const [searchNit, setSearchNit] = useState("");
+    const [searchId, setSearchId] = useState("");
 
-    const fetchProveedores = async () => {
+    const fetchCategories = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/proveedores");
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/categorias");
             if (!response.ok) {
-                throw new Error("Error al obtener proveedores");
+                throw new Error("Error al obtener categorias");
             }
 
             const data = await response.json();
             if (data.success) {
-                setProveedores(data.proveedores);
+                setCategories(data.categorias);
             } else {
-                console.error("Error al obtener usuarios");
+                console.error("Error en la respuesta al obtener categorías");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -48,54 +45,52 @@ export const ManageCategories = () => {
         }
     };
 
-    const filteredProveedores = proveedores.filter((proveedor) =>
-        proveedor.nit.toString().includes(searchNit)
+    const filteredCategories = categories.filter((category) =>
+        category.id_categoria.toString().includes(searchId)
     );
 
-
-    const handleEditClick = (nit) => {
-        setSelectedNit(nit);
+    const handleEditClick = (category) => {
+        setSelectedCategory(category);
         setIsModalUpdateOpen(true);
     };
 
     useEffect(() => {
-        fetchProveedores();
+        fetchCategories();
     }, []);
 
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
 
-    const openConfirmDeleteModal = (proveedor) => {
-        setSelectedUser(proveedor);
+    const openConfirmDeleteModal = (category) => {
+        setSelectedCategory(category);
         setIsConfirmDeleteOpen(true);
     };
     const closeConfirmDeleteModal = () => {
         setIsConfirmDeleteOpen(false);
-        setSelectedUser(null);
+        setSelectedCategory(null);
     };
 
-    const openConfirmRestoreModal = (proveedor) => {
-        setSelectedUser(proveedor);
+    const openConfirmRestoreModal = (category) => {
+        setSelectedCategory(category);
         setIsConfirmRestoreOpen(true);
     };
     const closeConfirmRestoreModal = () => {
         setIsConfirmRestoreOpen(false);
-        setSelectedUser(null);
+        setSelectedCategory(null);
     };
 
-    const indexUltimoUsuario = currentPage * usersPage;
-    const indexPrimerUsuario = indexUltimoUsuario - usersPage;
-    const usuariosActuales = filteredProveedores.slice(indexPrimerUsuario, indexUltimoUsuario);
-    const totalPages = Math.ceil(filteredProveedores.length / usersPage);
-
+    const indexLastCategory = currentPage * categoriesPerPage;
+    const indexFirstCategory = indexLastCategory - categoriesPerPage;
+    const currentCategories = filteredCategories.slice(indexFirstCategory, indexLastCategory);
+    const totalPages = Math.ceil(filteredCategories.length / categoriesPerPage);
 
     return (
         <div className="categories-container">
             <div className="breadcrumb">
                 <FaHome onClick={() => navigate("/dashboard")} className="icono-home" />
                 <span className="breadcrumb-separator">/</span>
-                <span className="breadcrumb-actual">Proveedores</span>
+                <span className="breadcrumb-actual">Categories</span>
             </div>
 
             <div className="categories-header">
@@ -108,9 +103,12 @@ export const ManageCategories = () => {
 
             <div className="categories-filtros">
                 <div className="filtro-input">
-                    <input type="text" placeholder="Consultar por ID"
-                        value={searchNit}
-                        onChange={(e) => setSearchNit(e.target.value)} />
+                    <input
+                        type="text"
+                        placeholder="Buscar por Nombre"
+                        value={searchId}
+                        onChange={(e) => setSearchId(e.target.value)}
+                    />
                     <FaSearch className="icono-buscar" />
                 </div>
                 <div className="img-filtro">
@@ -120,104 +118,100 @@ export const ManageCategories = () => {
 
             {isLoading && (
                 <div className="tabla-loader">
-                    <img src={wheelIcon} alt="Cargando..." className="manage-categories-spinner" />
+                    <img src={wheelIcon} alt="Loading..." className="manage-categories-spinner" />
                     <p>Cargando categorías</p>
                 </div>
             )}
 
-            <div className="categories-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Id Categoría</th>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Promociones</th>
-                            <th>Subcategorías</th>
-                            <th>Estado</th>
-                            <th>Editar</th>
-                            <th>Eliminar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {usuariosActuales.map((proveedor, index) => (
-                            <tr key={proveedor.nit}>
-                                <td>{indexPrimerUsuario + index + 1}</td>
-                                <td>{proveedor.nit}</td>
-                                <td>{proveedor.representante}</td>
-                                <td>{proveedor.nombreEmpresa}</td>
-                                <td>{proveedor.correo}</td>
-                                <td>{proveedor.telefono}</td>
-                                <td>
-                                    <span className={`estado ${proveedor.estado === 1 ? "activo" : "inactivo"}`}>
-                                        {proveedor.estado === 1 ? "Activo" : "Inactivo"}
-                                    </span>
-                                </td>
-                                <td>
-                                    <FaEdit onClick={() => handleEditClick(proveedor.nit)} className="icono-editar" />
-                                </td>
-                                <td>
-                                    {proveedor.estado === 1 ? (
-                                        <FaTrash onClick={() => openConfirmDeleteModal(proveedor)} className="icono-delete" />
-                                    ) : (
-                                        <FaUndo onClick={() => openConfirmRestoreModal(proveedor)} className="icono-restore" />
-                                    )}
-                                </td>
+            {!isLoading && (
+                <div className="categories-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Id Categoría</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Descuento</th>
+                                <th>Estado</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            {currentCategories.map((category, index) => (
+                                <tr key={category.id_categoria}>
+                                    <td>{category.id_categoria}</td>
+                                    <td>{category.nombre_categoria}</td>
+                                    <td>{category.descripcion}</td>
+                                    <td>{category.descuento}%</td>
+                                    <td>
+                                        <span className={`estado ${category.estado === 1 ? "activo" : "inactivo"}`}>
+                                            {category.estado === 1 ? "Active" : "Inactive"}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <FaEdit onClick={() => handleEditClick(category)} className="icono-editar" />
+                                    </td>
+                                    <td>
+                                        {category.estado === 1 ? (
+                                            <FaTrash onClick={() => openConfirmDeleteModal(category)} className="icono-delete" />
+                                        ) : (
+                                            <FaUndo onClick={() => openConfirmRestoreModal(category)} className="icono-restore" />
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             <RegisterCategorieModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
-                onRegisterSuccess={fetchProveedores}
+                onRegisterSuccess={fetchCategories}
             />
 
             <UpdateCategoryModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
-                nitProveedor={selectedNit}
-                onUpdateSuccess={fetchProveedores}
+                category={selectedCategory}
+                onUpdateSuccess={fetchCategories}
             />
 
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={closeConfirmDeleteModal}
-                title="¿Eliminar categoría?"
+                title="Delete category?"
                 description={
                     <>
-                        ¿Estás seguro de eliminar la categoría <strong>{selectedUser?.nombreEmpresa}</strong> con ID <strong>{selectedUser?.nit}</strong>?
+                        ¿Estás seguro de que deseas eliminar la categoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
                     </>
                 }
-                usuario={selectedUser}
-                onConfirmSuccess={fetchProveedores}
-                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-proveedor"
+                usuario={selectedCategory}
+                onConfirmSuccess={fetchCategories}
+                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-categoria"
                 method="PUT"
-                payloadKey="nit"
-                confirmText="ELIMINAR"
+                payloadKey="id_categoria"
+                confirmText="DELETE"
             />
-
 
             <ConfirmRestoreModal
                 isOpen={isConfirmRestoreOpen}
                 onClose={closeConfirmRestoreModal}
-                usuario={selectedUser}
-                onConfirmSuccess={fetchProveedores}
-                title="¿Recuperar categoría?"
+                usuario={selectedCategory}
+                onConfirmSuccess={fetchCategories}
+                title="Restore category?"
                 message={
                     <>
-                        ¿Deseas recuperar la categoría <strong>{selectedUser?.nombreEmpresa}</strong> con ID <strong>{selectedUser?.nit}</strong>?
+                        ¿Quieres restaurar la categoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
                     </>
                 }
-                confirmText="RECUPERAR"
-                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-proveedor"
+                confirmText="RESTORE"
+                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-categoria"
                 method="PUT"
-                payloadKey="nit"
+                payloadKey="id_categoria"
             />
-
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </div>

@@ -33,6 +33,15 @@
 .group-register-categorie {
   display: flex;
   flex-direction: row;
+  position: relative;
+}
+
+.group-register-categorie p{
+  position: absolute;
+  top: 2.2rem;
+  left: 12rem;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .form-register-categorie {

@@ -154,10 +154,9 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                     placeholder="Teléfono"
                                     pattern="[0-9]*"
                                     inputMode="numeric"
-                                    value={formatPhoneNumber(phone)}
+                                    value={phone}
                                     onChange={(e) => {
-                                        const rawValue = e.target.value.replace(/\D/g, "");
-                                        setPhone(rawValue);
+                                        setPhone(e.target.value);
                                         setErrorMessage("");
                                     }}
                                 />
