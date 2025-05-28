@@ -13,7 +13,7 @@ export const VerifyAccount = () => {
     const [searchParams] = useSearchParams();
     const email = searchParams.get("email");
     const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
-    const { setUserLogin, setToken, setName, getErrorMessage } = useContext(context);
+    const { setUserLogin, setToken, setName, getErrorMessage, setNameRol } = useContext(context);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [isVerifying, setIsVerifying] = useState(false);
@@ -82,7 +82,9 @@ export const VerifyAccount = () => {
                 setUserLogin(data.usuario.nombre);
                 setToken(data.token);
                 setName(data.usuario.nombre);
+                setNameRol("cliente")
 
+                localStorage.setItem("nameRol", "cliente");
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
 

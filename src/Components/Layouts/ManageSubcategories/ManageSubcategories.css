@@ -1,10 +1,10 @@
-.categories-container {
+.subcategories-container {
     padding-left: 1rem;
     background: #fff;
     position: relative;
 }
 
-.categories-header {
+.subcategories-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,13 +46,13 @@
     color: #014aad;
 }
 
-.categories-header h2 {
+.subcategories-header h2 {
     font-size: 2.3rem;
     color: #333;
     margin-left: 2rem;
 }
 
-.hr-categorie {
+.hr-subcategorie {
     width: 100%;
     margin: 0.6em;
     color: #e7e7e7;
@@ -83,7 +83,7 @@
     background: #073678;
 }
 
-.categories-filtros {
+.subcategories-filtros {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -147,27 +147,29 @@
     font-size: 1rem;
 }
 
-.categories-table table {
+.subcategories-table table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.categories-table th,
-.categories-table td {
+.subcategories-table th,
+.subcategories-table td {
     padding: 0.8rem;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 0.9rem;
 }
 
-.categories-table th {
+.subcetgories-table th {
     background: #f5f5f5;
     color: #333;
-    text-align: left;
-    white-space: nowrap;
 }
 
-.categories-table td{
+.subcategories-table th{
+    text-align: left;
+}
+
+.subcategories-table td{
     text-align: left;
 }
 
@@ -218,7 +220,7 @@
   align-items: center;
 }
 
-.manage-categories-spinner {
+.manage-subcategories-spinner {
   width: 80px;
   height: 80px;
   animation: girar 1s linear infinite;
@@ -235,13 +237,13 @@
 
 
 @media (max-width: 820px) {
-  .categories-header {
+  .subcategories-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
 
-  .categories-header h2 {
+  .subcategories-header h2 {
     margin-left: 0;
   }
 
@@ -250,7 +252,7 @@
     margin-left: 0;
   }
 
-  .categories-filtros {
+  .subcategories-filtros {
     flex-wrap: wrap;
     gap: 0.8rem;
   }
@@ -280,8 +282,8 @@
     height: auto;
   }
 
-  .categories-table th,
-  .categories-table td {
+  .subcategories-table th,
+  .subcategories-table td {
     padding: 0.6rem;
     font-size: 0.85rem;
   }
@@ -293,7 +295,7 @@
 }
 
 @media (min-width: 432px) and (max-width: 480px) {
-  .categories-container {
+  .subcategories-container {
     padding: 1rem;
   }
 
@@ -302,7 +304,7 @@
     flex-wrap: wrap;
   }
 
-  .categories-header h2 {
+  .subcategories-header h2 {
     font-size: 1.8rem;
   }
 
@@ -315,7 +317,7 @@
     right: 15px;
   }
 
-  .categories-filtros {
+  .subcategories-filtros {
     flex-direction: column;
     align-items: stretch;
   }
@@ -333,14 +335,14 @@
     justify-content: center;
   }
 
-  .categories-table table {
+  .subcategories-table table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
   }
 
-  .categories-table th, 
-  .categories-table td {
+  .subcategories-table th, 
+  .subcategories-table td {
     font-size: 0.75rem;
     padding: 0.5rem;
   }
@@ -352,7 +354,7 @@
 }
 
 @media (min-width: 394px) and (max-width: 431px) {
-  .categories-header h2 {
+  .subcategories-header h2 {
     font-size: 1.6rem;
   }
 
@@ -366,8 +368,8 @@
     width: 100%;
   }
 
-  .categories-table th, 
-  .categories-table td {
+  .subcategories-table th, 
+  .subcategories-table td {
     font-size: 0.7rem;
   }
 
@@ -378,7 +380,7 @@
 }
 
 @media (max-width: 393px) {
-  .categories-header h2 {
+  .subcategories-header h2 {
     font-size: 1.5rem;
   }
 
@@ -392,8 +394,8 @@
     height: 2.6rem;
   }
 
-  .categories-table th, 
-  .categories-table td {
+  .subcategories-table th, 
+  .subcategories-table td {
     font-size: 0.68rem;
   }
 

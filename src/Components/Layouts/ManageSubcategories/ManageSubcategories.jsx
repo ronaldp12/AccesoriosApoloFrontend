@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import "./ManageCategories.css";
+import "./ManageSubcategories.css";
 import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome, FaUndo } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
@@ -10,8 +10,9 @@ import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterCategorieModal } from "../../Ui/RegisterCategoryModal/RegisterCategoryModal.jsx";
 import { UpdateCategoryModal } from "../../Ui/UpdateCategoryModal/UpdateCategoryModal.jsx";
+import { RegisterSubcategorieModal } from "../../Ui/RegisterSubcategoryModal/RegisterSubcategoryModal.jsx";
 
-export const ManageCategories = () => {
+export const ManageSubcategories = () => {
     const [categories, setCategories] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
@@ -22,7 +23,7 @@ export const ManageCategories = () => {
     const categoriesPerPage = 7;
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
-    const [searchName, setSearchName] = useState("");
+    const [searchId, setSearchId] = useState("");
 
     const fetchCategories = async () => {
         setIsLoading(true);
@@ -46,7 +47,7 @@ export const ManageCategories = () => {
     };
 
     const filteredCategories = categories.filter((category) =>
-        category.nombre_categoria.toLowerCase().includes(searchName.toLowerCase())
+        category.id_categoria.toString().includes(searchId)
     );
 
     const handleEditClick = (category) => {
@@ -86,28 +87,28 @@ export const ManageCategories = () => {
     const totalPages = Math.ceil(filteredCategories.length / categoriesPerPage);
 
     return (
-        <div className="categories-container">
+        <div className="subcategories-container">
             <div className="breadcrumb">
                 <FaHome onClick={() => navigate("/dashboard")} className="icono-home" />
                 <span className="breadcrumb-separator">/</span>
-                <span className="breadcrumb-actual">Categorías</span>
+                <span className="breadcrumb-actual">Subcategorías</span>
             </div>
 
-            <div className="categories-header">
-                <h2>Categorías</h2>
+            <div className="subcategories-header">
+                <h2>Subcategorías</h2>
                 <button className="btn-registrar" onClick={openRegisterModal}>
-                    Registrar Categoría
+                    Registrar Subcategoría
                 </button>
             </div>
-            <hr className="hr-categorie" />
+            <hr className="hr-subcategorie" />
 
-            <div className="categories-filtros">
+            <div className="subcategories-filtros">
                 <div className="filtro-input">
                     <input
                         type="text"
                         placeholder="Buscar por Nombre"
-                        value={searchName}
-                        onChange={(e) => setSearchName(e.target.value)}
+                        value={searchId}
+                        onChange={(e) => setSearchId(e.target.value)}
                     />
                     <FaSearch className="icono-buscar" />
                 </div>
@@ -118,13 +119,13 @@ export const ManageCategories = () => {
 
             {isLoading && (
                 <div className="tabla-loader">
-                    <img src={wheelIcon} alt="Loading..." className="manage-categories-spinner" />
-                    <p>Cargando categorías</p>
+                    <img src={wheelIcon} alt="Loading..." className="manage-subcategories-spinner" />
+                    <p>Cargando subcategorías</p>
                 </div>
             )}
 
             {!isLoading && (
-                <div className="categories-table">
+                <div className="subcategories-table">
                     <table>
                         <thead>
                             <tr>
@@ -138,7 +139,7 @@ export const ManageCategories = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentCategories.map((category) => (
+                            {currentCategories.map((category, index) => (
                                 <tr key={category.id_categoria}>
                                     <td>{category.id_categoria}</td>
                                     <td>{category.nombre_categoria}</td>
@@ -166,7 +167,7 @@ export const ManageCategories = () => {
                 </div>
             )}
 
-            <RegisterCategorieModal
+            <RegisterSubcategorieModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
                 onRegisterSuccess={fetchCategories}
@@ -185,7 +186,7 @@ export const ManageCategories = () => {
                 title="Delete category?"
                 description={
                     <>
-                        ¿Estás seguro de que deseas eliminar la categoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
+                        ¿Estás seguro de que deseas eliminar la subcategoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
                     </>
                 }
                 usuario={selectedCategory}
@@ -204,7 +205,7 @@ export const ManageCategories = () => {
                 title="Recuperar categoria ?"
                 message={
                     <>
-                        ¿Quieres restaurar la categoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
+                        ¿Quieres restaurar la subcategoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
                     </>
                 }
                 confirmText="RESTORE"

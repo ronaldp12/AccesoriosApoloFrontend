@@ -52,7 +52,9 @@ export const DashboardGerente = () => {
                         <FaBars /><span>Categorías</span>
                     </Link>
 
-                    <a href="#"><FaList /><span>Subcategorías</span></a>
+                    <Link to="/dashboard/manage-subcategories" className={location.pathname.startsWith("/dashboard/manage-subcategories") ? "active" : ""}>
+                        <FaList /><span>Subcategorías</span>
+                    </Link>
                     
                     <Link to="/dashboard/manage-supliers" className={location.pathname.startsWith("/dashboard/manage-supliers") ? "active" : ""}>
                         <FaTruck /><span>Proveedores</span>
