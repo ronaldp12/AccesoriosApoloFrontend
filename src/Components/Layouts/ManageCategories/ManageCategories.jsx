@@ -10,7 +10,8 @@ import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteMod
 import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
-import { RegisterCategorieModal } from "../../Ui/RegisterCategorieModal/RegisterCategorieModal.jsx";
+import { RegisterCategorieModal } from "../../Ui/RegisterCategoryModal/RegisterCategoryModal.jsx";
+import { UpdateCategoryModal } from "../../Ui/UpdateCategoryModal/UpdateCategoryModal.jsx";
 
 export const ManageCategories = () => {
     const [proveedores, setProveedores] = useState([]);
@@ -175,7 +176,7 @@ export const ManageCategories = () => {
                 onRegisterSuccess={fetchProveedores}
             />
 
-            <UpdateSuplierModal
+            <UpdateCategoryModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
                 nitProveedor={selectedNit}
@@ -185,10 +186,10 @@ export const ManageCategories = () => {
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={closeConfirmDeleteModal}
-                title="¿Eliminar proveedor?"
+                title="¿Eliminar categoría?"
                 description={
                     <>
-                        ¿Estás seguro de eliminar a <strong>{selectedUser?.nombreEmpresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
+                        ¿Estás seguro de eliminar la categoría <strong>{selectedUser?.nombreEmpresa}</strong> con ID <strong>{selectedUser?.nit}</strong>?
                     </>
                 }
                 usuario={selectedUser}
@@ -205,10 +206,10 @@ export const ManageCategories = () => {
                 onClose={closeConfirmRestoreModal}
                 usuario={selectedUser}
                 onConfirmSuccess={fetchProveedores}
-                title="¿Recuperar proveedor?"
+                title="¿Recuperar categoría?"
                 message={
                     <>
-                        ¿Deseas recuperar al proveedor <strong>{selectedUser?.nombreEmpresa}</strong> con NIT <strong>{selectedUser?.nit}</strong>?
+                        ¿Deseas recuperar la categoría <strong>{selectedUser?.nombreEmpresa}</strong> con ID <strong>{selectedUser?.nit}</strong>?
                     </>
                 }
                 confirmText="RECUPERAR"
