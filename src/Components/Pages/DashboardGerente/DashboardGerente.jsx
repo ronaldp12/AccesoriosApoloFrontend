@@ -41,15 +41,23 @@ export const DashboardGerente = () => {
                     <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>
                         <FaHome /><span>Inicio</span>
                     </Link>
+
                     <Link to="/dashboard/manage-users" className={location.pathname.startsWith("/dashboard/manage-users") ? "active" : ""}>
                         <FaUser /><span>Usuario</span>
                     </Link>
+
                     <a href="#"><FaBox /><span>Producto</span></a>
-                    <a href="#"><FaBars /><span>Categoría</span></a>
+
+                    <Link to="/dashboard/manage-categories" className={location.pathname.startsWith("/dashboard/manage-categories") ? "active" : ""}>
+                        <FaBars /><span>Categorías</span>
+                    </Link>
+
                     <a href="#"><FaList /><span>Subcategorías</span></a>
+                    
                     <Link to="/dashboard/manage-supliers" className={location.pathname.startsWith("/dashboard/manage-supliers") ? "active" : ""}>
                         <FaTruck /><span>Proveedores</span>
                     </Link>
+
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
                     <a href="#"><FaMagic /><span>Calcomanías</span></a>
