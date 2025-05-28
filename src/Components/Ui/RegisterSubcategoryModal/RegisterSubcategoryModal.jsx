@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import "./RegistersubcategoryModal.css";
+import "./RegisterSubcategoryModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 

@@ -11,6 +11,7 @@ import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterCategorieModal } from "../../Ui/RegisterCategoryModal/RegisterCategoryModal.jsx";
 import { UpdateCategoryModal } from "../../Ui/UpdateCategoryModal/UpdateCategoryModal.jsx";
 import { RegisterSubcategorieModal } from "../../Ui/RegisterSubcategoryModal/RegisterSubcategoryModal.jsx";
+import { UpdateSubcategoryModal } from "../../Ui/UpdateSubcategoryModal/UpdateSubcategoryModal.jsx";
 
 export const ManageSubcategories = () => {
     const [categories, setCategories] = useState([]);
@@ -173,7 +174,7 @@ export const ManageSubcategories = () => {
                 onRegisterSuccess={fetchCategories}
             />
 
-            <UpdateCategoryModal
+            <UpdateSubcategoryModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
                 idCategoria={selectedCategory?.id_categoria}
