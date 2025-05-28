@@ -1,43 +1,44 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./UpdateCategoryModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
-import { context } from "../../../Context/Context.jsx"
+import { context } from "../../../Context/Context";
 
-export const UpdateCategoryModal = ({ isOpen, onClose, nitProveedor, onUpdateSuccess }) => {
+export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
     const [formData, setFormData] = useState({
-        nit: "",
-        representante: "",
-        nombreEmpresa: "",
-        correo: "",
-        telefono: "",
-        direccion: "",
+        id_categoria_original: "",
+        nombre_categoria: "",
+        descripcion: "",
+        descuento: ""
     });
 
     useEffect(() => {
-        if (isOpen && nitProveedor) {
-            fetchProveedor();
-        }
-    }, [isOpen, nitProveedor]);
+        if (isOpen && idCategoria) fetchCategoria();
+    }, [isOpen, idCategoria]);
 
-    const fetchProveedor = async () => {
+    const fetchCategoria = async () => {
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/obtener-proveedor", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/obtener-categoria", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nit: nitProveedor }),
+                body: JSON.stringify({ id_categoria: idCategoria })
             });
             const data = await response.json();
             if (data.success) {
-                setFormData(data.proveedor);
+                setFormData({
+                    id_categoria_original: data.categoria.id_categoria,
+                    nombre_categoria: data.categoria.nombre_categoria,
+                    descripcion: data.categoria.descripcion || "",
+                    descuento: data.categoria.descuento
+                });
             } else {
-                alert(data.mensaje);
+                setErrorMessage(data.mensaje);
             }
         } catch (error) {
-            console.error("Error consultando proveedor:", error);
+            console.error("Error consultando categoría:", error);
         }
     };
 
@@ -57,29 +58,28 @@ export const UpdateCategoryModal = ({ isOpen, onClose, nitProveedor, onUpdateSuc
     const handleUpdate = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-proveedor", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-categoria", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nitOriginal: nitProveedor, ...formData }),
+                body: JSON.stringify(formData)
             });
             const data = await response.json();
             if (data.success) {
-                setSuccessMessage("Proveedor actualizado correctamente");
+                setSuccessMessage("Categoría actualizada correctamente.");
                 onUpdateSuccess();
                 setTimeout(() => {
                     setSuccessMessage("");
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(getErrorMessage(data, "Error al registrar usuario."));
+                setErrorMessage(getErrorMessage(data, "Error al actualizar categoría."));
                 setIsLoading(false);
             }
         } catch (error) {
-            console.error('Error al actualizar proveedor:', error);
-            setErrorMessage("Error al actualizar proveedor, intente nuevamente.");
+            console.error("Error al actualizar categoría:", error);
+            setErrorMessage("Error al actualizar categoría, intente nuevamente.");
             setIsLoading(false);
         }
-
     };
 
     if (!isOpen && !isClosing) return null;
@@ -87,58 +87,33 @@ export const UpdateCategoryModal = ({ isOpen, onClose, nitProveedor, onUpdateSuc
     return (
         <div className="modal-overlay-update-categorie">
             <div className={`modal-content-update-categorie ${isClosing ? "exit" : "entry"}`}>
-                <h2>Editar Proveedor</h2>
+                <h2>Editar Categoría</h2>
                 <form className="form-update-categorie">
                     <div className="group-update-categorie">
                         <div className="form-group-update-categorie">
                             <label>Nombre</label>
-                            <input type="text" name="nit" value={formData.nit} onChange={handleChange} />
+                            <input type="text" name="nombre_categoria" value={formData.nombre_categoria} onChange={handleChange} />
                         </div>
-
                         <div className="form-group-update-categorie">
                             <label>Descripción</label>
-                            <input type="text" name="representante" value={formData.representante} onChange={handleChange} />
+                            <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
                         </div>
                     </div>
-
-                    <div className="group-update-categorie">
-                        <div className="form-group-update-categorie">
-                            <label>Promciones</label>
-                            <input type="text" name="nombreEmpresa" value={formData.nombreEmpresa} onChange={handleChange} />
-                        </div>
-
-                        <div className="form-group-update-categorie">
-                            <label>Subcategorías</label>
-                            <input type="email" name="correo" value={formData.correo} onChange={handleChange} />
-                        </div>
+                    <div className="form-group-update-categorie">
+                        <label>Descuento (%)</label>
+                        <input type="number" name="descuento" value={formData.descuento} onChange={handleChange} />
                     </div>
 
                     <div className="modal-buttons-update-categorie">
-                        <button type="button" className="btn-cancelar" onClick={handleClose}>
-                            CANCELAR
-                        </button>
+                        <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>
                         <button type="button" className="btn-agregar" onClick={handleUpdate}>
-                            {isLoading ? (
-                                <img src={wheelIcon} alt="Cargando..." className="update-categorie-spinner" />
-                            ) : (
-                                <span>EDITAR</span>
-                            )}
+                            {isLoading ? <img src={wheelIcon} alt="Cargando..." className="update-categorie-spinner" /> : <span>EDITAR</span>}
                         </button>
                     </div>
                 </form>
-                {errorMessage && (
-                    <div className="status-message-update error">
-                        <span>{errorMessage}</span>
-                        <i className="bi bi-x-circle"></i>
-                    </div>
-                )}
 
-                {successMessage && (
-                    <div className="status-message-update success">
-                        <span>{successMessage}</span>
-                        <i className="bi bi-check-circle"></i>
-                    </div>
-                )}
+                {errorMessage && <div className="status-message-update error"><span>{errorMessage}</span></div>}
+                {successMessage && <div className="status-message-update success"><span>{successMessage}</span></div>}
             </div>
         </div>
     );

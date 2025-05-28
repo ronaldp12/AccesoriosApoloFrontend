@@ -146,7 +146,7 @@ export const ManageCategories = () => {
                                     <td>{category.descuento}%</td>
                                     <td>
                                         <span className={`estado ${category.estado === 1 ? "activo" : "inactivo"}`}>
-                                            {category.estado === 1 ? "Active" : "Inactive"}
+                                            {category.estado === 1 ? "Activo" : "Inactivo"}
                                         </span>
                                     </td>
                                     <td>
@@ -175,7 +175,7 @@ export const ManageCategories = () => {
             <UpdateCategoryModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
-                category={selectedCategory}
+                idCategoria={selectedCategory?.id_categoria}
                 onUpdateSuccess={fetchCategories}
             />
 
@@ -193,7 +193,7 @@ export const ManageCategories = () => {
                 endpoint="https://accesoriosapolobackend.onrender.com/eliminar-categoria"
                 method="PUT"
                 payloadKey="id_categoria"
-                confirmText="DELETE"
+                confirmText="ELIMINAR"
             />
 
             <ConfirmRestoreModal
@@ -201,7 +201,7 @@ export const ManageCategories = () => {
                 onClose={closeConfirmRestoreModal}
                 usuario={selectedCategory}
                 onConfirmSuccess={fetchCategories}
-                title="Restore category?"
+                title="Recuperar categoria ?"
                 message={
                     <>
                         ¿Quieres restaurar la categoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
