@@ -132,6 +132,7 @@ export const ManageCategories = () => {
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Descuento</th>
+                                <th>Subcategorías</th>
                                 <th>Estado</th>
                                 <th>Editar</th>
                                 <th>Eliminar</th>
@@ -144,6 +145,11 @@ export const ManageCategories = () => {
                                     <td>{category.nombre_categoria}</td>
                                     <td>{category.descripcion}</td>
                                     <td>{category.descuento}%</td>
+                                    <td>
+                                        {category.subcategorias.length > 0
+                                            ? category.subcategorias.join(", ")
+                                            : <em>Sin subcategorías</em>}
+                                    </td>
                                     <td>
                                         <span className={`estado ${category.estado === 1 ? "activo" : "inactivo"}`}>
                                             {category.estado === 1 ? "Activo" : "Inactivo"}
