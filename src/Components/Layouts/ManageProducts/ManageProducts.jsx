@@ -10,6 +10,7 @@ import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterSubcategorieModal } from "../../Ui/RegisterSubcategoryModal/RegisterSubcategoryModal.jsx";
 import { UpdateSubcategoryModal } from "../../Ui/UpdateSubcategoryModal/UpdateSubcategoryModal.jsx";
+import { RegisterProductModal } from "../../Ui/RegisterProductModal/RegisterProductModal.jsx";
 
 export const ManageProducts = () => {
     const [subcategories, setSubcategories] = useState([]);
@@ -129,12 +130,17 @@ export const ManageProducts = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Id</th>
+                                <th>Referencia</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
-                                <th>Descuento</th>
-                                <th>Categoría</th>
+                                <th>Talla</th>
+                                <th>Stock</th>
                                 <th>Imagen</th>
+                                <th>Precio</th>
+                                <th>Descuento</th>
+                                <th>Precio descuento</th>
+                                <th>Categoría</th>
+                                <th>Subcategoría</th>
                                 <th>Estado</th>
                                 <th>Editar</th>
                                 <th>Eliminar</th>
@@ -177,7 +183,7 @@ export const ManageProducts = () => {
                 </div>
             )}
 
-            <RegisterSubcategorieModal
+            <RegisterProductModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
                 onRegisterSuccess={fetchSubcategories}

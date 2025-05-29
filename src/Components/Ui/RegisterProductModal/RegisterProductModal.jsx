@@ -1,14 +1,16 @@
 import React, { useState, useContext, useEffect } from "react";
-import "./RegisterSubcategoryModal.css";
+import "./RegisterProductModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
+import { DescriptionProductModal } from "../DescriptionProductModal/DescriptionProductModal";
 
-export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }) => {
+export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
-    const [categorias, setCategorias] = useState([]); 
+    const [categorias, setCategorias] = useState([]);
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         nombre_subcategoria: "",
@@ -106,13 +108,13 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
     };
 
     return (
-        <div className="modal-overlay-register-subcategory">
-            <div className={`modal-content-register-subcategory ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar subcategoría</h2>
-                <form className="form-register-subcategory" onSubmit={handleSubmit}>
-                    <div className="group-register-subcategory">
-                        <div className="form-group-register-subcategory">
-                            <label>Nombre de subcategoría *</label>
+        <div className="modal-overlay-register-product">
+            <div className={`modal-content-register-product ${isClosing ? "exit" : "entry"}`}>
+                <h2>Registrar producto</h2>
+                <form className="form-register-product" onSubmit={handleSubmit}>
+                    <div className="group-register-product">
+                        <div className="form-group-register-product">
+                            <label>Referencia *</label>
                             <input
                                 type="text"
                                 name="nombre_subcategoria"
@@ -123,8 +125,40 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
                             />
                         </div>
 
-                        <div className="form-group-register-subcategory">
+                        <div className="form-group-register-product">
+                            <label>Nombre del producto *</label>
+                            <input
+                                type="text"
+                                name="nombre_subcategoria"
+                                placeholder="Nombre de la subcategoría"
+                                value={formData.nombre_subcategoria}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+
+                    </div>
+
+                    <div className="group-register-product">
+
+                        <div className="form-group-register-product">
                             <label>Descripción</label>
+                            <button
+                                type="button"
+                                className="btn-description-modal"
+                                onClick={() => setIsDescriptionModalOpen(true)}
+                            >
+                                Escribe la descripción
+                            </button>
+                            {formData.descripcion && (
+                                <p className="preview-descripcion">{formData.descripcion.slice(0, 50)}...</p>
+                            )}
+                        </div>
+
+
+                        <div className="form-group-register-product">
+                            <label>Talla</label>
                             <input
                                 type="text"
                                 name="descripcion"
@@ -135,8 +169,34 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
                         </div>
                     </div>
 
-                    <div className="group-register-subcategory">
-                        <div className="form-group-register-subcategory">
+                    <div className="group-register-product">
+                        <div className="form-group-register-product">
+                            <label>Imagenes Producto *</label>
+                            <input
+                                type="file"
+                                name="imagen"
+                                accept="image/*"
+                                multiple
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="form-group-register-product">
+                            <label>Precio *</label>
+                            <input
+                                type="file"
+                                name="imagen"
+                                accept="image/*"
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+
+                    </div>
+
+                    <div className="group-register-product">
+                        <div className="form-group-register-product">
                             <label>Descuento *</label>
                             <input
                                 type="number"
@@ -150,20 +210,15 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
                         </div>
                         <p>%</p>
 
-                        <div className="form-group-register-subcategory">
-                            <label>Imagen subcategoría *</label>
-                            <input
-                                type="file"
-                                name="imagen"
-                                accept="image/*"
-                                onChange={handleChange}
-                                required
-                            />
+                        <div className="form-group-register-product">
+                            <label>Precio descuento *</label>
+                            <label className="discount-price"> Cálculo precio con descuento</label>
                         </div>
+
                     </div>
 
-                    <div className="group-register-subcategory">
-                        <div className="form-group-register-subcategory">
+                    <div className="group-register-product">
+                        <div className="form-group-register-product">
                             <label>Categoría que pertenece *</label>
                             <select
                                 name="FK_id_categoria"
@@ -179,16 +234,37 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
                                 ))}
                             </select>
                         </div>
+
+
+
+                        <div className="form-group-register-product">
+                            <label>Subcategoría que pertenece *</label>
+                            <select
+                                name="FK_id_categoria"
+                                value={formData.FK_id_categoria}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Selecciona una subcategoría</option>
+                                {categorias.map((categoria) => (
+                                    <option key={categoria.id_categoria} value={categoria.id_categoria}>
+                                        {categoria.nombre_categoria}
+                                    </option>
+                                ))}
+                            </select>
+
+                        </div>
+
                     </div>
 
 
-                    <div className="modal-buttons-register-subcategory">
+                    <div className="modal-buttons-register-product">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>
                         <button type="submit" className="btn-agregar">
                             {isLoading ? (
-                                <img src={wheelIcon} alt="Cargando..." className="register-subcategory-spinner" />
+                                <img src={wheelIcon} alt="Cargando..." className="register-product-spinner" />
                             ) : (
                                 <span>REGISTRAR</span>
                             )}
@@ -210,6 +286,13 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
                     </div>
                 )}
             </div>
+            <DescriptionProductModal
+                isOpen={isDescriptionModalOpen}
+                onClose={() => setIsDescriptionModalOpen(false)}
+                initialValue={formData.descripcion}
+                onSave={(value) => setFormData((prev) => ({ ...prev, descripcion: value }))}
+            />
+
         </div>
     );
 };
