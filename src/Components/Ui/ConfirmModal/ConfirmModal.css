@@ -1,0 +1,122 @@
+.confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.confirm-modal {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.confirm-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.confirm-message {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-cancel, .btn-confirm {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 7rem;
+}
+
+.btn-cancel {
+    background: #ddd;
+    color: #333;
+}
+
+.btn-cancel:hover {
+    background: #bbb;
+}
+
+.btn-confirm {
+    background: #e63946;
+    color: #fff;
+}
+
+.btn-confirm:hover {
+    background: #c92c3a;
+}
+
+@media (max-width: 820px) {
+    .confirm-modal {
+        padding: 1.8rem;
+    }
+
+    .confirm-title {
+        font-size: 1.4rem;
+    }
+
+    .confirm-message {
+        font-size: 0.95rem;
+    }
+
+    .btn-cancel, .btn-confirm {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .confirm-actions {
+        flex-direction: column;
+    }
+
+    .btn-cancel, .btn-confirm {
+        width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+    .confirm-title {
+        font-size: 1.3rem;
+    }
+
+    .confirm-message {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 393px) {
+    .confirm-modal {
+        padding: 1.5rem;
+    }
+
+    .confirm-title {
+        font-size: 1.2rem;
+    }
+
+    .confirm-message {
+        font-size: 0.85rem;
+    }
+}

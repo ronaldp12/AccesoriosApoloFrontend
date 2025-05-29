@@ -14,6 +14,7 @@ export const Provider = ({ children }) => {
     const [isIntermediateLoading, setIsIntermediateLoading] = useState(false);
     const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || null);
     const [nameRol, setNameRol] = useState(localStorage.getItem("nameRol") || "");
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
@@ -81,7 +82,8 @@ export const Provider = ({ children }) => {
             getErrorMessage,
             avatar, setAvatar,
             nameRol, setNameRol,
-            validatePassword, formatPhoneNumber
+            validatePassword, formatPhoneNumber,
+            isLoggingOut, setIsLoggingOut
 
         }}>
             {children}

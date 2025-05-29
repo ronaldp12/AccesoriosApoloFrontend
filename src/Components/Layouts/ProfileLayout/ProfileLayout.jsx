@@ -5,12 +5,18 @@ import imgUser from '../../../assets/icons/user.png';
 import { useState } from 'react';
 import { useContext } from 'react';
 import { context } from '../../../Context/Context';
+import { ConfirmModal } from '../../Ui/ConfirmModal/ConfirmModal';
 
 export const ProfileLayout = () => {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
     const { name, handleLogout, avatar } = useContext(context);
     const location = useLocation();
+
+    const [isConfirmLogoutOpen, setIsConfirmLogoutOpen] = useState(false);
+
+    const openConfirmLogout = () => setIsConfirmLogoutOpen(true);
+    const closeConfirmLogout = () => setIsConfirmLogoutOpen(false);
 
     return (
         <div className="profile-container">
@@ -37,11 +43,8 @@ export const ProfileLayout = () => {
                     >Lista de deseos
                     </button>
 
-                    <button className='logout' onClick={() => {
-                        handleLogout();
-                        navigate('/')
-                    }
-                    }> <span><i className="bi bi-box-arrow-left"></i></span>Salir
+                    <button className='logout' onClick={ openConfirmLogout }
+                    > <span><i className="bi bi-box-arrow-left"></i></span>Salir
                     </button>
                 </nav>
             </aside>
@@ -49,6 +52,18 @@ export const ProfileLayout = () => {
             <main className="profile-content">
                 <Outlet />
             </main>
+
+            <ConfirmModal
+                isOpen={isConfirmLogoutOpen}
+                onClose={closeConfirmLogout}
+                title="¿Cerrar sesión?"
+                message="¿Estás seguro de que deseas cerrar tu sesión y salir del sistema?"
+                confirmText="Salir"
+                onConfirm={() => {
+                    handleLogout();
+                    navigate("/");
+                }}
+            />
         </div>
     );
 };

@@ -123,12 +123,10 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                 name="telefono"
                                 pattern="[0-9]*"
                                 inputMode="numeric"
-                                value={formatPhoneNumber(phone)}
+                                value={phone}
                                 onChange={(e) => {
-                                    const rawValue = e.target.value.replace(/\D/g, "").slice(0, 10);
-                                    setPhone(rawValue);
-                                    setFormData(prev => ({ ...prev, telefono: rawValue }));
-                                    setErrorMessage("");
+                                    
+                                    setPhone(phone);
                                 }}
                             />
                         </div>

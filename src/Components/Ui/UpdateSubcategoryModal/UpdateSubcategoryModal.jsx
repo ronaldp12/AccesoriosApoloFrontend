@@ -91,7 +91,7 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idCategoria, onUpdateS
                 <form className="form-update-subcategorie">
                     <div className="group-update-subcategorie">
                         <div className="form-group-update-subcategorie">
-                            <label>Nombre</label>
+                            <label>Nombre de Subcategoría</label>
                             <input type="text" name="nombre_categoria" value={formData.nombre_categoria} onChange={handleChange} />
                         </div>
                         <div className="form-group-update-subcategorie">
@@ -99,10 +99,23 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idCategoria, onUpdateS
                             <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
                         </div>
                     </div>
-                    <div className="form-group-update-subcategorie">
-                        <label>Descuento (%)</label>
-                        <input type="number" name="descuento" value={formData.descuento} onChange={handleChange} />
+
+                    <div className="group-update-subcategorie">
+                        <div className="form-group-update-subcategorie">
+                            <label>Descuento (%)</label>
+                            <input type="number" name="descuento" value={formData.descuento} onChange={handleChange} />
+
+                        </div>
+                        <div className="form-group-update-subcategorie">
+                            <label>Imagen Subcategoría</label>
+                            <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
+                        </div>
                     </div>
+                    <div className="form-group-update-subcategorie">
+                            <label>Nombre categoría que pertenece</label>
+                            <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
+                        </div>
+
 
                     <div className="modal-buttons-update-subcategorie">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>

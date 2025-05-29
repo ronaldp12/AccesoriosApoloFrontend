@@ -184,7 +184,7 @@ export const ManageSubcategories = () => {
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={closeConfirmDeleteModal}
-                title="Delete category?"
+                title="¿Eliminar subcategoría?"
                 description={
                     <>
                         ¿Estás seguro de que deseas eliminar la subcategoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
@@ -203,13 +203,13 @@ export const ManageSubcategories = () => {
                 onClose={closeConfirmRestoreModal}
                 usuario={selectedCategory}
                 onConfirmSuccess={fetchCategories}
-                title="Recuperar categoria ?"
+                title="Recuperar subcategoria ?"
                 message={
                     <>
                         ¿Quieres restaurar la subcategoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
                     </>
                 }
-                confirmText="RESTORE"
+                confirmText="RECUPERAR"
                 endpoint="https://accesoriosapolobackend.onrender.com/reactivar-categoria"
                 method="PUT"
                 payloadKey="id_categoria"

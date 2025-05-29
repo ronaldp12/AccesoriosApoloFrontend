@@ -182,7 +182,7 @@ export const ManageCategories = () => {
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={closeConfirmDeleteModal}
-                title="Delete category?"
+                title="¿Eliminar categoria ?"
                 description={
                     <>
                         ¿Estás seguro de que deseas eliminar la categoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
@@ -201,13 +201,13 @@ export const ManageCategories = () => {
                 onClose={closeConfirmRestoreModal}
                 usuario={selectedCategory}
                 onConfirmSuccess={fetchCategories}
-                title="Recuperar categoria ?"
+                title="¿Recuperar categoria ?"
                 message={
                     <>
                         ¿Quieres restaurar la categoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
                     </>
                 }
-                confirmText="RESTORE"
+                confirmText="RECUPERAR"
                 endpoint="https://accesoriosapolobackend.onrender.com/reactivar-categoria"
                 method="PUT"
                 payloadKey="id_categoria"

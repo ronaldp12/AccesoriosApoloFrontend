@@ -6,12 +6,19 @@ import { FaHome, FaUser, FaBox, FaBars, FaList, FaTruck, FaMoneyBill, FaClipboar
 import { Link } from "react-router-dom";
 import { context } from "../../../Context/Context.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ConfirmModal } from "../../Ui/ConfirmModal/ConfirmModal.jsx";
 
 export const DashboardGerente = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { name, nameRol, handleLogout } = useContext(context);
     const navigate = useNavigate();
     const location = useLocation();
+
+    const [isConfirmLogoutOpen, setIsConfirmLogoutOpen] = useState(false);
+
+    const openConfirmLogout = () => setIsConfirmLogoutOpen(true);
+    const closeConfirmLogout = () => setIsConfirmLogoutOpen(false);
+
 
     const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -55,7 +62,7 @@ export const DashboardGerente = () => {
                     <Link to="/dashboard/manage-subcategories" className={location.pathname.startsWith("/dashboard/manage-subcategories") ? "active" : ""}>
                         <FaList /><span>Subcategorías</span>
                     </Link>
-                    
+
                     <Link to="/dashboard/manage-supliers" className={location.pathname.startsWith("/dashboard/manage-supliers") ? "active" : ""}>
                         <FaTruck /><span>Proveedores</span>
                     </Link>
@@ -63,10 +70,9 @@ export const DashboardGerente = () => {
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
                     <a href="#"><FaMagic /><span>Calcomanías</span></a>
-                    <a href="#" onClick={() => {
-                        handleLogout();
-                        navigate("/")
-                    }}><FaSignOutAlt /><span>Salir</span></a>
+
+                    <a href="#" onClick={openConfirmLogout}
+                    ><FaSignOutAlt /><span>Salir</span></a>
                 </div>
 
                 <div className="bottom-profile">
@@ -88,6 +94,19 @@ export const DashboardGerente = () => {
             <button className={`toggle-btn ${isOpen ? "open" : ""}`} onClick={toggleSidebar}>
                 <span><iconify-icon icon="fluent:ios-arrow-24-filled" /></span>
             </button>
+
+            <ConfirmModal
+                isOpen={isConfirmLogoutOpen}
+                onClose={closeConfirmLogout}
+                title="¿Cerrar sesión?"
+                message="¿Estás seguro de que deseas cerrar tu sesión y salir del sistema?"
+                confirmText="Salir"
+                onConfirm={() => {
+                    handleLogout();
+                    navigate("/");
+                }}
+            />
+
 
         </div>
     );
