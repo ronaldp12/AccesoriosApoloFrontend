@@ -149,7 +149,6 @@ export const ManageSubcategories = () => {
                                     <td>{subcategory.descuento}%</td>
                                     <td>{subcategory.nombre_categoria}</td>
                                     <td>
-                                        {console.log(subcategory.url_imagen)}
                                         <img
                                             src={subcategory.url_imagen}
                                             alt={`Imagen de ${subcategory.nombre_subcategoria}`}
@@ -185,6 +184,7 @@ export const ManageSubcategories = () => {
             />
 
             <UpdateSubcategoryModal
+                key={selectedSubcategory?.id_subcategoria || "nuevo"}
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
                 idSubcategoria={selectedSubcategory?.id_subcategoria}

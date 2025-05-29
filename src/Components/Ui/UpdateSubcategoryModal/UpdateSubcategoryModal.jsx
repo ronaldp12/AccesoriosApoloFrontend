@@ -3,48 +3,59 @@ import "./UpdateSubcategoryModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
 
-export const UpdateSubcategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSuccess }) => {
+export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpdateSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
+    const [categorias, setCategorias] = useState([]);
     const [formData, setFormData] = useState({
-        id_categoria_original: "",
-        nombre_categoria: "",
+        nombre_subcategoria: "",
         descripcion: "",
-        descuento: ""
+        descuento: "",
+        FK_id_categoria: "",
+        imagen: null
     });
 
     useEffect(() => {
-        if (isOpen && idCategoria) fetchCategoria();
-    }, [isOpen, idCategoria]);
+        if (isOpen && idSubcategoria) {
+            fetchSubcategoria();
+        }
+    }, [isOpen, idSubcategoria]);
 
-    const fetchCategoria = async () => {
+    const fetchSubcategoria = async () => {
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/obtener-categoria", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/obtener-subcategoria", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id_categoria: idCategoria })
+                body: JSON.stringify({ id_subcategoria: idSubcategoria })
             });
             const data = await response.json();
+
             if (data.success) {
                 setFormData({
-                    id_categoria_original: data.categoria.id_categoria,
-                    nombre_categoria: data.categoria.nombre_categoria,
-                    descripcion: data.categoria.descripcion || "",
-                    descuento: data.categoria.descuento
+                    nombre_subcategoria: data.subcategoria.nombre_subcategoria,
+                    descripcion: data.subcategoria.descripcion || "",
+                    descuento: data.subcategoria.descuento,
+                    FK_id_categoria: data.subcategoria.FK_id_categoria,
+                    imagen: null
                 });
+                setCategorias(data.categorias);
             } else {
                 setErrorMessage(data.mensaje);
             }
         } catch (error) {
-            console.error("Error consultando categoría:", error);
+            console.error("Error consultando subcategoría:", error);
         }
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+        const { name, value, files } = e.target;
+        if (name === "imagen") {
+            setFormData((prev) => ({ ...prev, imagen: files[0] }));
+        } else {
+            setFormData((prev) => ({ ...prev, [name]: value }));
+        }
     };
 
     const handleClose = () => {
@@ -58,26 +69,36 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idCategoria, onUpdateS
     const handleUpdate = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-categoria", {
+            const updateData = new FormData();
+            updateData.append("id_subcategoria", idSubcategoria);
+            updateData.append("nombre_subcategoria", formData.nombre_subcategoria);
+            updateData.append("descripcion", formData.descripcion);
+            updateData.append("descuento", formData.descuento);
+            updateData.append("FK_id_categoria", formData.FK_id_categoria);
+            if (formData.imagen) {
+                updateData.append("imagen", formData.imagen);
+            }
+
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-subcategoria", {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                body: updateData
             });
+
             const data = await response.json();
             if (data.success) {
-                setSuccessMessage("Categoría actualizada correctamente.");
+                setSuccessMessage("Subcategoría actualizada correctamente.");
                 onUpdateSuccess();
                 setTimeout(() => {
                     setSuccessMessage("");
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(getErrorMessage(data, "Error al actualizar categoría."));
+                setErrorMessage(getErrorMessage(data, "Error al actualizar subcategoría."));
                 setIsLoading(false);
             }
         } catch (error) {
-            console.error("Error al actualizar categoría:", error);
-            setErrorMessage("Error al actualizar categoría, intente nuevamente.");
+            console.error("Error al actualizar subcategoría:", error);
+            setErrorMessage("Error al actualizar subcategoría, intente nuevamente.");
             setIsLoading(false);
         }
     };
@@ -92,7 +113,7 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idCategoria, onUpdateS
                     <div className="group-update-subcategorie">
                         <div className="form-group-update-subcategorie">
                             <label>Nombre de Subcategoría</label>
-                            <input type="text" name="nombre_categoria" value={formData.nombre_categoria} onChange={handleChange} />
+                            <input type="text" name="nombre_subcategoria" value={formData.nombre_subcategoria} onChange={handleChange} />
                         </div>
                         <div className="form-group-update-subcategorie">
                             <label>Descripción</label>
@@ -104,18 +125,24 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idCategoria, onUpdateS
                         <div className="form-group-update-subcategorie">
                             <label>Descuento (%)</label>
                             <input type="number" name="descuento" value={formData.descuento} onChange={handleChange} />
-
                         </div>
                         <div className="form-group-update-subcategorie">
-                            <label>Imagen Subcategoría</label>
-                            <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
+                            <label>Imagen</label>
+                            <input type="file" name="imagen" onChange={handleChange} />
                         </div>
                     </div>
-                    <div className="form-group-update-subcategorie">
-                            <label>Nombre categoría que pertenece</label>
-                            <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
-                        </div>
 
+                    <div className="form-group-update-subcategorie">
+                        <label>Categoría a la que pertenece</label>
+                        <select name="FK_id_categoria" value={formData.FK_id_categoria} onChange={handleChange}>
+                            <option value="">Selecciona una categoría</option>
+                            {categorias.map((categoria) => (
+                                <option key={categoria.id_categoria} value={categoria.id_categoria}>
+                                    {categoria.nombre_categoria}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
                     <div className="modal-buttons-update-subcategorie">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>
