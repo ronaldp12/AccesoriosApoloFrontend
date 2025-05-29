@@ -1,10 +1,10 @@
-.subcategories-container {
+.products-manage-container {
     padding-left: 1rem;
     background: #fff;
     position: relative;
 }
 
-.subcategories-header {
+.products-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,13 +46,13 @@
     color: #014aad;
 }
 
-.subcategories-header h2 {
+.products-header h2 {
     font-size: 2.3rem;
     color: #333;
     margin-left: 2rem;
 }
 
-.hr-subcategorie {
+.hr-product {
     width: 100%;
     margin: 0.6em;
     color: #e7e7e7;
@@ -83,7 +83,7 @@
     background: #073678;
 }
 
-.subcategories-filtros {
+.products-filtros {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -147,29 +147,29 @@
     font-size: 1rem;
 }
 
-.subcategories-table table {
+.products-table table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.subcategories-table th,
-.subcategories-table td {
+.products-table th,
+.products-table td {
     padding: 0.8rem;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 0.9rem;
 }
 
-.subcategories-table th {
+.products-table th {
     background: #f5f5f5;
     color: #333;
 }
 
-.subcategories-table th{
+.products-table th{
     text-align: left;
 }
 
-.subcategories-table td{
+.products-table td{
     text-align: left;
 }
 
@@ -220,7 +220,7 @@
   align-items: center;
 }
 
-.manage-subcategories-spinner {
+.manage-products-spinner {
   width: 80px;
   height: 80px;
   animation: girar 1s linear infinite;
@@ -235,7 +235,7 @@
   }
 }
 
-.subcategories-img {
+.products-img {
   width: auto;
   height: 50px;
   object-fit: cover;
@@ -243,13 +243,13 @@
 }
 
 @media (max-width: 820px) {
-  .subcategories-header {
+  .products-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
 
-  .subcategories-header h2 {
+  .products-header h2 {
     margin-left: 0;
   }
 
@@ -258,7 +258,7 @@
     margin-left: 0;
   }
 
-  .subcategories-filtros {
+  .products-filtros {
     flex-wrap: wrap;
     gap: 0.8rem;
   }
@@ -288,8 +288,8 @@
     height: auto;
   }
 
-  .subcategories-table th,
-  .subcategories-table td {
+  .products-table th,
+  .products-table td {
     padding: 0.6rem;
     font-size: 0.85rem;
   }
@@ -301,7 +301,7 @@
 }
 
 @media (min-width: 432px) and (max-width: 480px) {
-  .subcategories-container {
+  .products-container {
     padding: 1rem;
   }
 
@@ -310,7 +310,7 @@
     flex-wrap: wrap;
   }
 
-  .subcategories-header h2 {
+  .products-header h2 {
     font-size: 1.8rem;
   }
 
@@ -323,7 +323,7 @@
     right: 15px;
   }
 
-  .subcategories-filtros {
+  .products-filtros {
     flex-direction: column;
     align-items: stretch;
   }
@@ -341,14 +341,14 @@
     justify-content: center;
   }
 
-  .subcategories-table table {
+  .products-table table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
   }
 
-  .subcategories-table th, 
-  .subcategories-table td {
+  .products-table th, 
+  .products-table td {
     font-size: 0.75rem;
     padding: 0.5rem;
   }
@@ -360,7 +360,7 @@
 }
 
 @media (min-width: 394px) and (max-width: 431px) {
-  .subcategories-header h2 {
+  .products-header h2 {
     font-size: 1.6rem;
   }
 
@@ -374,8 +374,8 @@
     width: 100%;
   }
 
-  .subcategories-table th, 
-  .subcategories-table td {
+  .products-table th, 
+  .products-table td {
     font-size: 0.7rem;
   }
 
@@ -386,7 +386,7 @@
 }
 
 @media (max-width: 393px) {
-  .subcategories-header h2 {
+  .products-header h2 {
     font-size: 1.5rem;
   }
 
@@ -400,8 +400,8 @@
     height: 2.6rem;
   }
 
-  .subcategories-table th, 
-  .subcategories-table td {
+  .products-table th, 
+  .products-table td {
     font-size: 0.68rem;
   }
 

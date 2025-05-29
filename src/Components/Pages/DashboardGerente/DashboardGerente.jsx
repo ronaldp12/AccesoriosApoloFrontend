@@ -53,7 +53,9 @@ export const DashboardGerente = () => {
                         <FaUser /><span>Usuario</span>
                     </Link>
 
-                    <a href="#"><FaBox /><span>Producto</span></a>
+                    <Link to="/dashboard/manage-products" className={location.pathname.startsWith("/dashboard/manage-products") ? "active" : ""}>
+                        <FaBox /><span>Producto</span>
+                    </Link>
 
                     <Link to="/dashboard/manage-categories" className={location.pathname.startsWith("/dashboard/manage-categories") ? "active" : ""}>
                         <FaBars /><span>Categorías</span>

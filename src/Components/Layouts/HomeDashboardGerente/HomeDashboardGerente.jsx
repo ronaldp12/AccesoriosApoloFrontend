@@ -12,7 +12,7 @@ export const HomeDashboardGerente = () => {
 
     const modules = [
         { label: "USUARIOS", icon: <FaUser />, route: "/dashboard/manage-users" },
-        { label: "PRODUCTO", icon: <FaBox /> },
+        { label: "PRODUCTO", icon: <FaBox />, route: "/dashboard/manage-products"  },
         { label: "CATEGORÍA", icon: <FaBars />, route: "/dashboard/manage-categories" },
         { label: "SUBCATEGORÍA", icon: <FaList />, route: "/dashboard/manage-subcategories" },
         { label: "PROVEEDORES", icon: <FaTruck />, route: "/dashboard/manage-supliers", roles: ["gerente"] },
