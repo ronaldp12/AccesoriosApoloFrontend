@@ -82,9 +82,10 @@ export const VerifyAccount = () => {
                 setUserLogin(data.usuario.nombre);
                 setToken(data.token);
                 setName(data.usuario.nombre);
-                setNameRol("cliente")
+                setNameRol(data.usuario.rol)
+                console.log("Rol:", data.usuario.rol)
 
-                localStorage.setItem("nameRol", "cliente");
+                localStorage.setItem("nameRol", data.usuario.rol);
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
 

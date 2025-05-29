@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ManageSubcategories.css";
-import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome, FaUndo } from "react-icons/fa";
+import { FaSearch, FaHome, FaEdit, FaTrash, FaUndo } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination.jsx";
@@ -8,37 +8,36 @@ import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteMod
 import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
-import { RegisterCategorieModal } from "../../Ui/RegisterCategoryModal/RegisterCategoryModal.jsx";
-import { UpdateCategoryModal } from "../../Ui/UpdateCategoryModal/UpdateCategoryModal.jsx";
 import { RegisterSubcategorieModal } from "../../Ui/RegisterSubcategoryModal/RegisterSubcategoryModal.jsx";
 import { UpdateSubcategoryModal } from "../../Ui/UpdateSubcategoryModal/UpdateSubcategoryModal.jsx";
 
 export const ManageSubcategories = () => {
-    const [categories, setCategories] = useState([]);
+    const [subcategories, setSubcategories] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedSubcategory, setSelectedSubcategory] = useState(null);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const categoriesPerPage = 7;
+    const subcategoriesPerPage = 7;
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
-    const [searchId, setSearchId] = useState("");
+    const [searchName, setSearchName] = useState("");
 
-    const fetchCategories = async () => {
+    const fetchSubcategories = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/categorias");
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/subcategorias");
             if (!response.ok) {
-                throw new Error("Error al obtener categorias");
+                throw new Error("Error al obtener subcategorías");
             }
 
             const data = await response.json();
+            console.log(data.subcategorias);
             if (data.success) {
-                setCategories(data.categorias);
+                setSubcategories(data.subcategorias);
             } else {
-                console.error("Error en la respuesta al obtener categorías");
+                console.error("Error en la respuesta al obtener subcategorías");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -47,45 +46,45 @@ export const ManageSubcategories = () => {
         }
     };
 
-    const filteredCategories = categories.filter((category) =>
-        category.id_categoria.toString().includes(searchId)
+    const filteredSubcategories = subcategories.filter((subcategory) =>
+        subcategory.nombre_subcategoria.toLowerCase().includes(searchName.toLowerCase())
     );
 
-    const handleEditClick = (category) => {
-        setSelectedCategory(category);
+    const handleEditClick = (subcategory) => {
+        setSelectedSubcategory(subcategory);
         setIsModalUpdateOpen(true);
     };
-
-    useEffect(() => {
-        fetchCategories();
-    }, []);
 
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
 
-    const openConfirmDeleteModal = (category) => {
-        setSelectedCategory(category);
+    const openConfirmDeleteModal = (subcategory) => {
+        setSelectedSubcategory(subcategory);
         setIsConfirmDeleteOpen(true);
     };
     const closeConfirmDeleteModal = () => {
         setIsConfirmDeleteOpen(false);
-        setSelectedCategory(null);
+        setSelectedSubcategory(null);
     };
 
-    const openConfirmRestoreModal = (category) => {
-        setSelectedCategory(category);
+    const openConfirmRestoreModal = (subcategory) => {
+        setSelectedSubcategory(subcategory);
         setIsConfirmRestoreOpen(true);
     };
     const closeConfirmRestoreModal = () => {
         setIsConfirmRestoreOpen(false);
-        setSelectedCategory(null);
+        setSelectedSubcategory(null);
     };
 
-    const indexLastCategory = currentPage * categoriesPerPage;
-    const indexFirstCategory = indexLastCategory - categoriesPerPage;
-    const currentCategories = filteredCategories.slice(indexFirstCategory, indexLastCategory);
-    const totalPages = Math.ceil(filteredCategories.length / categoriesPerPage);
+    const indexLast = currentPage * subcategoriesPerPage;
+    const indexFirst = indexLast - subcategoriesPerPage;
+    const currentSubcategories = filteredSubcategories.slice(indexFirst, indexLast);
+    const totalPages = Math.ceil(filteredSubcategories.length / subcategoriesPerPage);
+
+    useEffect(() => {
+        fetchSubcategories();
+    }, []);
 
     return (
         <div className="subcategories-container">
@@ -108,13 +107,13 @@ export const ManageSubcategories = () => {
                     <input
                         type="text"
                         placeholder="Buscar por Nombre"
-                        value={searchId}
-                        onChange={(e) => setSearchId(e.target.value)}
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
                     />
                     <FaSearch className="icono-buscar" />
                 </div>
                 <div className="img-filtro">
-                    <img src={img1} alt="img1-manage" />
+                    <img src={img1} alt="img-manage" />
                 </div>
             </div>
 
@@ -130,35 +129,46 @@ export const ManageSubcategories = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Id Categoría</th>
+                                <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Descuento</th>
+                                <th>Categoría</th>
+                                <th>Imagen</th>
                                 <th>Estado</th>
                                 <th>Editar</th>
                                 <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentCategories.map((category, index) => (
-                                <tr key={category.id_categoria}>
-                                    <td>{category.id_categoria}</td>
-                                    <td>{category.nombre_categoria}</td>
-                                    <td>{category.descripcion}</td>
-                                    <td>{category.descuento}%</td>
+                            {currentSubcategories.map((subcategory) => (
+                                <tr key={subcategory.id_subcategoria}>
+                                    <td>{subcategory.id_subcategoria}</td>
+                                    <td>{subcategory.nombre_subcategoria}</td>
+                                    <td>{subcategory.descripcion}</td>
+                                    <td>{subcategory.descuento}%</td>
+                                    <td>{subcategory.nombre_categoria}</td>
                                     <td>
-                                        <span className={`estado ${category.estado === 1 ? "activo" : "inactivo"}`}>
-                                            {category.estado === 1 ? "Activo" : "Inactivo"}
+                                        {console.log(subcategory.url_imagen)}
+                                        <img
+                                            src={subcategory.url_imagen}
+                                            alt={`Imagen de ${subcategory.nombre_subcategoria}`}
+                                            className="subcategories-img"
+                                        />
+                                    </td>
+                                    <td>
+                                        <span className={`estado ${subcategory.estado === 1 ? "activo" : "inactivo"}`}>
+                                            {subcategory.estado === 1 ? "Activo" : "Inactivo"}
                                         </span>
                                     </td>
                                     <td>
-                                        <FaEdit onClick={() => handleEditClick(category)} className="icono-editar" />
+                                        <FaEdit onClick={() => handleEditClick(subcategory)} className="icono-editar" />
                                     </td>
                                     <td>
-                                        {category.estado === 1 ? (
-                                            <FaTrash onClick={() => openConfirmDeleteModal(category)} className="icono-delete" />
+                                        {subcategory.estado === 1 ? (
+                                            <FaTrash onClick={() => openConfirmDeleteModal(subcategory)} className="icono-delete" />
                                         ) : (
-                                            <FaUndo onClick={() => openConfirmRestoreModal(category)} className="icono-restore" />
+                                            <FaUndo onClick={() => openConfirmRestoreModal(subcategory)} className="icono-restore" />
                                         )}
                                     </td>
                                 </tr>
@@ -171,14 +181,14 @@ export const ManageSubcategories = () => {
             <RegisterSubcategorieModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
-                onRegisterSuccess={fetchCategories}
+                onRegisterSuccess={fetchSubcategories}
             />
 
             <UpdateSubcategoryModal
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
-                idCategoria={selectedCategory?.id_categoria}
-                onUpdateSuccess={fetchCategories}
+                idSubcategoria={selectedSubcategory?.id_subcategoria}
+                onUpdateSuccess={fetchSubcategories}
             />
 
             <ConfirmDeleteModal
@@ -187,32 +197,32 @@ export const ManageSubcategories = () => {
                 title="¿Eliminar subcategoría?"
                 description={
                     <>
-                        ¿Estás seguro de que deseas eliminar la subcategoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
+                        ¿Estás seguro de que deseas eliminar la subcategoría <strong>{selectedSubcategory?.nombre_subcategoria}</strong> con ID <strong>{selectedSubcategory?.id_subcategoria}</strong>?
                     </>
                 }
-                usuario={selectedCategory}
-                onConfirmSuccess={fetchCategories}
-                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-categoria"
+                usuario={selectedSubcategory}
+                onConfirmSuccess={fetchSubcategories}
+                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-subcategoria"
                 method="PUT"
-                payloadKey="id_categoria"
+                payloadKey="id_subcategoria"
                 confirmText="ELIMINAR"
             />
 
             <ConfirmRestoreModal
                 isOpen={isConfirmRestoreOpen}
                 onClose={closeConfirmRestoreModal}
-                usuario={selectedCategory}
-                onConfirmSuccess={fetchCategories}
-                title="Recuperar subcategoria ?"
+                usuario={selectedSubcategory}
+                onConfirmSuccess={fetchSubcategories}
+                title="¿Recuperar subcategoría?"
                 message={
                     <>
-                        ¿Quieres restaurar la subcategoría <strong>{selectedCategory?.nombre_categoria}</strong> con ID <strong>{selectedCategory?.id_categoria}</strong>?
+                        ¿Quieres restaurar la subcategoría <strong>{selectedSubcategory?.nombre_subcategoria}</strong> con ID <strong>{selectedSubcategory?.id_subcategoria}</strong>?
                     </>
                 }
                 confirmText="RECUPERAR"
-                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-categoria"
+                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-subcategoria"
                 method="PUT"
-                payloadKey="id_categoria"
+                payloadKey="id_subcategoria"
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
