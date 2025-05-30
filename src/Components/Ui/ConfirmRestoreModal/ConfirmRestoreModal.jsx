@@ -53,7 +53,7 @@ export const ConfirmRestoreModal = ({
             const data = await response.json();
 
             if (data.success) {
-                setSuccessMessage("Usuario recuperado con éxito.");
+                setSuccessMessage("Recuperado con éxito.");
                 if (onConfirmSuccess) onConfirmSuccess();
 
                 setTimeout(() => {

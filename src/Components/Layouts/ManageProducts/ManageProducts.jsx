@@ -8,38 +8,32 @@ import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteMod
 import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
-import { RegisterSubcategorieModal } from "../../Ui/RegisterSubcategoryModal/RegisterSubcategoryModal.jsx";
-import { UpdateSubcategoryModal } from "../../Ui/UpdateSubcategoryModal/UpdateSubcategoryModal.jsx";
 import { RegisterProductModal } from "../../Ui/RegisterProductModal/RegisterProductModal.jsx";
 import { UpdateProductModal } from "../../Ui/UpdateProductModal/UpdateProductModal.jsx";
 
 export const ManageProducts = () => {
-    const [subcategories, setSubcategories] = useState([]);
+    const [products, setProducts] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-    const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const subcategoriesPerPage = 7;
+    const productsPerPage = 7;
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
-    const [searchName, setSearchName] = useState("");
+    const [searchRef, setSearchRef] = useState("");
 
-    const fetchSubcategories = async () => {
+    const fetchProducts = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/subcategorias");
-            if (!response.ok) {
-                throw new Error("Error al obtener subcategorías");
-            }
-
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/consultar-producto");
+            if (!response.ok) throw new Error("Error al obtener productos");
             const data = await response.json();
-            console.log(data.subcategorias);
             if (data.success) {
-                setSubcategories(data.subcategorias);
+                setProducts(data.productos);
             } else {
-                console.error("Error en la respuesta al obtener subcategorías");
+                console.error("Error en la respuesta al obtener productos");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -48,12 +42,12 @@ export const ManageProducts = () => {
         }
     };
 
-    const filteredSubcategories = subcategories.filter((subcategory) =>
-        subcategory.nombre_subcategoria.toLowerCase().includes(searchName.toLowerCase())
+    const filteredProducts = products.filter((product) =>
+        product.referencia.toLowerCase().includes(searchRef.toLowerCase())
     );
 
-    const handleEditClick = (subcategory) => {
-        setSelectedSubcategory(subcategory);
+    const handleEditClick = (product) => {
+        setSelectedProduct(product);
         setIsModalUpdateOpen(true);
     };
 
@@ -61,31 +55,31 @@ export const ManageProducts = () => {
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
     const closeUpdateModal = () => setIsModalUpdateOpen(false);
 
-    const openConfirmDeleteModal = (subcategory) => {
-        setSelectedSubcategory(subcategory);
+    const openConfirmDeleteModal = (product) => {
+        setSelectedProduct(product);
         setIsConfirmDeleteOpen(true);
     };
     const closeConfirmDeleteModal = () => {
         setIsConfirmDeleteOpen(false);
-        setSelectedSubcategory(null);
+        setSelectedProduct(null);
     };
 
-    const openConfirmRestoreModal = (subcategory) => {
-        setSelectedSubcategory(subcategory);
+    const openConfirmRestoreModal = (product) => {
+        setSelectedProduct(product);
         setIsConfirmRestoreOpen(true);
     };
     const closeConfirmRestoreModal = () => {
         setIsConfirmRestoreOpen(false);
-        setSelectedSubcategory(null);
+        setSelectedProduct(null);
     };
 
-    const indexLast = currentPage * subcategoriesPerPage;
-    const indexFirst = indexLast - subcategoriesPerPage;
-    const currentSubcategories = filteredSubcategories.slice(indexFirst, indexLast);
-    const totalPages = Math.ceil(filteredSubcategories.length / subcategoriesPerPage);
+    const indexLast = currentPage * productsPerPage;
+    const indexFirst = indexLast - productsPerPage;
+    const currentProducts = filteredProducts.slice(indexFirst, indexLast);
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
     useEffect(() => {
-        fetchSubcategories();
+        fetchProducts();
     }, []);
 
     return (
@@ -109,8 +103,8 @@ export const ManageProducts = () => {
                     <input
                         type="text"
                         placeholder="Buscar por Referencia"
-                        value={searchName}
-                        onChange={(e) => setSearchName(e.target.value)}
+                        value={searchRef}
+                        onChange={(e) => setSearchRef(e.target.value)}
                     />
                     <FaSearch className="icono-buscar" />
                 </div>
@@ -136,45 +130,50 @@ export const ManageProducts = () => {
                                 <th>Descripción</th>
                                 <th>Talla</th>
                                 <th>Stock</th>
-                                <th>Imagen</th>
                                 <th>Precio</th>
                                 <th>Descuento</th>
-                                <th>Precio descuento</th>
+                                <th>Precio Descuento</th>
                                 <th>Categoría</th>
                                 <th>Subcategoría</th>
+                                <th>Imagen</th>
                                 <th>Estado</th>
                                 <th>Editar</th>
                                 <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentSubcategories.map((subcategory) => (
-                                <tr key={subcategory.id_subcategoria}>
-                                    <td>{subcategory.id_subcategoria}</td>
-                                    <td>{subcategory.nombre_subcategoria}</td>
-                                    <td>{subcategory.descripcion}</td>
-                                    <td>{subcategory.descuento}%</td>
-                                    <td>{subcategory.nombre_categoria}</td>
+                            {currentProducts.map((product) => (
+                                <tr key={product.referencia}>
+                                    <td>{product.referencia}</td>
+                                    <td>{product.nombre}</td>
+                                    <td>{product.descripcion}</td>
+                                    <td>{product.talla}</td>
+                                    <td>{product.stock}</td>
+                                    <td>{product.precio_unidad}</td>
+                                    <td>{product.descuento}</td>
+                                    <td>{product.precio_descuento}</td>
+                                    <td>{product.categoria}</td>
+                                    <td>{product.subcategoria}</td>
                                     <td>
-                                        <img
-                                            src={subcategory.url_imagen}
-                                            alt={`Imagen de ${subcategory.nombre_subcategoria}`}
-                                            className="products-img"
-                                        />
+                                        {product.imagenes.length > 0 ? (
+                                            <img src={product.imagenes[0]} alt={product.nombre} className="products-img" />
+                                        ) : (
+                                            <span>Sin imagen</span>
+                                        )}
                                     </td>
                                     <td>
-                                        <span className={`estado ${subcategory.estado === 1 ? "activo" : "inactivo"}`}>
-                                            {subcategory.estado === 1 ? "Activo" : "Inactivo"}
+                                        <span className={`estado ${product.estado === 'Activo' ? "activo" : "inactivo"}`}>
+                                            {product.estado}
                                         </span>
                                     </td>
                                     <td>
-                                        <FaEdit onClick={() => handleEditClick(subcategory)} className="icono-editar" />
+                                        <FaEdit onClick={() => handleEditClick(product)} className="icono-editar" />
                                     </td>
                                     <td>
-                                        {subcategory.estado === 1 ? (
-                                            <FaTrash onClick={() => openConfirmDeleteModal(subcategory)} className="icono-delete" />
+                                        {product.estado === "Activo" ? (
+                                            <FaTrash onClick={() => openConfirmDeleteModal(product)} className="icono-delete" />
                                         ) : (
-                                            <FaUndo onClick={() => openConfirmRestoreModal(subcategory)} className="icono-restore" />
+                                            <FaUndo onClick={() => openConfirmRestoreModal(product)} className="icono-restore" />
                                         )}
                                     </td>
                                 </tr>
@@ -187,49 +186,49 @@ export const ManageProducts = () => {
             <RegisterProductModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
-                onRegisterSuccess={fetchSubcategories}
+                onRegisterSuccess={fetchProducts}
             />
 
             <UpdateProductModal
-                key={selectedSubcategory?.id_subcategoria || "nuevo"}
+                key={selectedProduct?.referencia || "nuevo"}
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
-                idSubcategoria={selectedSubcategory?.id_subcategoria}
-                onUpdateSuccess={fetchSubcategories}
+                product={selectedProduct}
+                onUpdateSuccess={fetchProducts}
             />
 
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}
                 onClose={closeConfirmDeleteModal}
-                title="¿Eliminar subcategoría?"
+                title="¿Eliminar Producto?"
                 description={
                     <>
-                        ¿Estás seguro de que deseas eliminar el producto <strong>{selectedSubcategory?.nombre_subcategoria}</strong> con referencia <strong>{selectedSubcategory?.id_subcategoria}</strong>?
+                        ¿Deseas eliminar el producto <strong>{selectedProduct?.nombre}</strong> con referencia <strong>{selectedProduct?.referencia}</strong>?
                     </>
                 }
-                usuario={selectedSubcategory}
-                onConfirmSuccess={fetchSubcategories}
-                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-subcategoria"
+                usuario={selectedProduct}
+                onConfirmSuccess={fetchProducts}
+                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-producto"
                 method="PUT"
-                payloadKey="id_subcategoria"
+                payloadKey="referencia"
                 confirmText="ELIMINAR"
             />
 
             <ConfirmRestoreModal
                 isOpen={isConfirmRestoreOpen}
                 onClose={closeConfirmRestoreModal}
-                usuario={selectedSubcategory}
-                onConfirmSuccess={fetchSubcategories}
-                title="¿Recuperar subcategoría?"
+                usuario={selectedProduct}
+                onConfirmSuccess={fetchProducts}
+                title="¿Recuperar Producto?"
                 message={
                     <>
-                        ¿Quieres restaurar el producto <strong>{selectedSubcategory?.nombre_subcategoria}</strong> con referencia<strong>{selectedSubcategory?.id_subcategoria}</strong>?
+                        ¿Quieres restaurar el producto <strong>{selectedProduct?.nombre}</strong> con referencia <strong>{selectedProduct?.referencia}</strong>?
                     </>
                 }
                 confirmText="RECUPERAR"
-                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-subcategoria"
+                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-producto"
                 method="PUT"
-                payloadKey="id_subcategoria"
+                payloadKey="referencia"
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />

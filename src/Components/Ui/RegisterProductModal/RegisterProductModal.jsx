@@ -10,14 +10,19 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
     const [categorias, setCategorias] = useState([]);
+    const [subcategorias, setSubcategorias] = useState([]);
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
-        nombre_subcategoria: "",
+        referencia: "",
+        nombre: "",
         descripcion: "",
+        talla: "",
+        precio_unidad: "",
         descuento: "",
         FK_id_categoria: "",
-        imagen: null,
+        FK_id_subcategoria: "",
+        imagenes: []
     });
 
     useEffect(() => {
@@ -38,12 +43,24 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         }
     };
 
+    const fetchSubcategorias = async (idCategoria) => {
+        try {
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/subcategorias-productos/${idCategoria}`);
+            const data = await response.json();
+            if (data.success) {
+                setSubcategorias(data.subcategorias);
+            }
+        } catch (error) {
+            console.error("Error al obtener subcategorías:", error);
+        }
+    };
+
     if (!isOpen && !isClosing) return null;
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        if (name === "imagen") {
-            setFormData((prev) => ({ ...prev, imagen: files[0] }));
+        if (name === "imagenes") {
+            setFormData((prev) => ({ ...prev, imagenes: files }));
         } else {
             setFormData((prev) => ({ ...prev, [name]: value }));
         }
@@ -69,13 +86,19 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             const token = localStorage.getItem("token");
 
             const dataToSend = new FormData();
-            dataToSend.append("nombre_subcategoria", formData.nombre_subcategoria);
+            dataToSend.append("referencia", formData.referencia);
+            dataToSend.append("nombre", formData.nombre);
             dataToSend.append("descripcion", formData.descripcion);
+            dataToSend.append("talla", formData.talla);
+            dataToSend.append("precio_unidad", parseFloat(formData.precio_unidad));
             dataToSend.append("descuento", parseFloat(formData.descuento));
-            dataToSend.append("imagen", formData.imagen);
             dataToSend.append("FK_id_categoria", formData.FK_id_categoria);
+            dataToSend.append("FK_id_subcategoria", formData.FK_id_subcategoria);
+            for (let i = 0; i < formData.imagenes.length; i++) {
+                dataToSend.append("imagenes", formData.imagenes[i]);
+            }
 
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/registrar-subcategoria", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/registrar-producto", {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -87,7 +110,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             console.log("Respuesta backend:", data);
 
             if (data.success && response.ok) {
-                setSuccessMessage("Subcategoría registrada con éxito.");
+                setSuccessMessage("Producto registrado con éxito.");
                 setErrorMessage("");
                 onRegisterSuccess();
 
@@ -96,13 +119,13 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(getErrorMessage(data, "Error al registrar subcategoría."));
+                setErrorMessage(getErrorMessage(data, "Error al registrar producto."));
             }
 
             setIsLoading(false);
         } catch (error) {
-            console.error("Error al registrar subcategoría:", error);
-            setErrorMessage("Hubo un error al registrar la subcategoría.");
+            console.error("Error al registrar producto:", error);
+            setErrorMessage("Hubo un error al registrar el producto.");
             setIsLoading(false);
         }
     };
@@ -117,9 +140,9 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             <label>Referencia *</label>
                             <input
                                 type="text"
-                                name="nombre_subcategoria"
-                                placeholder="Nombre de la subcategoría"
-                                value={formData.nombre_subcategoria}
+                                name="referencia"
+                                placeholder="Referencia del producto"
+                                value={formData.referencia}
                                 onChange={handleChange}
                                 required
                             />
@@ -129,19 +152,16 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             <label>Nombre del producto *</label>
                             <input
                                 type="text"
-                                name="nombre_subcategoria"
-                                placeholder="Nombre de la subcategoría"
-                                value={formData.nombre_subcategoria}
+                                name="nombre"
+                                placeholder="Nombre del producto"
+                                value={formData.nombre}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
-
-
                     </div>
 
                     <div className="group-register-product">
-
                         <div className="form-group-register-product">
                             <label>Descripción</label>
                             <button
@@ -156,14 +176,13 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             )}
                         </div>
 
-
                         <div className="form-group-register-product">
                             <label>Talla</label>
                             <input
                                 type="text"
-                                name="descripcion"
-                                placeholder="Descripción opcional"
-                                value={formData.descripcion}
+                                name="talla"
+                                placeholder="Ej: M, L, XL"
+                                value={formData.talla}
                                 onChange={handleChange}
                             />
                         </div>
@@ -174,7 +193,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             <label>Imagenes Producto *</label>
                             <input
                                 type="file"
-                                name="imagen"
+                                name="imagenes"
                                 accept="image/*"
                                 multiple
                                 onChange={handleChange}
@@ -185,14 +204,14 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         <div className="form-group-register-product">
                             <label>Precio *</label>
                             <input
-                                type="file"
-                                name="imagen"
-                                accept="image/*"
+                                type="number"
+                                name="precio_unidad"
+                                placeholder="Precio unidad"
+                                value={formData.precio_unidad}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
-
                     </div>
 
                     <div className="group-register-product">
@@ -209,12 +228,14 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             />
                         </div>
                         <p>%</p>
-
                         <div className="form-group-register-product">
                             <label>Precio descuento *</label>
-                            <label className="discount-price"> Cálculo precio con descuento</label>
+                            <label className="discount-price">
+                                {formData.precio_unidad && formData.descuento
+                                    ? `$ ${(formData.precio_unidad - (formData.precio_unidad * (formData.descuento / 100))).toFixed(2)}`
+                                    : "Cálculo precio con descuento"}
+                            </label>
                         </div>
-
                     </div>
 
                     <div className="group-register-product">
@@ -223,7 +244,10 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             <select
                                 name="FK_id_categoria"
                                 value={formData.FK_id_categoria}
-                                onChange={handleChange}
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    fetchSubcategorias(e.target.value);
+                                }}
                                 required
                             >
                                 <option value="">Selecciona una categoría</option>
@@ -235,28 +259,23 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             </select>
                         </div>
 
-
-
                         <div className="form-group-register-product">
                             <label>Subcategoría que pertenece *</label>
                             <select
-                                name="FK_id_categoria"
-                                value={formData.FK_id_categoria}
+                                name="FK_id_subcategoria"
+                                value={formData.FK_id_subcategoria}
                                 onChange={handleChange}
                                 required
                             >
                                 <option value="">Selecciona una subcategoría</option>
-                                {categorias.map((categoria) => (
-                                    <option key={categoria.id_categoria} value={categoria.id_categoria}>
-                                        {categoria.nombre_categoria}
+                                {subcategorias.map((subcategoria) => (
+                                    <option key={subcategoria.id_subcategoria} value={subcategoria.id_subcategoria}>
+                                        {subcategoria.nombre_subcategoria}
                                     </option>
                                 ))}
                             </select>
-
                         </div>
-
                     </div>
-
 
                     <div className="modal-buttons-register-product">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
@@ -286,13 +305,13 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                     </div>
                 )}
             </div>
+
             <DescriptionProductModal
                 isOpen={isDescriptionModalOpen}
                 onClose={() => setIsDescriptionModalOpen(false)}
                 initialValue={formData.descripcion}
                 onSave={(value) => setFormData((prev) => ({ ...prev, descripcion: value }))}
             />
-
         </div>
     );
 };

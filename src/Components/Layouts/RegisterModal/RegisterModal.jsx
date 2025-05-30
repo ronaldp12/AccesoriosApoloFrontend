@@ -50,12 +50,6 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             id_rol: "user"
         };
 
-        if (!/^\d{10}$/.test(phone)) {
-            setErrorMessage("El número de teléfono debe tener 10 dígitos.");
-            setIsLoading(false);
-            return;
-        }
-
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/solicitar-otp", {
                 method: "POST",
