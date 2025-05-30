@@ -119,14 +119,15 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                         <div className="form-group-register-user">
                             <label>Teléfono</label>
                             <input
-                                type="text"
-                                name="telefono"
-                                pattern="[0-9]*"
+                                type="tel"
+                                placeholder="Teléfono"
                                 inputMode="numeric"
+                                pattern="[0-9]*"
                                 value={phone}
                                 onChange={(e) => {
-                                    
-                                    setPhone(phone);
+                                    const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                    setPhone(onlyNumbers);
+                                    setErrorMessage("");
                                 }}
                             />
                         </div>

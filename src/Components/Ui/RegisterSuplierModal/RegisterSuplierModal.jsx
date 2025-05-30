@@ -145,16 +145,14 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                     <div className="form-group-register-suplier">
                         <label>Teléfono</label>
                         <input
-                            type="text"
-                            name="telefono"
+                            type="tel"
                             placeholder="Teléfono"
-                            pattern="[0-9]*"
                             inputMode="numeric"
-                            value={formatPhoneNumber(phone)}
+                            pattern="[0-9]*"
+                            value={phone}
                             onChange={(e) => {
-                                const rawValue = e.target.value.replace(/\D/g, "").slice(0, 10);
-                                setPhone(rawValue);
-                                setFormData(prev => ({ ...prev, telefono: rawValue }));
+                                const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                setPhone(onlyNumbers);
                                 setErrorMessage("");
                             }}
                         />

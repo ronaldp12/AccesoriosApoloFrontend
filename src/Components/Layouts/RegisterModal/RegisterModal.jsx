@@ -12,7 +12,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [password, setPassword] = useState("");
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen,
-        setIsIntermediateLoading, getErrorMessage, setAvatar, validatePassword, formatPhoneNumber } = useContext(context);
+        setIsIntermediateLoading, getErrorMessage, setAvatar, validatePassword } = useContext(context);
     const [userName, setUserName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
@@ -152,14 +152,16 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                 <input
                                     type="tel"
                                     placeholder="Teléfono"
-                                    pattern="[0-9]*"
                                     inputMode="numeric"
+                                    pattern="[0-9]*"
                                     value={phone}
                                     onChange={(e) => {
-                                        setPhone(e.target.value);
+                                        const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                        setPhone(onlyNumbers);
                                         setErrorMessage("");
                                     }}
                                 />
+
                             </div>
                         </div>
 
