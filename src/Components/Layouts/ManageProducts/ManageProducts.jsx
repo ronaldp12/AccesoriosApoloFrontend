@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ManageProducts.css";
-import { FaSearch, FaHome, FaEdit, FaTrash, FaUndo } from "react-icons/fa";
+import { FaSearch, FaHome, FaEdit, FaTrash, FaUndo, FaEye } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination.jsx";
@@ -10,6 +10,8 @@ import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterProductModal } from "../../Ui/RegisterProductModal/RegisterProductModal.jsx";
 import { UpdateProductModal } from "../../Ui/UpdateProductModal/UpdateProductModal.jsx";
+import { DescriptionProductModal } from "../../Ui/DescriptionProductModal/DescriptionProductModal.jsx";
+import { ProductImagesModal } from "../../Ui/ProductImagesModal/ProductImagesModal.jsx";
 
 export const ManageProducts = () => {
     const [products, setProducts] = useState([]);
@@ -18,8 +20,13 @@ export const ManageProducts = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
     const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+    const [selectedDescription, setSelectedDescription] = useState("");
+    const [isImagesModalOpen, setIsImagesModalOpen] = useState(false);
+    const [selectedImages, setSelectedImages] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 7;
+    const productsPerPage = 5;
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
     const [searchRef, setSearchRef] = useState("");
@@ -146,7 +153,20 @@ export const ManageProducts = () => {
                                 <tr key={product.referencia}>
                                     <td>{product.referencia}</td>
                                     <td>{product.nombre}</td>
-                                    <td>{product.descripcion}</td>
+                                    <td>
+                                        {product.descripcion ? (
+                                            <FaEye
+                                                className="icono-ver-descripcion"
+                                                onClick={() => {
+                                                    setSelectedDescription(product.descripcion);
+                                                    setIsDescriptionModalOpen(true);
+                                                }}
+                                            />
+                                        ) : (
+                                            <span>Sin descripción</span>
+                                        )}
+                                    </td>
+
                                     <td>{product.talla}</td>
                                     <td>{product.stock}</td>
                                     <td>{product.precio_unidad}</td>
@@ -156,11 +176,19 @@ export const ManageProducts = () => {
                                     <td>{product.subcategoria}</td>
                                     <td>
                                         {product.imagenes.length > 0 ? (
-                                            <img src={product.imagenes[0]} alt={product.nombre} className="products-img" />
+                                            <FaEye
+                                                className="icono-ver-imagenes"
+                                                onClick={() => {
+                                                    setSelectedImages(product.imagenes);
+                                                    setIsImagesModalOpen(true);
+                                                }}
+                                            />
                                         ) : (
                                             <span>Sin imagen</span>
                                         )}
                                     </td>
+
+
                                     <td>
                                         <span className={`estado ${product.estado === 'Activo' ? "activo" : "inactivo"}`}>
                                             {product.estado}
@@ -229,6 +257,19 @@ export const ManageProducts = () => {
                 endpoint="https://accesoriosapolobackend.onrender.com/reactivar-producto"
                 method="PUT"
                 payloadKey="referencia"
+            />
+
+            <DescriptionProductModal
+                isOpen={isDescriptionModalOpen}
+                onClose={() => setIsDescriptionModalOpen(false)}
+                initialValue={selectedDescription}
+                readOnly={true}
+            />
+
+            <ProductImagesModal
+                isOpen={isImagesModalOpen}
+                onClose={() => setIsImagesModalOpen(false)}
+                images={selectedImages}
             />
 
             <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />

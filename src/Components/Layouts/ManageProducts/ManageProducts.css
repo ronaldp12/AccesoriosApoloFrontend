@@ -170,7 +170,7 @@
 }
 
 .products-table td{
-    text-align: left;
+    text-align: center;
 }
 
 .estado {
@@ -242,6 +242,15 @@
   border-radius: 6px;
 }
 
+.icono-ver-descripcion{
+  cursor: pointer;
+  color: #073678;
+}
+
+.icono-ver-imagenes{
+  cursor: pointer;
+  color: #073678;
+}
 @media (max-width: 820px) {
   .products-header {
     flex-direction: column;
