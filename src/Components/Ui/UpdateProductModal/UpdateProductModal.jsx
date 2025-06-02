@@ -4,60 +4,74 @@ import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
 import { DescriptionProductModal } from "../DescriptionProductModal/DescriptionProductModal";
 
-export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSuccess }) => {
+export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
     const [categorias, setCategorias] = useState([]);
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+    const [subcategorias, setSubcategorias] = useState([]);
+    const [originalReferencia, setOriginalReferencia] = useState("");
     const [formData, setFormData] = useState({
-        nombre_subcategoria: "",
+        referencia: "",
+        nombre: "",
         descripcion: "",
+        talla: "",
+        stock: "",
+        precio_unidad: "",
         descuento: "",
+        precio_descuento: "",
         FK_id_categoria: "",
-        imagen: null
+        FK_id_subcategoria: "",
+        imagenes: []
     });
 
-    useEffect(() => {
-        if (isOpen && idSubcategoria) {
-            fetchSubcategoria();
-        }
-    }, [isOpen, idSubcategoria]);
-
-    const fetchSubcategoria = async () => {
+    const fetchProducto = async () => {
+        if (!referencia) return;
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/obtener-subcategoria", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id_subcategoria: idSubcategoria })
-            });
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/obtener-productos?referencia=${referencia}`);
             const data = await response.json();
-
             if (data.success) {
+                const producto = data.producto;
+                setOriginalReferencia(producto.referencia || "");
                 setFormData({
-                    nombre_subcategoria: data.subcategoria.nombre_subcategoria,
-                    descripcion: data.subcategoria.descripcion || "",
-                    descuento: data.subcategoria.descuento,
-                    FK_id_categoria: data.subcategoria.FK_id_categoria,
-                    imagen: null
+                    referencia: producto.referencia || "",
+                    nombre: producto.nombre || "",
+                    descripcion: producto.descripcion || "",
+                    talla: producto.talla || "",
+                    stock: producto.stock || "",
+                    precio_unidad: producto.precio_unidad || "",
+                    descuento: producto.descuento || "",
+                    precio_descuento: producto.precio_descuento || "",
+                    FK_id_categoria: producto.categoria.seleccionada?.id || "",
+                    FK_id_subcategoria: producto.subcategoria.seleccionada?.id || "",
+                    imagenes: []
                 });
-                setCategorias(data.categorias);
+                
+                // Establecer las categorías disponibles
+                if (producto.categoria.todas) {
+                    setCategorias(producto.categoria.todas);
+                }
+                // Establecer las subcategorías disponibles
+                if (producto.subcategoria.todas) {
+                    setSubcategorias(producto.subcategoria.todas);
+                }
             } else {
                 setErrorMessage(data.mensaje);
             }
         } catch (error) {
-            console.error("Error consultando subcategoría:", error);
+            console.error(error);
+            setErrorMessage("Error al cargar el producto");
         }
     };
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "imagen") {
-            setFormData((prev) => ({ ...prev, imagen: files[0] }));
-        } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
-        }
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     const handleClose = () => {
@@ -65,63 +79,109 @@ export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSu
         setTimeout(() => {
             setIsClosing(false);
             onClose();
-        }, 400);
+            setFormData({
+                referencia: "",
+                nombre: "",
+                descripcion: "",
+                talla: "",
+                stock: "",
+                precio_unidad: "",
+                descuento: "",
+                precio_descuento: "",
+                FK_id_categoria: "",
+                FK_id_subcategoria: "",
+                imagenes: []
+            });
+            setErrorMessage("");
+            setSuccessMessage("");
+            setOriginalReferencia("");
+        }, 300);
     };
 
     const handleUpdate = async () => {
+        setErrorMessage("");
+        setSuccessMessage("");
         setIsLoading(true);
         try {
             const updateData = new FormData();
-            updateData.append("id_subcategoria", idSubcategoria);
-            updateData.append("nombre_subcategoria", formData.nombre_subcategoria);
+            updateData.append("referencia", originalReferencia);
+            updateData.append("nuevaReferencia", formData.referencia);
+            updateData.append("nombre", formData.nombre);
             updateData.append("descripcion", formData.descripcion);
+            updateData.append("talla", formData.talla);
+            updateData.append("precio_unidad", formData.precio_unidad);
             updateData.append("descuento", formData.descuento);
             updateData.append("FK_id_categoria", formData.FK_id_categoria);
-            if (formData.imagen) {
-                updateData.append("imagen", formData.imagen);
+            updateData.append("FK_id_subcategoria", formData.FK_id_subcategoria);
+            
+            // Agregar imágenes solo si se seleccionaron nuevas
+            if (formData.imagenes && formData.imagenes.length > 0) {
+                formData.imagenes.forEach(img => updateData.append("imagenes", img));
             }
 
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-subcategoria", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-producto", {
                 method: "PUT",
-                body: updateData
+                body: updateData,
             });
-
             const data = await response.json();
             if (data.success) {
-                setSuccessMessage("Subcategoría actualizada correctamente.");
+                setSuccessMessage("Producto actualizado correctamente.");
                 onUpdateSuccess();
                 setTimeout(() => {
                     setSuccessMessage("");
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(getErrorMessage(data, "Error al actualizar subcategoría."));
+                setErrorMessage(data.mensaje || "Error al actualizar producto.");
                 setIsLoading(false);
             }
         } catch (error) {
-            console.error("Error al actualizar subcategoría:", error);
-            setErrorMessage("Error al actualizar subcategoría, intente nuevamente.");
+            setErrorMessage("Error al actualizar producto, intente nuevamente.");
             setIsLoading(false);
         }
     };
+
+    const fetchSubcategorias = async (idCategoria) => {
+        try {
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/subcategorias-productos/${idCategoria}`);
+            const data = await response.json();
+            if (data.success) {
+                setSubcategorias(data.subcategorias);
+            }
+        } catch (error) {
+            console.error("Error consultando subcategorías:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (isOpen && referencia) {
+            console.log("Referencia recibida:", referencia);
+            fetchProducto();
+        }
+    }, [isOpen, referencia]);
+
+    useEffect(() => {
+        if (formData.FK_id_categoria) {
+            fetchSubcategorias(formData.FK_id_categoria);
+        }
+    }, [formData.FK_id_categoria]);
 
     if (!isOpen && !isClosing) return null;
 
     return (
         <div className="modal-overlay-update-product">
             <div className={`modal-content-update-product ${isClosing ? "exit" : "entry"}`}>
-                <h2>Editar Subcategoría</h2>
+                <h2>Editar Producto</h2>
                 <form className="form-update-product">
                     <div className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Referencia *</label>
                             <input
                                 type="text"
-                                name="nombre_subcategoria"
-                                placeholder="Nombre de la subcategoría"
-                                value={formData.nombre_subcategoria}
+                                name="referencia"
+                                placeholder="Referencia"
+                                value={formData.referencia}
                                 onChange={handleChange}
-                                required
                             />
                         </div>
 
@@ -129,19 +189,15 @@ export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSu
                             <label>Nombre del producto *</label>
                             <input
                                 type="text"
-                                name="nombre_subcategoria"
-                                placeholder="Nombre de la subcategoría"
-                                value={formData.nombre_subcategoria}
+                                name="nombre"
+                                value={formData.nombre}
                                 onChange={handleChange}
-                                required
+                                placeholder="Nombre del producto"
                             />
                         </div>
-
-
                     </div>
 
                     <div className="group-register-product">
-
                         <div className="form-group-register-product">
                             <label>Descripción</label>
                             <button
@@ -156,14 +212,13 @@ export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSu
                             )}
                         </div>
 
-
                         <div className="form-group-register-product">
                             <label>Talla</label>
                             <input
                                 type="text"
-                                name="descripcion"
+                                name="talla"
                                 placeholder="Descripción opcional"
-                                value={formData.descripcion}
+                                value={formData.talla}
                                 onChange={handleChange}
                             />
                         </div>
@@ -174,25 +229,28 @@ export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSu
                             <label>Imagenes Producto *</label>
                             <input
                                 type="file"
-                                name="imagen"
+                                name="imagenes"
                                 accept="image/*"
                                 multiple
-                                onChange={handleChange}
-                                required
+                                onChange={(e) => {
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        imagenes: Array.from(e.target.files)
+                                    }));
+                                }}
                             />
                         </div>
 
                         <div className="form-group-register-product">
                             <label>Precio *</label>
                             <input
-                                type="file"
-                                name="imagen"
-                                accept="image/*"
+                                type="text"
+                                name="precio_unidad"
+                                placeholder="Precio unidad"
+                                value={formData.precio_unidad}
                                 onChange={handleChange}
-                                required
                             />
                         </div>
-
                     </div>
 
                     <div className="group-register-product">
@@ -205,16 +263,16 @@ export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSu
                                 value={formData.descuento}
                                 onChange={handleChange}
                                 min="0"
-                                required
                             />
                         </div>
                         <p>%</p>
 
                         <div className="form-group-register-product">
                             <label>Precio descuento *</label>
-                            <label className="discount-price"> Cálculo precio con descuento</label>
+                            <label className="discount-price">
+                                {formData.precio_descuento ? `$${formData.precio_descuento}` : "Cálculo precio con descuento"}
+                            </label>
                         </div>
-
                     </div>
 
                     <div className="group-register-product">
@@ -224,7 +282,6 @@ export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSu
                                 name="FK_id_categoria"
                                 value={formData.FK_id_categoria}
                                 onChange={handleChange}
-                                required
                             >
                                 <option value="">Selecciona una categoría</option>
                                 {categorias.map((categoria) => (
@@ -235,26 +292,21 @@ export const UpdateProductModal = ({ isOpen, onClose, idSubcategoria, onUpdateSu
                             </select>
                         </div>
 
-
-
                         <div className="form-group-register-product">
                             <label>Subcategoría que pertenece *</label>
                             <select
-                                name="FK_id_categoria"
-                                value={formData.FK_id_categoria}
+                                name="FK_id_subcategoria"
+                                value={formData.FK_id_subcategoria}
                                 onChange={handleChange}
-                                required
                             >
                                 <option value="">Selecciona una subcategoría</option>
-                                {categorias.map((categoria) => (
-                                    <option key={categoria.id_categoria} value={categoria.id_categoria}>
-                                        {categoria.nombre_categoria}
+                                {subcategorias.map((sub) => (
+                                    <option key={sub.id_subcategoria} value={sub.id_subcategoria}>
+                                        {sub.nombre_subcategoria}
                                     </option>
                                 ))}
                             </select>
-
                         </div>
-
                     </div>
 
                     <div className="modal-buttons-update-product">

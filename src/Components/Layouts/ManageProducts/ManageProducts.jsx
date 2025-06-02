@@ -193,7 +193,7 @@ export const ManageProducts = () => {
                 key={selectedProduct?.referencia || "nuevo"}
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
-                product={selectedProduct}
+                referencia={selectedProduct?.referencia}
                 onUpdateSuccess={fetchProducts}
             />
 
@@ -217,7 +217,7 @@ export const ManageProducts = () => {
             <ConfirmRestoreModal
                 isOpen={isConfirmRestoreOpen}
                 onClose={closeConfirmRestoreModal}
-                usuario={selectedProduct}
+                usuario={selectedProduct?.referencia}
                 onConfirmSuccess={fetchProducts}
                 title="¿Recuperar Producto?"
                 message={
