@@ -207,9 +207,6 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                             >
                                 Escribe la descripción
                             </button>
-                            {formData.descripcion && (
-                                <p className="preview-descripcion">{formData.descripcion.slice(0, 50)}...</p>
-                            )}
                         </div>
 
                         <div className="form-group-register-product">

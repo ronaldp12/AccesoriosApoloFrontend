@@ -76,6 +76,11 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         }, 400);
     };
 
+    const handleSaveDescription = (newDescription) => {
+        setFormData((prev) => ({ ...prev, descripcion: newDescription }));
+    };
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -171,9 +176,6 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             >
                                 Escribe la descripción
                             </button>
-                            {formData.descripcion && (
-                                <p className="preview-descripcion">{formData.descripcion.slice(0, 50)}...</p>
-                            )}
                         </div>
 
                         <div className="form-group-register-product">
@@ -309,9 +311,10 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             <DescriptionProductModal
                 isOpen={isDescriptionModalOpen}
                 onClose={() => setIsDescriptionModalOpen(false)}
+                onSave={handleSaveDescription}
                 initialValue={formData.descripcion}
-                onSave={(value) => setFormData((prev) => ({ ...prev, descripcion: value }))}
             />
+
         </div>
     );
 };
