@@ -169,9 +169,9 @@ export const ManageProducts = () => {
 
                                     <td>{product.talla}</td>
                                     <td>{product.stock}</td>
-                                    <td>{product.precio_unidad}</td>
+                                    <td>{product.precio_unidad.toLocaleString("es-ES", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
                                     <td>{product.descuento}</td>
-                                    <td>{product.precio_descuento}</td>
+                                    <td>{product.precio_descuento.toLocaleString("es-ES", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
                                     <td>{product.categoria}</td>
                                     <td>{product.subcategoria}</td>
                                     <td>

@@ -3,7 +3,6 @@ import "./UpdateProductModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
 import { DescriptionProductModal } from "../DescriptionProductModal/DescriptionProductModal";
-import { PreviewImagesModal } from "../PreviewImagesModal/PreviewImagesModal";
 import { UnifiedImagesModal } from "../UnifiedImagesModal/UnifiedImagesModal";
 
 export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSuccess }) => {
@@ -17,6 +16,10 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
     const [originalReferencia, setOriginalReferencia] = useState("");
     const [imagenesBackend, setImagenesBackend] = useState([]);
     const [imagenesEliminadas, setImagenesEliminadas] = useState([]);
+
+    const [precioDescuentoFromBackend, setPrecioDescuentoFromBackend] = useState(0);
+    const [shouldRecalculate, setShouldRecalculate] = useState(false);
+
     const [formData, setFormData] = useState({
         referencia: "",
         nombre: "",
@@ -31,6 +34,16 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         imagenes: []
     });
 
+    const parseFormattedNumber = (formattedValue) => {
+        if (!formattedValue) return 0;
+        return Number(formattedValue.toString().replace(/\./g, ""));
+    };
+
+    const formatNumber = (value) => {
+        if (!value && value !== 0) return "";
+        return Number(value).toLocaleString("es-ES");
+    };
+
     const fetchProducto = useCallback(async () => {
         if (!referencia) return;
         try {
@@ -40,27 +53,31 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                 const producto = data.producto;
                 setOriginalReferencia(producto.referencia || "");
                 setImagenesBackend(producto.imagenes || []);
-                // NUEVO: Resetear imágenes eliminadas cuando se carga un producto
                 setImagenesEliminadas([]);
+                const precioUnidadNum = parseFormattedNumber(producto.precio_unidad);
+                const descuentoNum = parseFormattedNumber(producto.descuento);
+                const precioDescuentoNum = parseFormattedNumber(producto.precio_descuento);
+
+                setPrecioDescuentoFromBackend(precioDescuentoNum);
+                setShouldRecalculate(false);
+
                 setFormData({
                     referencia: producto.referencia || "",
                     nombre: producto.nombre || "",
                     descripcion: producto.descripcion || "",
                     talla: producto.talla || "",
                     stock: producto.stock || "",
-                    precio_unidad: producto.precio_unidad || "",
-                    descuento: producto.descuento || "",
-                    precio_descuento: producto.precio_descuento || "",
+                    precio_unidad: precioUnidadNum,
+                    descuento: descuentoNum,
+                    precio_descuento: precioDescuentoNum,
                     FK_id_categoria: producto.categoria.seleccionada?.id || "",
                     FK_id_subcategoria: producto.subcategoria.seleccionada?.id || "",
                     imagenes: []
                 });
 
-                // Establecer las categorías disponibles
                 if (producto.categoria.todas) {
                     setCategorias(producto.categoria.todas);
                 }
-                // Establecer las subcategorías disponibles
                 if (producto.subcategoria.todas) {
                     setSubcategorias(producto.subcategoria.todas);
                 }
@@ -79,6 +96,10 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             ...prev,
             [name]: value
         }));
+
+        if (name === 'precio_unidad' || name === 'descuento') {
+            setShouldRecalculate(true);
+        }
     }, []);
 
     const handleClose = useCallback(() => {
@@ -103,8 +124,9 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             setSuccessMessage("");
             setOriginalReferencia("");
             setImagenesBackend([]);
-            // NUEVO: Resetear imágenes eliminadas
             setImagenesEliminadas([]);
+            setPrecioDescuentoFromBackend(0);
+            setShouldRecalculate(false);
         }, 300);
     }, [onClose]);
 
@@ -124,14 +146,11 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             updateData.append("FK_id_categoria", formData.FK_id_categoria);
             updateData.append("FK_id_subcategoria", formData.FK_id_subcategoria);
 
-            // Agregar imágenes solo si se seleccionaron nuevas
             if (formData.imagenes && formData.imagenes.length > 0) {
                 formData.imagenes.forEach(img => updateData.append("imagenes", img));
             }
 
-            // NUEVO: Enviar las imágenes eliminadas al backend
             if (imagenesEliminadas.length > 0) {
-                // Puedes enviar como JSON string o como array separado
                 updateData.append("imagenesEliminadas", JSON.stringify(imagenesEliminadas));
             }
 
@@ -169,14 +188,9 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         }
     }, []);
 
-    // MODIFICADO: Función para manejar eliminación de imágenes del backend
     const handleRemoveBackendImage = useCallback((index) => {
         const imagenEliminada = imagenesBackend[index];
-
-        // Agregar la imagen eliminada al array de eliminadas
         setImagenesEliminadas(prev => [...prev, imagenEliminada]);
-
-        // Remover de las imágenes del backend
         setImagenesBackend(prev => prev.filter((_, i) => i !== index));
     }, [imagenesBackend]);
 
@@ -198,6 +212,19 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         setFormData((prev) => ({ ...prev, descripcion: value }));
     }, []);
 
+    const getPrecioDescuentoDisplay = () => {
+        if (shouldRecalculate && formData.precio_unidad && formData.descuento) {
+            
+            const precioUnidad = Number(formData.precio_unidad);
+            const descuento = Number(formData.descuento);
+            const nuevoPrecioDescuento = precioUnidad - (precioUnidad * (descuento / 100));
+            return formatNumber(nuevoPrecioDescuento);
+        } else if (precioDescuentoFromBackend) {
+            return formatNumber(precioDescuentoFromBackend);
+        }
+        return "Cálculo precio con descuento";
+    };
+
     useEffect(() => {
         if (isOpen && referencia) {
             console.log("Referencia recibida:", referencia);
@@ -210,6 +237,19 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             fetchSubcategorias(formData.FK_id_categoria);
         }
     }, [formData.FK_id_categoria, fetchSubcategorias]);
+
+    useEffect(() => {
+        if (shouldRecalculate && formData.precio_unidad && formData.descuento) {
+            const precioUnidad = Number(formData.precio_unidad);
+            const descuento = Number(formData.descuento);
+            const nuevoPrecioDescuento = precioUnidad - (precioUnidad * (descuento / 100));
+
+            setFormData(prev => ({
+                ...prev,
+                precio_descuento: nuevoPrecioDescuento
+            }));
+        }
+    }, [formData.precio_unidad, formData.descuento, shouldRecalculate]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -285,7 +325,6 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                                 multiple
                                 onChange={handleFileChange}
                             />
-
                         </div>
 
                         <div className="form-group-register-product">
@@ -294,8 +333,15 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                                 type="text"
                                 name="precio_unidad"
                                 placeholder="Precio unidad"
-                                value={formData.precio_unidad}
-                                onChange={handleChange}
+                                value={formatNumber(formData.precio_unidad)}
+                                onChange={(e) => {
+                                    const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, "");
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        precio_unidad: Number(rawValue)
+                                    }));
+                                    setShouldRecalculate(true);
+                                }}
                             />
                         </div>
                     </div>
@@ -308,7 +354,10 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                                 name="descuento"
                                 placeholder="Ej: 10"
                                 value={formData.descuento}
-                                onChange={handleChange}
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    setShouldRecalculate(true);
+                                }}
                                 min="0"
                             />
                         </div>
@@ -317,7 +366,10 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         <div className="form-group-register-product">
                             <label>Precio descuento *</label>
                             <label className="discount-price">
-                                {formData.precio_descuento ? `$${formData.precio_descuento}` : "Cálculo precio con descuento"}
+                                {getPrecioDescuentoDisplay() !== "Cálculo precio con descuento"
+                                    ? `$ ${getPrecioDescuentoDisplay()}`
+                                    : "Cálculo precio con descuento"
+                                }
                             </label>
                         </div>
                     </div>

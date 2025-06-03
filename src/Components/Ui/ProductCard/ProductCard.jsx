@@ -16,7 +16,7 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
       setAddedMessage(true);
       setTimeout(() => {
         setAddedMessage(false);
-      }, 1200); 
+      }, 1200);
     }, 800); //cargando
   };
 
@@ -39,7 +39,7 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
       <p className="title-product-card">{title}</p>
 
       <p className="price">
-        ${price.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        ${price.toLocaleString("es-ES", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
 
 
         <span className="icon-backpack-container">

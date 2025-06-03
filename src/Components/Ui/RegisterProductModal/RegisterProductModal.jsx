@@ -226,12 +226,19 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         <div className="form-group-register-product">
                             <label>Precio *</label>
                             <input
-                                type="number"
+                                type="text"
                                 name="precio_unidad"
                                 placeholder="Precio unidad"
-                                value={formData.precio_unidad}
-                                onChange={handleChange}
+                                value={`${formData.precio_unidad.toLocaleString("es-ES")}`}
+                                onChange={(e) => {
+                                    const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, ""); 
+                                    setFormData({
+                                        ...formData,
+                                        precio_unidad: Number(rawValue)
+                                    });
+                                }}
                             />
+
                         </div>
                     </div>
 
@@ -252,7 +259,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             <label>Precio descuento *</label>
                             <label className="discount-price">
                                 {formData.precio_unidad && formData.descuento
-                                    ? `$ ${(formData.precio_unidad - (formData.precio_unidad * (formData.descuento / 100))).toFixed(2)}`
+                                    ? `$ ${(formData.precio_unidad - (formData.precio_unidad * (formData.descuento / 100))).toLocaleString("es-ES", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`
                                     : "Cálculo precio con descuento"}
                             </label>
                         </div>
