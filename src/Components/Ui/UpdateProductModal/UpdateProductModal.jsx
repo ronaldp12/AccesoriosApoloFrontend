@@ -16,7 +16,6 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
     const [subcategorias, setSubcategorias] = useState([]);
     const [originalReferencia, setOriginalReferencia] = useState("");
     const [imagenesBackend, setImagenesBackend] = useState([]);
-    // NUEVO: Array para trackear las imágenes eliminadas
     const [imagenesEliminadas, setImagenesEliminadas] = useState([]);
     const [formData, setFormData] = useState({
         referencia: "",

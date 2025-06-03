@@ -17,12 +17,10 @@ export const PreviewImagesModal = ({ images, onRemoveImage, showEyeIcon = true }
         setSelectedImage(null);
     };
 
-    // Si no hay imágenes, no mostrar nada
     if (!images.length) return null;
 
     return (
         <>
-            {/* Solo mostrar el ícono de ojo si showEyeIcon es true */}
             {showEyeIcon && (
                 <FaEye
                     className="eye-icon-preview"
@@ -31,7 +29,6 @@ export const PreviewImagesModal = ({ images, onRemoveImage, showEyeIcon = true }
                 />
             )}
 
-            {/* Modal que aparece cuando se hace clic en el ojo */}
             {isOpen && selectedImage && createPortal(
                 <div className="modal-overlay-preview-image" onClick={closeModal}>
                     <div className="modal-content-preview-image" onClick={(e) => e.stopPropagation()}>

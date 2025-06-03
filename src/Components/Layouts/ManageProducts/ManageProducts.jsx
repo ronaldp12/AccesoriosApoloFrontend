@@ -245,7 +245,7 @@ export const ManageProducts = () => {
             <ConfirmRestoreModal
                 isOpen={isConfirmRestoreOpen}
                 onClose={closeConfirmRestoreModal}
-                usuario={selectedProduct?.referencia}
+                usuario={selectedProduct}
                 onConfirmSuccess={fetchProducts}
                 title="¿Recuperar Producto?"
                 message={
