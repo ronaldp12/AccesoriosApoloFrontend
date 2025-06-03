@@ -1,0 +1,356 @@
+/* Estilos para el modal unificado con pestañas */
+
+.unified-images-button {
+    cursor: pointer;
+    background-color: #014aad;
+    color: white;
+    padding: 0.2em;
+    border-radius: 2px;
+    width: auto;
+    height: auto;
+}
+
+.unified-images-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.unified-modal {
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 32.5rem;
+    box-sizing: border-box;
+}
+
+.modal-header-unified {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0 20px 0;
+    border-bottom: 2px solid #f0f0f0;
+    margin-bottom: 20px;
+}
+
+.modal-header-unified h3 {
+    margin: 0;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.tabs-container {
+    display: flex;
+    background: #f8f9fa;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tab-button:hover:not(.disabled) {
+    background: rgba(102, 126, 234, 0.1);
+    color: #014aad;
+}
+
+.tab-button.active {
+    background: #014aad;
+    color: white;
+    box-shadow: 0 -2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.tab-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #ccc;
+}
+
+
+.tab-content {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.main-image-container {
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-image-display {
+    width: 100%;
+    height: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    display: block;
+}
+
+.remove-main-image-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.main-image-container:hover .remove-main-image-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.remove-main-image-btn:hover {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+
+.remove-main-image-btn.current {
+    background: rgba(37, 99, 235, 0.9);
+}
+
+.remove-main-image-btn.current:hover {
+    background: #2563eb;
+}
+
+.remove-main-image-btn.new {
+    background: rgba(5, 150, 105, 0.9);
+}
+
+.remove-main-image-btn.new:hover {
+    background: #059669;
+}
+
+.thumbnails-bar {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #667eea #f0f0f0;
+    width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.thumbnails-bar::-webkit-scrollbar {
+    height: 6px;
+}
+
+.thumbnails-bar::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+.thumbnails-bar::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 3px;
+}
+
+.thumbnail-item {
+    position: relative;
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.thumbnail-item.selected {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+}
+
+.thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.thumbnail-remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    transition: all 0.2s ease;
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.thumbnail-item:hover .thumbnail-remove-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.thumbnail-remove-btn:hover {
+    background: #dc3545;
+    transform: scale(1.1) !important;
+}
+
+.thumbnail-remove-btn.current {
+    background: rgba(37, 99, 235, 0.9);
+}
+
+.thumbnail-remove-btn.current:hover {
+    background: #2563eb;
+}
+
+.thumbnail-remove-btn.new {
+    background: rgba(5, 150, 105, 0.9);
+}
+
+.thumbnail-remove-btn.new:hover {
+    background: #059669;
+}
+
+.no-images-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px dashed #ddd;
+}
+
+.no-images-message p {
+    color: #666;
+    font-size: 16px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .unified-modal {
+        max-width: 95vw;
+        margin: 20px;
+        max-height: 95vh;
+        width: calc(100vw - 40px);
+    }
+
+    .tab-button {
+        padding: 12px 10px;
+        font-size: 12px;
+        gap: 4px;
+    }
+
+    .main-image-container {
+        max-height: 300px;
+    }
+
+    .thumbnails-bar {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .thumbnail-item {
+        width: 60px;
+        height: 60px;
+    }
+
+    .remove-main-image-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+        top: 10px;
+        right: 10px;
+    }
+
+    .thumbnail-remove-btn {
+        width: 18px;
+        height: 18px;
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .unified-modal {
+        margin: 10px;
+        max-height: 98vh;
+        width: calc(100vw - 20px);
+    }
+
+    .tab-button {
+        flex-direction: column;
+        gap: 2px;
+        padding: 8px 5px;
+        font-size: 10px;
+    }
+
+    .main-image-container {
+        max-height: 250px;
+    }
+
+    .thumbnail-item {
+        width: 50px;
+        height: 50px;
+    }
+
+    .thumbnails-bar {
+        padding: 8px;
+        gap: 6px;
+    }
+}

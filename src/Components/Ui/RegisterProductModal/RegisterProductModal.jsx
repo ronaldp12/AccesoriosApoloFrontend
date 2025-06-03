@@ -3,6 +3,7 @@ import "./RegisterProductModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { DescriptionProductModal } from "../DescriptionProductModal/DescriptionProductModal";
+import { PreviewImagesModal } from "../PreviewImagesModal/PreviewImagesModal";
 
 export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
@@ -78,6 +79,19 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
     const handleSaveDescription = (newDescription) => {
         setFormData((prev) => ({ ...prev, descripcion: newDescription }));
+    };
+
+    const handleImageChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            imagenes: [...prev.imagenes, ...Array.from(e.target.files)]
+        }));
+    };
+
+    const handleRemoveImage = (index) => {
+        const updatedImages = [...formData.imagenes];
+        updatedImages.splice(index, 1);
+        setFormData((prev) => ({ ...prev, imagenes: updatedImages }));
     };
 
 
@@ -192,14 +206,20 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                     <div className="group-register-product">
                         <div className="form-group-register-product">
-                            <label>Imagenes Producto *</label>
+                            <div className="label-with-icon">
+                                <label>Imagenes Producto *</label>
+                                <PreviewImagesModal
+                                    images={formData.imagenes}
+                                    onRemoveImage={handleRemoveImage}
+                                    showEyeIcon={true}
+                                />
+                            </div>
                             <input
                                 type="file"
                                 name="imagenes"
                                 accept="image/*"
                                 multiple
-                                onChange={handleChange}
-                                required
+                                onChange={handleImageChange}
                             />
                         </div>
 
@@ -211,7 +231,6 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                 placeholder="Precio unidad"
                                 value={formData.precio_unidad}
                                 onChange={handleChange}
-                                required
                             />
                         </div>
                     </div>
@@ -226,7 +245,6 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                 value={formData.descuento}
                                 onChange={handleChange}
                                 min="0"
-                                required
                             />
                         </div>
                         <p>%</p>
@@ -250,7 +268,6 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                     handleChange(e);
                                     fetchSubcategorias(e.target.value);
                                 }}
-                                required
                             >
                                 <option value="">Selecciona una categoría</option>
                                 {categorias.map((categoria) => (
@@ -267,7 +284,6 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                 name="FK_id_subcategoria"
                                 value={formData.FK_id_subcategoria}
                                 onChange={handleChange}
-                                required
                             >
                                 <option value="">Selecciona una subcategoría</option>
                                 {subcategorias.map((subcategoria) => (

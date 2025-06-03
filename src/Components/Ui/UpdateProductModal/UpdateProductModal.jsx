@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import "./UpdateProductModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
 import { DescriptionProductModal } from "../DescriptionProductModal/DescriptionProductModal";
+import { PreviewImagesModal } from "../PreviewImagesModal/PreviewImagesModal";
+import { UnifiedImagesModal } from "../UnifiedImagesModal/UnifiedImagesModal";
 
 export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
@@ -13,6 +15,9 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const [subcategorias, setSubcategorias] = useState([]);
     const [originalReferencia, setOriginalReferencia] = useState("");
+    const [imagenesBackend, setImagenesBackend] = useState([]);
+    // NUEVO: Array para trackear las imágenes eliminadas
+    const [imagenesEliminadas, setImagenesEliminadas] = useState([]);
     const [formData, setFormData] = useState({
         referencia: "",
         nombre: "",
@@ -27,7 +32,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         imagenes: []
     });
 
-    const fetchProducto = async () => {
+    const fetchProducto = useCallback(async () => {
         if (!referencia) return;
         try {
             const response = await fetch(`https://accesoriosapolobackend.onrender.com/obtener-productos?referencia=${referencia}`);
@@ -35,6 +40,9 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             if (data.success) {
                 const producto = data.producto;
                 setOriginalReferencia(producto.referencia || "");
+                setImagenesBackend(producto.imagenes || []);
+                // NUEVO: Resetear imágenes eliminadas cuando se carga un producto
+                setImagenesEliminadas([]);
                 setFormData({
                     referencia: producto.referencia || "",
                     nombre: producto.nombre || "",
@@ -48,7 +56,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                     FK_id_subcategoria: producto.subcategoria.seleccionada?.id || "",
                     imagenes: []
                 });
-                
+
                 // Establecer las categorías disponibles
                 if (producto.categoria.todas) {
                     setCategorias(producto.categoria.todas);
@@ -64,17 +72,17 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             console.error(error);
             setErrorMessage("Error al cargar el producto");
         }
-    };
+    }, [referencia]);
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: value
         }));
-    };
+    }, []);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
@@ -95,10 +103,13 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             setErrorMessage("");
             setSuccessMessage("");
             setOriginalReferencia("");
+            setImagenesBackend([]);
+            // NUEVO: Resetear imágenes eliminadas
+            setImagenesEliminadas([]);
         }, 300);
-    };
+    }, [onClose]);
 
-    const handleUpdate = async () => {
+    const handleUpdate = useCallback(async () => {
         setErrorMessage("");
         setSuccessMessage("");
         setIsLoading(true);
@@ -113,10 +124,16 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             updateData.append("descuento", formData.descuento);
             updateData.append("FK_id_categoria", formData.FK_id_categoria);
             updateData.append("FK_id_subcategoria", formData.FK_id_subcategoria);
-            
+
             // Agregar imágenes solo si se seleccionaron nuevas
             if (formData.imagenes && formData.imagenes.length > 0) {
                 formData.imagenes.forEach(img => updateData.append("imagenes", img));
+            }
+
+            // NUEVO: Enviar las imágenes eliminadas al backend
+            if (imagenesEliminadas.length > 0) {
+                // Puedes enviar como JSON string o como array separado
+                updateData.append("imagenesEliminadas", JSON.stringify(imagenesEliminadas));
             }
 
             const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-producto", {
@@ -139,9 +156,9 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             setErrorMessage("Error al actualizar producto, intente nuevamente.");
             setIsLoading(false);
         }
-    };
+    }, [originalReferencia, formData, imagenesEliminadas, setIsLoading, onUpdateSuccess, handleClose]);
 
-    const fetchSubcategorias = async (idCategoria) => {
+    const fetchSubcategorias = useCallback(async (idCategoria) => {
         try {
             const response = await fetch(`https://accesoriosapolobackend.onrender.com/subcategorias-productos/${idCategoria}`);
             const data = await response.json();
@@ -151,20 +168,49 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         } catch (error) {
             console.error("Error consultando subcategorías:", error);
         }
-    };
+    }, []);
+
+    // MODIFICADO: Función para manejar eliminación de imágenes del backend
+    const handleRemoveBackendImage = useCallback((index) => {
+        const imagenEliminada = imagenesBackend[index];
+
+        // Agregar la imagen eliminada al array de eliminadas
+        setImagenesEliminadas(prev => [...prev, imagenEliminada]);
+
+        // Remover de las imágenes del backend
+        setImagenesBackend(prev => prev.filter((_, i) => i !== index));
+    }, [imagenesBackend]);
+
+    const handleRemoveNewImage = useCallback((index) => {
+        setFormData(prev => ({
+            ...prev,
+            imagenes: prev.imagenes.filter((_, i) => i !== index)
+        }));
+    }, []);
+
+    const handleFileChange = useCallback((e) => {
+        setFormData((prev) => ({
+            ...prev,
+            imagenes: Array.from(e.target.files)
+        }));
+    }, []);
+
+    const handleDescriptionSave = useCallback((value) => {
+        setFormData((prev) => ({ ...prev, descripcion: value }));
+    }, []);
 
     useEffect(() => {
         if (isOpen && referencia) {
             console.log("Referencia recibida:", referencia);
             fetchProducto();
         }
-    }, [isOpen, referencia]);
+    }, [isOpen, referencia, fetchProducto]);
 
     useEffect(() => {
         if (formData.FK_id_categoria) {
             fetchSubcategorias(formData.FK_id_categoria);
         }
-    }, [formData.FK_id_categoria]);
+    }, [formData.FK_id_categoria, fetchSubcategorias]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -223,19 +269,24 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
 
                     <div className="group-register-product">
                         <div className="form-group-register-product">
-                            <label>Imagenes Producto *</label>
+                            <div className="label-with-icon">
+                                <label>Imagenes Producto *</label>
+                                <UnifiedImagesModal
+                                    currentImages={imagenesBackend}
+                                    newImages={formData.imagenes}
+                                    onRemoveCurrentImage={handleRemoveBackendImage}
+                                    onRemoveNewImage={handleRemoveNewImage}
+                                />
+                            </div>
+
                             <input
                                 type="file"
                                 name="imagenes"
                                 accept="image/*"
                                 multiple
-                                onChange={(e) => {
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        imagenes: Array.from(e.target.files)
-                                    }));
-                                }}
+                                onChange={handleFileChange}
                             />
+
                         </div>
 
                         <div className="form-group-register-product">
@@ -321,7 +372,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                 isOpen={isDescriptionModalOpen}
                 onClose={() => setIsDescriptionModalOpen(false)}
                 initialValue={formData.descripcion}
-                onSave={(value) => setFormData((prev) => ({ ...prev, descripcion: value }))}
+                onSave={handleDescriptionSave}
             />
         </div>
     );
