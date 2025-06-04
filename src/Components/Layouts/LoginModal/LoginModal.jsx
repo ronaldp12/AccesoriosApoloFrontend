@@ -58,7 +58,6 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
                 localStorage.setItem("nameRol", data.usuario.nombreRol);
-                console.log("Rol del usuario:", data.usuario.nombreRol);
 
                 const validateGerente = await fetch("https://accesoriosapolobackend.onrender.com/validar-gerente", {
                     method: "GET",
@@ -76,7 +75,6 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             
                 setNameRol(rol);
                 localStorage.setItem("nameRol", rol);
-                console.log("Rol del usuario:", rol);
 
                 if (gerenteData.esGerente || rol === "vendedor") {
                     navigate("/dashboard");

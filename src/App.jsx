@@ -24,6 +24,7 @@ import { ManageSupliers } from "./Components/Layouts/ManageSupliers/ManageSuplie
 import { ManageCategories } from "./Components/Layouts/ManageCategories/ManageCategories.jsx";
 import { ManageSubcategories } from "./Components/Layouts/ManageSubcategories/ManageSubcategories.jsx";
 import { ManageProducts } from "./Components/Layouts/ManageProducts/ManageProducts.jsx";
+import { ManageInvoice } from "./Components/Layouts/ManageInvoice/ManageInvoice.jsx";
 
 export function App() {
 
@@ -99,6 +100,7 @@ export function App() {
           <Route path="manage-categories" element={<ManageCategories />} />
           <Route path="manage-subcategories" element={<ManageSubcategories />} />
           <Route path="manage-products" element={<ManageProducts />} />
+          <Route path="manage-invoice" element={<ManageInvoice />} />
         </Route>
 
       </Routes>

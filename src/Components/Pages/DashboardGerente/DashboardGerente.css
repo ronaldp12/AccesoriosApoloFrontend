@@ -30,15 +30,15 @@
 .logo-dashboard {
   width: 50%;
   height: auto;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.4rem;
 }
 
 .menu-items {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  gap: 12px;
+  padding-top: 0.8rem;
+  padding-bottom:0.8rem;
 }
 
 .menu-items a {
@@ -67,7 +67,7 @@
 
 .sidebar.open .menu-items{
   display: flex;
-  gap: 12px;
+  gap: 6px;
 }
 
 .sidebar.open .menu-items a{
