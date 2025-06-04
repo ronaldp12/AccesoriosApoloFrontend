@@ -14,6 +14,7 @@ import { Trunk } from "../../Ui/Trunk/Trunk.jsx";
 import { context } from "../../../Context/Context.jsx";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { WelcomeNoLoginModal } from "../WelcomeNoLoginModal/WelcomeNoLoginModal.jsx";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,7 +22,7 @@ export const Header = () => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [isTrunkOpen, setIsTrunkOpen] = useState(false);
-  const navigate= useNavigate();
+  const navigate = useNavigate();
 
   const { cartProducts, handleRemoveProduct, handleQuantityChange, userLogin } = useContext(context);
 
@@ -55,7 +56,7 @@ export const Header = () => {
     if (userLogin) {
       navigate("/profile");
     }
-  }
+  };
 
   return (
     <header>

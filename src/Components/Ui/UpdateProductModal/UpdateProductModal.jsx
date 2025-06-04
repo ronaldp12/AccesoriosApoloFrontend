@@ -290,7 +290,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                                 className="btn-description-modal"
                                 onClick={() => setIsDescriptionModalOpen(true)}
                             >
-                                Escribe la descripción
+                                EDITAR
                             </button>
                         </div>
 

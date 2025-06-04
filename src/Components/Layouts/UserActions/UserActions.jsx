@@ -1,10 +1,12 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { context } from "../../../Context/Context";
 import { Item } from "../../Ui/Item/Item";
 import { useNavigate } from "react-router-dom";
+import { WelcomeNoLoginModal } from "../WelcomeNoLoginModal/WelcomeNoLoginModal";
 
 export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTrunk }) => {
   const { userLogin, nameRol } = useContext(context);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const scrollToMap = () => {
@@ -17,8 +19,24 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
   const handleProfile = () => {
     if (userLogin) {
       navigate("/profile");
+    } else {
+      setIsModalOpen(true);
     }
   }
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleRegisterFromModal = () => {
+    closeModal();
+    onOpenRegister();
+  };
+
+  const handleLoginFromModal = () => {
+    closeModal();
+    onOpenLogin();
+  };
 
   return (
     <>
@@ -59,6 +77,13 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
           )
         }
       </div>
+
+      <WelcomeNoLoginModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onOpenRegister={handleRegisterFromModal}
+        onOpenLogin={handleLoginFromModal}
+      />
     </>
   );
 };
