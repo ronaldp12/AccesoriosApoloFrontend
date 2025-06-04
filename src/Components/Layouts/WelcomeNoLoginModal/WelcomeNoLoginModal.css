@@ -1,5 +1,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Contrail+One&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=League+Gothic&family=League+Spartan:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Six+Caps&display=swap');
 
+/* Keyframes para animaciones */
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOutOverlay {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes slideInModal {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes slideOutModal {
+    from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+    }
+}
+
+@keyframes fadeInContent {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .modal-overlay-welcome-no-login {
     position: fixed;
@@ -13,6 +69,11 @@
     justify-content: center;
     padding: 1rem;
     z-index: 50;
+    animation: fadeInOverlay 0.3s ease-out forwards;
+}
+
+.modal-overlay-welcome-no-login.closing {
+    animation: fadeOutOverlay 0.3s ease-in forwards;
 }
 
 .modal-container-welcome-no-login {
@@ -30,6 +91,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    animation: slideInModal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal-overlay-welcome-no-login.closing .modal-container-welcome-no-login {
+    animation: slideOutModal 0.3s ease-in forwards;
 }
 
 .modal-background-welcome-no-login {
@@ -59,11 +125,13 @@
     background: none;
     cursor: pointer;
     transition: all 0.2s;
+    animation: fadeInContent 0.6s ease-out 0.2s both;
 }
 
-.modal-close:hover {
+.modal-close-welcome-no-login:hover {
     color: white;
     background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
 }
 
 .modal-content-welcome-no-login {
@@ -71,6 +139,7 @@
     z-index: 10;
     padding: 1.5rem;
     text-align: center;
+    animation: fadeInContent 0.6s ease-out 0.3s both;
 }
 
 .modal-logo {
@@ -96,6 +165,7 @@
     margin-bottom: 1rem;
     line-height: 1.2;
     font-family: 'League Spartan', sans-serif;
+    animation: fadeInContent 0.6s ease-out 0.4s both;
 }
 
 .modal-subtitle-welcome-no-login {
@@ -105,10 +175,12 @@
     padding: 0 0.5rem;
     line-height: 1.5;
     font-weight: 500;
+    animation: fadeInContent 0.6s ease-out 0.5s both;
 }
 
 .modal-actions-welcome-no-login {
     padding-top: 3rem;
+    animation: fadeInContent 0.6s ease-out 0.6s both;
 }
 
 .action-group-welcome-no-login {
@@ -137,12 +209,14 @@
     border-radius: 20px;
     border: none;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
     background-color: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary {
@@ -154,18 +228,21 @@
     padding: 0.75rem 1.5rem;
     border-radius: 20px;
     cursor: pointer;
-    transition: border-color 0.2s;
+    transition: all 0.3s ease;
     white-space: nowrap;
 }
 
 .btn-secondary:hover {
     border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2);
 }
 
 .divider-welcome-no-login {
     display: flex;
     align-items: center;
     margin-bottom: 1.5rem;
+    animation: fadeInContent 0.6s ease-out 0.7s both;
 }
 
 .divider-line-welcome-no-login {
@@ -185,6 +262,7 @@
     display: flex;
     justify-content: center;
     gap: 1rem;
+    animation: fadeInContent 0.6s ease-out 0.8s both;
 }
 
 .social-btn {
@@ -196,7 +274,7 @@
     justify-content: center;
     border: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -207,7 +285,8 @@
 
 .social-btn.facebook-welcome-no-login:hover {
     background-color: #166fe5;
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2);
 }
 
 .social-btn.google-welcome-no-login {
@@ -217,7 +296,8 @@
 
 .social-btn.google-welcome-no-login:hover {
     background-color: #f8f9ff;
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 393px) {

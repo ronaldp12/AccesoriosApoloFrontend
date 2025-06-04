@@ -1,7 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './WelcomeNoLoginModal.css';
 
 export const WelcomeNoLoginModal = ({ isOpen, onClose, onOpenRegister, onOpenLogin }) => {
+    const [isClosing, setIsClosing] = useState(false);
+    const [shouldRender, setShouldRender] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            setShouldRender(true);
+            setIsClosing(false);
+        } else if (shouldRender) {
+            setIsClosing(true);
+            const timer = setTimeout(() => {
+                setShouldRender(false);
+                setIsClosing(false);
+            }, 300);
+
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen, shouldRender]);
+
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            onClose();
+        }, 300);
+    };
 
     const handleRegisterClick = () => {
         if (onOpenRegister) {
@@ -11,18 +35,27 @@ export const WelcomeNoLoginModal = ({ isOpen, onClose, onOpenRegister, onOpenLog
 
     const handleLoginClick = () => {
         if (onOpenLogin) {
-            onOpenLogin(); 
+            onOpenLogin();
         }
     };
 
-    if (!isOpen) return null;
+    const handleOverlayClick = (e) => {
+        if (e.target === e.currentTarget) {
+            handleClose();
+        }
+    };
+
+    if (!shouldRender) return null;
 
     return (
-        <div className="modal-overlay-welcome-no-login">
+        <div
+            className={`modal-overlay-welcome-no-login ${isClosing ? 'closing' : ''}`}
+            onClick={handleOverlayClick}
+        >
             <div className="modal-container-welcome-no-login">
                 <div className="modal-background-welcome-no-login"></div>
 
-                <button onClick={onClose} className="modal-close-welcome-no-login">
+                <button onClick={handleClose} className="modal-close-welcome-no-login">
                     ×
                 </button>
 
