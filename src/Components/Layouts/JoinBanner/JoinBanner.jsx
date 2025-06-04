@@ -9,6 +9,10 @@ export const JoinBanner = ({ onOpenRegister, onOpenLogin }) => {
     const { userLogin, nameRol } = useContext(context);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    if (userLogin) {
+        return null;
+    }
+
     const handleJoin = () => {
         if (userLogin && nameRol === 'cliente') {
             return null;

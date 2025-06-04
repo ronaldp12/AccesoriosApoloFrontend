@@ -51,11 +51,14 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 setUserLogin(data.usuario.nombre);
                 setToken(data.token);
                 setName(data.usuario.nombre);
+                setNameRol(data.usuario.nombreRol);
 
                 setAvatar(null)
                 localStorage.removeItem("avatar")
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
+                localStorage.setItem("nameRol", data.usuario.nombreRol);
+                console.log("Rol del usuario:", data.usuario.nombreRol);
 
                 const validateGerente = await fetch("https://accesoriosapolobackend.onrender.com/validar-gerente", {
                     method: "GET",

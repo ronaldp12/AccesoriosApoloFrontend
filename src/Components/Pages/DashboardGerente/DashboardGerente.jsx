@@ -70,6 +70,11 @@ export const DashboardGerente = () => {
                     </Link>
 
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
+
+                    <Link to="/dashboard/manage-invoice" className={location.pathname.startsWith("/dashboard/manage-invoice") ? "active" : ""}>
+                        <FaMoneyBill /><span>Factura Proveedor</span>
+                    </Link>
+
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
                     <a href="#"><FaMagic /><span>Calcomanías</span></a>
 
