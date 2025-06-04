@@ -25,6 +25,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         nombre: "",
         descripcion: "",
         talla: "",
+        marca: "",
         stock: "",
         precio_unidad: "",
         descuento: "",
@@ -66,6 +67,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                     nombre: producto.nombre || "",
                     descripcion: producto.descripcion || "",
                     talla: producto.talla || "",
+                    marca: producto.marca || "",
                     stock: producto.stock || "",
                     precio_unidad: precioUnidadNum,
                     descuento: descuentoNum,
@@ -112,6 +114,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                 nombre: "",
                 descripcion: "",
                 talla: "",
+                marca: "",
                 stock: "",
                 precio_unidad: "",
                 descuento: "",
@@ -141,6 +144,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             updateData.append("nombre", formData.nombre);
             updateData.append("descripcion", formData.descripcion);
             updateData.append("talla", formData.talla);
+            updateData.append("marca", formData.marca);
             updateData.append("precio_unidad", formData.precio_unidad);
             updateData.append("descuento", formData.descuento);
             updateData.append("FK_id_categoria", formData.FK_id_categoria);
@@ -304,6 +308,17 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                                 onChange={handleChange}
                             />
                         </div>
+                    </div>
+
+                    <div className="form-group-full">
+                        <label>Marca</label>
+                        <input
+                            type="text"
+                            name="marca"
+                            placeholder="Escriba la marca"
+                            value={formData.marca}
+                            onChange={handleChange}
+                        />
                     </div>
 
                     <div className="group-register-product">

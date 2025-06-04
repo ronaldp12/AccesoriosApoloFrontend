@@ -17,7 +17,7 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
   };
 
   const handleProfile = () => {
-    if (userLogin) {
+    if (userLogin && nameRol === 'cliente') {
       navigate("/profile");
     } else {
       setIsModalOpen(true);

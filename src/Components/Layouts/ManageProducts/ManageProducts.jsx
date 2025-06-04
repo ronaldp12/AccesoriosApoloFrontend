@@ -132,7 +132,7 @@ export const ManageProducts = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>Referencia</th>
+                                <th>Ref</th>
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Talla</th>
@@ -142,6 +142,7 @@ export const ManageProducts = () => {
                                 <th>Precio Descuento</th>
                                 <th>Categoría</th>
                                 <th>Subcategoría</th>
+                                <th>Marca</th>
                                 <th>Imagen</th>
                                 <th>Estado</th>
                                 <th>Editar</th>
@@ -174,6 +175,7 @@ export const ManageProducts = () => {
                                     <td>{product.precio_descuento.toLocaleString("es-ES", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}</td>
                                     <td>{product.categoria}</td>
                                     <td>{product.subcategoria}</td>
+                                    <td>{product.marca}</td>
                                     <td>
                                         {product.imagenes.length > 0 ? (
                                             <FaEye

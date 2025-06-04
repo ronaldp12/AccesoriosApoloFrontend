@@ -19,6 +19,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         nombre: "",
         descripcion: "",
         talla: "",
+        marca: "",
         precio_unidad: "",
         descuento: "",
         FK_id_categoria: "",
@@ -109,6 +110,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             dataToSend.append("nombre", formData.nombre);
             dataToSend.append("descripcion", formData.descripcion);
             dataToSend.append("talla", formData.talla);
+            dataToSend.append("marca", formData.marca);
             dataToSend.append("precio_unidad", parseFloat(formData.precio_unidad));
             dataToSend.append("descuento", parseFloat(formData.descuento));
             dataToSend.append("FK_id_categoria", formData.FK_id_categoria);
@@ -202,6 +204,17 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                 onChange={handleChange}
                             />
                         </div>
+                    </div>
+
+                    <div className="form-group-full">
+                        <label>Marca</label>
+                        <input
+                            type="text"
+                            name="marca"
+                            placeholder="Escriba la marca"
+                            value={formData.marca}
+                            onChange={handleChange}
+                        />
                     </div>
 
                     <div className="group-register-product">
