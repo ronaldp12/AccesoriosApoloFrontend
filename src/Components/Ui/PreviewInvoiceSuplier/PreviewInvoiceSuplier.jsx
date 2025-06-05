@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PreviewInvoiceSuplier.css';
+import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const PreviewInvoiceSuplier = ({ invoiceId, isModal = false, onClose }) => {
     const [invoiceData, setInvoiceData] = useState(null);
@@ -71,7 +72,7 @@ export const PreviewInvoiceSuplier = ({ invoiceId, isModal = false, onClose }) =
         if (loading) {
             return (
                 <div className="invoice-loading-state">
-                    <div className="loading-spinner"></div>
+                    <img src={wheelIcon} alt="Cargando..." className="manage-invoice-spinner" />
                     <p>Cargando factura...</p>
                 </div>
             );
