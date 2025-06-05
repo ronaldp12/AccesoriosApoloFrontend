@@ -14,7 +14,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         representante: "",
         nombreEmpresa: "",
         correo: "",
-        telefono: phone,
+        telefono: "",
         direccion: "",
     });
 
@@ -41,7 +41,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         setErrorMessage("");
         setSuccessMessage("");
 
-        if (!/^\d{10}$/.test(phone)) {
+        if (formData.telefono.length !== 10) {
             setErrorMessage("El número de teléfono debe tener 10 dígitos.");
             setIsLoading(false);
             return;
@@ -146,16 +146,18 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         <label>Teléfono</label>
                         <input
                             type="tel"
+                            name="telefono"
                             placeholder="Teléfono"
                             inputMode="numeric"
                             pattern="[0-9]*"
-                            value={phone}
+                            value={formData.telefono}
                             onChange={(e) => {
                                 const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
-                                setPhone(onlyNumbers);
+                                setFormData((prev) => ({ ...prev, telefono: onlyNumbers }));
                                 setErrorMessage("");
                             }}
                         />
+
                     </div>
 
                     <div className="form-group-full">

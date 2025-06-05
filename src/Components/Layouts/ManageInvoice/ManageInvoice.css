@@ -1,10 +1,10 @@
-.supliers-container {
+.invoice-container {
     padding-left: 1rem;
     background: #fff;
     position: relative;
 }
 
-.supliers-header {
+.invoice-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,13 +46,13 @@
     color: #014aad;
 }
 
-.supliers-header h2 {
+.invoice-header h2 {
     font-size: 2.3rem;
     color: #333;
     margin-left: 2rem;
 }
 
-.hr-suplier {
+.hr-invoice {
     width: 100%;
     margin: 0.6em;
     color: #e7e7e7;
@@ -83,7 +83,7 @@
     background: #073678;
 }
 
-.supliers-filtros {
+.invoice-filtros {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
@@ -148,29 +148,29 @@
     font-size: 1rem;
 }
 
-.supliers-table table {
+.invoice-table table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.supliers-table th,
-.supliers-table td {
+.invoice-table th,
+.invoice-table td {
     padding: 0.8rem;
     text-align: center;
     border-bottom: 1px solid #ddd;
     font-size: 0.9rem;
 }
 
-.supliers-table th {
+.invoice-table th {
     background: #f5f5f5;
     color: #333;
 }
 
-.supliers-table th{
+.invoice-table th{
     text-align: left;
 }
 
-.supliers-table td{
+.invoice-table td{
     text-align: left;
 }
 
@@ -221,7 +221,7 @@
   align-items: center;
 }
 
-.manage-supliers-spinner {
+.manage-invoice-spinner {
   width: 80px;
   height: 80px;
   animation: girar 1s linear infinite;
@@ -238,13 +238,13 @@
 
 
 @media (max-width: 820px) {
-  .supliers-header {
+  .invoice-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
 
-  .supliers-header h2 {
+  .invoice-header h2 {
     margin-left: 0;
   }
 
@@ -253,7 +253,7 @@
     margin-left: 0;
   }
 
-  .supliers-filtros {
+  .invoice-filtros {
     flex-wrap: wrap;
     gap: 0.8rem;
   }
@@ -283,8 +283,8 @@
     height: auto;
   }
 
-  .supliers-table th,
-  .supliers-table td {
+  .invoice-table th,
+  .invoice-table td {
     padding: 0.6rem;
     font-size: 0.85rem;
   }
@@ -296,7 +296,7 @@
 }
 
 @media (min-width: 432px) and (max-width: 480px) {
-  .supliers-container {
+  .invoice-container {
     padding: 1rem;
   }
 
@@ -305,7 +305,7 @@
     flex-wrap: wrap;
   }
 
-  .supliers-header h2 {
+  .invoice-header h2 {
     font-size: 1.8rem;
   }
 
@@ -318,7 +318,7 @@
     right: 15px;
   }
 
-  .supliers-filtros {
+  .invoice-filtros {
     flex-direction: column;
     align-items: stretch;
   }
@@ -336,14 +336,14 @@
     justify-content: center;
   }
 
-  .supliers-table table {
+  .invoice-table table {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
   }
 
-  .supliers-table th, 
-  .supliers-table td {
+  .invoice-table th, 
+  .invoice-table td {
     font-size: 0.75rem;
     padding: 0.5rem;
   }
@@ -355,7 +355,7 @@
 }
 
 @media (min-width: 394px) and (max-width: 431px) {
-  .supliers-header h2 {
+  .invoice-header h2 {
     font-size: 1.6rem;
   }
 
@@ -369,8 +369,8 @@
     width: 100%;
   }
 
-  .supliers-table th, 
-  .supliers-table td {
+  .invoice-table th, 
+  .invoice-table td {
     font-size: 0.7rem;
   }
 
@@ -381,7 +381,7 @@
 }
 
 @media (max-width: 393px) {
-  .supliers-header h2 {
+  .invoice-header h2 {
     font-size: 1.5rem;
   }
 
@@ -395,8 +395,8 @@
     height: 2.6rem;
   }
 
-  .supliers-table th, 
-  .supliers-table td {
+  .invoice-table th, 
+  .invoice-table td {
     font-size: 0.68rem;
   }
 

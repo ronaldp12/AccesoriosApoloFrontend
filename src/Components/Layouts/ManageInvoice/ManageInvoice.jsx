@@ -1,43 +1,35 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ManageInvoice.css";
-import { FaSearch, FaFilter, FaEdit, FaTrash, FaHome, FaUndo } from "react-icons/fa";
+import { FaSearch, FaHome, FaEye } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
-import { RegisterSuplierModal } from "../../Ui/RegisterSuplierModal/RegisterSuplierModal";
-import { UpdateSuplierModal } from "../../Ui/UpdateSuplierModal/UpdateSuplierModal";
-import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteModal";
-import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
+import { RegisterInvoiceModal } from "../../Ui/RegisterInvoiceModal/RegisterInvoiceModal.jsx";
 
 export const ManageInvoice = () => {
-    const [proveedores, setProveedores] = useState([]);
+    const [facturas, setFacturas] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
-    const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-    const [isConfirmRestoreOpen, setIsConfirmRestoreOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPage = 7;
+    const invoicesPerPage = 7;
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
-    const [selectedNit, setSelectedNit] = useState(null);
-    const [searchNit, setSearchNit] = useState("");
+    const [searchDate, setSearchDate] = useState("");
 
-    const fetchProveedores = async () => {
+    const fetchFacturas = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/proveedores");
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/facturas-proveedores");
             if (!response.ok) {
-                throw new Error("Error al obtener proveedores");
+                throw new Error("Error al obtener facturas de proveedores");
             }
 
             const data = await response.json();
             if (data.success) {
-                setProveedores(data.proveedores);
+                setFacturas(data.facturas);
             } else {
-                console.error("Error al obtener usuarios");
+                console.error("Error al obtener facturas de proveedores");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -46,69 +38,52 @@ export const ManageInvoice = () => {
         }
     };
 
-    const filteredProveedores = proveedores.filter((proveedor) =>
-        proveedor.nit.toString().includes(searchNit)
+    const filteredFacturas = facturas.filter((factura) =>
+        factura.fecha.toLowerCase().includes(searchDate.toLowerCase())
     );
 
-
-    const handleEditClick = (nit) => {
-        setSelectedNit(nit);
-        setIsModalUpdateOpen(true);
+    const handleViewInvoice = (factura) => {
+        // Aquí puedes implementar la lógica para ver el detalle de la factura
+        console.log("Ver factura:", factura);
+        // Podrías abrir un modal o navegar a una página de detalle
     };
 
     useEffect(() => {
-        fetchProveedores();
+        fetchFacturas();
     }, []);
 
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
-    const closeUpdateModal = () => setIsModalUpdateOpen(false);
 
-    const openConfirmDeleteModal = (proveedor) => {
-        setSelectedUser(proveedor);
-        setIsConfirmDeleteOpen(true);
-    };
-    const closeConfirmDeleteModal = () => {
-        setIsConfirmDeleteOpen(false);
-        setSelectedUser(null);
-    };
-
-    const openConfirmRestoreModal = (proveedor) => {
-        setSelectedUser(proveedor);
-        setIsConfirmRestoreOpen(true);
-    };
-    const closeConfirmRestoreModal = () => {
-        setIsConfirmRestoreOpen(false);
-        setSelectedUser(null);
-    };
-
-    const indexUltimoUsuario = currentPage * usersPage;
-    const indexPrimerUsuario = indexUltimoUsuario - usersPage;
-    const usuariosActuales = filteredProveedores.slice(indexPrimerUsuario, indexUltimoUsuario);
-    const totalPages = Math.ceil(filteredProveedores.length / usersPage);
-
+    const indexUltimaFactura = currentPage * invoicesPerPage;
+    const indexPrimeraFactura = indexUltimaFactura - invoicesPerPage;
+    const facturasActuales = filteredFacturas.slice(indexPrimeraFactura, indexUltimaFactura);
+    const totalPages = Math.ceil(filteredFacturas.length / invoicesPerPage);
 
     return (
-        <div className="supliers-container">
+        <div className="invoice-container">
             <div className="breadcrumb">
                 <FaHome onClick={() => navigate("/dashboard")} className="icono-home" />
                 <span className="breadcrumb-separator">/</span>
                 <span className="breadcrumb-actual">Facturas Proveedores</span>
             </div>
 
-            <div className="supliers-header">
+            <div className="invoice-header">
                 <h2>Facturas Proveedores</h2>
                 <button className="btn-registrar" onClick={openRegisterModal}>
                     Registrar Factura
                 </button>
             </div>
-            <hr className="hr-suplier" />
+            <hr className="hr-invoice" />
 
-            <div className="supliers-filtros">
+            <div className="invoice-filtros">
                 <div className="filtro-input">
-                    <input type="text" placeholder="Consultar por Fecha"
-                        value={searchNit}
-                        onChange={(e) => setSearchNit(e.target.value)} />
+                    <input
+                        type="text"
+                        placeholder="Consultar por Fecha"
+                        value={searchDate}
+                        onChange={(e) => setSearchDate(e.target.value)}
+                    />
                     <FaSearch className="icono-buscar" />
                 </div>
                 <div className="img-filtro">
@@ -118,108 +93,70 @@ export const ManageInvoice = () => {
 
             {isLoading && (
                 <div className="tabla-loader">
-                    <img src={wheelIcon} alt="Cargando..." className="manage-supliers-spinner" />
+                    <img src={wheelIcon} alt="Cargando..." className="manage-invoice-spinner" />
                     <p>Cargando facturas proveedores...</p>
                 </div>
             )}
 
-            <div className="supliers-table">
+            <div className="invoice-table">
                 <table>
                     <thead>
                         <tr>
-                            <th>No</th>
+                            <th>Id</th>
                             <th>NIT</th>
-                            <th>Fecha Compra</th>
                             <th>Nombre Empresa</th>
+                            <th>Fecha Compra</th>
                             <th>Valor Total</th>
-                            <th>Metodo Pago</th>
+                            <th>Método Pago</th>
                             <th>Ver Factura</th>
                             <th>Estado</th>
-                            <th>Editar</th>
-                            <th>Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {usuariosActuales.map((proveedor, index) => (
-                            <tr key={proveedor.nit}>
-                                <td>{indexPrimerUsuario + index + 1}</td>
-                                <td>{proveedor.nit}</td>
-                                <td>{proveedor.representante}</td>
-                                <td>{proveedor.nombreEmpresa}</td>
-                                <td>{proveedor.correo}</td>
-                                <td>{proveedor.telefono}</td>
-                                <td>{proveedor.direccion}</td>
+                        {facturasActuales.map((factura, index) => (
+                            <tr key={factura.id}>
+                                <td>{factura.id}</td>
+                                <td>{factura.nit}</td>
+                                <td>{factura.empresa}</td>
+                                <td>{factura.fecha}</td>
+                                <td>${factura.valor_total}</td>
+                                <td>{factura.metodo_pago}</td>
                                 <td>
-                                    <span className={`estado ${proveedor.estado === 1 ? "activo" : "inactivo"}`}>
-                                        {proveedor.estado === 1 ? "Activo" : "Inactivo"}
+                                    <FaEye
+                                        onClick={() => handleViewInvoice(factura)}
+                                        className="icono-view"
+                                        title="Ver factura"
+                                    />
+                                </td>
+                                <td>
+                                    <span className="estado activo">
+                                        Activo
                                     </span>
                                 </td>
-                                <td>
-                                    <FaEdit onClick={() => handleEditClick(proveedor.nit)} className="icono-editar" />
-                                </td>
-                                <td>
-                                    {proveedor.estado === 1 ? (
-                                        <FaTrash onClick={() => openConfirmDeleteModal(proveedor)} className="icono-delete" />
-                                    ) : (
-                                        <FaUndo onClick={() => openConfirmRestoreModal(proveedor)} className="icono-restore" />
-                                    )}
-                                </td>
+                    
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
 
-            <RegisterSuplierModal
+            {facturasActuales.length === 0 && !isLoading && (
+                <div className="no-data">
+                    <p>No se encontraron facturas de proveedores.</p>
+                </div>
+            )}
+
+            <RegisterInvoiceModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
-                onRegisterSuccess={fetchProveedores}
+                onRegisterSuccess={fetchFacturas}
             />
 
-            <UpdateSuplierModal
-                isOpen={isModalUpdateOpen}
-                onClose={closeUpdateModal}
-                nitProveedor={selectedNit}
-                onUpdateSuccess={fetchProveedores}
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
             />
-
-            <ConfirmDeleteModal
-                isOpen={isConfirmDeleteOpen}
-                onClose={closeConfirmDeleteModal}
-                title="¿Eliminar facturas proveedores?"
-                description={
-                    <>
-                        ¿Estás seguro de eliminar la factura del proveedor <strong>{selectedUser?.nombreEmpresa}</strong> con ID <strong>{selectedUser?.nit}</strong>?
-                    </>
-                }
-                usuario={selectedUser}
-                onConfirmSuccess={fetchProveedores}
-                endpoint="https://accesoriosapolobackend.onrender.com/eliminar-proveedor"
-                method="PUT"
-                payloadKey="nit"
-                confirmText="ELIMINAR"
-            />
-
-
-            <ConfirmRestoreModal
-                isOpen={isConfirmRestoreOpen}
-                onClose={closeConfirmRestoreModal}
-                usuario={selectedUser}
-                onConfirmSuccess={fetchProveedores}
-                title="¿Recuperar factura proveedor?"
-                message={
-                    <>
-                        ¿Deseas recuperar la factura del proveedor <strong>{selectedUser?.nombreEmpresa}</strong> con ID <strong>{selectedUser?.nit}</strong>?
-                    </>
-                }
-                confirmText="RECUPERAR"
-                endpoint="https://accesoriosapolobackend.onrender.com/reactivar-proveedor"
-                method="PUT"
-                payloadKey="nit"
-            />
-
-
-            <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
         </div>
     );
 };

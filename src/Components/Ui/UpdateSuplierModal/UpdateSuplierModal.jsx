@@ -56,6 +56,11 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
 
     const handleUpdate = async () => {
         setIsLoading(true);
+        if (formData.telefono.length !== 10) {
+            setErrorMessage("El número de teléfono debe tener 10 dígitos.");
+            setIsLoading(false);
+            return;
+        }
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-proveedor", {
                 method: "PUT",
@@ -115,7 +120,19 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
 
                     <div className="form-group-update-suplier">
                         <label>Teléfono</label>
-                        <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
+                        <input
+                            type="tel"
+                            name="telefono"
+                            placeholder="Teléfono"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            value={formData.telefono}
+                            onChange={(e) => {
+                                const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                setFormData((prev) => ({ ...prev, telefono: onlyNumbers }));
+                                setErrorMessage("");
+                            }}
+                        />
                     </div>
 
                     <div className="form-group-full">
