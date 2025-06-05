@@ -109,7 +109,6 @@ export const ManageInvoice = () => {
                             <th>Valor Total</th>
                             <th>Método Pago</th>
                             <th>Ver Factura</th>
-                            <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -127,11 +126,6 @@ export const ManageInvoice = () => {
                                         className="icono-view"
                                         title="Ver factura"
                                     />
-                                </td>
-                                <td>
-                                    <span className="estado activo">
-                                        Activo
-                                    </span>
                                 </td>
                     
                             </tr>

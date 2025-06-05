@@ -167,11 +167,11 @@
 }
 
 .invoice-table th{
-    text-align: left;
+    text-align: center;
 }
 
 .invoice-table td{
-    text-align: left;
+    text-align: center;
 }
 
 .estado {
