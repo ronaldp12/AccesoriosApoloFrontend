@@ -7,10 +7,13 @@ import { Pagination } from "../../Ui/Pagination/Pagination";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterInvoiceModal } from "../../Ui/RegisterInvoiceModal/RegisterInvoiceModal.jsx";
+import { PreviewInvoiceSuplier } from "../../Ui/PreviewInvoiceSuplier/PreviewInvoiceSuplier.jsx";
 
 export const ManageInvoice = () => {
     const [facturas, setFacturas] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
+    const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+    const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const invoicesPerPage = 7;
     const navigate = useNavigate();
@@ -43,9 +46,14 @@ export const ManageInvoice = () => {
     );
 
     const handleViewInvoice = (factura) => {
-        // Aquí puedes implementar la lógica para ver el detalle de la factura
         console.log("Ver factura:", factura);
-        // Podrías abrir un modal o navegar a una página de detalle
+        setSelectedInvoiceId(factura.id);
+        setIsPreviewModalOpen(true);
+    };
+
+    const closePreviewModal = () => {
+        setIsPreviewModalOpen(false);
+        setSelectedInvoiceId(null);
     };
 
     useEffect(() => {
@@ -123,11 +131,10 @@ export const ManageInvoice = () => {
                                 <td>
                                     <FaEye
                                         onClick={() => handleViewInvoice(factura)}
-                                        className="icono-view"
+                                        className="icono-ver-factura"
                                         title="Ver factura"
                                     />
                                 </td>
-                    
                             </tr>
                         ))}
                     </tbody>
@@ -145,6 +152,15 @@ export const ManageInvoice = () => {
                 onClose={closeRegisterModal}
                 onRegisterSuccess={fetchFacturas}
             />
+
+            {/* Modal de Vista Previa de Factura */}
+            {isPreviewModalOpen && selectedInvoiceId && (
+                <PreviewInvoiceSuplier
+                    invoiceId={selectedInvoiceId}
+                    isModal={true}
+                    onClose={closePreviewModal}
+                />
+            )}
 
             <Pagination
                 currentPage={currentPage}

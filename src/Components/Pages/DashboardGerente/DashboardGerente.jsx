@@ -2,7 +2,7 @@ import React, { useState, useContext, use } from "react";
 import "./DashboardGerente.css";
 import { Outlet } from "react-router-dom";
 import { Logo } from "../../Ui/Logo/Logo.jsx";
-import { FaHome, FaUser, FaBox, FaBars, FaList, FaTruck, FaMoneyBill, FaClipboard, FaMagic, FaSignOutAlt } from "react-icons/fa";
+import { FaHome, FaUser, FaBox, FaBars, FaList, FaTruck, FaMoneyBill, FaFileInvoice, FaClipboard, FaMagic, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { context } from "../../../Context/Context.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -72,7 +72,7 @@ export const DashboardGerente = () => {
                     <a href="#"><FaMoneyBill /><span>Ventas</span></a>
 
                     <Link to="/dashboard/manage-invoice" className={location.pathname.startsWith("/dashboard/manage-invoice") ? "active" : ""}>
-                        <FaMoneyBill /><span>Factura Proveedor</span>
+                        <FaFileInvoice /><span>Factura Proveedor</span>
                     </Link>
 
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
