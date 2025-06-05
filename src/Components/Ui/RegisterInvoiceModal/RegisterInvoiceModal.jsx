@@ -320,14 +320,19 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             <div className="form-group-register-invoice">
                                 <label>Precio Unitario *</label>
                                 <input
-                                    type="number"
-                                    name="precio_unitario"
-                                    placeholder="0.00"
-                                    min="0.01"
-                                    step="0.01"
-                                    value={productData.precio_unitario}
-                                    onChange={handleProductChange}
-                                />
+                                type="text"
+                                name="precio_unitario"
+                                placeholder="0.00"
+                                value={`${productData.precio_unitario.toLocaleString("es-ES")}`}
+                                onChange={(e) => {
+                                    const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, ""); 
+                                    setProductData({
+                                        ...productData,
+                                        precio_unitario: Number(rawValue)
+                                    });
+                                }}
+                            />
+
                             </div>
 
                             <div className="add-product-button-container">
@@ -349,10 +354,10 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                     {/* Tabla de productos */}
                     {products.length > 0 && (
-                        <div className="products-table-section">
+                        <div className="products-table-section-invoice">
                             <h3>Productos Agregados</h3>
-                            <div className="table-container">
-                                <table className="products-table">
+                            <div className="table-container-invoice">
+                                <table className="products-table-invoice">
                                     <thead>
                                         <tr>
                                             <th>Referencia</th>

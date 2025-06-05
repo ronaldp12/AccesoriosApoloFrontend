@@ -111,7 +111,7 @@
 }
 
 .btn-add-product {
-    background-color: #28a745;
+    background-color: #014aad;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -127,7 +127,7 @@
 }
 
 .btn-add-product:hover:not(:disabled) {
-    background-color: #218838;
+    background-color: #0f1881;
 }
 
 .btn-add-product:disabled {
@@ -142,30 +142,30 @@
 }
 
 /* Tabla de productos */
-.products-table-section {
+.products-table-section-invoice {
     margin-top: 20px;
 }
 
-.products-table-section h3 {
+.products-table-section-invoice h3 {
     font-size: 18px;
     font-weight: bold;
     color: #0f1881;
     margin-bottom: 15px;
 }
 
-.table-container {
+.table-container-invoice {
     overflow-x: auto;
     border-radius: 12px;
     border: 1px solid #dee2e6;
 }
 
-.products-table {
+.products-table-invoice {
     width: 100%;
     border-collapse: collapse;
     background-color: white;
 }
 
-.products-table th {
+.products-table-invoice th {
     background-color: #0f1881;
     color: white;
     padding: 12px 8px;
@@ -174,13 +174,13 @@
     font-size: 14px;
 }
 
-.products-table td {
+.products-table-invoice td {
     padding: 12px 8px;
     border-bottom: 1px solid #dee2e6;
     font-size: 14px;
 }
 
-.products-table tr:hover {
+.products-table-invoice tr:hover {
     background-color: #f8f9fa;
 }
 
@@ -386,8 +386,8 @@
         max-width: 200px;
     }
 
-    .products-table th,
-    .products-table td {
+    .products-table-invoice th,
+    .products-table-invoice td {
         padding: 8px 6px;
         font-size: 13px;
     }
@@ -440,16 +440,16 @@
         font-size: 14px;
     }
 
-    .products-table {
+    .products-table-invoice {
         font-size: 12px;
     }
 
-    .products-table th,
-    .products-table td {
+    .products-table-invoice th,
+    .products-table-invoice td {
         padding: 6px 4px;
     }
 
-    .products-table th {
+    .products-table-invoice th {
         font-size: 12px;
     }
 
@@ -479,7 +479,7 @@
     }
 
     .add-product-section h3,
-    .products-table-section h3 {
+    .products-table-section-invoice h3 {
         font-size: 16px;
     }
 
@@ -498,8 +498,8 @@
         font-size: 13px;
     }
 
-    .products-table th,
-    .products-table td {
+    .products-table-invoice th,
+    .products-table-invoice td {
         padding: 5px 3px;
         font-size: 11px;
     }
@@ -533,7 +533,7 @@
     }
 
     .add-product-section h3,
-    .products-table-section h3 {
+    .products-table-section-invoice h3 {
         font-size: 15px;
         margin-bottom: 10px;
     }
@@ -555,12 +555,12 @@
         height: 40px;
     }
 
-    .table-container {
+    .table-container-invoice {
         border-radius: 8px;
     }
 
-    .products-table th,
-    .products-table td {
+    .products-table-invoice th,
+    .products-table-invoice td {
         padding: 4px 2px;
         font-size: 10px;
     }
@@ -604,28 +604,28 @@
 /* Mejoras para tablas en móviles muy pequeños */
 @media (max-width: 393px) {
 
-    .products-table th:nth-child(2),
-    .products-table td:nth-child(2) {
+    .products-table-invoice th:nth-child(2),
+    .products-table-invoice td:nth-child(2) {
         display: none;
     }
 
-    .products-table th:nth-child(1) {
+    .products-table-invoice th:nth-child(1) {
         width: 25%;
     }
 
-    .products-table th:nth-child(3) {
+    .products-table-invoice th:nth-child(3) {
         width: 20%;
     }
 
-    .products-table th:nth-child(4) {
+    .products-table-invoice th:nth-child(4) {
         width: 25%;
     }
 
-    .products-table th:nth-child(5) {
+    .products-table-invoice th:nth-child(5) {
         width: 20%;
     }
 
-    .products-table th:nth-child(6) {
+    .products-table-invoice th:nth-child(6) {
         width: 10%;
     }
 }
