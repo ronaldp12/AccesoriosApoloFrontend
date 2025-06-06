@@ -212,12 +212,12 @@ export const ManageUsers = () => {
                 </div>
                 <select value={filterRol} className="filtro-select"
                     onChange={(e) => setFilterRol(e.target.value)}>
-                    <option value={""}>Rol</option>
+                    <option value={""}>Todos</option>
                     <option value="cliente">Cliente</option>
                     <option value="gerente">Gerente</option>
                     <option value="vendedor">Vendedor</option>
                 </select>
-                <button onClick={handleFilterClick} className="btn-filtrar">
+                <button onClick={handleFilterClick} className="btn-filtrar-users">
                     <span>Filtrar</span> <FaFilter />
                 </button>
                 <div className="img-filtro">

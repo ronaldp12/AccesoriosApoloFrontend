@@ -95,7 +95,6 @@
     top: -6.5rem;
 }
 
-
 .filtro-input {
     position: relative;
 }
@@ -130,10 +129,10 @@
     color: #6e6e6e;
 }
 
-.btn-filtrar {
-    background: transparent;
+.btn-filtrar-users {
+    background-color: #014aad ;
     border: none;
-    color: #6e6e6e;
+    color: #fff;
     padding: 0.5rem 0.8rem;
     font-family: 'poppins', sans-serif;
     font-weight: bold;
