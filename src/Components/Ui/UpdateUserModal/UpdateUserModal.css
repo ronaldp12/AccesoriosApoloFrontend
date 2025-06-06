@@ -209,6 +209,48 @@
   display: inline-block;
 }
 
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-top: 4px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+}
+
+/* Estilos para las validaciones de contraseña en el modal */
+.password-conditions {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.password-conditions p {
+    margin: 4px 0;
+    color: #e74c3c;
+}
+
+.valid-password-change {
+    color: #27ae60 !important;
+    font-weight: 500;
+}
+
+/* Asegurar que el input de contraseña tenga espacio para las validaciones */
+.form-group-full input[type="password"] {
+    margin-bottom: 8px;
+}
+
 @media (max-width: 820px) {
   .form-group {
     flex: 1 1 100%;

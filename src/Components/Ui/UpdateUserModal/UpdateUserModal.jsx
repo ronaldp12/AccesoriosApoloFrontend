@@ -6,14 +6,17 @@ import wheelIcon from "../../../assets/icons/img1-loader.png";
 export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
+    const { getErrorMessage, isLoading, setIsLoading, validatePassword } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
+    const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+    const [sendPasswordByEmail, setSendPasswordByEmail] = useState(false);
     const [formData, setFormData] = useState({
         nombre: "",
         correo: "",
         telefono: "",
         cedula: "",
         rol: "",
+        contrasena: "",
     });
 
     useEffect(() => {
@@ -24,6 +27,7 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                 telefono: usuario.telefono || "",
                 cedula: usuario.cedula || "",
                 rol: usuario.rol || "",
+                contrasena: "",
             });
         }
     }, [usuario]);
@@ -32,27 +36,71 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleRoleChange = (e) => {
+        const newRole = e.target.value;
+        setFormData({ ...formData, rol: newRole, contrasena: "" });
+        setShowPasswordValidation(false);
+        setSendPasswordByEmail(false);
+    };
+
+    const handlePasswordFocus = () => {
+        setShowPasswordValidation(true);
+    };
+
+    const handlePasswordBlur = () => {
+        // Mantener las validaciones visibles una vez mostradas
+        setShowPasswordValidation(false);
+    };
+
+    const handleCheckboxChange = (e) => {
+        setSendPasswordByEmail(e.target.checked);
+    };
+
+    const isPasswordValid = () => {
+        const validation = validatePassword(formData.contrasena || '');
+        return validation.length && validation.uppercase && validation.number;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
+        if ((formData.rol === 'vendedor' || formData.rol === 'gerente') && formData.contrasena) {
+            if (!isPasswordValid()) {
+                setErrorMessage("La contraseña no cumple con los requisitos.");
+                setIsLoading(false);
+                return;
+            }
+        }
+
         try {
             const token = localStorage.getItem("token");
+            const dataToSend = {
+                correoOriginal: usuario.correo,
+                ...formData,
+            };
+
+            if (formData.rol === 'cliente' && sendPasswordByEmail) {
+                dataToSend.enviarContrasena = true;
+                delete dataToSend.contrasena;
+            }
+
             const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-usuario", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    correoOriginal: usuario.correo,
-                    ...formData,
-                }),
+                body: JSON.stringify(dataToSend),
             });
 
             const data = await response.json();
             if (data.success) {
-                setSuccessMessage("Usuario actualizado con éxito.");
+                let successMsg = "Usuario actualizado con éxito.";
+                if (formData.rol === 'cliente' && sendPasswordByEmail) {
+                    successMsg += " Se ha enviado una contraseña temporal al correo.";
+                }
+                setSuccessMessage(successMsg);
                 if (onUpdateSuccess) onUpdateSuccess();
 
                 setTimeout(() => {
@@ -65,7 +113,7 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
             }
         } catch (error) {
             console.error("Error al actualizar usuario:", error);
-            setErrorMessage("Hubo un error al registrar usuario.");
+            setErrorMessage("Hubo un error al actualizar usuario.");
             setIsLoading(false);
         }
     };
@@ -74,6 +122,8 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            setShowPasswordValidation(false);
+            setSendPasswordByEmail(false);
             onClose();
         }, 400);
     };
@@ -92,7 +142,7 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                         </div>
                         <div className="form-group-update-user">
                             <label>Selecciona el rol</label>
-                            <select name="rol" value={formData.rol} onChange={handleChange}>
+                            <select name="rol" value={formData.rol} onChange={handleRoleChange}>
                                 <option value="">Rol</option>
                                 <option value={"cliente"}>Cliente</option>
                                 <option value={"gerente"}>Gerente</option>
@@ -116,6 +166,48 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                         <label>Correo</label>
                         <input type="email" name="correo" value={formData.correo} onChange={handleChange} />
                     </div>
+
+                    {formData.rol === 'cliente' && (
+                        <div className="form-group-full">
+                            <div className="checkbox-container">
+                                <input
+                                    type="checkbox"
+                                    id="sendPasswordEmail"
+                                    checked={sendPasswordByEmail}
+                                    onChange={handleCheckboxChange}
+                                />
+                                <label htmlFor="sendPasswordEmail">
+                                    Enviar contraseña temporal al correo (el usuario podrá cambiarla desde su perfil)
+                                </label>
+                            </div>
+                        </div>
+                    )}
+
+                    {(formData.rol === 'vendedor' || formData.rol === 'gerente') && (
+                        <div className="form-group-full">
+                            <label>Contraseña</label>
+                            <input
+                                type="password"
+                                name="contrasena"
+                                value={formData.contrasena}
+                                onChange={handleChange}
+                                onFocus={handlePasswordFocus}
+                                onBlur={handlePasswordBlur}
+                                placeholder="Nueva contraseña"
+                            />
+
+                            {showPasswordValidation && (
+                                <div className="password-conditions">
+                                    {!validatePassword(formData.contrasena || '').length && <p>○ Debe tener al menos 8 caracteres</p>}
+                                    {!validatePassword(formData.contrasena || '').uppercase && <p>○ Debe contener una letra mayúscula</p>}
+                                    {!validatePassword(formData.contrasena || '').number && <p>○ Debe contener al menos un número</p>}
+                                    {formData.contrasena && isPasswordValid() && (
+                                        <p className="valid-password-change">Contraseña válida <i className="bi bi-check-circle"></i></p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     <div className="modal-buttons">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>
