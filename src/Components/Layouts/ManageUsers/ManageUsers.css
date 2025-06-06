@@ -231,6 +231,13 @@
   }
 }
 
+.no-data{
+  position: absolute;
+  top: 25rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #666;
+}
 
 @media (max-width: 820px) {
   .usuarios-header {
@@ -262,7 +269,7 @@
     width: 100%;
   }
 
-  .btn-filtrar {
+  .btn-filtrar-users {
     width: 100%;
     justify-content: center;
   }
@@ -326,7 +333,7 @@
     width: 100%;
   }
 
-  .btn-filtrar {
+  .btn-filtrar-users {
     width: 100%;
     justify-content: center;
   }

@@ -41,9 +41,12 @@ export const ManageInvoice = () => {
         }
     };
 
-    const filteredFacturas = facturas.filter((factura) =>
-        factura.fecha.toLowerCase().includes(searchDate.toLowerCase())
-    );
+    const filteredFacturas = facturas.filter((factura) => {
+        if (!searchDate) return true;
+        const [d, m, y] = factura.fecha.split('/');
+        const facturaFecha = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+        return facturaFecha === searchDate;
+    });
 
     const handleViewInvoice = (factura) => {
         console.log("Ver factura:", factura);
@@ -87,7 +90,7 @@ export const ManageInvoice = () => {
             <div className="invoice-filtros">
                 <div className="filtro-input">
                     <input
-                        type="text"
+                        type="date"
                         placeholder="Consultar por Fecha"
                         value={searchDate}
                         onChange={(e) => setSearchDate(e.target.value)}
@@ -153,7 +156,6 @@ export const ManageInvoice = () => {
                 onRegisterSuccess={fetchFacturas}
             />
 
-            {/* Modal de Vista Previa de Factura */}
             {isPreviewModalOpen && selectedInvoiceId && (
                 <PreviewInvoiceSuplier
                     invoiceId={selectedInvoiceId}

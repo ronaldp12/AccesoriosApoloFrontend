@@ -256,7 +256,6 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                     placeholder="Ingrese el NIT del proveedor"
                                     value={invoiceData.nit_proveedor}
                                     onChange={handleInvoiceChange}
-                                    required
                                 />
                             </div>
 
@@ -267,7 +266,6 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                     name="fecha_compra"
                                     value={invoiceData.fecha_compra}
                                     onChange={handleInvoiceChange}
-                                    required
                                 />
                             </div>
 
@@ -277,7 +275,6 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                     name="metodo_pago"
                                     value={invoiceData.metodo_pago}
                                     onChange={handleInvoiceChange}
-                                    required
                                 >
                                     <option value="efectivo">Efectivo</option>
                                     <option value="transferencia">Transferencia</option>

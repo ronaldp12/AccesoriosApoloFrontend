@@ -147,40 +147,6 @@ export const ManageUsers = () => {
         setCurrentPage(1);
     };
 
-    const handleDeleteUser = async () => {
-        setIsLoading(true);
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/eliminar-usuario", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ correo: selectedUser.correo }),
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                setErrorMessage("");
-                setSuccessMessage("Usuario eliminado con éxito.");
-                setTimeout(() => {
-                    setSuccessMessage("");
-                    setIsConfirmDeleteOpen(false);
-                }, 2000);
-            } else {
-                setSuccessMessage("");
-                setErrorMessage(getErrorMessage(data, "Error al eliminar usuario."));
-            }
-        } catch (error) {
-            setSuccessMessage("");
-            console.error(error);
-            setErrorMessage("Hubo un error.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     return (
         <div className="usuarios-container">
             <div className="breadcrumb">
@@ -281,6 +247,12 @@ export const ManageUsers = () => {
                     </tbody>
                 </table>
             </div>
+
+            {usuariosActuales.length === 0 && !isLoading && (
+                <div className="no-data">
+                    <p>No se encontraron usuarios.</p>
+                </div>
+            )}
 
             <RegisterUserModal
                 isOpen={isModalRegisterOpen}
