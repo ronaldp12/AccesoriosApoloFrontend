@@ -230,7 +230,6 @@
     color: #333;
 }
 
-/* Estilos para las validaciones de contraseña en el modal */
 .password-conditions {
     margin-top: 8px;
     font-size: 12px;
@@ -242,11 +241,10 @@
 }
 
 .valid-password-change {
-    color: #27ae60 !important;
+    color: #014aad !important;
     font-weight: 500;
 }
 
-/* Asegurar que el input de contraseña tenga espacio para las validaciones */
 .form-group-full input[type="password"] {
     margin-bottom: 8px;
 }

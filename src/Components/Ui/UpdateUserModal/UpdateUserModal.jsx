@@ -65,6 +65,12 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
         e.preventDefault();
         setIsLoading(true);
 
+        if (formData.telefono.length !== 10) {
+            setErrorMessage("El número de teléfono debe tener 10 dígitos.");
+            setIsLoading(false);
+            return;
+        }
+
         if ((formData.rol === 'vendedor' || formData.rol === 'gerente') && formData.contrasena) {
             if (!isPasswordValid()) {
                 setErrorMessage("La contraseña no cumple con los requisitos.");
@@ -158,7 +164,19 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                         </div>
                         <div className="form-group-update-user">
                             <label>Teléfono</label>
-                            <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
+                            <input
+                                type="tel"
+                                name="telefono"
+                                placeholder="Teléfono"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={formData.telefono}
+                                onChange={(e) => {
+                                    const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
+                                    setFormData((prev) => ({ ...prev, telefono: onlyNumbers }));
+                                    setErrorMessage("");
+                                }}
+                            />
                         </div>
                     </div>
 
