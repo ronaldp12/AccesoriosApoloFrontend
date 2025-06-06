@@ -4,11 +4,13 @@ import { context } from '../../../Context/Context';
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 
 export const ProfileData = () => {
-    const { token, isLoading, setIsLoading, getErrorMessage } = useContext(context);
+    const { token, isLoading, setIsLoading, getErrorMessage, validatePassword } = useContext(context);
 
     const [profileData, setProfileData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({});
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPasswordValidation, setShowPasswordValidation] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -25,7 +27,6 @@ export const ProfileData = () => {
             return () => clearTimeout(timer);
         }
     }, [errorMessage]);
-
 
     useEffect(() => {
         if (!token) return;
@@ -49,7 +50,8 @@ export const ProfileData = () => {
                     setEditedData({
                         nombre: data.usuario.nombre || '',
                         cedula: data.usuario.cedula || '',
-                        telefono: data.usuario.telefono || ''
+                        telefono: data.usuario.telefono || '',
+                        contrasena: data.usuario.contrasena || ''
                     });
                 } else {
                     console.error(data.mensaje);
@@ -71,10 +73,53 @@ export const ProfileData = () => {
         });
     };
 
-    const handleEditToggle = () => setIsEditing(!isEditing);
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmPassword(e.target.value);
+    };
+
+    const handleEditToggle = () => {
+        setIsEditing(!isEditing);
+        if (!isEditing) {
+            setEditedData(prev => ({
+                ...prev,
+                contrasena: ''
+            }));
+            setConfirmPassword('');
+            setShowPasswordValidation(false);
+        }
+    };
+
+    const handlePasswordFocus = () => {
+        setShowPasswordValidation(true);
+    };
+
+    const handlePasswordBlur = () => {
+        // Ocultar validaciones al perder el foco
+        setShowPasswordValidation(false);
+    };
+    const passwordsMatch = () => {
+        return editedData.contrasena === confirmPassword;
+    };
+
+    const isPasswordValid = () => {
+        const validation = validatePassword(editedData.contrasena || '');
+        return validation.length && validation.uppercase && validation.number;
+    };
 
     const handleSave = async () => {
         if (!token) return;
+
+        if (isEditing && editedData.contrasena) {
+            if (!isPasswordValid()) {
+                setErrorMessage("La contraseña no cumple con los requisitos.");
+                return;
+            }
+
+            if (!passwordsMatch()) {
+                setErrorMessage("Las contraseñas no coinciden.");
+                return;
+            }
+        }
 
         setIsLoading(true);
         try {
@@ -97,6 +142,8 @@ export const ProfileData = () => {
                     ...editedData
                 }));
                 setIsEditing(false);
+                setConfirmPassword(''); 
+                setShowPasswordValidation(false); 
             } else {
                 setErrorMessage(getErrorMessage(result, "Error al editar información."));
             }
@@ -131,7 +178,6 @@ export const ProfileData = () => {
                     </div>
                 )}
 
-
                 {!isLoading && profileData && (
                     <>
                         <div className='container-user'>
@@ -165,6 +211,58 @@ export const ProfileData = () => {
                                 <p><i>{profileData.telefono}</i></p>
                             )}
                         </div>
+
+                        <div className='container-user'>
+                            <strong>Contraseña</strong>
+                            {isEditing ? (
+                                <>
+                                    <input
+                                        type="password"
+                                        name="contrasena"
+                                        value={editedData.contrasena || ''}
+                                        onChange={handleInputChange}
+                                        onFocus={handlePasswordFocus}
+                                        onBlur={handlePasswordBlur}
+                                        placeholder="Nueva contraseña"
+                                    />
+
+                                    {showPasswordValidation && (
+                                        <div className="password-conditions">
+                                            {!validatePassword(editedData.contrasena || '').length && <p>○ Debe tener al menos 8 caracteres</p>}
+                                            {!validatePassword(editedData.contrasena || '').uppercase && <p>○ Debe contener una letra mayúscula</p>}
+                                            {!validatePassword(editedData.contrasena || '').number && <p>○ Debe contener al menos un número</p>}
+                                            {editedData.contrasena && isPasswordValid() && (
+                                                <p className="valid-password-change">Contraseña válida <i className="bi bi-check-circle"></i></p>
+                                            )}
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <p><i>********</i></p>
+                            )}
+                        </div>
+
+                        {isEditing && (
+                            <div className='container-user'>
+                                <strong>Confirmar Contraseña</strong>
+                                <input
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={handleConfirmPasswordChange}
+                                    placeholder="Confirmar nueva contraseña"
+                                />
+
+                                {confirmPassword && (
+                                    <div className="password-match-validation">
+                                        {passwordsMatch() ? (
+                                            <p className="passwords-match">Las contraseñas coinciden <i className="bi bi-check-circle"></i></p>
+                                        ) : (
+                                            <p className="passwords-no-match">Las contraseñas no coinciden</p>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         <div className='container-button'>
                             {isEditing ? (

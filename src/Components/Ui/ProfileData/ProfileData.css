@@ -32,7 +32,6 @@
 }
 
 .container-user {
-    margin-right: 2rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -149,6 +148,40 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+.password-conditions {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.password-conditions p {
+    margin: 4px 0;
+    color: #e74c3c;
+}
+
+.valid-password-change {
+    color: #014aad !important;
+    font-weight: 500;
+}
+
+.password-match-validation {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.passwords-match {
+    color: #014aad;
+    font-weight: 500;
+    margin: 4px 0;
+}
+
+.passwords-no-match {
+    color: #e74c3c;
+    margin: 4px 0;
+}
+
+.container-user input[type="password"] {
+    margin-bottom: 8px;
+}
 
 @media (max-width: 820px) {
     .profile-container {

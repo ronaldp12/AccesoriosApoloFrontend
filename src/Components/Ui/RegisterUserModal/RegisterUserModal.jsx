@@ -6,7 +6,7 @@ import wheelIcon from "../../../assets/icons/img1-loader.png";
 export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const { getErrorMessage, isLoading, setIsLoading, validatePassword, formatPhoneNumber } = useContext(context);
+    const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
     const [phone, setPhone] = useState("");
     const [formData, setFormData] = useState({
@@ -14,7 +14,6 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         cedula: "",
         telefono: phone,
         correo: "",
-        contrasena: "",
         rol: ""
     });
 
@@ -143,24 +142,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="form-group-full">
-                        <label>Contraseña</label>
-                        <div className="password-conditions">
-                            {!validatePassword(formData.contrasena).length && <p>○ Debe tener al menos 8 caracteres</p>}
-                            {!validatePassword(formData.contrasena).uppercase && <p>○ Debe contener una letra mayúscula</p>}
-                            {!validatePassword(formData.contrasena).number && <p>○ Debe contener al menos un número</p>}
-                            {validatePassword(formData.contrasena).length && validatePassword(formData.contrasena).uppercase && validatePassword(formData.contrasena).number && (
-                                <p className="valid-password-change">Contraseña válida <i className="bi bi-check-circle"></i></p>
-                            )}
-                        </div>
-                        <input
-                            type="password"
-                            name="contrasena"
-                            placeholder="Escriba su contraseña"
-                            value={formData.contrasena}
-                            onChange={handleChange}
-                        />
-                    </div>
+                    
                     <div className="modal-buttons-register-user">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR

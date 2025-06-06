@@ -13,7 +13,6 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
         correo: "",
         telefono: "",
         cedula: "",
-        contrasena: "",
         rol: "",
     });
 
@@ -24,7 +23,6 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                 correo: usuario.correo || "",
                 telefono: usuario.telefono || "",
                 cedula: usuario.cedula || "",
-                contrasena: "",
                 rol: usuario.rol || "",
             });
         }
@@ -117,10 +115,6 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                     <div className="form-group-full">
                         <label>Correo</label>
                         <input type="email" name="correo" value={formData.correo} onChange={handleChange} />
-                    </div>
-                    <div className="form-group-full">
-                        <label>Contraseña (opcional)</label>
-                        <input type="password" name="contrasena" value={formData.contrasena} onChange={handleChange} />
                     </div>
 
                     <div className="modal-buttons">

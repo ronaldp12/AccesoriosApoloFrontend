@@ -208,6 +208,8 @@
 .valid-password-change {
     color: #014aad !important;
     font-weight: 600;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .error-message {
