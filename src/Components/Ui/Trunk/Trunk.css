@@ -1,19 +1,38 @@
-.drawer-trunk {
+.trunk-overlay {
   position: fixed;
   top: 0;
-  right: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+}
+
+.trunk-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.drawer-trunk {
   width: 380px;
   height: 100%;
   background-color: #fff;
   box-shadow: -3px 0 5px rgba(0,0,0,0.2);
-  transition: right 0.3s ease;
+  transition: transform 0.5s ease;
   z-index: 9999;
   display: flex;
   flex-direction: column;
+  transform: translateX(100%);
 }
 
 .drawer-trunk.open {
-  right: 0;
+  transform: translateX(0);
 }
 
 .drawer-header {
@@ -23,10 +42,11 @@
   align-items: center;
 }
 
-hr{
+.drawer-divider-trunk {
   border: 3px solid #bec0db;
   margin-left: 10px;
   margin-right: 10px;
+  width: 100%;
 }
 
 .drawer-header h2 {
@@ -178,5 +198,14 @@ hr{
   .drawer-content {
     font-size: 0.9rem;
     padding: 1.5rem;
+  }
+
+  .trunk-overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .drawer-trunk {
+    width: calc(100vw - 40px);
+    max-width: 350px;
   }
 }
