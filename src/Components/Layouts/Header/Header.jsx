@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TopNav } from "../TopNav/TopNav.jsx";
 import { HamburgerMenu } from "../HamburguerMenu/HamburguerMenu.jsx";
 import "../Header/Header.css";
@@ -14,7 +14,6 @@ import { Trunk } from "../../Ui/Trunk/Trunk.jsx";
 import { context } from "../../../Context/Context.jsx";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { WelcomeNoLoginModal } from "../WelcomeNoLoginModal/WelcomeNoLoginModal.jsx";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,6 +21,7 @@ export const Header = () => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [isTrunkOpen, setIsTrunkOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
   const { cartProducts, handleRemoveProduct, handleQuantityChange, userLogin } = useContext(context);
@@ -58,12 +58,37 @@ export const Header = () => {
     }
   };
 
-  // Calcular la cantidad total de productos en el carrito
   const totalItemsInCart = cartProducts.reduce((total, product) => total + product.quantity, 0);
 
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          if (currentScrollY > 30) {
+            setIsScrolled(true);
+          } else {
+            setIsScrolled(false);
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header>
-      <TopNav />
+    <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
+      <div className={`top-nav-wrapper ${isScrolled ? 'top-nav-hidden' : ''}`}>
+        <TopNav />
+      </div>
 
       <div className="container-header">
         <Logo styleContainer="container-logo-header" styleLogo="logo-header" />
@@ -80,7 +105,7 @@ export const Header = () => {
             contenido="Cuenta"
             onClick={handleProfile}
           />
-          
+
           <div className="trunk-item-wrapper">
             <Item
               styleLi="item-action"
@@ -101,10 +126,10 @@ export const Header = () => {
         </div>
 
         <div className="container-icon2">
-          <UserActions 
-            toggleMenu={toggleMenu} 
+          <UserActions
+            toggleMenu={toggleMenu}
             onOpenRegister={openRegister}
-            onOpenLogin={openLogin} 
+            onOpenLogin={openLogin}
             handleTrunk={handleTrunk}
             totalItemsInCart={totalItemsInCart}
           />
@@ -122,7 +147,6 @@ export const Header = () => {
         onRemove={handleRemoveProduct}
         onQuantityChange={handleQuantityChange}
       />
-
     </header>
   );
 };
