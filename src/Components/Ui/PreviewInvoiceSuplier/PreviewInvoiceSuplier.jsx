@@ -55,19 +55,6 @@ export const PreviewInvoiceSuplier = ({ invoiceId, isModal = false, onClose }) =
         window.print();
     };
 
-    const calculateSubtotal = () => {
-        if (!invoiceData?.productos) return '$0';
-        const subtotal = invoiceData.productos.reduce((sum, product) => {
-            const price = parseFloat(product.subtotal.replace(/[^0-9.-]+/g, ''));
-            return sum + price;
-        }, 0);
-        return new Intl.NumberFormat('es-CO', {
-            style: 'currency',
-            currency: 'COP',
-            minimumFractionDigits: 0
-        }).format(subtotal);
-    };
-
     const renderInvoiceContent = () => {
         if (loading) {
             return (

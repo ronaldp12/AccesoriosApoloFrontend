@@ -58,6 +58,9 @@ export const Header = () => {
     }
   };
 
+  // Calcular la cantidad total de productos en el carrito
+  const totalItemsInCart = cartProducts.reduce((total, product) => total + product.quantity, 0);
+
   return (
     <header>
       <TopNav />
@@ -77,20 +80,34 @@ export const Header = () => {
             contenido="Cuenta"
             onClick={handleProfile}
           />
-          <Item
-            styleLi="item-action"
-            children={<i className="hgi hgi-stroke hgi-sharp hgi-backpack-03"></i>}
-            contenido="Maletero"
-            onClick={handleTrunk}
-          />
+          
+          <div className="trunk-item-wrapper">
+            <Item
+              styleLi="item-action"
+              children={<i className="hgi hgi-stroke hgi-sharp hgi-backpack-03"></i>}
+              contenido="Maletero"
+              onClick={handleTrunk}
+            />
+            {totalItemsInCart > 0 && (
+              <span className="trunk-notification-badge">
+                {totalItemsInCart > 99 ? '99+' : totalItemsInCart}
+              </span>
+            )}
+          </div>
+
           <button className="hamburger-btn" onClick={toggleMenu}>
             ☰
           </button>
         </div>
 
         <div className="container-icon2">
-          <UserActions toggleMenu={toggleMenu} onOpenRegister={openRegister}
-            onOpenLogin={openLogin} handleTrunk={handleTrunk} />
+          <UserActions 
+            toggleMenu={toggleMenu} 
+            onOpenRegister={openRegister}
+            onOpenLogin={openLogin} 
+            handleTrunk={handleTrunk}
+            totalItemsInCart={totalItemsInCart}
+          />
         </div>
       </div>
 

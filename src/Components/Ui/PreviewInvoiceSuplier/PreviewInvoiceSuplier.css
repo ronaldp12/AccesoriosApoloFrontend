@@ -581,7 +581,6 @@
         padding: 8px 6px !important;
     }
 
-    /* Asegurar que los colores se mantengan */
     .invoice-number,
     .section-title,
     .products-table-preview-invoice th,
@@ -592,7 +591,6 @@
         print-color-adjust: exact !important;
     }
 
-    /* Configurar márgenes de página */
     @page {
         margin: 15mm;
         size: A4;

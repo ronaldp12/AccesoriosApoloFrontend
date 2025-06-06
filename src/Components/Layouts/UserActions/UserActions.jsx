@@ -4,7 +4,7 @@ import { Item } from "../../Ui/Item/Item";
 import { useNavigate } from "react-router-dom";
 import { WelcomeNoLoginModal } from "../WelcomeNoLoginModal/WelcomeNoLoginModal";
 
-export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTrunk }) => {
+export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTrunk, totalItemsInCart }) => {
   const { userLogin, nameRol } = useContext(context);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -55,12 +55,19 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
           onClick={handleProfile}
         />
 
-        <Item
-          styleLi="item-action"
-          children={<i className="hgi hgi-stroke hgi-sharp hgi-backpack-03"></i>}
-          contenido="Maletero"
-          onClick={handleTrunk}
-        />
+        <div className="user-actions-trunk-wrapper">
+          <Item
+            styleLi="item-action"
+            children={<i className="hgi hgi-stroke hgi-sharp hgi-backpack-03"></i>}
+            onClick={handleTrunk}
+            contenido="Maletero"
+          />
+          {totalItemsInCart > 0 && (
+            <span className="trunk-notification-badge">
+              {totalItemsInCart > 99 ? '99+' : totalItemsInCart}
+            </span>
+          )}
+        </div>
 
         <button className="hamburger-btn-actions" onClick={toggleMenu}>☰</button>
       </div>

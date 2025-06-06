@@ -11,7 +11,7 @@ export const DiscountSection = () => {
     <>
     
     <section className="descuentos-section">
-      <h2 className="section-title">LOS MEJORES DESCUENTOS</h2>
+      <h2 className="section-title-discount-section">LOS MEJORES DESCUENTOS</h2>
 
       <div className="cards-container">
         <DiscountCard imagen={img1} titulo={"cascos"}/>
