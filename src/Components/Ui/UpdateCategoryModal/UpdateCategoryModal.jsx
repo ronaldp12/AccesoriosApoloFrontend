@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import "./UpdateCategoryModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
@@ -15,9 +15,21 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
         descuento: ""
     });
 
+    const clearStatusMessages = useCallback(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+        setIsLoading(false);
+    }, [setIsLoading]);
+
     useEffect(() => {
         if (isOpen && idCategoria) fetchCategoria();
     }, [isOpen, idCategoria]);
+
+    useEffect(() => {
+        if (isOpen) {
+            clearStatusMessages();
+        }
+    }, [isOpen, clearStatusMessages]);
 
     const fetchCategoria = async () => {
         try {
@@ -42,20 +54,25 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
         }
     };
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
 
-    const handleClose = () => {
+        clearStatusMessages();
+
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    }, [clearStatusMessages]);
+
+    const handleClose = useCallback(() => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
             onClose();
+            clearStatusMessages();
         }, 400);
-    };
+    }, [onClose, clearStatusMessages]);
 
-    const handleUpdate = async () => {
+    const handleUpdate = useCallback(async () => {
+        clearStatusMessages();
         setIsLoading(true);
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-categoria", {
@@ -68,7 +85,7 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
                 setSuccessMessage("Categoría actualizada correctamente.");
                 onUpdateSuccess();
                 setTimeout(() => {
-                    setSuccessMessage("");
+                    clearStatusMessages();
                     handleClose();
                 }, 2000);
             } else {
@@ -80,7 +97,7 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
             setErrorMessage("Error al actualizar categoría, intente nuevamente.");
             setIsLoading(false);
         }
-    };
+    }, [formData, getErrorMessage, setIsLoading, onUpdateSuccess, handleClose, clearStatusMessages]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -92,16 +109,31 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
                     <div className="group-update-categorie">
                         <div className="form-group-update-categorie">
                             <label>Nombre</label>
-                            <input type="text" name="nombre_categoria" value={formData.nombre_categoria} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="nombre_categoria"
+                                value={formData.nombre_categoria}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div className="form-group-update-categorie">
                             <label>Descripción</label>
-                            <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="descripcion"
+                                value={formData.descripcion}
+                                onChange={handleChange}
+                            />
                         </div>
                     </div>
                     <div className="form-group-update-categorie">
                         <label>Descuento (%)</label>
-                        <input type="number" name="descuento" value={formData.descuento} onChange={handleChange} />
+                        <input
+                            type="number"
+                            name="descuento"
+                            value={formData.descuento}
+                            onChange={handleChange}
+                        />
                     </div>
 
                     <div className="modal-buttons-update-categorie">

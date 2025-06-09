@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import "./UpdateSubcategoryModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
@@ -17,11 +17,23 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
         imagen: null
     });
 
+    const clearStatusMessages = useCallback(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+        setIsLoading(false);
+    }, [setIsLoading]);
+
     useEffect(() => {
         if (isOpen && idSubcategoria) {
             fetchSubcategoria();
         }
     }, [isOpen, idSubcategoria]);
+
+    useEffect(() => {
+        if (isOpen) {
+            clearStatusMessages();
+        }
+    }, [isOpen, clearStatusMessages]);
 
     const fetchSubcategoria = async () => {
         try {
@@ -49,24 +61,29 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
         }
     };
 
-    const handleChange = (e) => {
+    const handleChange = useCallback((e) => {
         const { name, value, files } = e.target;
+
+        clearStatusMessages();
+
         if (name === "imagen") {
             setFormData((prev) => ({ ...prev, imagen: files[0] }));
         } else {
             setFormData((prev) => ({ ...prev, [name]: value }));
         }
-    };
+    }, [clearStatusMessages]);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
             onClose();
+            clearStatusMessages();
         }, 400);
-    };
+    }, [onClose, clearStatusMessages]);
 
-    const handleUpdate = async () => {
+    const handleUpdate = useCallback(async () => {
+        clearStatusMessages();
         setIsLoading(true);
         try {
             const updateData = new FormData();
@@ -89,7 +106,7 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
                 setSuccessMessage("Subcategoría actualizada correctamente.");
                 onUpdateSuccess();
                 setTimeout(() => {
-                    setSuccessMessage("");
+                    clearStatusMessages();
                     handleClose();
                 }, 2000);
             } else {
@@ -101,7 +118,7 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
             setErrorMessage("Error al actualizar subcategoría, intente nuevamente.");
             setIsLoading(false);
         }
-    };
+    }, [idSubcategoria, formData, getErrorMessage, setIsLoading, onUpdateSuccess, clearStatusMessages, handleClose]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -113,28 +130,51 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
                     <div className="group-update-subcategorie">
                         <div className="form-group-update-subcategorie">
                             <label>Nombre de Subcategoría</label>
-                            <input type="text" name="nombre_subcategoria" value={formData.nombre_subcategoria} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="nombre_subcategoria"
+                                value={formData.nombre_subcategoria}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div className="form-group-update-subcategorie">
                             <label>Descripción</label>
-                            <input type="text" name="descripcion" value={formData.descripcion} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="descripcion"
+                                value={formData.descripcion}
+                                onChange={handleChange}
+                            />
                         </div>
                     </div>
 
                     <div className="group-update-subcategorie">
                         <div className="form-group-update-subcategorie">
                             <label>Descuento (%)</label>
-                            <input type="number" name="descuento" value={formData.descuento} onChange={handleChange} />
+                            <input
+                                type="number"
+                                name="descuento"
+                                value={formData.descuento}
+                                onChange={handleChange}
+                            />
                         </div>
                         <div className="form-group-update-subcategorie">
                             <label>Imagen</label>
-                            <input type="file" name="imagen" onChange={handleChange} />
+                            <input
+                                type="file"
+                                name="imagen"
+                                onChange={handleChange}
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-update-subcategorie">
                         <label>Categoría a la que pertenece</label>
-                        <select name="FK_id_categoria" value={formData.FK_id_categoria} onChange={handleChange}>
+                        <select
+                            name="FK_id_categoria"
+                            value={formData.FK_id_categoria}
+                            onChange={handleChange}
+                        >
                             <option value="">Selecciona una categoría</option>
                             {categorias.map((categoria) => (
                                 <option key={categoria.id_categoria} value={categoria.id_categoria}>

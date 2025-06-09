@@ -35,6 +35,12 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         imagenes: []
     });
 
+    const clearStatusMessages = useCallback(() => {
+        setErrorMessage("");
+        setSuccessMessage("");
+        setIsLoading(false);
+    }, [setIsLoading]);
+
     const parseFormattedNumber = (formattedValue) => {
         if (!formattedValue) return 0;
         return Number(formattedValue.toString().replace(/\./g, ""));
@@ -94,6 +100,9 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
 
     const handleChange = useCallback((e) => {
         const { name, value } = e.target;
+
+        clearStatusMessages();
+
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -102,7 +111,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         if (name === 'precio_unidad' || name === 'descuento') {
             setShouldRecalculate(true);
         }
-    }, []);
+    }, [clearStatusMessages]);
 
     const handleClose = useCallback(() => {
         setIsClosing(true);
@@ -123,19 +132,18 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                 FK_id_subcategoria: "",
                 imagenes: []
             });
-            setErrorMessage("");
-            setSuccessMessage("");
+
+            clearStatusMessages();
             setOriginalReferencia("");
             setImagenesBackend([]);
             setImagenesEliminadas([]);
             setPrecioDescuentoFromBackend(0);
             setShouldRecalculate(false);
         }, 300);
-    }, [onClose]);
+    }, [onClose, clearStatusMessages]);
 
     const handleUpdate = useCallback(async () => {
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearStatusMessages();
         setIsLoading(true);
         try {
             const updateData = new FormData();
@@ -167,7 +175,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                 setSuccessMessage("Producto actualizado correctamente.");
                 onUpdateSuccess();
                 setTimeout(() => {
-                    setSuccessMessage("");
+                    clearStatusMessages();
                     handleClose();
                 }, 2000);
             } else {
@@ -178,7 +186,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             setErrorMessage("Error al actualizar producto, intente nuevamente.");
             setIsLoading(false);
         }
-    }, [originalReferencia, formData, imagenesEliminadas, setIsLoading, onUpdateSuccess, handleClose]);
+    }, [originalReferencia, formData, imagenesEliminadas, setIsLoading, onUpdateSuccess, handleClose, clearStatusMessages]);
 
     const fetchSubcategorias = useCallback(async (idCategoria) => {
         try {
@@ -193,32 +201,40 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
     }, []);
 
     const handleRemoveBackendImage = useCallback((index) => {
+        clearStatusMessages();
+
         const imagenEliminada = imagenesBackend[index];
         setImagenesEliminadas(prev => [...prev, imagenEliminada]);
         setImagenesBackend(prev => prev.filter((_, i) => i !== index));
-    }, [imagenesBackend]);
+    }, [imagenesBackend, clearStatusMessages]);
 
     const handleRemoveNewImage = useCallback((index) => {
+        clearStatusMessages();
+
         setFormData(prev => ({
             ...prev,
             imagenes: prev.imagenes.filter((_, i) => i !== index)
         }));
-    }, []);
+    }, [clearStatusMessages]);
 
     const handleFileChange = useCallback((e) => {
+        clearStatusMessages();
+
         setFormData((prev) => ({
             ...prev,
             imagenes: Array.from(e.target.files)
         }));
-    }, []);
+    }, [clearStatusMessages]);
 
     const handleDescriptionSave = useCallback((value) => {
+        clearStatusMessages();
+
         setFormData((prev) => ({ ...prev, descripcion: value }));
-    }, []);
+    }, [clearStatusMessages]);
 
     const getPrecioDescuentoDisplay = () => {
         if (shouldRecalculate && formData.precio_unidad && formData.descuento) {
-            
+
             const precioUnidad = Number(formData.precio_unidad);
             const descuento = Number(formData.descuento);
             const nuevoPrecioDescuento = precioUnidad - (precioUnidad * (descuento / 100));
@@ -254,6 +270,12 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
             }));
         }
     }, [formData.precio_unidad, formData.descuento, shouldRecalculate]);
+
+    useEffect(() => {
+        if (isOpen) {
+            clearStatusMessages();
+        }
+    }, [isOpen, clearStatusMessages]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -350,6 +372,8 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                                 placeholder="Precio unidad"
                                 value={formatNumber(formData.precio_unidad)}
                                 onChange={(e) => {
+                                    clearStatusMessages();
+
                                     const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, "");
                                     setFormData(prev => ({
                                         ...prev,

@@ -44,18 +44,27 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+
+        if (errorMessage) setErrorMessage("");
+        if (successMessage) setSuccessMessage("");
     };
 
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            setErrorMessage("");
+            setSuccessMessage("");
+            setIsLoading(false);
             onClose();
         }, 400);
     };
 
     const handleUpdate = async () => {
         setIsLoading(true);
+        setErrorMessage("");
+        setSuccessMessage("");
+
         if (formData.telefono.length !== 10) {
             setErrorMessage("El número de teléfono debe tener 10 dígitos.");
             setIsLoading(false);
@@ -70,6 +79,7 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
             const data = await response.json();
             if (data.success) {
                 setSuccessMessage("Proveedor actualizado correctamente");
+                setIsLoading(false);
                 onUpdateSuccess();
                 setTimeout(() => {
                     setSuccessMessage("");
@@ -130,7 +140,9 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
                             onChange={(e) => {
                                 const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
                                 setFormData((prev) => ({ ...prev, telefono: onlyNumbers }));
-                                setErrorMessage("");
+                                // Limpiar mensajes cuando el usuario escriba en teléfono
+                                if (errorMessage) setErrorMessage("");
+                                if (successMessage) setSuccessMessage("");
                             }}
                         />
                     </div>
