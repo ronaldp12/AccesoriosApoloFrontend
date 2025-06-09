@@ -213,6 +213,12 @@ export const ManageProducts = () => {
                 </div>
             )}
 
+            {currentProducts.length === 0 && !isLoading && (
+                <div className="no-data">
+                    <p>No se encontraron productos.</p>
+                </div>
+            )}
+
             <RegisterProductModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}

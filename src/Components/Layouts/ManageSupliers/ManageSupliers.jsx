@@ -84,7 +84,7 @@ export const ManageSupliers = () => {
 
     const indexUltimoUsuario = currentPage * usersPage;
     const indexPrimerUsuario = indexUltimoUsuario - usersPage;
-    const usuariosActuales = filteredProveedores.slice(indexPrimerUsuario, indexUltimoUsuario);
+    const currentSupliers= filteredProveedores.slice(indexPrimerUsuario, indexUltimoUsuario);
     const totalPages = Math.ceil(filteredProveedores.length / usersPage);
 
 
@@ -140,7 +140,7 @@ export const ManageSupliers = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {usuariosActuales.map((proveedor, index) => (
+                        {currentSupliers.map((proveedor, index) => (
                             <tr key={proveedor.nit}>
                                 <td>{indexPrimerUsuario + index + 1}</td>
                                 <td>{proveedor.nit}</td>
@@ -169,6 +169,12 @@ export const ManageSupliers = () => {
                     </tbody>
                 </table>
             </div>
+
+            {currentSupliers.length === 0 && !isLoading && (
+                <div className="no-data">
+                    <p>No se encontraron proveedores.</p>
+                </div>
+            )}
 
             <RegisterSuplierModal
                 isOpen={isModalRegisterOpen}

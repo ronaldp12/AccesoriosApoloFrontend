@@ -32,8 +32,24 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
         }
     }, [usuario]);
 
+    useEffect(() => {
+        if (isOpen) {
+            clearMessages();
+        }
+    }, [isOpen]);
+
+    const clearMessages = () => {
+        setErrorMessage("");
+        setSuccessMessage("");
+        setShowPasswordValidation(false);
+        setSendPasswordByEmail(false);
+        setIsLoading(false);
+    };
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setErrorMessage("");
+        setSuccessMessage("");
     };
 
     const handleRoleChange = (e) => {
@@ -41,6 +57,8 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
         setFormData({ ...formData, rol: newRole, contrasena: "" });
         setShowPasswordValidation(false);
         setSendPasswordByEmail(false);
+        setErrorMessage("");
+        setSuccessMessage("");
     };
 
     const handlePasswordFocus = () => {
@@ -48,12 +66,19 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
     };
 
     const handlePasswordBlur = () => {
-        // Mantener las validaciones visibles una vez mostradas
         setShowPasswordValidation(false);
+    };
+
+    const handlePasswordChange = (e) => {
+        setFormData({ ...formData, contrasena: e.target.value });
+        setErrorMessage("");
+        setSuccessMessage("");
     };
 
     const handleCheckboxChange = (e) => {
         setSendPasswordByEmail(e.target.checked);
+        setErrorMessage("");
+        setSuccessMessage("");
     };
 
     const isPasswordValid = () => {
@@ -64,6 +89,8 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setErrorMessage(""); 
+        setSuccessMessage("");
 
         if (formData.telefono.length !== 10) {
             setErrorMessage("El número de teléfono debe tener 10 dígitos.");
@@ -107,10 +134,11 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                     successMsg += " Se ha enviado una contraseña temporal al correo.";
                 }
                 setSuccessMessage(successMsg);
+                setIsLoading(false);
+
                 if (onUpdateSuccess) onUpdateSuccess();
 
                 setTimeout(() => {
-                    setSuccessMessage("");
                     handleClose();
                 }, 2000);
             } else {
@@ -128,8 +156,7 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
-            setShowPasswordValidation(false);
-            setSendPasswordByEmail(false);
+            clearMessages();
             onClose();
         }, 400);
     };
@@ -144,15 +171,21 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                     <div className="group-update-user">
                         <div className="form-group-update-user">
                             <label>Nombre</label>
-                            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="nombre"
+                                value={formData.nombre}
+                                onChange={handleChange}
+                                required
+                            />
                         </div>
                         <div className="form-group-update-user">
                             <label>Selecciona el rol</label>
-                            <select name="rol" value={formData.rol} onChange={handleRoleChange}>
+                            <select name="rol" value={formData.rol} onChange={handleRoleChange} required>
                                 <option value="">Rol</option>
-                                <option value={"cliente"}>Cliente</option>
-                                <option value={"gerente"}>Gerente</option>
-                                <option value={"vendedor"}>Vendedor</option>
+                                <option value="cliente">Cliente</option>
+                                <option value="gerente">Gerente</option>
+                                <option value="vendedor">Vendedor</option>
                             </select>
                         </div>
                     </div>
@@ -160,7 +193,13 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                     <div className="group-update-user">
                         <div className="form-group-update-user">
                             <label>Cédula</label>
-                            <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} />
+                            <input
+                                type="text"
+                                name="cedula"
+                                value={formData.cedula}
+                                onChange={handleChange}
+                                required
+                            />
                         </div>
                         <div className="form-group-update-user">
                             <label>Teléfono</label>
@@ -175,14 +214,22 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                                     const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
                                     setFormData((prev) => ({ ...prev, telefono: onlyNumbers }));
                                     setErrorMessage("");
+                                    setSuccessMessage("");
                                 }}
+                                required
                             />
                         </div>
                     </div>
 
                     <div className="form-group-full">
                         <label>Correo</label>
-                        <input type="email" name="correo" value={formData.correo} onChange={handleChange} />
+                        <input
+                            type="email"
+                            name="correo"
+                            value={formData.correo}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     {formData.rol === 'cliente' && (
@@ -208,10 +255,10 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                                 type="password"
                                 name="contrasena"
                                 value={formData.contrasena}
-                                onChange={handleChange}
+                                onChange={handlePasswordChange}
                                 onFocus={handlePasswordFocus}
                                 onBlur={handlePasswordBlur}
-                                placeholder="Nueva contraseña"
+                                placeholder="Nueva contraseña (opcional)"
                             />
 
                             {showPasswordValidation && (
@@ -228,8 +275,10 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                     )}
 
                     <div className="modal-buttons">
-                        <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>
-                        <button type="submit" className="btn-editar">
+                        <button type="button" className="btn-cancelar" onClick={handleClose}>
+                            CANCELAR
+                        </button>
+                        <button type="submit" className="btn-editar" disabled={isLoading}>
                             {isLoading ? (
                                 <img src={wheelIcon} alt="Cargando..." className="update-user-spinner" />
                             ) : (
@@ -238,6 +287,7 @@ export const UpdateUserModal = ({ isOpen, onClose, usuario, onUpdateSuccess }) =
                         </button>
                     </div>
                 </form>
+
                 {errorMessage && (
                     <div className="status-message-update error">
                         <span>{errorMessage}</span>

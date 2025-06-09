@@ -177,6 +177,12 @@ export const ManageSubcategories = () => {
                 </div>
             )}
 
+            {currentSubcategories.length === 0 && !isLoading && (
+                <div className="no-data">
+                    <p>No se encontraron subcategorías.</p>
+                </div>
+            )}
+
             <RegisterSubcategorieModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}

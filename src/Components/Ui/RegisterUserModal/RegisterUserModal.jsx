@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./RegisterUserModal.css";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -12,23 +12,59 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [formData, setFormData] = useState({
         nombre: "",
         cedula: "",
-        telefono: phone,
+        telefono: "",
         correo: "",
         rol: ""
     });
+
+    useEffect(() => {
+        if (isOpen) {
+            resetForm();
+        }
+    }, [isOpen]);
+
+    const resetForm = () => {
+        setFormData({
+            nombre: "",
+            cedula: "",
+            telefono: "",
+            correo: "",
+            rol: ""
+        });
+        setPhone("");
+        setErrorMessage("");
+        setSuccessMessage("");
+        setIsLoading(false);
+    };
 
     if (!isOpen && !isClosing) return null;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-        setErrorMessage("")
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+            telefono: name === 'telefono' ? value : prev.telefono
+        }));
+
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
+
+    const handlePhoneChange = (e) => {
+        const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
+        setPhone(onlyNumbers);
+        setFormData(prev => ({ ...prev, telefono: onlyNumbers }));
+
+        setErrorMessage("");
+        setSuccessMessage("");
     };
 
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            resetForm(); 
             onClose();
         }, 400);
     };
@@ -36,6 +72,8 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setErrorMessage(""); 
+        setSuccessMessage(""); 
 
         if (!/^\d{10}$/.test(phone)) {
             setErrorMessage("El número de teléfono debe tener 10 dígitos.");
@@ -46,13 +84,18 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         try {
             const token = localStorage.getItem("token");
 
+            const dataToSend = {
+                ...formData,
+                telefono: phone
+            };
+
             const response = await fetch("https://accesoriosapolobackend.onrender.com/registrar-directo", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(dataToSend)
             });
 
             const data = await response.json();
@@ -60,10 +103,11 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             if (data.success) {
                 console.log("Usuario registrado con éxito.");
                 setSuccessMessage("Usuario registrado con éxito.");
+                setIsLoading(false);
+
                 if (onRegisterSuccess) onRegisterSuccess();
 
                 setTimeout(() => {
-                    setSuccessMessage("");
                     handleClose();
                 }, 2000);
             } else {
@@ -76,7 +120,6 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             setIsLoading(false);
         }
     };
-
 
     return (
         <div className="modal-overlay-register-user">
@@ -92,15 +135,16 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                 placeholder="Escriba su nombre"
                                 value={formData.nombre}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                         <div className="form-group-register-user">
                             <label>Selecciona el rol</label>
-                            <select name="rol" value={formData.rol} onChange={handleChange}>
+                            <select name="rol" value={formData.rol} onChange={handleChange} required>
                                 <option value="">Rol</option>
-                                <option>Cliente</option>
-                                <option>Gerente</option>
-                                <option>Vendedor</option>
+                                <option value="cliente">Cliente</option>
+                                <option value="gerente">Gerente</option>
+                                <option value="vendedor">Vendedor</option>
                             </select>
                         </div>
                     </div>
@@ -113,6 +157,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                 placeholder="Escriba su cédula"
                                 value={formData.cedula}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                         <div className="form-group-register-user">
@@ -123,11 +168,8 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                 inputMode="numeric"
                                 pattern="[0-9]*"
                                 value={phone}
-                                onChange={(e) => {
-                                    const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
-                                    setPhone(onlyNumbers);
-                                    setErrorMessage("");
-                                }}
+                                onChange={handlePhoneChange}
+                                required
                             />
                         </div>
                     </div>
@@ -140,14 +182,15 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             placeholder="Escriba su correo"
                             value={formData.correo}
                             onChange={handleChange}
+                            required
                         />
                     </div>
-                    
+
                     <div className="modal-buttons-register-user">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>
-                        <button type="submit" className="btn-agregar">
+                        <button type="submit" className="btn-agregar" disabled={isLoading}>
                             {isLoading ? (
                                 <img src={wheelIcon} alt="Cargando..." className="register-user-spinner" />
                             ) : (
@@ -156,6 +199,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                         </button>
                     </div>
                 </form>
+
                 {errorMessage && (
                     <div className="status-message-register error">
                         <span>{errorMessage}</span>
@@ -167,10 +211,8 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                     <div className="status-message-register success">
                         <span>{successMessage}</span>
                         <i className="bi bi-check-circle"></i>
-                        {setIsLoading(false)}
                     </div>
                 )}
-
             </div>
         </div>
     );

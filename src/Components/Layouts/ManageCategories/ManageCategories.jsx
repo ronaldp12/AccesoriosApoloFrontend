@@ -172,6 +172,12 @@ export const ManageCategories = () => {
                 </div>
             )}
 
+            {currentCategories.length === 0 && !isLoading && (
+                <div className="no-data">
+                    <p>No se encontraron categorías.</p>
+                </div>
+            )}
+
             <RegisterCategorieModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
