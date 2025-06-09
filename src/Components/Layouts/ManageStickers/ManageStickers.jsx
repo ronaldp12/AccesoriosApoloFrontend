@@ -9,6 +9,7 @@ import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestore
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterStickerModal } from "../../Ui/RegisterStickerModal/RegisterStickerModal.jsx";
+import { UpdateStickerModal } from "../../Ui/UpdateStickerModal/UpdateStickerModal.jsx";
 
 export const ManageStickers = () => {
     const [calcomanias, setCalcomanias] = useState([]);
@@ -47,7 +48,7 @@ export const ManageStickers = () => {
 
     const filteredCalcomanias = calcomanias.filter((calcomania) =>
         calcomania.nombre.toLowerCase().includes(searchName.toLowerCase())
-    );
+    ).sort((a, b) => a.id_calcomania - b.id_calcomania);
 
     const handleEditClick = (calcomania) => {
         setSelectedCalcomania(calcomania);
@@ -76,17 +77,6 @@ export const ManageStickers = () => {
         setSelectedCalcomania(null);
     };
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
     const indexLast = currentPage * calcomaniasPorPagina;
     const indexFirst = indexLast - calcomaniasPorPagina;
     const currentCalcomanias = filteredCalcomanias.slice(indexFirst, indexLast);
@@ -95,6 +85,18 @@ export const ManageStickers = () => {
     useEffect(() => {
         fetchCalcomanias();
     }, []);
+
+    const formatDate = (fechaISO) => {
+        if (!fechaISO) return '';
+
+        try {
+            const fechaStr = fechaISO.split('T')[0];
+            const [año, mes, dia] = fechaStr.split('-');
+            return `${dia}/${mes}/${año}`;
+        } catch (error) {
+            return '';
+        }
+    };
 
     return (
         <div className="stickers-container">
@@ -206,13 +208,13 @@ export const ManageStickers = () => {
                 onRegisterSuccess={fetchCalcomanias}
             />
 
-            {/*<UpdateModal
+            <UpdateStickerModal
                 key={selectedCalcomania?.id_calcomania || "nuevo"}
                 isOpen={isModalUpdateOpen}
                 onClose={closeUpdateModal}
                 idCalcomania={selectedCalcomania?.id_calcomania}
                 onUpdateSuccess={fetchCalcomanias}
-            />*/}
+            />
 
             <ConfirmDeleteModal
                 isOpen={isConfirmDeleteOpen}

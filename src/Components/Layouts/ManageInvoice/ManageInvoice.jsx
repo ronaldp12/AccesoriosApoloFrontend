@@ -30,7 +30,8 @@ export const ManageInvoice = () => {
 
             const data = await response.json();
             if (data.success) {
-                setFacturas(data.facturas);
+                const facturasOrdenadas = data.facturas.sort((a, b) => a.id - b.id);
+                setFacturas(facturasOrdenadas);
             } else {
                 console.error("Error al obtener facturas de proveedores");
             }
