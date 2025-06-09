@@ -19,7 +19,7 @@ export const HomeDashboardGerente = () => {
         { label: "VENTAS", icon: <FaMoneyBill /> },
         { label: "FACTURA PROVEEDOR", icon: <FaMoneyBill />, route: "/dashboard/manage-invoice" },
         { label: "INVENTARIO", icon: <FaClipboard /> },
-        { label: "CALCOMANÍAS", icon: <FaMagic /> },
+        { label: "CALCOMANÍAS", icon: <FaMagic />, route: "/dashboard/manage-stickers" },
     ];
 
     const filteredModules = modules

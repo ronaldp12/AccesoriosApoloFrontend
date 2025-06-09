@@ -25,6 +25,7 @@ import { ManageCategories } from "./Components/Layouts/ManageCategories/ManageCa
 import { ManageSubcategories } from "./Components/Layouts/ManageSubcategories/ManageSubcategories.jsx";
 import { ManageProducts } from "./Components/Layouts/ManageProducts/ManageProducts.jsx";
 import { ManageInvoice } from "./Components/Layouts/ManageInvoice/ManageInvoice.jsx";
+import { ManageStickers } from "./Components/Layouts/ManageStickers/ManageStickers.jsx";
 
 export function App() {
 
@@ -101,6 +102,7 @@ export function App() {
           <Route path="manage-subcategories" element={<ManageSubcategories />} />
           <Route path="manage-products" element={<ManageProducts />} />
           <Route path="manage-invoice" element={<ManageInvoice />} />
+          <Route path="manage-stickers" element={<ManageStickers />} />
         </Route>
 
       </Routes>

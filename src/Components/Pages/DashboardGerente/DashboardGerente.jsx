@@ -41,7 +41,9 @@ export const DashboardGerente = () => {
             </button>
 
             <div className={`sidebar ${isOpen ? "open" : ""}`}>
-                <Logo styleContainer="logo-section" styleLogo="logo-dashboard" />
+                <Link to={"/dashboard"} className="logo-link">
+                    <Logo styleContainer="logo-section" styleLogo="logo-dashboard" />
+                </Link>
                 <hr />
 
                 <div className="menu-items">
@@ -76,7 +78,10 @@ export const DashboardGerente = () => {
                     </Link>
 
                     <a href="#"><FaClipboard /><span>Inventario</span></a>
-                    <a href="#"><FaMagic /><span>Calcomanías</span></a>
+
+                    <Link to="/dashboard/manage-stickers" className={location.pathname.startsWith("/dashboard/manage-stickers") ? "active" : ""}>
+                        <FaMagic /><span>Calcomanías</span>
+                    </Link>
 
                     <a href="#" onClick={openConfirmLogout}
                     ><FaSignOutAlt /><span>Salir</span></a>
