@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./RegisterSuplierModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -9,28 +9,48 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const { getErrorMessage, isLoading, setIsLoading, formatPhoneNumber } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
     const [phone, setPhone] = useState("");
-    const [formData, setFormData] = useState({
+
+    const initialFormData = {
         nit: "",
         representante: "",
         nombreEmpresa: "",
         correo: "",
         telefono: "",
         direccion: "",
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormData);
+
+    const clearMessages = () => {
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
+
+    const resetForm = () => {
+        setFormData(initialFormData);
+        setPhone("");
+        clearMessages();
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            clearMessages();
+        }
+    }, [isOpen]);
 
     if (!isOpen && !isClosing) return null;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
     };
 
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            resetForm();
             onClose();
         }, 400);
     };
@@ -38,8 +58,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
 
         if (formData.telefono.length !== 10) {
             setErrorMessage("El número de teléfono debe tener 10 dígitos.");
@@ -70,6 +89,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                 setTimeout(() => {
                     setSuccessMessage("");
+                    resetForm();
                     handleClose();
                 }, 2000);
             } else {
@@ -84,7 +104,6 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             setIsLoading(false);
         }
     };
-
 
     return (
         <div className="modal-overlay-register-suplier">
@@ -154,7 +173,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             onChange={(e) => {
                                 const onlyNumbers = e.target.value.replace(/\D/g, "").slice(0, 10);
                                 setFormData((prev) => ({ ...prev, telefono: onlyNumbers }));
-                                setErrorMessage("");
+                                clearMessages();
                             }}
                         />
 

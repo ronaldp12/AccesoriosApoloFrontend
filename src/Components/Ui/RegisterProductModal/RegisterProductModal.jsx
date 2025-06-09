@@ -14,7 +14,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const [subcategorias, setSubcategorias] = useState([]);
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
-    const [formData, setFormData] = useState({
+    const initialFormData = {
         referencia: "",
         nombre: "",
         descripcion: "",
@@ -25,11 +25,25 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         FK_id_categoria: "",
         FK_id_subcategoria: "",
         imagenes: []
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormData);
+
+    const clearMessages = () => {
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
+
+    const resetForm = () => {
+        setFormData(initialFormData);
+        setSubcategorias([]);
+        clearMessages();
+    };
 
     useEffect(() => {
         if (isOpen) {
             fetchCategorias();
+            clearMessages();
         }
     }, [isOpen]);
 
@@ -66,20 +80,21 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         } else {
             setFormData((prev) => ({ ...prev, [name]: value }));
         }
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
     };
 
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            resetForm();
             onClose();
         }, 400);
     };
 
     const handleSaveDescription = (newDescription) => {
         setFormData((prev) => ({ ...prev, descripcion: newDescription }));
+        clearMessages();
     };
 
     const handleImageChange = (e) => {
@@ -87,20 +102,20 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             ...prev,
             imagenes: [...prev.imagenes, ...Array.from(e.target.files)]
         }));
+        clearMessages();
     };
 
     const handleRemoveImage = (index) => {
         const updatedImages = [...formData.imagenes];
         updatedImages.splice(index, 1);
         setFormData((prev) => ({ ...prev, imagenes: updatedImages }));
+        clearMessages();
     };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
 
         try {
             const token = localStorage.getItem("token");
@@ -137,6 +152,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                 setTimeout(() => {
                     setSuccessMessage("");
+                    resetForm();
                     handleClose();
                 }, 2000);
             } else {
@@ -244,14 +260,14 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                 placeholder="Precio unidad"
                                 value={`${formData.precio_unidad.toLocaleString("es-ES")}`}
                                 onChange={(e) => {
-                                    const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, ""); 
+                                    const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, "");
                                     setFormData({
                                         ...formData,
                                         precio_unidad: Number(rawValue)
                                     });
+                                    clearMessages();
                                 }}
                             />
-
                         </div>
                     </div>
 

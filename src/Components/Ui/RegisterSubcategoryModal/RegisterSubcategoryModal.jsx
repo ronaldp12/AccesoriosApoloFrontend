@@ -3,24 +3,38 @@ import "./RegisterSubcategoryModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 
-export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }) => {
+export const RegisterSubcategoryModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
-    const [categorias, setCategorias] = useState([]); 
+    const [categorias, setCategorias] = useState([]);
 
-    const [formData, setFormData] = useState({
+    const initialFormData = {
         nombre_subcategoria: "",
         descripcion: "",
         descuento: "",
         FK_id_categoria: "",
         imagen: null,
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormData);
+
+    const clearMessages = () => {
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
+
+    const resetForm = () => {
+        setFormData(initialFormData);
+        setCategorias([]);
+        clearMessages();
+    };
 
     useEffect(() => {
         if (isOpen) {
             fetchCategorias();
+            clearMessages();
         }
     }, [isOpen]);
 
@@ -45,14 +59,14 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
         } else {
             setFormData((prev) => ({ ...prev, [name]: value }));
         }
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
     };
 
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            resetForm();
             onClose();
         }, 400);
     };
@@ -60,8 +74,7 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
 
         try {
             const token = localStorage.getItem("token");
@@ -91,6 +104,7 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
 
                 setTimeout(() => {
                     setSuccessMessage("");
+                    resetForm();
                     handleClose();
                 }, 2000);
             } else {
@@ -180,7 +194,6 @@ export const RegisterSubcategorieModal = ({ isOpen, onClose, onRegisterSuccess }
                             </select>
                         </div>
                     </div>
-
 
                     <div className="modal-buttons-register-subcategory">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>

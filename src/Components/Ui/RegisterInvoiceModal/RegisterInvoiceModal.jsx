@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./RegisterInvoiceModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -9,27 +9,45 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
 
-    // Datos principales de la factura
-    const [invoiceData, setInvoiceData] = useState({
+    const initialInvoiceData = {
         nit_proveedor: "",
         fecha_compra: "",
         metodo_pago: "efectivo"
-    });
+    };
 
-    // Datos para agregar productos
-    const [productData, setProductData] = useState({
+    const initialProductData = {
         referencia: "",
         cantidad: "",
         precio_unitario: ""
-    });
+    };
 
-    // Lista de productos en la tabla
+    const [invoiceData, setInvoiceData] = useState(initialInvoiceData);
+
+    const [productData, setProductData] = useState(initialProductData);
+
     const [products, setProducts] = useState([]);
     const [searchingProduct, setSearchingProduct] = useState(false);
 
+    const clearMessages = () => {
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
+
+    const resetForm = () => {
+        setInvoiceData(initialInvoiceData);
+        setProductData(initialProductData);
+        setProducts([]);
+        clearMessages();
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            clearMessages();
+        }
+    }, [isOpen]);
+
     if (!isOpen && !isClosing) return null;
 
-    // Búsqueda de producto por referencia usando query string
     const searchProductByReference = async (referencia) => {
         if (!referencia.trim()) return null;
 
@@ -68,20 +86,18 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const handleInvoiceChange = (e) => {
         const { name, value } = e.target;
         setInvoiceData(prev => ({ ...prev, [name]: value }));
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
     };
 
     const handleProductChange = (e) => {
         const { name, value } = e.target;
         setProductData(prev => ({ ...prev, [name]: value }));
-        setErrorMessage("");
+        clearMessages();
     };
 
     const handleAddProduct = async () => {
         const { referencia, cantidad, precio_unitario } = productData;
 
-        // Validaciones
         if (!referencia.trim()) {
             setErrorMessage("La referencia es obligatoria");
             return;
@@ -95,14 +111,12 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             return;
         }
 
-        // Buscar información del producto
         const productInfo = await searchProductByReference(referencia);
         if (!productInfo) {
             setErrorMessage(`No se encontró un producto con la referencia: ${referencia}`);
             return;
         }
 
-        // Verificar si ya existe la referencia
         if (products.some(p => p.referencia === referencia)) {
             setErrorMessage("Esta referencia ya está agregada");
             return;
@@ -122,8 +136,8 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         };
 
         setProducts(prev => [...prev, newProduct]);
-        setProductData({ referencia: "", cantidad: "", precio_unitario: "" });
-        setErrorMessage("");
+        setProductData(initialProductData);
+        clearMessages();
     };
 
     const handleRemoveProduct = (id) => {
@@ -138,6 +152,7 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            resetForm();
             onClose();
         }, 400);
     };
@@ -159,13 +174,11 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         }
 
         setIsLoading(true);
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
 
         try {
             const token = localStorage.getItem("token");
 
-            // Preparar datos exactamente como espera el backend
             const productosParaEnviar = products.map(product => ({
                 referencia: product.referencia,
                 nombre: product.nombre,
@@ -200,19 +213,11 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             if (data.success && response.ok) {
                 setSuccessMessage("Factura registrada con éxito");
                 setErrorMessage("");
-
-                // Limpiar formulario
-                setInvoiceData({
-                    nit_proveedor: "",
-                    fecha_compra: "",
-                    metodo_pago: "efectivo"
-                });
-                setProducts([]);
-
                 onRegisterSuccess();
 
                 setTimeout(() => {
                     setSuccessMessage("");
+                    resetForm();
                     handleClose();
                 }, 2000);
             } else {
@@ -227,12 +232,9 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         }
     };
 
-    // Función para buscar producto cuando se sale del campo referencia
     const handleReferenceBlur = async () => {
         if (productData.referencia.trim()) {
             const productInfo = await searchProductByReference(productData.referencia);
-            // Solo mostramos el nombre del producto si se encuentra
-            // Ya no intentamos sugerir precio porque la API no lo devuelve
             if (productInfo) {
                 console.log("Producto encontrado:", productInfo.nombre);
             }
@@ -317,18 +319,19 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             <div className="form-group-register-invoice">
                                 <label>Precio Unitario *</label>
                                 <input
-                                type="text"
-                                name="precio_unitario"
-                                placeholder="0.00"
-                                value={`${productData.precio_unitario.toLocaleString("es-ES")}`}
-                                onChange={(e) => {
-                                    const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, ""); 
-                                    setProductData({
-                                        ...productData,
-                                        precio_unitario: Number(rawValue)
-                                    });
-                                }}
-                            />
+                                    type="text"
+                                    name="precio_unitario"
+                                    placeholder="0.00"
+                                    value={`${productData.precio_unitario.toLocaleString("es-ES")}`}
+                                    onChange={(e) => {
+                                        const rawValue = e.target.value.replace(/\./g, "").replace(/[^0-9]/g, "");
+                                        setProductData({
+                                            ...productData,
+                                            precio_unitario: Number(rawValue)
+                                        });
+                                        clearMessages();
+                                    }}
+                                />
 
                             </div>
 

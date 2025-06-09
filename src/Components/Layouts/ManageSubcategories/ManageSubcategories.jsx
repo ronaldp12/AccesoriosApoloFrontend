@@ -8,7 +8,7 @@ import { ConfirmDeleteModal } from "../../Ui/ConfirmDeleteModal/ConfirmDeleteMod
 import { ConfirmRestoreModal } from "../../Ui/ConfirmRestoreModal/ConfirmRestoreModal.jsx";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
-import { RegisterSubcategorieModal } from "../../Ui/RegisterSubcategoryModal/RegisterSubcategoryModal.jsx";
+import { RegisterSubcategoryModal } from "../../Ui/RegisterSubcategoryModal/RegisterSubcategoryModal.jsx";
 import { UpdateSubcategoryModal } from "../../Ui/UpdateSubcategoryModal/UpdateSubcategoryModal.jsx";
 
 export const ManageSubcategories = () => {
@@ -183,7 +183,7 @@ export const ManageSubcategories = () => {
                 </div>
             )}
 
-            <RegisterSubcategorieModal
+            <RegisterSubcategoryModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
                 onRegisterSuccess={fetchSubcategories}

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "./RegisterCategoryModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -8,25 +8,44 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
-    const [formData, setFormData] = useState({
+
+    const initialFormData = {
         nombre_categoria: "",
         descripcion: "",
         descuento: "",
-    });
+    };
+
+    const [formData, setFormData] = useState(initialFormData);
+
+    const clearMessages = () => {
+        setErrorMessage("");
+        setSuccessMessage("");
+    };
+
+    const resetForm = () => {
+        setFormData(initialFormData);
+        clearMessages();
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            clearMessages();
+        }
+    }, [isOpen]);
 
     if (!isOpen && !isClosing) return null;
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
     };
 
     const handleClose = () => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
+            resetForm();
             onClose();
         }, 400);
     };
@@ -34,8 +53,7 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrorMessage("");
-        setSuccessMessage("");
+        clearMessages();
 
         try {
             const token = localStorage.getItem("token");
@@ -63,6 +81,7 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
 
                 setTimeout(() => {
                     setSuccessMessage("");
+                    resetForm();
                     handleClose();
                 }, 2000);
             } else {
