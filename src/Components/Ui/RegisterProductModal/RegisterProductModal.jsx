@@ -200,7 +200,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                     <div className="group-register-product">
                         <div className="form-group-register-product">
-                            <label>Descripción</label>
+                            <label>Descripción *</label>
                             <button
                                 type="button"
                                 className="btn-description-modal"
@@ -211,7 +211,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         </div>
 
                         <div className="form-group-register-product">
-                            <label>Talla</label>
+                            <label>Talla *</label>
                             <input
                                 type="text"
                                 name="talla"
@@ -223,7 +223,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                     </div>
 
                     <div className="form-group-full">
-                        <label>Marca</label>
+                        <label>Marca *</label>
                         <input
                             type="text"
                             name="marca"

@@ -310,7 +310,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
 
                     <div className="group-register-product">
                         <div className="form-group-register-product">
-                            <label>Descripción</label>
+                            <label>Descripción *</label>
                             <button
                                 type="button"
                                 className="btn-description-modal"
@@ -321,7 +321,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         </div>
 
                         <div className="form-group-register-product">
-                            <label>Talla</label>
+                            <label>Talla *</label>
                             <input
                                 type="text"
                                 name="talla"
@@ -333,7 +333,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                     </div>
 
                     <div className="form-group-full">
-                        <label>Marca</label>
+                        <label>Marca *</label>
                         <input
                             type="text"
                             name="marca"
