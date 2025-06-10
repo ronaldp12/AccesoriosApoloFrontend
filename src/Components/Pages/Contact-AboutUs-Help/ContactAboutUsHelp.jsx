@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './ContactAboutUsHelp.css';
 import { Logo } from '../../Ui/Logo/Logo';
 import img1 from '../../../assets/images/img1-background-about.png';
@@ -8,10 +9,64 @@ import { ContactForm } from '../../Layouts/ContactForm/ContactForm';
 
 export const ContactAboutUsHelp = () => {
   const [openFaq, setOpenFaq] = useState(null);
+  const [animatedElements, setAnimatedElements] = useState(new Set());
+  const location = useLocation();
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? null : index);
   };
+
+  // Intersection Observer para animaciones en scroll
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px 0px -100px 0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const element = entry.target;
+          element.classList.add('animate-in');
+
+          // Agregar animación con delay para elementos hijos
+          const children = element.querySelectorAll('.animate-child');
+          children.forEach((child, index) => {
+            setTimeout(() => {
+              child.classList.add('animate-in');
+            }, index * 200);
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Observar elementos que queremos animar
+    const elementsToObserve = document.querySelectorAll(
+      '.hero-section, .about-section, .values-section, .faq-section, .value-item, .faq-category, .store-image, .mission, .vision'
+    );
+
+    elementsToObserve.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Scroll suave para enlaces internos
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [location]);
+
+  // Animación inicial de la página
+  useEffect(() => {
+    document.body.classList.add('page-loaded');
+  }, []);
 
   const faqCategories = [
     {
@@ -70,11 +125,11 @@ export const ContactAboutUsHelp = () => {
       questions: [
         {
           question: "¿Cómo creo una cuenta en su sitio?",
-          answer: "Haz clic en “Crear cuenta” en la parte superior del sitio e ingresa tus datos. Es rápido y sencillo."
+          answer: "Haz clic en Crear cuenta en la parte superior del sitio e ingresa tus datos. Es rápido y sencillo."
         },
         {
           question: "¿Olvidé mi contraseña, cómo la recupero?",
-          answer: "En la página de inicio de sesión, haz clic en “¿Olvidaste tu contraseña?” y sigue las instrucciones para restablecerla."
+          answer: "En la página de inicio de sesión, haz clic en ¿Olvidaste tu contraseña? y sigue las instrucciones para restablecerla."
         },
         {
           question: "¿Puedo comprar sin registrarme?",
@@ -100,29 +155,29 @@ export const ContactAboutUsHelp = () => {
   return (
     <div className="sobre-nosotros-container">
       {/* Hero Section */}
-      <section className="hero-section">
+      <section className="hero-section animate-on-load">
         <div className="hero-overlay">
-          <h1>¡BIENVENIDOS!</h1>
-          <h2>ACCESORIOS APOLO</h2>
-          <Logo styleContainer="logo-contact-welcome-container" styleLogo="logo-contact-welcome" />
+          <h1 className="animate-child">¡BIENVENIDOS!</h1>
+          <h2 id='about-us-section' className="animate-child">ACCESORIOS APOLO</h2>
+          <Logo styleContainer="logo-contact-welcome-container animate-child" styleLogo="logo-contact-welcome" />
         </div>
       </section>
 
       {/* About Section */}
-      <section className="about-section">
+      <section className="about-section animate-on-scroll">
         <div className="container-about-us">
-          <h2 className="section-title-about-us">SOBRE NOSOTROS</h2>
+          <h2 className="section-title-about-us animate-child">SOBRE NOSOTROS</h2>
 
           <img className='img-background-about' src={img1} alt="img-background" />
 
           <div className="about-content">
-            <div className="store-image">
+            <div className="store-image animate-child">
               <img src={img2} alt="Tienda Accesorios Apolo" />
             </div>
 
-            <div className="about-text">
+            <div className="about-text animate-child">
               <div className="mission-vision">
-                <div className="mission">
+                <div className="mission animate-child">
                   <h3>Misión</h3>
                   <p>
                     En nuestra empresa de accesorios para móviles, nos
@@ -141,7 +196,7 @@ export const ContactAboutUsHelp = () => {
                   </p>
                 </div>
 
-                <div className="vision">
+                <div className="vision animate-child">
                   <h3>Visión</h3>
                   <p>
                     Nos visualizamos como líderes en la industria de accesorios
@@ -169,35 +224,35 @@ export const ContactAboutUsHelp = () => {
       </section>
 
       {/* Values Section */}
-      <section className="values-section">
+      <section className="values-section animate-on-scroll">
         <div className="container-about-us">
-          <h2 className="values-title">5 valores</h2>
-          <h3 className="values-subtitle">FUNDAMENTALES</h3>
+          <h2 className="values-title animate-child">5 valores</h2>
+          <h3 className="values-subtitle animate-child">FUNDAMENTALES</h3>
 
           <div className="values-grid">
-            <div className="value-item">
+            <div className="value-item animate-child">
               <div className="value-number">1
                 <span>CALIDAD</span>
               </div>
-
             </div>
 
-            <div className="value-item">
+            <div className="value-item animate-child">
               <div className="value-number">2
                 <span>PASIÓN</span>
               </div>
             </div>
-            <div className="value-item">
+
+            <div className="value-item animate-child">
               <div className="value-number">3
                 <span>ATENCIÓN</span>
               </div>
             </div>
-            <div className="value-item">
+            <div id='help-section' className="value-item animate-child">
               <div className="value-number">4
                 <span>INNOVACIÓN</span>
               </div>
             </div>
-            <div className="value-item">
+            <div className="value-item animate-child">
               <div className="value-number">5
                 <span>SEGURIDAD</span>
               </div>
@@ -207,16 +262,16 @@ export const ContactAboutUsHelp = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="faq-section">
+      <section className="faq-section animate-on-scroll">
         <div className="container-about-us">
-          <h2 className="faq-title">AYUDA</h2>
-          <h3 className="faq-subtitle">Preguntas frecuentes (FAQ)</h3>
+          <h2 className="faq-title animate-child">AYUDA</h2>
+          <h3 className="faq-subtitle animate-child">Preguntas frecuentes (FAQ)</h3>
 
           <img src={img3} alt="background-help" className='img-background-help' />
 
           <div className="faq-categories">
             {faqCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex} className="faq-category">
+              <div key={categoryIndex} className="faq-category animate-child">
                 <h4>{category.category}</h4>
 
                 <div className="faq-list">
@@ -225,7 +280,7 @@ export const ContactAboutUsHelp = () => {
                     return (
                       <div key={uniqueIndex} className="faq-item">
                         <button
-                          className="faq-question"
+                          className={`faq-question ${openFaq === uniqueIndex ? 'active' : ''}`}
                           onClick={() => toggleFaq(uniqueIndex)}
                         >
                           {faq.question}
@@ -233,11 +288,11 @@ export const ContactAboutUsHelp = () => {
                             ▼
                           </span>
                         </button>
-                        {openFaq === uniqueIndex && faq.answer && (
-                          <div className="faq-answer">
+                        <div className={`faq-answer ${openFaq === uniqueIndex ? 'open' : ''}`}>
+                          {faq.answer && (
                             <p>{faq.answer}</p>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -246,6 +301,7 @@ export const ContactAboutUsHelp = () => {
             ))}
           </div>
         </div>
+        <div id='contact-section'></div>
       </section>
       {/* Contact Section */}
       <ContactForm />

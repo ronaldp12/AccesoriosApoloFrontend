@@ -49,6 +49,7 @@ footer {
 .company-info {
   flex: 1 1 250px;
   max-width: 300px;
+  text-align: center;
 }
 
 .company-info img {
@@ -60,6 +61,7 @@ footer {
   font-size: 14px;
   line-height: 1.6;
   font-family: 'Barlow Condensed', sans-serif;
+  text-align: left;
 }
 
 .footer-links {

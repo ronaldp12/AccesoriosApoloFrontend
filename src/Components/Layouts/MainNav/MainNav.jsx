@@ -18,10 +18,10 @@ export const MainNav = ({ styleContainer }) => {
 
   return (
     <div className={styleContainer}>
-      <Item styleLi="item">
-        <NavLink className="navlink" to="/">Inicio</NavLink>
-      </Item>
-
+      <NavLink className="navlink" to="/">
+        <Item contenido={"Inicio"} styleLi="item">
+        </Item>
+      </NavLink>
       <div
         className="container-helmets"
         ref={helmetMenu.submenuRef}
@@ -101,7 +101,7 @@ export const MainNav = ({ styleContainer }) => {
         </Item>
         {cleaningMenu.isOpen && <CleaningSubmenu />}
       </div>
-      
+
     </div>
   );
 };
