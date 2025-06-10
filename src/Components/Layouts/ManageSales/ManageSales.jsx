@@ -9,6 +9,7 @@ import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterInvoiceModal } from "../../Ui/RegisterInvoiceModal/RegisterInvoiceModal.jsx";
 import { PreviewInvoiceSuplier } from "../../Ui/PreviewInvoiceSuplier/PreviewInvoiceSuplier.jsx";
 import { RegisterSaleModal } from "../../Ui/RegisterSaleModal/RegisterSaleModal.jsx";
+import { PreviewSaleSuplier } from "../../Ui/PreviewSaleClient/PreviewSaleClient.jsx";
 
 export const ManageSales = () => {
     const [facturas, setFacturas] = useState([]);
@@ -159,7 +160,7 @@ export const ManageSales = () => {
             />
 
             {isPreviewModalOpen && selectedInvoiceId && (
-                <PreviewInvoiceSuplier
+                <PreviewSaleSuplier
                     invoiceId={selectedInvoiceId}
                     isModal={true}
                     onClose={closePreviewModal}
