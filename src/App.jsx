@@ -27,6 +27,7 @@ import { ManageProducts } from "./Components/Layouts/ManageProducts/ManageProduc
 import { ManageInvoice } from "./Components/Layouts/ManageInvoice/ManageInvoice.jsx";
 import { ManageStickers } from "./Components/Layouts/ManageStickers/ManageStickers.jsx";
 import { ContactAboutUsHelp } from "./Components/Pages/Contact-AboutUs-Help/ContactAboutUsHelp.jsx";
+import { ManageSales } from "./Components/Layouts/ManageSales/ManageSales.jsx";
 
 export function App() {
 
@@ -117,6 +118,7 @@ export function App() {
           <Route path="manage-products" element={<ManageProducts />} />
           <Route path="manage-invoice" element={<ManageInvoice />} />
           <Route path="manage-stickers" element={<ManageStickers />} />
+          <Route path="manage-sales" element={<ManageSales />} />
         </Route>
 
       </Routes>

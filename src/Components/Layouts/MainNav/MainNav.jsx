@@ -19,8 +19,7 @@ export const MainNav = ({ styleContainer }) => {
   return (
     <div className={styleContainer}>
       <NavLink className="navlink" to="/">
-        <Item contenido={"Inicio"} styleLi="item">
-        </Item>
+        <Item contenido={"Inicio"} styleLi="item"/>
       </NavLink>
       <div
         className="container-helmets"

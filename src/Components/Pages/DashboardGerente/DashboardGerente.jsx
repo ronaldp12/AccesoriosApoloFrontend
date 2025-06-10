@@ -41,9 +41,7 @@ export const DashboardGerente = () => {
             </button>
 
             <div className={`sidebar ${isOpen ? "open" : ""}`}>
-                
                     <Logo route="/dashboard" styleContainer="logo-section" styleLogo="logo-dashboard" />
-                
                 <hr />
 
                 <div className="menu-items">
@@ -71,7 +69,9 @@ export const DashboardGerente = () => {
                         <FaTruck /><span>Proveedores</span>
                     </Link>
 
-                    <a href="#"><FaMoneyBill /><span>Ventas</span></a>
+                    <Link to="/dashboard/manage-sales" className={location.pathname.startsWith("/dashboard/manage-sales") ? "active" : ""}>
+                        <FaMoneyBill /><span>Ventas</span>
+                    </Link>
 
                     <Link to="/dashboard/manage-invoice" className={location.pathname.startsWith("/dashboard/manage-invoice") ? "active" : ""}>
                         <FaFileInvoice /><span>Factura Proveedor</span>

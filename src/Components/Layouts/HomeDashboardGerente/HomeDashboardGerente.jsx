@@ -16,7 +16,7 @@ export const HomeDashboardGerente = () => {
         { label: "CATEGORÍA", icon: <FaBars />, route: "/dashboard/manage-categories" },
         { label: "SUBCATEGORÍA", icon: <FaList />, route: "/dashboard/manage-subcategories" },
         { label: "PROVEEDORES", icon: <FaTruck />, route: "/dashboard/manage-supliers", roles: ["gerente"] },
-        { label: "VENTAS", icon: <FaMoneyBill /> },
+        { label: "VENTAS", icon: <FaMoneyBill />, route: "/dashboard/manage-sales" },
         { label: "FACTURA PROVEEDOR", icon: <FaMoneyBill />, route: "/dashboard/manage-invoice" },
         { label: "INVENTARIO", icon: <FaClipboard /> },
         { label: "CALCOMANÍAS", icon: <FaMagic />, route: "/dashboard/manage-stickers" },
