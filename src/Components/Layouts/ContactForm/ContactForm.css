@@ -1,0 +1,239 @@
+.contact-section {
+    background: url('../../../assets//images/img1-contact-form.png') no-repeat center center/cover;
+    background-size: cover;
+    position: relative;
+    width: 100%;
+    height: 50rem;
+    display: flex;
+    justify-content: left;
+    padding: 4rem;
+    flex-direction: column;
+}
+
+.img-background-contact-form{
+    position: absolute;
+    width: 6.5rem;
+    height: 7rem;
+    top: 2.7rem;
+}
+
+.logo-contact-form {
+  text-align: left;
+  margin-bottom: 40px;
+  padding-top: 20px;
+}
+
+.logo-contact-form h1 {
+  color: white;
+  font-size: 30px;
+  font-weight: bolder;
+  letter-spacing: 2px;
+  margin: 0;
+  text-transform: uppercase;
+  font-family: 'league-spartan', sans-serif;
+}
+
+.contact-form-container {
+  border-radius: 20px;
+  padding: 30px;
+  padding-top: 10px;
+  width: 40rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.contact-form-group {
+  flex: 1;
+}
+
+.contact-form-group.full-width {
+  width: 100%;
+}
+
+.contact-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #f6f6f6;
+  font-size: 14px;
+}
+
+.contact-form-group input,
+.contact-form-group textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 25px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  background: white;
+}
+
+.contact-form-group input:focus,
+.contact-form-group textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.contact-form-group textarea {
+  border-radius: 15px;
+  resize: none;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.contact-method {
+  margin: 25px 0;
+}
+
+.contact-method h3 {
+  color: #f6f6f6;
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.contact-options {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.contact-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #014aad;
+}
+
+.contact-option label {
+  color: #f6f6f6;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 25px 0;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: #3b82f6;
+}
+
+.terms-checkbox label {
+  color: #f6f6f6;
+  font-size: 14px;
+  line-height: 1.4;
+  cursor: pointer;
+  margin: 0;
+}
+
+.submit-btn-contact-form {
+  width: 100%;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.submit-btn-contact-form:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn-contact-form:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .contact-section {
+    padding: 15px;
+  }
+
+  .contact-form-container {
+    padding: 20px;
+    border-radius: 15px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .contact-options {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .logo-contact-form h1 {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 820px) {
+  .contact-form-container {
+    padding: 35px;
+  }
+  
+  .contact-options {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 430px) {
+  .contact-form-group input,
+  .contact-form-group textarea {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .submit-btn-contact-form {
+    padding: 12px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 393px) {
+  .contact-section {
+    padding: 10px;
+  }
+
+  .contact-form-container {
+    padding: 15px;
+    margin-top: 10px;
+  }
+
+  .logo-contact-form {
+    margin-bottom: 30px;
+  }
+  
+  .terms-checkbox {
+    margin: 20px 0;
+  }
+}

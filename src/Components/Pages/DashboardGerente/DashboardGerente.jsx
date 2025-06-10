@@ -41,9 +41,9 @@ export const DashboardGerente = () => {
             </button>
 
             <div className={`sidebar ${isOpen ? "open" : ""}`}>
-                <Link to={"/dashboard"} className="logo-link">
-                    <Logo styleContainer="logo-section" styleLogo="logo-dashboard" />
-                </Link>
+                
+                    <Logo route="/dashboard" styleContainer="logo-section" styleLogo="logo-dashboard" />
+                
                 <hr />
 
                 <div className="menu-items">

@@ -26,6 +26,7 @@ import { ManageSubcategories } from "./Components/Layouts/ManageSubcategories/Ma
 import { ManageProducts } from "./Components/Layouts/ManageProducts/ManageProducts.jsx";
 import { ManageInvoice } from "./Components/Layouts/ManageInvoice/ManageInvoice.jsx";
 import { ManageStickers } from "./Components/Layouts/ManageStickers/ManageStickers.jsx";
+import { ContactAboutUsHelp } from "./Components/Pages/Contact-AboutUs-Help/ContactAboutUsHelp.jsx";
 
 export function App() {
 
@@ -55,6 +56,19 @@ export function App() {
               <Header />
               <Container>
                 <Products />
+              </Container>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/contact-about-us-help"
+          element={
+            <>
+              <Header />
+              <Container>
+                <ContactAboutUsHelp />
               </Container>
               <Footer />
             </>

@@ -91,7 +91,7 @@ export const Header = () => {
       </div>
 
       <div className="container-header">
-        <Logo styleContainer="container-logo-header" styleLogo="logo-header" />
+        <Logo route="/" styleContainer="container-logo-header" styleLogo="logo-header" />
 
         <div className="container-main">
           <SearchBar />
