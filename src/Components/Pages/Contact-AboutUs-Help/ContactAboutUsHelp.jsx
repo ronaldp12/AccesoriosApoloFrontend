@@ -16,7 +16,6 @@ export const ContactAboutUsHelp = () => {
     setOpenFaq(openFaq === index ? null : index);
   };
 
-  // Intersection Observer para animaciones en scroll
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -30,7 +29,6 @@ export const ContactAboutUsHelp = () => {
           const element = entry.target;
           element.classList.add('animate-in');
 
-          // Agregar animación con delay para elementos hijos
           const children = element.querySelectorAll('.animate-child');
           children.forEach((child, index) => {
             setTimeout(() => {
@@ -41,7 +39,6 @@ export const ContactAboutUsHelp = () => {
       });
     }, observerOptions);
 
-    // Observar elementos que queremos animar
     const elementsToObserve = document.querySelectorAll(
       '.hero-section, .about-section, .values-section, .faq-section, .value-item, .faq-category, .store-image, .mission, .vision'
     );
@@ -51,7 +48,6 @@ export const ContactAboutUsHelp = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Scroll suave para enlaces internos
   useEffect(() => {
     if (location.hash) {
       const element = document.querySelector(location.hash);
@@ -294,14 +290,18 @@ export const ContactAboutUsHelp = () => {
                           )}
                         </div>
                       </div>
+                      
                     );
                   })}
                 </div>
+                 
               </div>
             ))}
+            <div id='contact-section'></div>
           </div>
+         
         </div>
-        <div id='contact-section'></div>
+        
       </section>
       {/* Contact Section */}
       <ContactForm />
