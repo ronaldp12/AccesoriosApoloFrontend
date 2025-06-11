@@ -160,17 +160,17 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     };
 
     return (
-        <div className={`modal-overlay ${isOpen ? "active" : ""}`}>
+        <div id="loginModal" className={`modal-overlay ${isOpen ? "active" : ""}`}>
             <div className={`login-modal-box ${isOpen ? "active" : ""}`}>
-                <button className="close-btn" onClick={onClose}>
+                <button className="login-close-btn" onClick={onClose}>
                     ×
                 </button>
 
-                <div className="modal-form-container">
+                <div className="login-form-container">
                     <h2>INICIAR SESIÓN</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <div className="input-field">
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        <div className="login-input-group">
+                            <div className="login-input-field">
                                 <label>Correo *</label>
                                 <input
                                     type="email"
@@ -183,7 +183,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                     required
                                 />
                             </div>
-                            <div className="input-field">
+                            <div className="login-input-field">
                                 <label>Contraseña *</label>
                                 <input
                                     type="password"
@@ -204,8 +204,8 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                             </div>
                         </div>
 
-                        <div className="group-bottom">
-                            <button type="submit" className="submit-btn">
+                        <div className="login-group-bottom">
+                            <button type="submit" className="login-submit-btn">
                                 {isLoading ? (
                                     <img src={wheelIcon} alt="Cargando..." className="login-spinner" />
                                 ) : (
@@ -220,9 +220,9 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                 </div>
                             )}
 
-                            <div className="divider">o</div>
+                            <div className="login-divider">o</div>
 
-                            <div className="social-icons">
+                            <div className="login-social-icons">
 
                                 <button type="button" className="social facebook">
                                     <img src={iconFacebook} alt="facebook" />

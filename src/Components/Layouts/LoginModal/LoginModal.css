@@ -32,7 +32,6 @@
     overflow: visible;
     opacity: 0;
     transform: scale(0.85);
-    /*transform: translateY(-30px);*/
     transition: all 0.35s ease;
     z-index: 10000;
     display: flex;
@@ -44,7 +43,7 @@
     transform: scale(1);
 }
 
-.close-btn {
+.login-close-btn {
     position: absolute;
     top: -40px;
     right: -30px;
@@ -61,13 +60,23 @@
     justify-content: center;
     transition: background 0.3s ease;
     z-index: 1000;
+    opacity: 0;
+    transform: scale(0.5) rotate(180deg);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.close-btn:hover {
+.modal-overlay.active .login-close-btn {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    transition-delay: 0.3s;
+}
+
+.login-close-btn:hover {
     background-color: #555;
+    transform: scale(1.1) rotate(-5deg);
 }
 
-.modal-form-container {
+.login-form-container {
     width: 50%;
     height: 100%;
     padding: 40px 30px;
@@ -77,20 +86,29 @@
     justify-content: center;
 }
 
-.modal-form-container h2 {
+.login-form-container h2 {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 30px;
     text-align: center;
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-form {
+.login-modal-box.active .login-form-container h2 {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+}
+
+.login-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.input-group {
+.login-input-group {
     display: flex;
     gap: 15px;
     flex-direction: column;
@@ -98,42 +116,100 @@ form {
     align-items: center;
 }
 
-.input-field {
+.login-input-field {
     flex: 1;
     display: flex;
     flex-direction: column;
     width: 75%;
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.input-field u{
+.login-modal-box.active .login-input-field:nth-child(1) {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.3s;
+}
+
+.login-modal-box.active .login-input-field:nth-child(2) {
+    opacity: 1;
+    transform: translateX(0);
+    transition-delay: 0.4s;
+}
+
+.login-input-field u {
     margin-top: 0.6rem;
     font-size: 0.6rem;
     text-align: right;
     padding-right: 0.3rem;
     cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
 }
 
-.input-field label {
+.login-modal-box.active .login-input-field u {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.6s;
+}
+
+.login-input-field u:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.login-input-field label {
     font-size: 14px;
     margin-bottom: 5px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s ease;
 }
 
-.input-field input {
+.login-modal-box.active .login-input-field label {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.45s;
+}
+
+.login-input-field input {
     padding: 10px 15px;
     border-radius: 20px;
     border: none;
     outline: none;
     font-size: 14px;
+    transform: scale(0.9);
+    transition: all 0.3s ease;
 }
 
-.group-bottom {
+.login-modal-box.active .login-input-field input {
+    transform: scale(1);
+}
+
+.login-input-field input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(31, 31, 162, 0.5);
+}
+
+.login-group-bottom {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.submit-btn {
+.login-modal-box.active .login-group-bottom {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.5s;
+}
+
+.login-submit-btn {
     background: url("../../../assets/images/img-btn-flama.png") no-repeat center center;
     background-size: cover;
     border: none;
@@ -152,71 +228,127 @@ form {
     text-align: center;
 }
 
-.submit-btn span {
+.login-submit-btn span {
     position: relative;
     z-index: 1;
     padding-right: 1.3rem;
 }
 
-.submit-btn:hover {
+.login-submit-btn:hover {
     background: url("../../../assets/images/img2-btn-flama.png") no-repeat center center;
     background-size: cover;
 }
 
 .login-spinner {
-  border: 3px solid #f3f3f3;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
-  margin-right: 4rem;
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: loginSpin 1s linear infinite;
+    display: inline-block;
+    margin-right: 4rem;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes loginSpin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
-.status-message.error {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 8px 12px;
-  background-color: #ffe1e1;
-  color: #d32f2f;
-  border: 1px solid #d32f2f;
-  border-radius: 6px;
-  font-size: 14px;
+.login-status-message.error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background-color: #ffe1e1;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+    border-radius: 6px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+    animation: loginErrorSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
-.status-message.error i {
-  font-size: 18px;
+@keyframes loginErrorSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-.divider {
+.login-status-message.error i {
+    font-size: 18px;
+    animation: loginErrorShake 0.5s ease-in-out 0.2s;
+}
+
+@keyframes loginErrorShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-3px);
+    }
+
+    75% {
+        transform: translateX(3px);
+    }
+}
+
+.login-divider {
     color: #fff;
     font-size: 14px;
+    opacity: 0;
+    transform: scaleX(0);
+    transition: all 0.4s ease;
 }
 
-.social-icons {
+.login-modal-box.active .login-divider {
+    opacity: 1;
+    transform: scaleX(1);
+    transition-delay: 0.7s;
+}
+
+.login-social-icons {
     display: flex;
     gap: 10px;
     justify-content: center;
     align-items: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.divider-vertical {
+.login-modal-box.active .login-social-icons {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.8s;
+}
+
+.login-divider-vertical {
     display: inline-block;
     width: 1px;
     height: 25px;
     background-color: #fff;
     margin: 0 10px;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
 }
 
+.login-modal-box.active .login-divider-vertical {
+    transform: scaleY(1);
+    transition-delay: 0.9s;
+}
 
-.social {
+.login-social {
     width: 35px;
     height: 35px;
     border: none;
@@ -227,18 +359,84 @@ form {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transform: scale(0) rotate(180deg);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.facebook {
+.login-modal-box.active .login-social {
+    transform: scale(1) rotate(0deg);
+    transition-delay: 1s;
+}
+
+.login-social:hover {
+    transform: scale(1.1) rotate(-5deg);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+.login-facebook {
     background: transparent;
 }
 
-.facebook img {
+.login-facebook img {
     width: 2rem;
     height: 2rem;
+    transition: transform 0.3s ease;
 }
 
-@media (max-width: 394px){
+.login-facebook:hover img {
+    transform: rotate(360deg);
+}
+
+.login-modal-box.active [id*="google"] {
+    animation: loginGoogleButtonSlide 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.1s both;
+}
+
+@keyframes loginGoogleButtonSlide {
+    from {
+        opacity: 0;
+        transform: translateX(20px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+.login-modal-box:not(.active) .login-form-container h2 {
+    animation: loginFadeOutUp 0.3s ease forwards;
+}
+
+.login-modal-box:not(.active) .login-input-field {
+    animation: loginFadeOutLeft 0.25s ease forwards;
+}
+
+.login-modal-box:not(.active) .login-group-bottom {
+    animation: loginFadeOutDown 0.3s ease forwards;
+}
+
+@keyframes loginFadeOutUp {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes loginFadeOutLeft {
+    to {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+}
+
+@keyframes loginFadeOutDown {
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+@media (max-width: 394px) {
     .login-modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
@@ -246,17 +444,21 @@ form {
         height: auto;
     }
 
-    .modal-form-container {
+    .login-form-container {
         width: 100%;
         padding: 20px;
     }
 
-    .input-group {
+    .login-input-group {
         flex-direction: column;
+    }
+
+    .login-modal-box.active .login-input-field {
+        transform: translateX(0);
     }
 }
 
-@media (min-width: 395px) and (max-width: 431px){
+@media (min-width: 395px) and (max-width: 431px) {
     .login-modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
@@ -264,17 +466,17 @@ form {
         height: auto;
     }
 
-    .modal-form-container {
+    .login-form-container {
         width: 100%;
         padding: 20px;
     }
 
-    .input-group {
+    .login-input-group {
         flex-direction: column;
     }
 }
 
-@media (min-width: 432px) and (max-width: 481px){
+@media (min-width: 432px) and (max-width: 481px) {
     .login-modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
@@ -282,36 +484,36 @@ form {
         height: auto;
     }
 
-    .modal-form-container {
+    .login-form-container {
         width: 100%;
         padding: 20px;
     }
 
-    .input-group {
+    .login-input-group {
         flex-direction: column;
     }
 }
 
-@media (min-width: 482px) and (max-width: 822px){
-    .login-modal-box{
+@media (min-width: 482px) and (max-width: 822px) {
+    .login-modal-box {
         width: 84%;
         height: auto;
     }
 
-    .input-group input{
+    .login-input-group input {
         width: 95%;
     }
 
-    .modal-form-container {
+    .login-form-container {
         width: 50%;
         padding: 20px;
     }
 
-    .input-group {
+    .login-input-group {
         flex-direction: column;
     }
 
-    .input-field u{
+    .login-input-field u {
         padding-right: 1rem;
     }
 }
