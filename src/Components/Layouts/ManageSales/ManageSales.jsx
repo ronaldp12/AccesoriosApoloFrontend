@@ -6,13 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
-import { RegisterInvoiceModal } from "../../Ui/RegisterInvoiceModal/RegisterInvoiceModal.jsx";
-import { PreviewInvoiceSuplier } from "../../Ui/PreviewInvoiceSuplier/PreviewInvoiceSuplier.jsx";
 import { RegisterSaleModal } from "../../Ui/RegisterSaleModal/RegisterSaleModal.jsx";
 import { PreviewSaleSuplier } from "../../Ui/PreviewSaleClient/PreviewSaleClient.jsx";
 
 export const ManageSales = () => {
-    const [facturas, setFacturas] = useState([]);
+    const [ventas, setVentas] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
     const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
@@ -22,20 +20,19 @@ export const ManageSales = () => {
     const { isLoading, setIsLoading } = useContext(context);
     const [searchDate, setSearchDate] = useState("");
 
-    const fetchFacturas = async () => {
+    const fetchVentas = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/facturas-proveedores");
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/Consultar-ventas");
             if (!response.ok) {
-                throw new Error("Error al obtener facturas de proveedores");
+                throw new Error("Error al obtener las ventas");
             }
 
             const data = await response.json();
             if (data.success) {
-                const facturasOrdenadas = data.facturas.sort((a, b) => a.id - b.id);
-                setFacturas(facturasOrdenadas);
+                setVentas(data.ventas);
             } else {
-                console.error("Error al obtener facturas de proveedores");
+                console.error("Error al obtener las ventas:", data.mensaje);
             }
         } catch (error) {
             console.error("Error:", error);
@@ -44,16 +41,16 @@ export const ManageSales = () => {
         }
     };
 
-    const filteredFacturas = facturas.filter((factura) => {
+    const filteredVentas = ventas.filter((venta) => {
         if (!searchDate) return true;
-        const [d, m, y] = factura.fecha.split('/');
-        const facturaFecha = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-        return facturaFecha === searchDate;
+        // Convertir la fecha ISO a formato YYYY-MM-DD para comparar
+        const ventaFecha = new Date(venta.fecha_compra_iso).toISOString().split('T')[0];
+        return ventaFecha === searchDate;
     });
 
-    const handleViewInvoice = (factura) => {
-        console.log("Ver factura:", factura);
-        setSelectedInvoiceId(factura.id);
+    const handleViewInvoice = (venta) => {
+        console.log("Ver venta:", venta);
+        setSelectedInvoiceId(venta.id_factura);
         setIsPreviewModalOpen(true);
     };
 
@@ -63,16 +60,16 @@ export const ManageSales = () => {
     };
 
     useEffect(() => {
-        fetchFacturas();
+        fetchVentas();
     }, []);
 
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
 
-    const indexUltimaFactura = currentPage * invoicesPerPage;
-    const indexPrimeraFactura = indexUltimaFactura - invoicesPerPage;
-    const facturasActuales = filteredFacturas.slice(indexPrimeraFactura, indexUltimaFactura);
-    const totalPages = Math.ceil(filteredFacturas.length / invoicesPerPage);
+    const indexUltimaVenta = currentPage * invoicesPerPage;
+    const indexPrimeraVenta = indexUltimaVenta - invoicesPerPage;
+    const ventasActuales = filteredVentas.slice(indexPrimeraVenta, indexUltimaVenta);
+    const totalPages = Math.ceil(filteredVentas.length / invoicesPerPage);
 
     return (
         <div className="sale-container">
@@ -116,7 +113,7 @@ export const ManageSales = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Id</th>
+                            <th>Id Factura</th>
                             <th>Cédula</th>
                             <th>Nombre Cliente</th>
                             <th>Fecha Compra</th>
@@ -126,17 +123,17 @@ export const ManageSales = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {facturasActuales.map((factura, index) => (
-                            <tr key={factura.id}>
-                                <td>{factura.id}</td>
-                                <td>{factura.cedula}</td>
-                                <td>{factura.cliente}</td>
-                                <td>{factura.fecha}</td>
-                                <td>${factura.valor_total}</td>
-                                <td>{factura.metodo_pago}</td>
+                        {ventasActuales.map((venta, index) => (
+                            <tr key={venta.id_factura}>
+                                <td>{venta.id_factura}</td>
+                                <td>{venta.cedula}</td>
+                                <td>{venta.nombre_cliente}</td>
+                                <td>{venta.fecha_compra}</td>
+                                <td>{venta.total_formateado}</td>
+                                <td>{venta.metodo_pago}</td>
                                 <td>
                                     <FaEye
-                                        onClick={() => handleViewInvoice(factura)}
+                                        onClick={() => handleViewInvoice(venta)}
                                         className="icono-ver-venta"
                                         title="Ver venta"
                                     />
@@ -147,7 +144,7 @@ export const ManageSales = () => {
                 </table>
             </div>
 
-            {facturasActuales.length === 0 && !isLoading && (
+            {ventasActuales.length === 0 && !isLoading && (
                 <div className="no-data">
                     <p>No se encontraron ventas.</p>
                 </div>
@@ -156,7 +153,7 @@ export const ManageSales = () => {
             <RegisterSaleModal
                 isOpen={isModalRegisterOpen}
                 onClose={closeRegisterModal}
-                onRegisterSuccess={fetchFacturas}
+                onRegisterSuccess={fetchVentas}
             />
 
             {isPreviewModalOpen && selectedInvoiceId && (

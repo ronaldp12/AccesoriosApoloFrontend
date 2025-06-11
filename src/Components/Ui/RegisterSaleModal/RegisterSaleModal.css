@@ -50,7 +50,7 @@
 
 .sale-header-group {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 15px;
 }
 
@@ -201,16 +201,35 @@
 }
 
 /* Sección de total */
+.client-info-display {
+    padding: 8px 12px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #666;
+    font-weight: 500;
+}
+
 .total-section {
     margin-top: 15px;
-    padding-top: 15px;
-    border-top: 2px solid #0f1881;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
 }
 
 .total-display {
-    text-align: right;
-    font-size: 18px;
-    color: #0f1881;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #333;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2em;
 }
 
 /* Botones del modal */
@@ -357,6 +376,78 @@
     animation: spin 1s linear infinite;
 }
 
+.email-checkbox-section {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-label span {
+    margin-left: 12px;
+    font-weight: 500;
+}
+
+.checkbox-label::before {
+    content: "";
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #014aad;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+.checkbox-label input[type="checkbox"]:checked+span::before {
+    content: "✔";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: #014aad;
+    border-color: #014aad;
+    font-size: 14px;
+}
+
+.checkbox-label:hover::before {
+    border-color: #014aad;
+}
+
+/* Para acomodar el ✔ correctamente */
+.checkbox-label input[type="checkbox"]:checked+span {
+    position: relative;
+}
+
+.checkbox-label input[type="checkbox"]:checked+span::before {
+    content: "✔";
+    position: absolute;
+    left: -37px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #014aad;
+    color: #fff;
+    border-radius: 6px;
+    border: 2px solid #014aad;
+    font-size: 14px;
+}
 
 @media (max-width: 820px) {
     .modal-content-register-sale {
@@ -625,5 +716,5 @@
 
     .products-table-sale th:nth-child(6) {
         width: 10%;
-    } 
+    }
 }

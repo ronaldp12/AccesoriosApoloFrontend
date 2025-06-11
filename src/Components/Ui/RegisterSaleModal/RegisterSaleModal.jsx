@@ -9,24 +9,50 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
 
-    const initialInvoiceData = {
-        nit_proveedor: "",
-        fecha_compra: "",
-        metodo_pago: "efectivo"
+    const initialSaleData = {
+        cedula_cliente: "",
+        metodo_pago: "efectivo",
+        enviar_correo: false
     };
 
-    const initialProductData = { 
+    const initialProductData = {
         referencia: "",
-        cantidad: "",
-        precio_unitario: ""
+        cantidad: ""
     };
 
-    const [invoiceData, setInvoiceData] = useState(initialInvoiceData);
+    const initialClientData = {
+        nombre: "",
+        correo: "",
+        telefono: ""
+    };
 
+    const [saleData, setSaleData] = useState(initialSaleData);
+    const [clientData, setClientData] = useState(initialClientData);
     const [productData, setProductData] = useState(initialProductData);
-
     const [products, setProducts] = useState([]);
     const [searchingProduct, setSearchingProduct] = useState(false);
+    const [searchingClient, setSearchingClient] = useState(false);
+    const [clientFound, setClientFound] = useState(false);
+
+    const getCurrentDate = () => {
+        const colombiaDate = new Date().toLocaleString("en-CA", {
+            timeZone: "America/Bogota",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        });
+        return colombiaDate;
+    };
+
+    const getCurrentDateFormatted = () => {
+        const colombiaDate = new Date().toLocaleDateString("es-CO", {
+            timeZone: "America/Bogota",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        });
+        return colombiaDate;
+    };
 
     const clearMessages = () => {
         setErrorMessage("");
@@ -34,9 +60,11 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     };
 
     const resetForm = () => {
-        setInvoiceData(initialInvoiceData);
+        setSaleData(initialSaleData);
+        setClientData(initialClientData);
         setProductData(initialProductData);
         setProducts([]);
+        setClientFound(false);
         clearMessages();
     };
 
@@ -48,6 +76,51 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
 
     if (!isOpen && !isClosing) return null;
 
+    const searchClientByCedula = async () => {
+        if (!saleData.cedula_cliente.trim()) {
+            setErrorMessage("Ingrese una cédula para buscar");
+            return;
+        }
+
+        setSearchingClient(true);
+        clearMessages();
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/validar-cliente-venta?cedula=${encodeURIComponent(saleData.cedula_cliente)}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setClientData({
+                    nombre: data.cliente.nombre,
+                    correo: data.cliente.correo,
+                    telefono: data.cliente.telefono
+                });
+                setClientFound(true);
+                setErrorMessage("");
+            } else {
+                setClientData(initialClientData);
+                setClientFound(false);
+                setErrorMessage(data.mensaje || "Cliente no encontrado");
+            }
+
+        } catch (error) {
+            console.error("Error buscando cliente:", error);
+            setClientData(initialClientData);
+            setClientFound(false);
+            setErrorMessage("Error al buscar el cliente");
+        } finally {
+            setSearchingClient(false);
+        }
+    };
+
     const searchProductByReference = async (referencia) => {
         if (!referencia.trim()) return null;
 
@@ -55,7 +128,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         try {
             const token = localStorage.getItem("token");
 
-            const response = await fetch(`https://accesoriosapolobackend.onrender.com/buscar-producto-factura-referencia?referencia=${encodeURIComponent(referencia)}`, {
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/buscar-producto-venta-referencia?referencia=${encodeURIComponent(referencia)}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -68,7 +141,10 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             if (response.ok && data.success) {
                 return {
                     nombre: data.producto.nombre,
-                    referencia: data.producto.referencia
+                    referencia: data.producto.referencia,
+                    stock: data.producto.stock,
+                    precio_unidad: data.producto.precio_unidad,
+                    precio_descuento: data.producto.precio_descuento
                 };
             } else {
                 console.log("Producto no encontrado:", data.mensaje);
@@ -83,10 +159,18 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         }
     };
 
-    const handleInvoiceChange = (e) => {
-        const { name, value } = e.target;
-        setInvoiceData(prev => ({ ...prev, [name]: value }));
+    const handleSaleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setSaleData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
         clearMessages();
+
+        if (name === 'cedula_cliente') {
+            setClientFound(false);
+            setClientData(initialClientData);
+        }
     };
 
     const handleProductChange = (e) => {
@@ -96,7 +180,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     };
 
     const handleAddProduct = async () => {
-        const { referencia, cantidad, precio_unitario } = productData;
+        const { referencia, cantidad } = productData;
 
         if (!referencia.trim()) {
             setErrorMessage("La referencia es obligatoria");
@@ -106,14 +190,15 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             setErrorMessage("La cantidad debe ser mayor a 0");
             return;
         }
-        if (!precio_unitario || parseFloat(precio_unitario) <= 0) {
-            setErrorMessage("El precio unitario debe ser mayor a 0");
-            return;
-        }
 
         const productInfo = await searchProductByReference(referencia);
         if (!productInfo) {
             setErrorMessage(`No se encontró un producto con la referencia: ${referencia}`);
+            return;
+        }
+
+        if (parseFloat(cantidad) > productInfo.stock) {
+            setErrorMessage(`Stock insuficiente. Disponible: ${productInfo.stock}`);
             return;
         }
 
@@ -123,16 +208,30 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         }
 
         const cantidadNum = parseFloat(cantidad);
-        const precioNum = parseFloat(precio_unitario);
-        const subtotal = cantidadNum * precioNum;
+
+        let precio_usado = productInfo.precio_unidad;
+        let descuento_aplicado = 0;
+        let precio_descuento_mostrar = 0;
+
+        if (productInfo.precio_descuento && productInfo.precio_descuento > 0 && productInfo.precio_descuento !== productInfo.precio_unidad) {
+            precio_usado = productInfo.precio_descuento;
+            descuento_aplicado = (productInfo.precio_unidad - productInfo.precio_descuento) * cantidadNum;
+            precio_descuento_mostrar = productInfo.precio_descuento;
+        }
+
+        const subtotal = cantidadNum * precio_usado;
 
         const newProduct = {
             id: Date.now(),
             referencia,
             nombre: productInfo.nombre,
             cantidad: cantidadNum,
-            precio_unitario: precioNum,
-            subtotal
+            precio_unidad: productInfo.precio_unidad,
+            precio_descuento: precio_descuento_mostrar,
+            precio_usado: precio_usado,
+            descuento_aplicado: descuento_aplicado,
+            subtotal,
+            stock: productInfo.stock
         };
 
         setProducts(prev => [...prev, newProduct]);
@@ -142,6 +241,14 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
 
     const handleRemoveProduct = (id) => {
         setProducts(prev => prev.filter(p => p.id !== id));
+    };
+
+    const calculateSubtotal = () => {
+        return products.reduce((total, product) => total + (product.cantidad * product.precio_unidad), 0);
+    };
+
+    const calculateTotalDiscount = () => {
+        return products.reduce((total, product) => total + product.descuento_aplicado, 0);
     };
 
     const calculateTotal = () => {
@@ -160,14 +267,16 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!invoiceData.nit_proveedor.trim()) {
-            setErrorMessage("El NIT es obligatorio");
+        if (!saleData.cedula_cliente.trim()) {
+            setErrorMessage("La cédula del cliente es obligatoria");
             return;
         }
-        if (!invoiceData.fecha_compra) {
-            setErrorMessage("La fecha de compra es obligatoria");
+
+        if (!clientFound) {
+            setErrorMessage("Debe buscar y validar la cédula del cliente");
             return;
         }
+
         if (products.length === 0) {
             setErrorMessage("Debe agregar al menos un producto");
             return;
@@ -183,35 +292,34 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                 referencia: product.referencia,
                 nombre: product.nombre,
                 cantidad: product.cantidad,
-                precio_unitario: product.precio_unitario
+                precio_unidad: product.precio_unidad,
+                precio_descuento: product.precio_descuento > 0 ? product.precio_descuento : null
             }));
 
-            const totalCalculado = calculateTotal();
-
-            const factura = {
-                nit_proveedor: invoiceData.nit_proveedor,
-                fecha_compra: invoiceData.fecha_compra,
-                metodo_pago: invoiceData.metodo_pago,
-                valor_total: totalCalculado,
-                productos: productosParaEnviar
+            const ventaData = {
+                cedula_cliente: saleData.cedula_cliente,
+                metodo_pago: saleData.metodo_pago,
+                fecha_venta: getCurrentDate(),
+                productos: productosParaEnviar,
+                enviar_correo: saleData.enviar_correo
             };
 
-            console.log("Datos enviados al backend:", factura);
+            console.log("Datos enviados al backend:", ventaData);
 
-            const response = await fetch("https://accesoriosapolobackend.onrender.com/registrar-factura-proveedor", {
+            const response = await fetch("https://accesoriosapolobackend.onrender.com/registrar-venta", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: JSON.stringify(factura)
+                body: JSON.stringify(ventaData)
             });
 
             const data = await response.json();
             console.log("Respuesta backend:", data);
 
             if (data.success && response.ok) {
-                setSuccessMessage("Factura registrada con éxito");
+                setSuccessMessage("Venta registrada con éxito");
                 setErrorMessage("");
                 onRegisterSuccess();
 
@@ -221,23 +329,14 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                     handleClose();
                 }, 2000);
             } else {
-                setErrorMessage(data.mensaje || "Error al registrar factura");
+                setErrorMessage(data.mensaje || "Error al registrar venta");
             }
 
         } catch (error) {
-            console.error("Error al registrar factura:", error);
-            setErrorMessage("Hubo un error al registrar la factura");
+            console.error("Error al registrar venta:", error);
+            setErrorMessage("Hubo un error al registrar la venta");
         } finally {
             setIsLoading(false);
-        }
-    };
-
-    const handleReferenceBlur = async () => {
-        if (productData.referencia.trim()) {
-            const productInfo = await searchProductByReference(productData.referencia);
-            if (productInfo) {
-                console.log("Producto encontrado:", productInfo.nombre);
-            }
         }
     };
 
@@ -247,40 +346,85 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                 <h2>Registrar Venta</h2>
 
                 <form className="form-register-sale" onSubmit={handleSubmit}>
-                    {/* Datos principales de la factura */}
+                    {/* Datos del cliente */}
                     <div className="sale-header-section">
                         <div className="sale-header-group">
                             <div className="form-group-register-sale">
                                 <label>Cédula Cliente *</label>
                                 <input
                                     type="text"
-                                    name="nit_proveedor"
-                                    placeholder="Ingrese el NIT del proveedor"
-                                    value={invoiceData.nit_proveedor}
-                                    onChange={handleInvoiceChange}
+                                    name="cedula_cliente"
+                                    placeholder="Ingrese la cédula del cliente"
+                                    value={saleData.cedula_cliente}
+                                    onChange={handleSaleChange}
                                 />
                             </div>
 
+                            <div className="add-product-button-container">
+                                <button
+                                    type="button"
+                                    className="btn-add-product"
+                                    onClick={searchClientByCedula}
+                                    disabled={searchingClient}
+                                >
+                                    {searchingClient ? (
+                                        <img src={wheelIcon} alt="Buscando..." className="search-spinner" />
+                                    ) : (
+                                        "Buscar"
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Información del cliente (solo lectura) */}
+                    {clientFound && (
+                        <div className="sale-header-section">
+                            <div className="sale-header-group">
+                                <div className="form-group-register-sale">
+                                    <label>Nombre</label>
+                                    <div className="client-info-display">
+                                        {clientData.nombre}
+                                    </div>
+                                </div>
+
+                                <div className="form-group-register-sale">
+                                    <label>Correo</label>
+                                    <div className="client-info-display">
+                                        {clientData.correo}
+                                    </div>
+                                </div>
+
+                                <div className="form-group-register-sale">
+                                    <label>Teléfono</label>
+                                    <div className="client-info-display">
+                                        {clientData.telefono}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Datos de la venta */}
+                    <div className="sale-header-section">
+                        <div className="sale-header-group">
                             <div className="form-group-register-sale">
-                                <label>Fecha de Compra *</label>
-                                <input
-                                    type="date"
-                                    name="fecha_compra"
-                                    value={invoiceData.fecha_compra}
-                                    onChange={handleInvoiceChange}
-                                />
+                                <label>Fecha de Venta</label>
+                                <div className="client-info-display">
+                                    {getCurrentDateFormatted()}
+                                </div>
                             </div>
 
                             <div className="form-group-register-sale">
                                 <label>Método de Pago *</label>
                                 <select
                                     name="metodo_pago"
-                                    value={invoiceData.metodo_pago}
-                                    onChange={handleInvoiceChange}
+                                    value={saleData.metodo_pago}
+                                    onChange={handleSaleChange}
                                 >
                                     <option value="efectivo">Efectivo</option>
                                     <option value="transferencia">Transferencia</option>
-                                    <option value="cheque">Cheque</option>
+                                    <option value="tarjeta">Tarjeta</option>
                                     <option value="credito">Crédito</option>
                                 </select>
                             </div>
@@ -299,7 +443,6 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                     placeholder="REF001"
                                     value={productData.referencia}
                                     onChange={handleProductChange}
-                                    onBlur={handleReferenceBlur}
                                 />
                             </div>
 
@@ -356,8 +499,13 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                                 <td>{product.referencia}</td>
                                                 <td>{product.nombre}</td>
                                                 <td>{product.cantidad}</td>
-                                                <td>${product.precio_unitario.toLocaleString()}</td>
-                                                <td>${product.precio_descuento.toLocaleString()}</td>
+                                                <td>${product.precio_unidad.toLocaleString()}</td>
+                                                <td>
+                                                    {product.precio_descuento > 0
+                                                        ? `$${product.precio_descuento.toLocaleString()}`
+                                                        : '$0'
+                                                    }
+                                                </td>
                                                 <td>${product.subtotal.toLocaleString()}</td>
                                                 <td>
                                                     <button
@@ -375,11 +523,29 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             </div>
 
                             <div className="total-section">
-                                <strong>Subtotal: ${calculateTotal().toLocaleString()}</strong>
-                                <strong>Descuento: ${calculateTotal().toLocaleString()}</strong>
+                                <div className="total-row">
+                                    <span>Subtotal: ${calculateSubtotal().toLocaleString()}</span>
+                                </div>
+                                <div className="total-row">
+                                    <span>Descuento: ${calculateTotalDiscount().toLocaleString('es-CO')}</span>
+                                </div>
                                 <div className="total-display">
                                     <strong>Total: ${calculateTotal().toLocaleString()}</strong>
                                 </div>
+
+                            </div>
+                            
+                            {/* Checkbox para enviar correo después de los totales */}
+                            <div className="email-checkbox-section">
+                                <label className="checkbox-label">
+                                    <input
+                                        type="checkbox"
+                                        name="enviar_correo"
+                                        checked={saleData.enviar_correo}
+                                        onChange={handleSaleChange}
+                                    />
+                                    <span>Enviar factura por correo</span>
+                                </label>
                             </div>
                         </div>
                     )}
@@ -392,7 +558,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             {isLoading ? (
                                 <img src={wheelIcon} alt="Cargando..." className="register-sale-spinner" />
                             ) : (
-                                <span>REGISTRAR</span>
+                                <span>REGISTRAR VENTA</span>
                             )}
                         </button>
                     </div>
@@ -414,4 +580,4 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             </div>
         </div>
     );
-}
+};
