@@ -300,6 +300,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                 cedula_cliente: saleData.cedula_cliente,
                 metodo_pago: saleData.metodo_pago,
                 fecha_venta: getCurrentDate(),
+                valor_total: calculateTotal(),
                 productos: productosParaEnviar,
                 enviar_correo: saleData.enviar_correo
             };
@@ -534,7 +535,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                 </div>
 
                             </div>
-                            
+
                             {/* Checkbox para enviar correo después de los totales */}
                             <div className="email-checkbox-section">
                                 <label className="checkbox-label">

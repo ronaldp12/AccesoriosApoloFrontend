@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './PreviewSaleClient.css';
 import wheelIcon from "../../../assets/icons/img1-loader.png";
+import logoApolo from "../../../assets/images/logoAccesoriosApolo.png";
 
-export const PreviewSaleSuplier = ({ invoiceId, isModal = false, onClose }) => {
+export const PreviewSaleClient = ({ invoiceId, isModal = false, onClose }) => {
     const [invoiceData, setInvoiceData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,7 +19,7 @@ export const PreviewSaleSuplier = ({ invoiceId, isModal = false, onClose }) => {
             setLoading(true);
             setError(null);
 
-            const response = await fetch(`https://accesoriosapolobackend.onrender.com/consultar-detalle-factura-proveedor/${id}`);
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/Consultar-detalle-venta/${id}`);
 
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -27,7 +28,9 @@ export const PreviewSaleSuplier = ({ invoiceId, isModal = false, onClose }) => {
             const result = await response.json();
 
             if (result.success) {
-                setInvoiceData(result.data);
+                const ventaData = result.data; 
+
+                setInvoiceData(ventaData);
             } else {
                 setError(result.mensaje || 'Error al obtener los datos de la factura');
             }
@@ -88,13 +91,14 @@ export const PreviewSaleSuplier = ({ invoiceId, isModal = false, onClose }) => {
             <div className="sale-container">
                 {/* Header */}
                 <div className="sale-header-preview">
-                    <div className="client-info">
-                        <h2 className="client-name">
-                            {invoiceData.factura.proveedor.empresa || invoiceData.factura.proveedor.nombre}
-                        </h2>
-                        <p className="client-address">{invoiceData.factura.proveedor.direccion}</p>
-                        <p className="client-phone">Teléfono: {invoiceData.factura.proveedor.telefono}</p>
-                        <p className="client-nit">NIT: {invoiceData.factura.proveedor.nit}</p>
+                    <div className="company-info">
+                        <img src={logoApolo} alt="Logo Accesorios Apolo" className="company-logo" />
+                        <div className="company-details">
+                            <h2 className="company-name">ACCESORIOS APOLO</h2>
+                            <p className="company-address">Carrera 6 #21-28, Montenegro, Quindío</p>
+                            <p className="company-phone">Teléfono: (6) 123-4567</p>
+                            <p className="company-nit">NIT: 1.084.331.933</p>
+                        </div>
                     </div>
                     <div className="sale-title">
                         <h1>FACTURA VENTA</h1>
@@ -109,31 +113,29 @@ export const PreviewSaleSuplier = ({ invoiceId, isModal = false, onClose }) => {
                             <span className="label">FECHA</span>
                         </div>
                     </div>
-                        <div className="info-row">
-                            <span className="value">{invoiceData.factura.id}</span>
-                            <span className="value">{invoiceData.factura.fecha_compra}</span>
-                        </div>
-                    
+                    <div className="info-row">
+                        <span className="value">{invoiceData.id}</span>
+                        <span className="value">{invoiceData.fecha_venta}</span>
+                    </div>
                 </div>
 
-                {/* Supplier Info */}
+                {/* Client Info */}
                 <div className="parties-info">
                     <div className="client-info">
                         <h3 className="section-title">CLIENTE</h3>
                         <div className="party-details">
-                            <h4>{invoiceData.factura.proveedor.nombre}</h4>
-                            <p>{invoiceData.factura.proveedor.empresa}</p>
-                            <p>{invoiceData.factura.proveedor.direccion}</p>
-                            <p>{invoiceData.factura.proveedor.telefono}</p>
-                            <p>NIT: {invoiceData.factura.proveedor.nit}</p>
-                        </div> 
+                            <h4>{invoiceData.cliente.nombre}</h4>
+                            <p>Cédula: {invoiceData.cliente.cedula}</p>
+                            <p>Correo: {invoiceData.cliente.correo}</p>
+                            <p>Teléfono: {invoiceData.cliente.telefono}</p>
+                        </div>
                     </div>
 
                     <div className="client-info">
                         <h3 className="section-title">MÉTODO DE PAGO</h3>
                         <div className="party-details">
-                            <p>{invoiceData.factura.metodo_pago}</p>
-                        </div> 
+                            <p>{invoiceData.metodo_pago}</p>
+                        </div>
                     </div>
                 </div>
 
@@ -159,6 +161,7 @@ export const PreviewSaleSuplier = ({ invoiceId, isModal = false, onClose }) => {
                                     </td>
                                     <td className="quantity-cell">{product.cantidad}</td>
                                     <td className="price-cell">{product.precio_unitario}</td>
+                                    <td className="discount-cell">{product.precio_descuento}</td>
                                     <td className="amount-cell">{product.subtotal}</td>
                                 </tr>
                             ))}
@@ -173,9 +176,19 @@ export const PreviewSaleSuplier = ({ invoiceId, isModal = false, onClose }) => {
 
                     {/* Totals */}
                     <div className="totals-section">
+                        <div className="total-row">
+                            <span className="total-label">Subtotal:</span>
+                            <span className="total-value">{invoiceData.subtotal_general}</span>
+                        </div>
+                        {invoiceData.descuentoTotal && invoiceData.descuentoTotal !== '$0' && (
+                            <div className="total-row discount-row">
+                                <span className="total-label">Descuento:</span>
+                                <span className="total-value discount-value">-{invoiceData.descuentoTotal}</span>
+                            </div>
+                        )}
                         <div className="total-row final-total">
                             <span className="total-label">Total:</span>
-                            <span className="total-value">{invoiceData.factura.valor_total}</span>
+                            <span className="total-value">{invoiceData.valor_total}</span>
                         </div>
                     </div>
                 </div>

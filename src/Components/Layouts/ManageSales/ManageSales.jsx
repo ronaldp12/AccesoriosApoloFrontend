@@ -7,7 +7,7 @@ import { Pagination } from "../../Ui/Pagination/Pagination";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterSaleModal } from "../../Ui/RegisterSaleModal/RegisterSaleModal.jsx";
-import { PreviewSaleSuplier } from "../../Ui/PreviewSaleClient/PreviewSaleClient.jsx";
+import { PreviewSaleClient } from "../../Ui/PreviewSaleClient/PreviewSaleClient.jsx";
 
 export const ManageSales = () => {
     const [ventas, setVentas] = useState([]);
@@ -43,15 +43,13 @@ export const ManageSales = () => {
 
     const filteredVentas = ventas.filter((venta) => {
         if (!searchDate) return true;
-        // Convertir la fecha ISO a formato YYYY-MM-DD para comparar
         const ventaFecha = new Date(venta.fecha_compra_iso).toISOString().split('T')[0];
         return ventaFecha === searchDate;
     });
 
     const handleViewInvoice = (venta) => {
-        console.log("Ver venta:", venta);
-        setSelectedInvoiceId(venta.id_factura);
-        setIsPreviewModalOpen(true);
+        setSelectedInvoiceId(venta.id_factura); 
+        setIsPreviewModalOpen(true);                            
     };
 
     const closePreviewModal = () => {
@@ -157,7 +155,7 @@ export const ManageSales = () => {
             />
 
             {isPreviewModalOpen && selectedInvoiceId && (
-                <PreviewSaleSuplier
+                <PreviewSaleClient
                     invoiceId={selectedInvoiceId}
                     isModal={true}
                     onClose={closePreviewModal}

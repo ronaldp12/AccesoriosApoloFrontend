@@ -60,12 +60,6 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         setIsLoading(true);
         clearMessages();
 
-        if (formData.telefono.length !== 10) {
-            setErrorMessage("El número de teléfono debe tener 10 dígitos.");
-            setIsLoading(false);
-            return;
-        }
-
         try {
             const token = localStorage.getItem("token");
 
