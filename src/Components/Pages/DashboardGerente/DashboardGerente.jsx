@@ -77,7 +77,9 @@ export const DashboardGerente = () => {
                         <FaFileInvoice /><span>Factura Proveedor</span>
                     </Link>
 
-                    <a href="#"><FaClipboard /><span>Inventario</span></a>
+                    <Link to="/dashboard/manage-inventory" className={location.pathname.startsWith("/dashboard/manage-inventory") ? "active" : ""}>
+                        <FaClipboard /><span>Inventario</span>
+                    </Link>
 
                     <Link to="/dashboard/manage-stickers" className={location.pathname.startsWith("/dashboard/manage-stickers") ? "active" : ""}>
                         <FaMagic /><span>Calcomanías</span>

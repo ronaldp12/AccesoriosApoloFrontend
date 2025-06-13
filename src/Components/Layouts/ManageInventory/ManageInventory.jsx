@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import "./ManageInvoice.css";
+import "./ManageInventory.css";
 import { FaSearch, FaHome, FaEye } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { RegisterInvoiceModal } from "../../Ui/RegisterInvoiceModal/RegisterInvoiceModal.jsx";
 import { PreviewInvoiceSuplier } from "../../Ui/PreviewInvoiceSuplier/PreviewInvoiceSuplier.jsx";
 
-export const ManageInvoice = () => {
+export const ManageInventory = () => {
     const [facturas, setFacturas] = useState([]);
     const [isModalRegisterOpen, setIsModalRegisterOpen] = useState(false);
     const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
@@ -73,22 +73,22 @@ export const ManageInvoice = () => {
     const totalPages = Math.ceil(filteredFacturas.length / invoicesPerPage);
 
     return (
-        <div className="manage-invoice-container">
+        <div className="inventory-container">
             <div className="breadcrumb">
                 <FaHome onClick={() => navigate("/dashboard")} className="icono-home" />
                 <span className="breadcrumb-separator">/</span>
-                <span className="breadcrumb-actual">Facturas Proveedores</span>
+                <span className="breadcrumb-actual">Inventario</span>
             </div>
 
-            <div className="invoice-header">
-                <h2>Facturas Proveedores</h2>
+            <div className="inventory-header">
+                <h2>Inventario</h2>
                 <button className="btn-registrar" onClick={openRegisterModal}>
-                    Registrar Factura
+                    Generar Inventario
                 </button>
             </div>
-            <hr className="hr-invoice" />
+            <hr className="hr-inventory" />
 
-            <div className="invoice-filtros">
+            <div className="inventory-filtros">
                 <div className="filtro-input">
                     <input
                         type="date"
@@ -105,22 +105,23 @@ export const ManageInvoice = () => {
 
             {isLoading && (
                 <div className="tabla-loader">
-                    <img src={wheelIcon} alt="Cargando..." className="manage-invoice-spinner" />
-                    <p>Cargando facturas proveedores...</p>
+                    <img src={wheelIcon} alt="Cargando..." className="manage-inventory-spinner" />
+                    <p>Cargando inventarios...</p>
                 </div>
             )}
 
-            <div className="invoice-table">
+            <div className="inventory-table">
                 <table>
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>NIT</th>
-                            <th>Nombre Empresa</th>
-                            <th>Fecha Compra</th>
+                            <th>Fecha de Informe</th>
+                            <th>Total de Productos</th>
+                            <th>Total de Unidades</th>
                             <th>Valor Total</th>
-                            <th>Método Pago</th>
-                            <th>Ver Factura</th>
+                            <th>Responsable</th>
+                            <th>Ver PDF</th>
+                            <th>Descargar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,7 +132,14 @@ export const ManageInvoice = () => {
                                 <td>{factura.empresa}</td>
                                 <td>{factura.fecha}</td>
                                 <td>${factura.valor_total}</td>
-                                <td>{factura.metodo_pago}</td>
+                                <td>${factura.valor_total}</td>
+                                <td>
+                                    <FaEye
+                                        onClick={() => handleViewInvoice(factura)}
+                                        className="icono-ver-factura"
+                                        title="Ver factura"
+                                    />
+                                </td>
                                 <td>
                                     <FaEye
                                         onClick={() => handleViewInvoice(factura)}
@@ -147,7 +155,7 @@ export const ManageInvoice = () => {
 
             {facturasActuales.length === 0 && !isLoading && (
                 <div className="no-data">
-                    <p>No se encontraron facturas de proveedores.</p>
+                    <p>No se encontraron inventarios.</p>
                 </div>
             )}
 
