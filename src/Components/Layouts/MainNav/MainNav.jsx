@@ -8,7 +8,7 @@ import { LightsSubmenu } from '../../Ui/LightsSubmenu/LightsSubmenu.jsx';
 import { CleaningSubmenu } from '../../Ui/CleaningSubmenu/CleaningSubmenu.jsx';
 import { BrandSubmenu } from '../../Ui/BrandSubmenu/BrandSubmenu.jsx';
 
-export const MainNav = ({ styleContainer }) => {
+export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
   const helmetMenu = useSubmenu();
   const equipmentMenu = useSubmenu();
   const brandMenu = useSubmenu();
@@ -19,7 +19,7 @@ export const MainNav = ({ styleContainer }) => {
   return (
     <div className={styleContainer}>
       <NavLink className="navlink" to="/">
-        <Item contenido={"Inicio"} styleLi="item"/>
+        <Item contenido={"Inicio"} styleLi="item" />
       </NavLink>
       <div
         className="container-helmets"
@@ -72,7 +72,12 @@ export const MainNav = ({ styleContainer }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Calcomanías</span>
         </Item>
-        {stickerMenu.isOpen && <StickerSubmenu />}
+        {stickerMenu.isOpen && (
+          <StickerSubmenu
+            onOpenRegister={onOpenRegister}
+            onOpenLogin={onOpenLogin}
+          />
+        )}
       </div>
 
       <div
@@ -100,7 +105,6 @@ export const MainNav = ({ styleContainer }) => {
         </Item>
         {cleaningMenu.isOpen && <CleaningSubmenu />}
       </div>
-
     </div>
   );
 };

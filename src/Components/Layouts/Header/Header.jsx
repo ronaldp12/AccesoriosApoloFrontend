@@ -95,7 +95,11 @@ export const Header = () => {
 
         <div className="container-main">
           <SearchBar />
-          <MainNav styleContainer={"container-list"} />
+          <MainNav
+            styleContainer={"container-list"}
+            onOpenRegister={openRegister}
+            onOpenLogin={openLogin}
+          />
         </div>
 
         <div className="container-icon">
