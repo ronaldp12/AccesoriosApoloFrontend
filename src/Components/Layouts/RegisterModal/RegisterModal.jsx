@@ -20,23 +20,56 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
     const googleButtonRef = useRef(null);
 
-    useEffect(() => {
+    const initializeGoogleSignIn = () => {
         if (window.google && googleButtonRef.current) {
-            google.accounts.id.initialize({
-                client_id: "230268662322-ir35oged9meek539n1ipa77pjtl4f4lg.apps.googleusercontent.com",
-                callback: handleGoogleResponse,
-            });
-            google.accounts.id.renderButton(
-                googleButtonRef.current,
-                {
-                    type: "standard",
-                    theme: "filled-blue",
-                    size: "medium",
-                    shape: "circle",
-                }
-            );
+            try {
+                window.google.accounts.id.initialize({
+                    client_id: "230268662322-ir35oged9meek539n1ipa77pjtl4f4lg.apps.googleusercontent.com",
+                    callback: handleGoogleResponse,
+                });
+
+                window.google.accounts.id.renderButton(
+                    googleButtonRef.current,
+                    {
+                        type: "icon",
+                        theme: "filled_blue",
+                        size: "big",
+                        shape: "circle",
+                    }
+                );
+                console.log("Google Sign-In inicializado correctamente en RegisterModal");
+            } catch (error) {
+                console.error("Error al inicializar Google Sign-In en RegisterModal:", error);
+            }
         }
-    }, []);
+    };
+
+    const checkGoogleAvailability = () => {
+        let attempts = 0;
+        const maxAttempts = 50; 
+
+        const checkInterval = setInterval(() => {
+            attempts++;
+
+            if (window.google && window.google.accounts) {
+                clearInterval(checkInterval);
+                initializeGoogleSignIn();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                console.error("Google Sign-In no se pudo cargar después de 5 segundos en RegisterModal");
+            }
+        }, 100);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            if (googleButtonRef.current) {
+                googleButtonRef.current.innerHTML = '';
+            }
+
+            checkGoogleAvailability();
+        }
+    }, [isOpen]);
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -94,31 +127,50 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 setToken(data.token);
                 setName(data.usuario.nombre);
                 setAvatar(data.usuario.foto || null);
-                setNameRol(data.usuario.nombreRol);
 
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("usuarioLogueado", data.usuario.nombre);
                 localStorage.setItem("avatar", data.usuario.foto);
-                localStorage.setItem("nombreRol", data.usuario.nombreRol);
+
+                const validateGerente = await fetch("https://accesoriosapolobackend.onrender.com/validar-gerente", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${data.token}`,
+                    },
+                });
+
+                if (!validateGerente.ok) {
+                    const errorText = await validateGerente.text();
+                    console.error("Error al validar gerente:", errorText);
+                }
+
+                const gerenteData = await validateGerente.json();
 
                 onClose();
 
-                setTimeout(() => {
-                    setIsIntermediateLoading(true)
-                }, 800)
+                const rol = Array.isArray(gerenteData.nombreRol) ? gerenteData.nombreRol[0] : gerenteData.nombreRol;
 
-                setTimeout(() => {
-                    setIsIntermediateLoading(false)
-                    setIsWelcomeOpen(true);
-                    setIsLoading(false);
-                }, 1000);
+                setNameRol(rol);
+                localStorage.setItem("nameRol", rol);
 
-            } else {
+                if (gerenteData.esGerente) {
+                    navigate("/dashboard");
+
+                } else {
+                    setIsIntermediateLoading(true);
+                    setTimeout(() => {
+                        setIsIntermediateLoading(false);
+                        setIsWelcomeOpen(true);
+                    }, 1000);
+                }
+            }
+            else {
                 setErrorMessage(getErrorMessage(data, "Error al iniciar sesión con Google"));
             }
         } catch (error) {
             console.error("Error al autenticar con backend:", error);
-            setErrorMessage("Error al iniciar sesión con Google");
+            setErrorMessage("Error de red");
         }
     };
 
@@ -223,7 +275,19 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                                 </button>
                                 <span className="divider-vertical"></span>
 
-                                <div ref={googleButtonRef}></div>
+                                <div ref={googleButtonRef} id="google-signin-button-register">
+                                    <div style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontSize: '12px',
+                                        color: '#666'
+                                    }}>
+                                        G
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>

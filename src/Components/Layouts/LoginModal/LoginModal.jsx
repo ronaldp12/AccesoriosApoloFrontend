@@ -16,23 +16,56 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
     const googleButtonRef = useRef(null);
 
-    useEffect(() => {
+    const initializeGoogleSignIn = () => {
         if (window.google && googleButtonRef.current) {
-            google.accounts.id.initialize({
-                client_id: "230268662322-ir35oged9meek539n1ipa77pjtl4f4lg.apps.googleusercontent.com",
-                callback: handleGoogleResponse,
-            });
-            google.accounts.id.renderButton(
-                googleButtonRef.current,
-                {
-                    type: "standard",
-                    theme: "filled-blue",
-                    size: "medium",
-                    shape: "circle",
-                }
-            );
+            try {
+                window.google.accounts.id.initialize({
+                    client_id: "230268662322-ir35oged9meek539n1ipa77pjtl4f4lg.apps.googleusercontent.com",
+                    callback: handleGoogleResponse,
+                });
+                
+                window.google.accounts.id.renderButton(
+                    googleButtonRef.current,
+                    {
+                        type: "icon",
+                        theme: "filled_blue",
+                        size: "big",
+                        shape: "circle",
+                    }
+                );
+                console.log("Google Sign-In inicializado correctamente");
+            } catch (error) {
+                console.error("Error al inicializar Google Sign-In:", error);
+            }
         }
-    }, []);
+    };
+
+    const checkGoogleAvailability = () => {
+        let attempts = 0;
+        const maxAttempts = 50;
+        
+        const checkInterval = setInterval(() => {
+            attempts++;
+            
+            if (window.google && window.google.accounts) {
+                clearInterval(checkInterval);
+                initializeGoogleSignIn();
+            } else if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                console.error("Google Sign-In no se pudo cargar después de 5 segundos");
+            }
+        }, 100);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            if (googleButtonRef.current) {
+                googleButtonRef.current.innerHTML = '';
+            }
+            
+            checkGoogleAvailability();
+        }
+    }, [isOpen]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -94,7 +127,6 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         }
     };
 
-
     const handleGoogleResponse = async (response) => {
         const token = response.credential;
 
@@ -136,8 +168,8 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
                 const rol = Array.isArray(gerenteData.nombreRol) ? gerenteData.nombreRol[0] : gerenteData.nombreRol;
 
-                    setNameRol(rol);
-                    localStorage.setItem("nameRol", rol);
+                setNameRol(rol);
+                localStorage.setItem("nameRol", rol);
 
                 if (gerenteData.esGerente) {
                     navigate("/dashboard");
@@ -223,15 +255,25 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                             <div className="login-divider">o</div>
 
                             <div className="login-social-icons">
-
                                 <button type="button" className="social facebook">
                                     <img src={iconFacebook} alt="facebook" />
                                 </button>
 
                                 <span className="divider-vertical"></span>
 
-
-                                <div ref={googleButtonRef}></div>
+                                <div ref={googleButtonRef} id="google-signin-button">
+                                    <div style={{ 
+                                        width: '40px', 
+                                        height: '40px', 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center',
+                                        fontSize: '12px',
+                                        color: '#666'
+                                    }}>
+                                        G
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>

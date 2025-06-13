@@ -552,10 +552,72 @@
     }
 
     .invoice-container {
-        padding: 20px !important;
+        padding: 15px !important;
         margin: 0 !important;
         height: auto !important;
         box-sizing: border-box !important;
+    }
+
+    .invoice-header-preview {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+        margin-bottom: 20px !important;
+        width: 100% !important;
+    }
+
+    .invoice-header-preview .company-info {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        flex: 1 !important;
+        max-width: 65% !important;
+    }
+
+    .invoice-header-preview .company-name {
+        font-size: 18px !important;
+        font-weight: bold !important;
+        margin: 0 0 8px 0 !important;
+        line-height: 1.2 !important;
+    }
+
+    .invoice-header-preview .company-address {
+        font-size: 11px !important;
+        margin: 4px 0 !important;
+        line-height: 1.3 !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        white-space: normal !important;
+        max-width: 155% !important;
+    }
+
+    .invoice-header-preview .company-phone,
+    .invoice-header-preview .company-nit {
+        font-size: 11px !important;
+        margin: 3px 0 !important;
+        line-height: 1.2 !important;
+    }
+
+    .invoice-title {
+        flex-shrink: 0 !important;
+        text-align: right !important;
+        max-width: 35% !important;
+    }
+
+    .invoice-title h1 {
+        font-size: 28px !important;
+        margin: 0 !important;
+        font-weight: bold !important;
+    }
+
+    .parties-info .supplier-info .party-details p,
+    .parties-info .client-info .party-details p {
+        font-size: 11px !important;
+        margin: 3px 0 !important;
+        line-height: 1.3 !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+        white-space: normal !important;
     }
 
     .invoice-loading-state,
@@ -564,21 +626,24 @@
         display: none !important;
     }
 
-    .company-name {
-        font-size: 18px !important;
-    }
-
-    .invoice-title h1 {
-        font-size: 32px !important;
-    }
-
     .products-table-preview-invoice {
-        font-size: 12px !important;
+        font-size: 11px !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
     }
 
     .products-table-preview-invoice th,
     .products-table-preview-invoice td {
-        padding: 8px 6px !important;
+        padding: 6px 4px !important;
+        border: 1px solid #ccc !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    .description-cell {
+        text-align: left !important;
+        max-width: 200px !important;
+        word-wrap: break-word !important;
     }
 
     .invoice-number,
@@ -591,8 +656,20 @@
         print-color-adjust: exact !important;
     }
 
+    .invoice-info {
+        margin-bottom: 15px !important;
+    }
+
+    .parties-info {
+        margin-bottom: 15px !important;
+    }
+
+    .totals-section {
+        margin-top: 15px !important;
+    }
+
     @page {
-        margin: 15mm;
-        size: A4;
+        margin: 12mm !important;
+        size: A4 !important;
     }
 }

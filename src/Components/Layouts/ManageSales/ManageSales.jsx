@@ -70,7 +70,7 @@ export const ManageSales = () => {
     const totalPages = Math.ceil(filteredVentas.length / invoicesPerPage);
 
     return (
-        <div className="sale-container">
+        <div className="manage-sale-container">
             <div className="breadcrumb">
                 <FaHome onClick={() => navigate("/dashboard")} className="icono-home" />
                 <span className="breadcrumb-separator">/</span>

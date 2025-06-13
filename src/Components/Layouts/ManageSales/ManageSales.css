@@ -1,4 +1,4 @@
-.sale-container {
+.manage-sale-container {
     padding-left: 1rem;
     background: #fff;
     position: relative;
@@ -317,7 +317,7 @@
 }
 
 @media (min-width: 432px) and (max-width: 480px) {
-  .sale-container {
+  .manage-sale-container {
     padding: 1rem;
   }
 
