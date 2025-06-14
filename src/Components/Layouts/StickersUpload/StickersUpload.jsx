@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Upload, Scissors, Save, Bookmark, Plus, X } from 'lucide-react';
+import { Upload, Scissors, Save, Bookmark, Plus, X, Trash2 } from 'lucide-react';
 import ReactCrop from 'react-image-crop';
 import "./StickersUpload.css"
 import 'react-image-crop/dist/ReactCrop.css';
@@ -24,9 +24,9 @@ export const StickersUpload = () => {
         // Crop inicial que cubra TODA la imagen
         const crop = {
             unit: '%',
-            x: 0,       
-            y: 0,       
-            width: 100, 
+            x: 0,
+            y: 0,
+            width: 100,
             height: 100,
         };
 
@@ -107,6 +107,14 @@ export const StickersUpload = () => {
         }
     };
 
+    const deleteImage = () => {
+        setSelectedImage(null);
+        setCroppedImage(null);
+        setIsCropping(false);
+        setCompletedCrop(null);
+        setCrop(undefined);
+    };
+
     const handleAddSticker = () => {
         if (selectedImage) {
             saveSticker();
@@ -163,6 +171,19 @@ export const StickersUpload = () => {
                             </div>
                         </aside>
 
+                        {/* Botón de eliminar imagen - aparece entre sidebar y upload area */}
+                        {selectedImage && (
+                            <div className="delete-image-container">
+                                <button
+                                    className="delete-image-btn"
+                                    onClick={deleteImage}
+                                    title="Eliminar imagen"
+                                >
+                                    <Trash2 size={20} />
+                                </button>
+                            </div>
+                        )}
+
                         <main className="upload-area">
                             <div
                                 className={`drop-zone ${selectedImage ? 'has-image' : ''} ${isDragging ? 'dragging' : ''} ${isCropping ? 'cropping' : ''}`}
@@ -218,12 +239,12 @@ export const StickersUpload = () => {
                 </div>
             ) : (
                 <div className="gallery-view">
-                    <header className="sticker-upload-header">
+                    <div className="gallery-stickers-header">
                         <button className="back-button" onClick={() => setCurrentView('upload')}>
-                            ←
+                            <iconify-icon icon="fluent:ios-arrow-24-filled" className="arrow-back-gallery" />
                         </button>
-                        <h1 className="sticker-upload-title">CALCOMANIAS</h1>
-                    </header>
+                        <h1 className="gallery-stickers-title">CALCOMANIAS</h1>
+                    </div>
 
                     <div className="gallery-grid">
                         {savedStickers.map((sticker) => (

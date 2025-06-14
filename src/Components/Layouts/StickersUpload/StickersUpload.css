@@ -30,6 +30,24 @@
     position: relative;
 }
 
+.gallery-stickers-header{
+    display: flex;
+    border-top: 8px solid #014aad;
+    justify-content: left;
+    align-items: center;
+    background: #eceaea;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    height: 10rem;
+    position: relative;
+    gap: 10px;
+}
+
+.arrow-back-gallery {
+    font-size: 2.4rem;
+    color: #014aad;
+}
+
 .sticker-upload-title {
     font-size: 2.5rem;
     font-weight: 800;
@@ -37,6 +55,14 @@
     letter-spacing: 1.5px;
     font-family: 'League Spartan', sans-serif;
     padding-left: 4rem;
+}
+
+.gallery-stickers-title{
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #333;
+    letter-spacing: 1.5px;
+    font-family: 'League Spartan', sans-serif;
 }
 
 .sticker-upload-header-buttons {
@@ -90,10 +116,19 @@
     transition: background-color 0.3s ease;
     position: relative;
     z-index: 101;
+    margin-left: 4rem;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .back-button:hover {
     background: rgba(37, 99, 235, 0.1);
+    border-radius: 50%;
+    
 }
 
 .upload-view {
@@ -135,7 +170,7 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-    padding: 1rem 0.5rem;
+    padding: 0.8rem 0.4rem;
     color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -502,6 +537,46 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
 }
 
+/* Estilos para el botón de eliminar imagen */
+.delete-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 100%;
+    position: absolute;
+    z-index: 400;
+    left: 14rem;
+    top: -6rem;
+}
+
+.delete-image-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+    position: relative;
+    z-index: 61;
+}
+
+.delete-image-btn:hover {
+    background: #b91c1c;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.5);
+}
+
+.delete-image-btn:active {
+    transform: scale(0.95);
+}
+
 @media (max-width: 393px) {
     .sticker-upload {
         height: 60vh;
@@ -514,7 +589,7 @@
     }
 
     .sticker-upload-title {
-        font-size: 1.2rem;
+        font-size: 2rem;
         letter-spacing: 1px;
     }
 
@@ -524,12 +599,16 @@
     }
 
     .sticker-upload-sidebar {
-        width: 60px;
+        width: 80px;
         padding: 0.5rem 0;
+        align-items: flex-start;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
     }
 
     .sticker-upload-sidebar-item {
         padding: 0.75rem 0.25rem;
+        width: 4rem;
     }
 
     .sticker-upload-sidebar-item span {
@@ -541,8 +620,8 @@
     }
 
     .drop-zone {
-        min-height: 250px;
-        max-width: 100%;
+        min-height: 100%;
+        min-width: 10rem;
     }
 
     .gallery-grid {
@@ -568,39 +647,77 @@
     }
 
     .crop-container {
-        padding: 0.5rem;
+        padding: 0.6rem;
+    }
+
+    .drop-zone.cropping {
+        max-width: calc(100% - 0.2rem) !important;
+        max-height: calc(100% - 0.2rem) !important;
     }
     
+    .drop-zone.cropping .ReactCrop {
+        max-width: 100% !important;
+        max-height: 100% !important;
+    }
+
     .ReactCrop img {
-        max-width: 280px !important;
-        max-height: 200px !important;
+        max-width: 350px !important;
+        max-height: 250px !important;
     }
     
     .drop-zone.cropping {
         padding: 0.5rem !important;
     }
+
+    .delete-image-container {
+        left: 6rem;
+        top: -9rem;
+        position: absolute;
+    }
+
+    .delete-image-btn {
+        width: 30px;
+        height: 30px;
+    }
 }
 
-@media (min-width: 394px) and (max-width: 430px) {
+@media (min-width: 394px) and (max-width: 431px) {
     .sticker-upload {
         height: 65vh;
     }
 
     .sticker-upload-header {
-        padding: 0.75rem 1.5rem;
+        padding: 0.5rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     .sticker-upload-title {
-        font-size: 1.4rem;
+        font-size: 2rem;
+        letter-spacing: 1px;
+        text-align: center;
+        margin-left: 1.2rem;
+    }
+
+    .sticker-upload-header-buttons {
+        width: 100%;
+        justify-content: center;
     }
 
     .sticker-upload-sidebar {
-        width: 70px;
+        width: 90px;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .sticker-upload-sidebar-item {
+        width: 4.8rem;
     }
 
     .drop-zone {
         min-height: 300px;
-        max-width: 100%;
+        min-width: 12rem;
     }
 
     .gallery-grid {
@@ -609,17 +726,33 @@
     }
 
     .crop-container {
-        padding: 1rem;
+        padding: 0.6rem;
+    }
+
+    .drop-zone.cropping {
+        max-width: calc(100% - 0.2rem) !important;
+        max-height: calc(100% - 0.2rem) !important;
     }
     
     .drop-zone.cropping .ReactCrop {
-        max-width: calc(100% - 2rem) !important;
-        max-height: calc(100% - 2rem) !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
     }
 
     .ReactCrop img {
         max-width: 350px !important;
         max-height: 250px !important;
+    }
+
+    .delete-image-container {
+        left: 7rem;
+        top: -10rem;
+        position: absolute;
+    }
+
+    .delete-image-btn {
+        width: 30px;
+        height: 30px;
     }
 }
 
@@ -629,17 +762,65 @@
         height: 65vh;
     }
 
+    .sticker-upload-header {
+        padding: 0.5rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .sticker-upload-title {
+        font-size: 2rem;
+        letter-spacing: 1px;
+        text-align: center;
+        margin-left: 2.7rem;
+    }
+
+    .sticker-upload-header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sticker-upload-sidebar {
+        width: 100px;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .sticker-upload-sidebar-item {
+        width: 4.8rem;
+    }
+
+    .sticker-upload {
+        height: 65vh;
+    }
+
     .gallery-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 
     .drop-zone {
-        min-height: 350px;
-        max-width: 100%;
+        min-height: 300px;
+        min-width: 12rem;
     }
 
     .crop-container {
-        padding: 1rem;
+        padding: 0.6rem;
+    }
+
+    .drop-zone.cropping {
+        max-width: calc(100% - 0.2rem) !important;
+        max-height: calc(100% - 0.2rem) !important;
+    }
+    
+    .drop-zone.cropping .ReactCrop {
+        max-width: 100% !important;
+        max-height: 100% !important;
+    }
+
+    .ReactCrop img {
+        max-width: 350px !important;
+        max-height: 250px !important;
     }
     
     .drop-zone.cropping .ReactCrop {
@@ -651,9 +832,23 @@
         max-width: 350px !important;
         max-height: 250px !important;
     }
+
+    .delete-image-container {
+        width: 45px;
+    }
+
+    .delete-image-btn {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 @media (min-width: 481px) and (max-width: 820px) {
+    .sticker-upload-header {
+        padding: 0.5rem 1rem;
+        gap: 0.5rem;
+    }
+
     .sticker-upload {
         height: 70vh;
     }
@@ -663,7 +858,14 @@
     }
 
     .sticker-upload-sidebar {
-        width: 90px;
+        width: 130px;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .sticker-upload-sidebar-item {
+        width: 6.2rem;
     }
 
     .sticker-upload-sidebar-item span {
@@ -680,8 +882,8 @@
     }
 
     .drop-zone {
-        min-height: 400px;
-        max-width: 600px;
+        min-height: 250px;
+        min-width: 36rem;
     }
 
     .sticker-upload-action-buttons {
@@ -689,17 +891,33 @@
     }
 
     .crop-container {
-        padding: 1rem;
+        padding: 0.6rem;
     }
     
     .drop-zone.cropping .ReactCrop {
-        max-width: calc(100% - 2rem) !important;
+        max-width: 95% !important;
+        max-height: 100% !important;
+    }
+    
+    .drop-zone.cropping .ReactCrop img {
+        max-width: calc(100% - 0.4rem) !important;
         max-height: calc(100% - 2rem) !important;
     }
 
     .ReactCrop img {
         max-width: 450px !important;
         max-height: 350px !important;
+    }
+
+    .delete-image-container {
+        left: 12rem;
+        top: -20rem;
+        position: absolute;
+    }
+
+    .delete-image-btn {
+        width: 50px;
+        height: 50px;
     }
 }
 

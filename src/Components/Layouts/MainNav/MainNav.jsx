@@ -76,6 +76,7 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
           <StickerSubmenu
             onOpenRegister={onOpenRegister}
             onOpenLogin={onOpenLogin}
+            onCloseSubmenu={() => stickerMenu.handleHover(false)}
           />
         )}
       </div>

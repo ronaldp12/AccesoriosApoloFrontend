@@ -13,14 +13,15 @@ import { context } from '../../../Context/Context.jsx';
 import { WelcomeNoLoginModal } from '../../Layouts/WelcomeNoLoginModal/WelcomeNoLoginModal.jsx';
 import { useNavigate } from 'react-router-dom';
 
-export const StickerSubmenu = ({ onOpenRegister, onOpenLogin }) => {
+export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) => {
   const { userLogin, nameRol } = useContext(context);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleUploadSticker = () => {
     if (userLogin && nameRol === 'cliente') {
-      navigate("/stickers")
+      onCloseSubmenu();
+      navigate("/stickers");
       console.log('Navegando a subir calcomanía');
     } else {
       setIsModalOpen(true);
@@ -33,6 +34,7 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin }) => {
 
   const handleRegisterFromModal = () => {
     closeModal();
+    onCloseSubmenu();
     if (onOpenRegister) {
       onOpenRegister();
     }
@@ -40,6 +42,7 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin }) => {
 
   const handleLoginFromModal = () => {
     closeModal();
+    onCloseSubmenu(); 
     if (onOpenLogin) {
       onOpenLogin();
     }
