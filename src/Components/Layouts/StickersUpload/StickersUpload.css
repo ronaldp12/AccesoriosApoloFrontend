@@ -1,28 +1,33 @@
 .sticker-upload {
-    background: linear-gradient(135deg, #e3e3e3 0%, #d1d1d1 100%);
-    min-height: 70vh;
-    height: 70vh;
-    background-image:
-        linear-gradient(45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%),
-        linear-gradient(-45deg, rgba(255, 255, 255, 0.1) 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.1) 75%),
-        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.1) 75%);
+    background: #eceaea;
+    min-height: 80vh;
+    height: 80vh;
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     position: relative;
     overflow: hidden;
 }
 
-/* Header interno - Ahora más compacto */
+.img1-background-sticker {
+    position: absolute;
+    right: 2rem;
+    top: -20rem;
+    z-index: 50;
+    width: 190rem;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
 .sticker-upload-header {
     display: flex;
+    border-top: 8px solid #014aad;
     justify-content: space-between;
     align-items: center;
-    background: rgba(255, 255, 255, 0.95);
+    background: #eceaea;
     backdrop-filter: blur(10px);
-    position: relative;
     z-index: 10;
-    height: 8rem;
+    height: 10rem;
+    position: relative;
 }
 
 .sticker-upload-title {
@@ -37,6 +42,8 @@
 .sticker-upload-header-buttons {
     display: flex;
     gap: 0.5rem;
+    position: relative;
+    z-index: 100;
 }
 
 .sticker-upload-btn-primary,
@@ -48,6 +55,8 @@
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    z-index: 101;
+    position: relative;
 }
 
 .sticker-upload-btn-primary {
@@ -75,21 +84,24 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #2563eb;
+    color: #014aad;
     padding: 0.5rem;
     border-radius: 50%;
     transition: background-color 0.3s ease;
+    position: relative;
+    z-index: 101;
 }
 
 .back-button:hover {
     background: rgba(37, 99, 235, 0.1);
 }
 
-/* Layout principal */
 .upload-view {
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 50;
 }
 
 .sticker-upload-main-content {
@@ -97,14 +109,14 @@
     display: flex;
     gap: 0;
     overflow: hidden;
-    height: calc(100% - 60px);
-    /* Altura disponible menos el header interno */
+    height: calc(100% - 10px);
+    position: relative;
+    z-index: 50;
 }
 
-/* Sidebar */
 .sticker-upload-sidebar {
     width: 120px;
-    background: #1e40af;
+    background: #040d7d;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -113,7 +125,9 @@
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     height: 100%;
     position: relative;
-    z-index: 5;
+    z-index: 60;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
 }
 
 .sticker-upload-sidebar-item {
@@ -127,6 +141,8 @@
     transition: all 0.3s ease;
     border-radius: 8px;
     margin: 0 0.5rem;
+    position: relative;
+    z-index: 61;
 }
 
 .sticker-upload-sidebar-item:hover,
@@ -142,7 +158,6 @@
     font-weight: 500;
 }
 
-/* Área de subida */
 .upload-area {
     flex: 1;
     padding: 1.5rem;
@@ -151,33 +166,35 @@
     gap: 1rem;
     overflow-y: auto;
     height: 100%;
+    position: relative;
+    z-index: 50;
 }
 
 .drop-zone {
     flex: 1;
-    border: 3px dashed #9333ea;
+    min-width: 60rem;
+    min-height: 22rem !important;
+    border: 2px dashed #014aad;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    min-height: 300px;
-    max-height: calc(100% - 80px);
-    /* Espacio para botones */
     overflow: hidden;
+    position: relative;
+    margin: 0 auto;
+    background: white;
+    z-index: 200;
 }
 
 .drop-zone:hover {
-    border-color: #7c3aed;
+    border-color: #014aad;
     background: rgba(255, 255, 255, 0.95);
     box-shadow: 0 10px 25px rgba(147, 51, 234, 0.1);
 }
 
 .drop-zone.dragging {
-    border-color: #7c3aed;
+    border-color: #014aad;
     background: rgba(147, 51, 234, 0.05);
     transform: scale(1.02);
 }
@@ -193,6 +210,8 @@
     color: #6b7280;
     font-size: 1.1rem;
     font-weight: 500;
+    position: relative;
+    z-index: 201;
 }
 
 .sticker-upload-image-container {
@@ -202,14 +221,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 2rem;
+    z-index: 201;
 }
 
 .uploaded-image {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+    min-height: 300px;
+    min-width: 200px;
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 202;
 }
 
 /* Recorte */
@@ -218,7 +245,7 @@
     border: 2px solid #ef4444;
     background: rgba(239, 68, 68, 0.1);
     cursor: move;
-    z-index: 10;
+    z-index: 210;
 }
 
 .crop-handle {
@@ -231,6 +258,7 @@
     border: 2px solid white;
     border-radius: 50%;
     cursor: se-resize;
+    z-index: 211;
 }
 
 /* Botones de acción */
@@ -239,6 +267,8 @@
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
+    position: relative;
+    z-index: 150;
 }
 
 .btn-crop,
@@ -252,6 +282,8 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    z-index: 151;
+    position: relative;
 }
 
 .btn-crop {
@@ -274,65 +306,80 @@
     transform: translateY(-2px);
 }
 
-/* Galería */
 .gallery-view {
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 50;
 }
 
 .gallery-grid {
     padding: 1.5rem;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
     overflow-y: auto;
     flex: 1;
+    position: relative;
+    z-index: 100;
 }
 
 .sticker-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 101;
 }
 
 .sticker-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .sticker-image-container {
     position: relative;
-    height: 200px;
+    height: 120px;
     background: #f8fafc;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0.5rem;
 }
 
 .sticker-image {
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
 }
 
 .delete-button {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 4px;
+    right: 4px;
     background: rgba(239, 68, 68, 0.9);
     color: white;
     border: none;
     border-radius: 50%;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 102;
+}
+
+.sticker-card:hover .delete-button {
+    opacity: 1;
 }
 
 .delete-button:hover {
@@ -340,32 +387,36 @@
 }
 
 .sticker-info {
-    padding: 1rem;
+    padding: 0.75rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 .sticker-name {
     font-weight: 600;
     color: #333;
+    font-size: 0.9rem;
 }
 
 .sticker-format {
     color: #6b7280;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .btn-buy {
     background: #2563eb;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 0.5rem;
+    font-size: 0.8rem;
+    position: relative;
+    z-index: 102;
 }
 
 .btn-buy:hover {
@@ -385,17 +436,75 @@
 }
 
 .sticker-upload-sidebar-item.disabled {
-  opacity: 0.5;
-  pointer-events: none;
-  cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
+.drop-zone.cropping {
+    padding: 1rem !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
 
-/* 393px - Móvil pequeño */
+/* Contenedor del cropper */
+.crop-container {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ReactCrop wrapper - CLAVE para el control de tamaño */
+.ReactCrop {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: fit-content !important;
+    height: fit-content !important;
+    position: relative !important;
+    display: inline-block !important;
+}
+
+/* La imagen dentro del cropper - ESTO ES LO MÁS IMPORTANTE */
+.ReactCrop img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    /* Tamaños máximos específicos según el contenedor */
+    max-width: 500px !important;
+    max-height: 400px !important;
+}
+
+/* Estilos del área de selección */
+.ReactCrop__crop-selection {
+    border: 2px solid #014aad !important;
+    background: rgba(1, 74, 173, 0.1) !important;
+}
+
+/* Handles de las esquinas */
+.ReactCrop__drag-handle {
+    background: #014aad !important;
+    border: 2px solid white !important;
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+}
+
 @media (max-width: 393px) {
     .sticker-upload {
         height: 60vh;
-        /* Menos altura en móvil */
     }
 
     .sticker-upload-header {
@@ -432,13 +541,22 @@
     }
 
     .drop-zone {
-        min-height: 200px;
+        min-height: 250px;
+        max-width: 100%;
     }
 
     .gallery-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         padding: 1rem;
-        gap: 1rem;
+        gap: 0.75rem;
+    }
+
+    .sticker-card {
+        max-width: 100%;
+    }
+
+    .sticker-image-container {
+        height: 100px;
     }
 
     .sticker-upload-action-buttons {
@@ -447,11 +565,22 @@
 
     .sticker-upload-main-content {
         height: calc(100% - 80px);
-        /* Ajuste para header más pequeño */
+    }
+
+    .crop-container {
+        padding: 0.5rem;
+    }
+    
+    .ReactCrop img {
+        max-width: 280px !important;
+        max-height: 200px !important;
+    }
+    
+    .drop-zone.cropping {
+        padding: 0.5rem !important;
     }
 }
 
-/* 430px - Móvil mediano */
 @media (min-width: 394px) and (max-width: 430px) {
     .sticker-upload {
         height: 65vh;
@@ -470,31 +599,60 @@
     }
 
     .drop-zone {
-        min-height: 250px;
+        min-height: 300px;
+        max-width: 100%;
     }
 
     .gallery-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         padding: 1.5rem;
+    }
+
+    .crop-container {
+        padding: 1rem;
+    }
+    
+    .drop-zone.cropping .ReactCrop {
+        max-width: calc(100% - 2rem) !important;
+        max-height: calc(100% - 2rem) !important;
+    }
+
+    .ReactCrop img {
+        max-width: 350px !important;
+        max-height: 250px !important;
     }
 }
 
-/* 480px - Móvil grande */
+
 @media (min-width: 431px) and (max-width: 480px) {
     .sticker-upload {
         height: 65vh;
     }
 
     .gallery-grid {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .drop-zone {
-        min-height: 280px;
+        min-height: 350px;
+        max-width: 100%;
+    }
+
+    .crop-container {
+        padding: 1rem;
+    }
+    
+    .drop-zone.cropping .ReactCrop {
+        max-width: calc(100% - 2rem) !important;
+        max-height: calc(100% - 2rem) !important;
+    }
+
+    .ReactCrop img {
+        max-width: 350px !important;
+        max-height: 250px !important;
     }
 }
 
-/* 820px - Tablet */
 @media (min-width: 481px) and (max-width: 820px) {
     .sticker-upload {
         height: 70vh;
@@ -517,44 +675,80 @@
     }
 
     .gallery-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
     }
 
     .drop-zone {
-        min-height: 320px;
+        min-height: 400px;
+        max-width: 600px;
     }
 
     .sticker-upload-action-buttons {
         justify-content: center;
     }
+
+    .crop-container {
+        padding: 1rem;
+    }
+    
+    .drop-zone.cropping .ReactCrop {
+        max-width: calc(100% - 2rem) !important;
+        max-height: calc(100% - 2rem) !important;
+    }
+
+    .ReactCrop img {
+        max-width: 450px !important;
+        max-height: 350px !important;
+    }
 }
 
-/* Desktop */
 @media (min-width: 821px) {
     .sticker-upload {
         height: 75vh;
     }
 
     .gallery-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         padding: 2rem;
+        gap: 1rem;
     }
 
     .upload-area {
         padding: 2rem;
     }
 
-    .sticker-upload-header{
+    .sticker-upload-header {
         padding: 1rem 2rem;
     }
 
     .drop-zone {
-        min-height: 350px;
+        min-height: 500px;
+        max-width: 700px;
+    }
+
+    .sticker-card {
+        max-width: 180px;
+    }
+
+    .sticker-image-container {
+        height: 120px;
+    }
+
+    .ReactCrop img {
+        max-width: 600px !important;
+        max-height: 450px !important;
     }
 }
 
-/* Animaciones */
+@media (min-width: 1200px) {
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -571,7 +765,6 @@
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Mejoras de accesibilidad */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -580,9 +773,7 @@
     }
 }
 
-/* Estados de focus para accesibilidad */
-button:focus,
 .sticker-upload-sidebar-item:focus {
-    outline: 2px solid #2563eb;
+    outline: 2px solid #014aad;
     outline-offset: 2px;
 }

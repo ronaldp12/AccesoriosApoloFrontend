@@ -78,8 +78,8 @@ export const UserActions = ({ toggleMenu, onOpenRegister, onOpenLogin, handleTru
             <span className="user-name">{userLogin}</span>
           ) : (
             <>
-              <button className="register" onClick={onOpenRegister}>registrarse</button>
-              <button className="login" onClick={onOpenLogin}>iniciar sesión</button>
+              <button className="user-actions-register" onClick={onOpenRegister}>registrarse</button>
+              <button className="user-actions-login" onClick={onOpenLogin}>iniciar sesión</button>
             </>
           )
         }

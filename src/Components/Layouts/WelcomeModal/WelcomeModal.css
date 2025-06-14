@@ -155,6 +155,10 @@
     margin-top: 2rem;
 }
 
+.welcome-submit-btn:focus{
+    border: none;
+}
+
 .welcome-submit-btn span {
     position: relative;
     z-index: 1;

@@ -317,7 +317,7 @@ body.header-fixed {
     gap: 1rem;
 }
 
-.register {
+.user-actions-register {
     background: #0057b7;
     color: white;
     border: none;
@@ -333,7 +333,12 @@ body.header-fixed {
     align-items: center;
 }
 
-.login {
+.user-actions-register:focus{
+    outline: 2px solid #014aad;
+    outline-offset: 2px;
+}
+
+.user-actions-login {
     background: #eee;
     border: none;
     padding: 5px 10px;
@@ -346,6 +351,11 @@ body.header-fixed {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.user-actions-login:focus{
+    outline: 2px solid #014aad;
+    outline-offset: 2px;
 }
 
 .user-name {
@@ -550,13 +560,13 @@ body.header-fixed {
         width: 63vw;
     }
 
-    .register {
+    .user-actions-register {
         width: 9rem;
         height: 2.5rem;
         font-size: 1rem;
     }
 
-    .login {
+    .user-actions-login {
         width: 9rem;
         height: 2.5rem;
         font-size: 1rem;
@@ -664,13 +674,13 @@ body.header-fixed {
         color: #000;
     }
 
-    .register {
+    .user-actions-register {
         width: 7rem;
         height: 1.8rem;
         font-size: 0.7rem;
     }
 
-    .login {
+    .user-actions-login {
         width: 7rem;
         height: 1.8rem;
         font-size: 0.7rem;
@@ -779,7 +789,7 @@ body.header-fixed {
         display: none;
     }
 
-    .register {
+    .user-actions-register {
         width: 7rem;
         height: 1.8rem;
         font-size: 0.7rem;
@@ -788,7 +798,7 @@ body.header-fixed {
         top: -1.2rem;
     }
 
-    .login {
+    .user-actions-login {
         width: 7rem;
         height: 1.8rem;
         font-size: 0.7rem;

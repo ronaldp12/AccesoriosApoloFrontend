@@ -3,6 +3,7 @@ import { Upload, Scissors, Save, Bookmark, Plus, X } from 'lucide-react';
 import ReactCrop from 'react-image-crop';
 import "./StickersUpload.css"
 import 'react-image-crop/dist/ReactCrop.css';
+import img1 from '../../../assets/images/img1-background-sticker.png'
 
 export const StickersUpload = () => {
     const [currentView, setCurrentView] = useState('upload'); // 'upload' o 'gallery'
@@ -19,54 +20,20 @@ export const StickersUpload = () => {
 
     const onImageLoad = useCallback((e) => {
         const { width, height } = e.currentTarget;
+
+        // Crop inicial que cubra TODA la imagen
         const crop = {
             unit: '%',
-            x: 0,
-            y: 0,
-            width: 100,
+            x: 0,       
+            y: 0,       
+            width: 100, 
             height: 100,
         };
+
         setCrop(crop);
+        setCompletedCrop(crop);
         imgRef.current = e.currentTarget;
     }, []);
-
-    const generateCroppedImage = useCallback(() => {
-        if (!completedCrop || !canvasRef.current || !imgRef.current) return;
-
-        const image = imgRef.current;
-        const canvas = canvasRef.current;
-        const crop = completedCrop;
-
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-
-        const pixelCrop = {
-            x: crop.unit === '%' ? (crop.x / 100) * image.width : crop.x,
-            y: crop.unit === '%' ? (crop.y / 100) * image.height : crop.y,
-            width: crop.unit === '%' ? (crop.width / 100) * image.width : crop.width,
-            height: crop.unit === '%' ? (crop.height / 100) * image.height : crop.height,
-        };
-
-        canvas.width = pixelCrop.width * scaleX;
-        canvas.height = pixelCrop.height * scaleY;
-
-        const ctx = canvas.getContext('2d');
-
-        ctx.drawImage(
-            image,
-            pixelCrop.x * scaleX,
-            pixelCrop.y * scaleY,
-            pixelCrop.width * scaleX,
-            pixelCrop.height * scaleY,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        const croppedDataURL = canvas.toDataURL();
-        setCroppedImage(croppedDataURL);
-    }, [completedCrop]);
 
     const handleFileSelect = (file) => {
         if (file && file.type.startsWith('image/')) {
@@ -110,13 +77,15 @@ export const StickersUpload = () => {
 
     const startCrop = () => {
         setIsCropping(true);
-        setCrop({
+        const initialCrop = {
             unit: '%',
             x: 0,
             y: 0,
             width: 100,
             height: 100,
-        });
+        };
+        setCrop(initialCrop);
+        setCompletedCrop(initialCrop);
     };
 
     const saveSticker = () => {
@@ -138,12 +107,21 @@ export const StickersUpload = () => {
         }
     };
 
+    const handleAddSticker = () => {
+        if (selectedImage) {
+            saveSticker();
+        } else {
+            fileInputRef.current?.click();
+        }
+    };
+
     const deleteSticker = (id) => {
         setSavedStickers(prev => prev.filter(sticker => sticker.id !== id));
     };
 
     return (
         <div className="sticker-upload">
+            <img src={img1} alt="img1-backghround-sticker" className='img1-background-sticker' />
             <canvas ref={canvasRef} style={{ display: 'none' }} />
 
             {currentView === 'upload' ? (
@@ -151,7 +129,12 @@ export const StickersUpload = () => {
                     <div className="sticker-upload-header">
                         <h1 className="sticker-upload-title">CALCOMANÍAS</h1>
                         <div className="sticker-upload-header-buttons">
-                            <button className="sticker-upload-btn-secondary">AGREGAR</button>
+                            <button
+                                className="sticker-upload-btn-secondary"
+                                onClick={handleAddSticker}
+                            >
+                                AGREGAR
+                            </button>
                             <button className="sticker-upload-btn-primary">COMPRAR</button>
                         </div>
                     </div>
@@ -170,8 +153,8 @@ export const StickersUpload = () => {
                                 <span>Recortar</span>
                             </div>
 
-                            <div className="sticker-upload-sidebar-item" onClick={() => setCurrentView('gallery')}>
-                                <Bookmark size={20} />
+                            <div className="sticker-upload-sidebar-item" onClick={saveSticker}>
+                                <Save size={20} />
                                 <span>Guardar Calcomanía</span>
                             </div>
                             <div className="sticker-upload-sidebar-item" onClick={() => setCurrentView('gallery')}>
@@ -182,11 +165,11 @@ export const StickersUpload = () => {
 
                         <main className="upload-area">
                             <div
-                                className={`drop-zone ${selectedImage ? 'has-image' : ''} ${isDragging ? 'dragging' : ''}`}
+                                className={`drop-zone ${selectedImage ? 'has-image' : ''} ${isDragging ? 'dragging' : ''} ${isCropping ? 'cropping' : ''}`}
                                 onDrop={handleDrop}
                                 onDragOver={handleDragOver}
                                 onDragLeave={handleDragLeave}
-                                onClick={() => !selectedImage && fileInputRef.current?.click()}
+                                onClick={() => !selectedImage && !isCropping && fileInputRef.current?.click()}
                             >
                                 {selectedImage ? (
                                     !isCropping ? (
@@ -198,21 +181,23 @@ export const StickersUpload = () => {
                                             />
                                         </div>
                                     ) : (
-                                        <ReactCrop
-                                            crop={crop}
-                                            onChange={(c) => setCrop(c)}
-                                            onComplete={(c) => setCompletedCrop(c)}
-                                            aspect={1}
-                                            keepSelection
-                                        >
-                                            <img
-                                                ref={imgRef}
-                                                src={selectedImage}
-                                                alt="Imagen para recortar"
-                                                onLoad={onImageLoad}
-                                                style={{ maxWidth: '100%', maxHeight: '100%' }}
-                                            />
-                                        </ReactCrop>
+                                        <div className="crop-container">
+                                            <ReactCrop
+                                                crop={crop}
+                                                onChange={(c) => setCrop(c)}
+                                                onComplete={(c) => setCompletedCrop(c)}
+                                                keepSelection={true}
+                                                minWidth={50}
+                                                minHeight={50}
+                                            >
+                                                <img
+                                                    ref={imgRef}
+                                                    src={selectedImage}
+                                                    alt="Imagen para recortar"
+                                                    onLoad={onImageLoad}
+                                                />
+                                            </ReactCrop>
+                                        </div>
                                     )
                                 ) : (
                                     <div className="drop-zone-content">
@@ -228,21 +213,6 @@ export const StickersUpload = () => {
                                     style={{ display: 'none' }}
                                 />
                             </div>
-
-                            {selectedImage && (
-                                <div className="sticker-upload-action-buttons">
-                                    {isCropping && completedCrop && (
-                                        <button className="btn-crop" onClick={generateCroppedImage}>
-                                            Aplicar Recorte
-                                        </button>
-                                    )}
-
-                                    <button className="btn-save" onClick={saveSticker}>
-                                        <Save size={16} />
-                                        Guardar Calcomanía
-                                    </button>
-                                </div>
-                            )}
                         </main>
                     </div>
                 </div>
