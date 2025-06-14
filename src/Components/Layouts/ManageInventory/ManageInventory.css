@@ -236,14 +236,14 @@
   }
 }
 
-.icono-ver-factura {
+.icono-ver-factura, .icono-descargar-factura {
     color: #014aad;
     cursor: pointer;
     font-size: 16px;
     transition: color 0.3s ease, transform 0.2s ease;
 }
 
-.icono-ver-factura:hover {
+.icono-ver-factura:hover, .icono-descargar-factura:hover {
     color: #073678;
     transform: scale(1.1);
 }

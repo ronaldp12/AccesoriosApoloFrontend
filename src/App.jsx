@@ -29,6 +29,7 @@ import { ManageStickers } from "./Components/Layouts/ManageStickers/ManageSticke
 import { ContactAboutUsHelp } from "./Components/Pages/Contact-AboutUs-Help/ContactAboutUsHelp.jsx";
 import { ManageSales } from "./Components/Layouts/ManageSales/ManageSales.jsx";
 import { ManageInventory } from "./Components/Layouts/ManageInventory/ManageInventory.jsx";
+import { StickersUpload } from "./Components/Layouts/StickersUpload/StickersUpload.jsx";
 
 export function App() {
 
@@ -58,6 +59,19 @@ export function App() {
               <Header />
               <Container>
                 <Products />
+              </Container>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/stickers"
+          element={
+            <>
+              <Header />
+              <Container>
+                <StickersUpload />
               </Container>
               <Footer />
             </>

@@ -11,15 +11,16 @@ import logo5 from '../../../assets/images/img5-marca.png';
 
 import { context } from '../../../Context/Context.jsx';
 import { WelcomeNoLoginModal } from '../../Layouts/WelcomeNoLoginModal/WelcomeNoLoginModal.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export const StickerSubmenu = ({ onOpenRegister, onOpenLogin }) => {
   const { userLogin, nameRol } = useContext(context);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleUploadSticker = () => {
     if (userLogin && nameRol === 'cliente') {
-      // Usuario logueado, redirigir a la página de subir calcomanía
-      // Aquí puedes agregar la lógica de navegación
+      navigate("/stickers")
       console.log('Navegando a subir calcomanía');
     } else {
       setIsModalOpen(true);
