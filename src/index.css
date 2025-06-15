@@ -18,3 +18,17 @@ body{
   font-family: "Poppins", sans-serif;
   overflow-x: hidden !important;
 }
+
+@keyframes bounce {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

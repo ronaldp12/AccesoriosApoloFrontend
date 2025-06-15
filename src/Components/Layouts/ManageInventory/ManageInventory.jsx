@@ -7,6 +7,9 @@ import { Pagination } from "../../Ui/Pagination/Pagination";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { ConfirmModal } from "../../Ui/ConfirmModal/ConfirmModal.jsx";
+import { TopProductsChart } from "../InventoryStatistics/TopProductsCharts.jsx";
+import { InventoryEvolutionChart } from "../InventoryStatistics/InventoryEvolutionChart.jsx";
+import { CategoryValueChart } from "../InventoryStatistics/CategoryValueChart.jsx";
 
 export const ManageInventory = () => {
     const [inventarios, setInventarios] = useState([]);
@@ -192,6 +195,16 @@ export const ManageInventory = () => {
                     <p>No se encontraron inventarios.</p>
                 </div>
             )}
+
+            <div className="inventory-statistics">
+                <h3>Estadísticas del Inventario</h3>
+                <div className="charts-grid">
+                    <TopProductsChart />
+                    <InventoryEvolutionChart/>
+                    <CategoryValueChart/>
+                </div>
+            </div>
+
 
             <ConfirmModal
                 isOpen={isModalConfirmOpen}
