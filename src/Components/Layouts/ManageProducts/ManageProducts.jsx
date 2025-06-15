@@ -38,7 +38,8 @@ export const ManageProducts = () => {
             if (!response.ok) throw new Error("Error al obtener productos");
             const data = await response.json();
             if (data.success) {
-                setProducts(data.productos);
+                const productosOrdenados = data.productos.sort((a, b) => a.id - b.id);
+                setProducts(productosOrdenados);
             } else {
                 console.error("Error en la respuesta al obtener productos");
             }

@@ -35,7 +35,8 @@ export const ManageSupliers = () => {
 
             const data = await response.json();
             if (data.success) {
-                setProveedores(data.proveedores);
+                const proveedoresOrdenados = data.proveedores.sort((a, b) => a.id - b.id);
+                setProveedores(proveedoresOrdenados);
             } else {
                 console.error("Error al obtener usuarios");
             }

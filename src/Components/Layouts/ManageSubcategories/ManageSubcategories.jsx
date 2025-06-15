@@ -21,7 +21,7 @@ export const ManageSubcategories = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const subcategoriesPerPage = 7;
     const navigate = useNavigate();
-    const { isLoading, setIsLoading } = useContext(context);
+    const { isLoading, setIsLoading, normalizeText } = useContext(context);
     const [searchName, setSearchName] = useState("");
 
     const fetchSubcategories = async () => {
@@ -35,7 +35,8 @@ export const ManageSubcategories = () => {
             const data = await response.json();
             console.log(data.subcategorias);
             if (data.success) {
-                setSubcategories(data.subcategorias);
+                const subcategoriasOrdenadas = data.subcategorias.sort((a, b) => a.id - b.id);
+                setSubcategories(subcategoriasOrdenadas);
             } else {
                 console.error("Error en la respuesta al obtener subcategorías");
             }
@@ -47,7 +48,7 @@ export const ManageSubcategories = () => {
     };
 
     const filteredSubcategories = subcategories.filter((subcategory) =>
-        subcategory.nombre_subcategoria.toLowerCase().includes(searchName.toLowerCase())
+        normalizeText(subcategory.nombre_subcategoria).includes(normalizeText(searchName))
     );
 
     const handleEditClick = (subcategory) => {

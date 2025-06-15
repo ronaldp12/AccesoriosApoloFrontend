@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import "./ManageSales.css";
-import { FaSearch, FaHome, FaEye } from "react-icons/fa";
+import { FaSearch, FaHome, FaEye, FaFilter } from "react-icons/fa";
 import img1 from "../../../assets/images/img1-manage-users.png";
 import { useNavigate } from "react-router-dom";
 import { Pagination } from "../../Ui/Pagination/Pagination";
@@ -19,6 +19,7 @@ export const ManageSales = () => {
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
     const [searchDate, setSearchDate] = useState("");
+    const [searchCedula, setSearchCedula] = useState("");
 
     const fetchVentas = async () => {
         setIsLoading(true);
@@ -30,7 +31,8 @@ export const ManageSales = () => {
 
             const data = await response.json();
             if (data.success) {
-                setVentas(data.ventas);
+                const ventasOrdenadas = data.ventas.sort((a, b) => a.id - b.id);
+                setVentas(ventasOrdenadas);
             } else {
                 console.error("Error al obtener las ventas:", data.mensaje);
             }
@@ -42,14 +44,16 @@ export const ManageSales = () => {
     };
 
     const filteredVentas = ventas.filter((venta) => {
-        if (!searchDate) return true;
         const ventaFecha = new Date(venta.fecha_compra_iso).toISOString().split('T')[0];
-        return ventaFecha === searchDate;
+        const matchDate = !searchDate || ventaFecha === searchDate;
+        const matchCedula = !searchCedula || venta.cedula.toString().includes(searchCedula);
+        return matchDate && matchCedula;
     });
 
+
     const handleViewInvoice = (venta) => {
-        setSelectedInvoiceId(venta.id_factura); 
-        setIsPreviewModalOpen(true);                            
+        setSelectedInvoiceId(venta.id_factura);
+        setIsPreviewModalOpen(true);
     };
 
     const closePreviewModal = () => {
@@ -60,6 +64,11 @@ export const ManageSales = () => {
     useEffect(() => {
         fetchVentas();
     }, []);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchDate, searchCedula]);
+
 
     const openRegisterModal = () => setIsModalRegisterOpen(true);
     const closeRegisterModal = () => setIsModalRegisterOpen(false);
@@ -95,6 +104,25 @@ export const ManageSales = () => {
                     />
                     <FaSearch className="icono-buscar" />
                 </div>
+                <div className="filtro-input">
+                    <input
+                        type="text"
+                        placeholder="Consultar por cédula"
+                        value={searchCedula}
+                        onChange={(e) => setSearchCedula(e.target.value)}
+                    />
+                    <FaSearch className="icono-buscar" />
+                </div>
+                <button
+                    onClick={() => {
+                        setSearchCedula("");
+                        setSearchDate("");
+                        setCurrentPage(1);
+                    }}
+                    className="btn-filtrar-users"
+                >
+                    Limpiar
+                </button>
                 <div className="img-filtro">
                     <img src={img1} alt="img1-manage" />
                 </div>

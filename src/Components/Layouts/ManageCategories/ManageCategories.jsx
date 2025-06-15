@@ -21,7 +21,7 @@ export const ManageCategories = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const categoriesPerPage = 7;
     const navigate = useNavigate();
-    const { isLoading, setIsLoading } = useContext(context);
+    const { isLoading, setIsLoading, normalizeText } = useContext(context);
     const [searchName, setSearchName] = useState("");
 
     const fetchCategories = async () => {
@@ -34,7 +34,8 @@ export const ManageCategories = () => {
 
             const data = await response.json();
             if (data.success) {
-                setCategories(data.categorias);
+                const categoriasOrdenadas = data.categorias.sort((a, b) => a.id - b.id);
+                setCategories(categoriasOrdenadas);
             } else {
                 console.error("Error en la respuesta al obtener categorías");
             }
@@ -46,7 +47,7 @@ export const ManageCategories = () => {
     };
 
     const filteredCategories = categories.filter((category) =>
-        category.nombre_categoria.toLowerCase().includes(searchName.toLowerCase())
+        normalizeText(category.nombre_categoria).includes(normalizeText(searchName))
     );
 
     const handleEditClick = (category) => {

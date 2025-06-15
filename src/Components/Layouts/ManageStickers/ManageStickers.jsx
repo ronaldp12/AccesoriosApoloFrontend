@@ -21,7 +21,7 @@ export const ManageStickers = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const calcomaniasPorPagina = 7;
     const navigate = useNavigate();
-    const { isLoading, setIsLoading } = useContext(context);
+    const { isLoading, setIsLoading, normalizeText } = useContext(context);
     const [searchName, setSearchName] = useState("");
 
     const fetchCalcomanias = async () => {
@@ -47,7 +47,7 @@ export const ManageStickers = () => {
     };
 
     const filteredCalcomanias = calcomanias.filter((calcomania) =>
-        calcomania.nombre.toLowerCase().includes(searchName.toLowerCase())
+        normalizeText(calcomania.nombre).includes(normalizeText(searchName))
     ).sort((a, b) => a.id_calcomania - b.id_calcomania);
 
     const handleEditClick = (calcomania) => {

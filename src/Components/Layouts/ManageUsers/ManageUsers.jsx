@@ -94,7 +94,8 @@ export const ManageUsers = () => {
 
             const data = await response.json();
             if (data.success) {
-                setUsuarios(data.usuarios);
+                const usuariosOrdenados = data.usuarios.sort((a, b) => a.id - b.id);
+                setUsuarios(usuariosOrdenados);
             } else {
                 console.error("Error al obtener usuarios");
             }

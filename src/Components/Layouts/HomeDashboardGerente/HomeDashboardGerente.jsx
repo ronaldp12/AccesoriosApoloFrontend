@@ -8,11 +8,11 @@ import { context } from "../../../Context/Context.jsx"
 export const HomeDashboardGerente = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
-    const { nameRol } = useContext(context);
+    const { nameRol, normalizeText } = useContext(context);
 
     const modules = [
         { label: "USUARIOS", icon: <FaUser />, route: "/dashboard/manage-users" },
-        { label: "PRODUCTO", icon: <FaBox />, route: "/dashboard/manage-products"  },
+        { label: "PRODUCTO", icon: <FaBox />, route: "/dashboard/manage-products" },
         { label: "CATEGORÍA", icon: <FaBars />, route: "/dashboard/manage-categories" },
         { label: "SUBCATEGORÍA", icon: <FaList />, route: "/dashboard/manage-subcategories" },
         { label: "PROVEEDORES", icon: <FaTruck />, route: "/dashboard/manage-supliers", roles: ["gerente"] },
@@ -27,9 +27,8 @@ export const HomeDashboardGerente = () => {
             !module.roles || module.roles.includes(nameRol)
         )
         .filter((module) =>
-            module.label.toLowerCase().includes(searchTerm.toLowerCase())
+            normalizeText(module.label).includes(normalizeText(searchTerm))
         );
-
 
     return (
         <div className="home-container">

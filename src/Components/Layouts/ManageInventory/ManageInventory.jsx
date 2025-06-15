@@ -12,7 +12,7 @@ export const ManageInventory = () => {
     const [inventarios, setInventarios] = useState([]);
     const [isModalConfirmOpen, setIsModalConfirmOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const inventoriesPerPage = 7;
+    const inventoriesPerPage = 5;
     const navigate = useNavigate();
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [searchDate, setSearchDate] = useState("");
@@ -31,7 +31,8 @@ export const ManageInventory = () => {
             }
             const data = await response.json();
             if (data.success) {
-                setInventarios(data.inventarios);
+                const inventariosOrdenados = data.inventarios.sort((a, b) => a.id - b.id);
+                setInventarios(inventariosOrdenados);
             } else {
                 console.error("Error al obtener inventarios");
             }
@@ -72,8 +73,8 @@ export const ManageInventory = () => {
                     setErrorMessage("");
                 fetchInventarios();
             } else {
-                alert(data.mensaje || "Error al generar inventario.");
-                setErrorMessage(getErrorMessage(data, "Error al registrar calcomanía."));
+                setErrorMessage(data.mensaje || "Error al generar inventario.");
+                setErrorMessage(getErrorMessage(data, "Error al generar inventario."));
             }
         } catch (error) {
             console.log("Error al generar inventario:", error)

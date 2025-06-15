@@ -10,9 +10,10 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const [correo, setCorreo] = useState("");
     const [contrasena, setContrasena] = useState("");
     const navigate = useNavigate();
-    const { isLoading, setIsLoading, setIsIntermediateLoading, setIsWelcomeOpen, getErrorMessage,
+    const { setIsIntermediateLoading, setIsWelcomeOpen, getErrorMessage,
         setAvatar, setNameRol, nameRol } = useContext(context);
     const [errorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const googleButtonRef = useRef(null);
 

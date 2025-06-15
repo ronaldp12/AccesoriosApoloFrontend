@@ -65,6 +65,9 @@ export const Provider = ({ children }) => {
         };
     };
 
+    const normalizeText = (text) =>
+        text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
     // Funciones para Stickers
     const saveSticker = () => {
         const imageToSave = croppedImage || selectedImage;
@@ -112,6 +115,7 @@ export const Provider = ({ children }) => {
             nameRol, setNameRol,
             validatePassword,
             isLoggingOut, setIsLoggingOut,
+            normalizeText,
 
             // Estados y funciones para Stickers
             savedStickers, setSavedStickers,
