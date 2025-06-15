@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { Container } from "./Components/Container/Container.jsx";
 import { Home } from "./Components/Pages/Home/Home.jsx";
 import { Products } from "./Components/Pages/Products/Products.jsx";
@@ -30,6 +30,8 @@ import { ContactAboutUsHelp } from "./Components/Pages/Contact-AboutUs-Help/Cont
 import { ManageSales } from "./Components/Layouts/ManageSales/ManageSales.jsx";
 import { ManageInventory } from "./Components/Layouts/ManageInventory/ManageInventory.jsx";
 import { StickersUpload } from "./Components/Layouts/StickersUpload/StickersUpload.jsx";
+import { StickerGallery } from "./Components/Layouts/StickerGallery/StickerGallery.jsx";
+import { StickersLayout } from "./Components/Layouts/StickersLayout/StickersLayout.jsx";
 
 export function App() {
 
@@ -71,12 +73,16 @@ export function App() {
             <>
               <Header />
               <Container>
-                <StickersUpload />
+                <StickersLayout />
               </Container>
               <Footer />
             </>
           }
-        />
+        >
+          <Route index element={<StickersUpload />} />
+          <Route path="gallery" element={<StickerGallery />} />
+          <Route path="upload" element={<StickersUpload />} />
+        </Route>
 
         <Route
           path="/contact-about-us-help"
@@ -99,13 +105,13 @@ export function App() {
           path="/profile"
           element={
             <ProtectedRouteClient>
-            <>
-              <Header />
-              <Container>
-                <ProfileLayout />
-              </Container>
-              <Footer />
-            </>
+              <>
+                <Header />
+                <Container>
+                  <ProfileLayout />
+                </Container>
+                <Footer />
+              </>
             </ProtectedRouteClient>
           }
         >

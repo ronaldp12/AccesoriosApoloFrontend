@@ -26,26 +26,8 @@
     background: #eceaea;
     backdrop-filter: blur(10px);
     z-index: 10;
-    height: 10rem;
+    height: 8rem;
     position: relative;
-}
-
-.gallery-stickers-header{
-    display: flex;
-    border-top: 8px solid #014aad;
-    justify-content: left;
-    align-items: center;
-    background: #eceaea;
-    backdrop-filter: blur(10px);
-    z-index: 10;
-    height: 10rem;
-    position: relative;
-    gap: 10px;
-}
-
-.arrow-back-gallery {
-    font-size: 2.4rem;
-    color: #014aad;
 }
 
 .sticker-upload-title {
@@ -55,14 +37,6 @@
     letter-spacing: 1.5px;
     font-family: 'League Spartan', sans-serif;
     padding-left: 4rem;
-}
-
-.gallery-stickers-title{
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #333;
-    letter-spacing: 1.5px;
-    font-family: 'League Spartan', sans-serif;
 }
 
 .sticker-upload-header-buttons {
@@ -103,32 +77,6 @@
 .sticker-upload-btn-secondary:hover {
     background: #013885;
     transform: translateY(-1px);
-}
-
-.back-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #014aad;
-    padding: 0.5rem;
-    border-radius: 50%;
-    transition: background-color 0.3s ease;
-    position: relative;
-    z-index: 101;
-    margin-left: 4rem;
-    width: 4rem;
-    height: 4rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.back-button:hover {
-    background: rgba(37, 99, 235, 0.1);
-    border-radius: 50%;
-    
 }
 
 .upload-view {
@@ -187,6 +135,12 @@
     transform: translateX(2px);
 }
 
+.sticker-upload-sidebar-item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
 .sticker-upload-sidebar-item span {
     font-size: 0.7rem;
     text-align: center;
@@ -240,6 +194,15 @@
     border-color: #e5e7eb;
 }
 
+.drop-zone.cropping {
+    padding: 1rem !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
+
 .drop-zone-content {
     text-align: center;
     color: #6b7280;
@@ -274,218 +237,6 @@
     z-index: 202;
 }
 
-/* Recorte */
-.crop-overlay {
-    position: absolute;
-    border: 2px solid #ef4444;
-    background: rgba(239, 68, 68, 0.1);
-    cursor: move;
-    z-index: 210;
-}
-
-.crop-handle {
-    position: absolute;
-    bottom: -5px;
-    right: -5px;
-    width: 10px;
-    height: 10px;
-    background: #ef4444;
-    border: 2px solid white;
-    border-radius: 50%;
-    cursor: se-resize;
-    z-index: 211;
-}
-
-/* Botones de acción */
-.sticker-upload-action-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 150;
-}
-
-.btn-crop,
-.btn-save {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    z-index: 151;
-    position: relative;
-}
-
-.btn-crop {
-    background: #f59e0b;
-    color: white;
-}
-
-.btn-crop:hover {
-    background: #d97706;
-    transform: translateY(-2px);
-}
-
-.btn-save {
-    background: #10b981;
-    color: white;
-}
-
-.btn-save:hover {
-    background: #059669;
-    transform: translateY(-2px);
-}
-
-.gallery-view {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 50;
-}
-
-.gallery-grid {
-    padding: 1.5rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-    overflow-y: auto;
-    flex: 1;
-    position: relative;
-    z-index: 100;
-}
-
-.sticker-card {
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    max-width: 200px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 101;
-}
-
-.sticker-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
-
-.sticker-image-container {
-    position: relative;
-    height: 120px;
-    background: #f8fafc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-}
-
-.sticker-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
-
-.delete-button {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    background: rgba(239, 68, 68, 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 102;
-}
-
-.sticker-card:hover .delete-button {
-    opacity: 1;
-}
-
-.delete-button:hover {
-    background: #dc2626;
-}
-
-.sticker-info {
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.sticker-name {
-    font-weight: 600;
-    color: #333;
-    font-size: 0.9rem;
-}
-
-.sticker-format {
-    color: #6b7280;
-    font-size: 0.8rem;
-}
-
-.btn-buy {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    position: relative;
-    z-index: 102;
-}
-
-.btn-buy:hover {
-    background: #1d4ed8;
-}
-
-.empty-gallery {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem;
-    color: #6b7280;
-}
-
-.empty-gallery p {
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-}
-
-.sticker-upload-sidebar-item.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-    cursor: not-allowed;
-}
-
-.drop-zone.cropping {
-    padding: 1rem !important;
-    overflow: hidden !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    position: relative !important;
-}
-
-/* Contenedor del cropper */
 .crop-container {
     width: 100%;
     height: 100%;
@@ -498,7 +249,6 @@
     overflow: hidden;
 }
 
-/* ReactCrop wrapper - CLAVE para el control de tamaño */
 .ReactCrop {
     max-width: 100% !important;
     max-height: 100% !important;
@@ -508,7 +258,6 @@
     display: inline-block !important;
 }
 
-/* La imagen dentro del cropper - ESTO ES LO MÁS IMPORTANTE */
 .ReactCrop img {
     max-width: 100% !important;
     max-height: 100% !important;
@@ -516,28 +265,24 @@
     height: auto !important;
     object-fit: contain !important;
     display: block !important;
-    /* Tamaños máximos específicos según el contenedor */
     max-width: 500px !important;
     max-height: 400px !important;
 }
 
-/* Estilos del área de selección */
 .ReactCrop__crop-selection {
     border: 2px solid #014aad !important;
     background: rgba(1, 74, 173, 0.1) !important;
 }
 
-/* Handles de las esquinas */
 .ReactCrop__drag-handle {
     background: #014aad !important;
     border: 2px solid white !important;
     width: 12px !important;
     height: 12px !important;
     border-radius: 50% !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Estilos para el botón de eliminar imagen */
 .delete-image-container {
     display: flex;
     align-items: center;
@@ -624,24 +369,6 @@
         min-width: 10rem;
     }
 
-    .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-        padding: 1rem;
-        gap: 0.75rem;
-    }
-
-    .sticker-card {
-        max-width: 100%;
-    }
-
-    .sticker-image-container {
-        height: 100px;
-    }
-
-    .sticker-upload-action-buttons {
-        flex-direction: column;
-    }
-
     .sticker-upload-main-content {
         height: calc(100% - 80px);
     }
@@ -654,7 +381,7 @@
         max-width: calc(100% - 0.2rem) !important;
         max-height: calc(100% - 0.2rem) !important;
     }
-    
+
     .drop-zone.cropping .ReactCrop {
         max-width: 100% !important;
         max-height: 100% !important;
@@ -664,7 +391,7 @@
         max-width: 350px !important;
         max-height: 250px !important;
     }
-    
+
     .drop-zone.cropping {
         padding: 0.5rem !important;
     }
@@ -720,11 +447,6 @@
         min-width: 12rem;
     }
 
-    .gallery-grid {
-        grid-template-columns: repeat(2, 1fr);
-        padding: 1.5rem;
-    }
-
     .crop-container {
         padding: 0.6rem;
     }
@@ -733,7 +455,7 @@
         max-width: calc(100% - 0.2rem) !important;
         max-height: calc(100% - 0.2rem) !important;
     }
-    
+
     .drop-zone.cropping .ReactCrop {
         max-width: 100% !important;
         max-height: 100% !important;
@@ -755,7 +477,6 @@
         height: 30px;
     }
 }
-
 
 @media (min-width: 431px) and (max-width: 480px) {
     .sticker-upload {
@@ -791,14 +512,6 @@
         width: 4.8rem;
     }
 
-    .sticker-upload {
-        height: 65vh;
-    }
-
-    .gallery-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
     .drop-zone {
         min-height: 300px;
         min-width: 12rem;
@@ -812,7 +525,7 @@
         max-width: calc(100% - 0.2rem) !important;
         max-height: calc(100% - 0.2rem) !important;
     }
-    
+
     .drop-zone.cropping .ReactCrop {
         max-width: 100% !important;
         max-height: 100% !important;
@@ -822,15 +535,10 @@
         max-width: 350px !important;
         max-height: 250px !important;
     }
-    
+
     .drop-zone.cropping .ReactCrop {
         max-width: calc(100% - 2rem) !important;
         max-height: calc(100% - 2rem) !important;
-    }
-
-    .ReactCrop img {
-        max-width: 350px !important;
-        max-height: 250px !important;
     }
 
     .delete-image-container {
@@ -876,29 +584,20 @@
         padding: 1.5rem;
     }
 
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 1rem;
-    }
-
     .drop-zone {
         min-height: 250px;
         min-width: 36rem;
     }
 
-    .sticker-upload-action-buttons {
-        justify-content: center;
-    }
-
     .crop-container {
         padding: 0.6rem;
     }
-    
+
     .drop-zone.cropping .ReactCrop {
         max-width: 95% !important;
         max-height: 100% !important;
     }
-    
+
     .drop-zone.cropping .ReactCrop img {
         max-width: calc(100% - 0.4rem) !important;
         max-height: calc(100% - 2rem) !important;
@@ -926,12 +625,6 @@
         height: 75vh;
     }
 
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        padding: 2rem;
-        gap: 1rem;
-    }
-
     .upload-area {
         padding: 2rem;
     }
@@ -945,25 +638,9 @@
         max-width: 700px;
     }
 
-    .sticker-card {
-        max-width: 180px;
-    }
-
-    .sticker-image-container {
-        height: 120px;
-    }
-
     .ReactCrop img {
         max-width: 600px !important;
         max-height: 450px !important;
-    }
-}
-
-@media (min-width: 1200px) {
-    .gallery-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        max-width: 1400px;
-        margin: 0 auto;
     }
 }
 
@@ -977,10 +654,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.sticker-card {
-    animation: fadeIn 0.5s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {

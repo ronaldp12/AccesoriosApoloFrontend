@@ -16,6 +16,12 @@ export const Provider = ({ children }) => {
     const [nameRol, setNameRol] = useState(localStorage.getItem("nameRol") || "");
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+    // Estados para Stickers
+    const [savedStickers, setSavedStickers] = useState([]);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(null);
+    const [isCropping, setIsCropping] = useState(false);
+
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
         if (existingProduct) {
@@ -59,9 +65,39 @@ export const Provider = ({ children }) => {
         };
     };
 
+    // Funciones para Stickers
+    const saveSticker = () => {
+        const imageToSave = croppedImage || selectedImage;
+        if (imageToSave) {
+            const newSticker = {
+                id: Date.now(),
+                image: imageToSave,
+                name: `Calcomanía ${savedStickers.length + 1}`,
+                createdAt: new Date().toLocaleDateString()
+            };
+            setSavedStickers(prev => [...prev, newSticker]);
+            console.log('Calcomanía guardada exitosamente!');
+
+            // Limpiar estado después de guardar
+            setSelectedImage(null);
+            setCroppedImage(null);
+            setIsCropping(false);
+        }
+    };
+
+    const deleteSticker = (id) => {
+        setSavedStickers(prev => prev.filter(sticker => sticker.id !== id));
+    };
+
+    const clearStickerState = () => {
+        setSelectedImage(null);
+        setCroppedImage(null);
+        setIsCropping(false);
+    };
+
     return (
         <context.Provider value={{
-
+            // Estados y funciones existentes
             cartProducts, setCartProducts,
             handleAddToCart, handleRemoveProduct, handleQuantityChange,
             name, setName,
@@ -75,11 +111,18 @@ export const Provider = ({ children }) => {
             avatar, setAvatar,
             nameRol, setNameRol,
             validatePassword,
-            isLoggingOut, setIsLoggingOut
+            isLoggingOut, setIsLoggingOut,
 
+            // Estados y funciones para Stickers
+            savedStickers, setSavedStickers,
+            selectedImage, setSelectedImage,
+            croppedImage, setCroppedImage,
+            isCropping, setIsCropping,
+            saveSticker,
+            deleteSticker,
+            clearStickerState
         }}>
             {children}
         </context.Provider>
     );
 }
-
