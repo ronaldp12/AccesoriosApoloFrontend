@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect, use } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import "./RegisterModal.css";
 import iconGoogle from "../../../assets/icons/google.png";
 import iconFacebook from "../../../assets/icons/facebook.png";
@@ -11,14 +11,20 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const [animationStep, setAnimationStep] = useState(0);
+
     const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen,
         setIsIntermediateLoading, getErrorMessage, setAvatar, validatePassword, setNameRol } = useContext(context);
     const [userName, setUserName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
-
     const googleButtonRef = useRef(null);
+
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const bottomGroupRef = useRef(null);
+    const socialIconsRef = useRef(null);
 
     const initializeGoogleSignIn = () => {
         if (window.google && googleButtonRef.current) {
@@ -46,7 +52,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
     const checkGoogleAvailability = () => {
         let attempts = 0;
-        const maxAttempts = 50; 
+        const maxAttempts = 50;
 
         const checkInterval = setInterval(() => {
             attempts++;
@@ -61,6 +67,47 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         }, 100);
     };
 
+    const animateElements = () => {
+        if (!isOpen) return;
+
+        const elements = [titleRef.current, formRef.current, bottomGroupRef.current, socialIconsRef.current];
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            if (titleRef.current) {
+                titleRef.current.style.opacity = '1';
+                titleRef.current.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            if (formRef.current) {
+                formRef.current.style.opacity = '1';
+                formRef.current.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            if (bottomGroupRef.current) {
+                bottomGroupRef.current.style.opacity = '1';
+                bottomGroupRef.current.style.transform = 'translateY(0)';
+            }
+        }, 600);
+
+        setTimeout(() => {
+            if (socialIconsRef.current) {
+                socialIconsRef.current.style.opacity = '1';
+                socialIconsRef.current.style.transform = 'translateY(0)';
+            }
+        }, 800);
+    };
+
     useEffect(() => {
         if (isOpen) {
             if (googleButtonRef.current) {
@@ -68,6 +115,10 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             }
 
             checkGoogleAvailability();
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
         }
     }, [isOpen]);
 
@@ -180,8 +231,8 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 <button className="close-btn" onClick={onClose}>×</button>
 
                 <div className="modal-form-container">
-                    <h2>REGÍSTRATE</h2>
-                    <form onSubmit={handleRegister}>
+                    <h2 ref={titleRef}>REGÍSTRATE</h2>
+                    <form ref={formRef} onSubmit={handleRegister}>
                         <div className="input-group-register">
                             <div className="input-field">
                                 <label>Nombre *</label>
@@ -251,7 +302,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                             </div>
                         </div>
 
-                        <div className="group-bottom">
+                        <div ref={bottomGroupRef} className="group-bottom">
                             <button type="submit" className="submit-btn" disabled={isLoading}>
                                 {isLoading ? (
                                     <img src={wheelIcon} alt="Cargando..." className="spinner" />
@@ -269,7 +320,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
                             <div className="divider">o</div>
 
-                            <div className="social-icons">
+                            <div ref={socialIconsRef} className="social-icons">
                                 <button type="button" className="social facebook">
                                     <img src={iconFacebook} alt="facebook" />
                                 </button>

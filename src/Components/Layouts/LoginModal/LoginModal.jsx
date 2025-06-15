@@ -17,6 +17,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
     const googleButtonRef = useRef(null);
 
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const inputGroupRef = useRef(null);
+    const bottomGroupRef = useRef(null);
+
     const initializeGoogleSignIn = () => {
         if (window.google && googleButtonRef.current) {
             try {
@@ -24,7 +29,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                     client_id: "230268662322-ir35oged9meek539n1ipa77pjtl4f4lg.apps.googleusercontent.com",
                     callback: handleGoogleResponse,
                 });
-                
+
                 window.google.accounts.id.renderButton(
                     googleButtonRef.current,
                     {
@@ -44,10 +49,10 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const checkGoogleAvailability = () => {
         let attempts = 0;
         const maxAttempts = 50;
-        
+
         const checkInterval = setInterval(() => {
             attempts++;
-            
+
             if (window.google && window.google.accounts) {
                 clearInterval(checkInterval);
                 initializeGoogleSignIn();
@@ -58,13 +63,58 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         }, 100);
     };
 
+    const animateElements = () => {
+        if (!isOpen) return;
+
+        const elements = [titleRef.current, formRef.current, inputGroupRef.current, bottomGroupRef.current];
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            if (titleRef.current) {
+                titleRef.current.style.opacity = '1';
+                titleRef.current.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            if (formRef.current) {
+                formRef.current.style.opacity = '1';
+                formRef.current.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            if (inputGroupRef.current) {
+                inputGroupRef.current.style.opacity = '1';
+                inputGroupRef.current.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            if (bottomGroupRef.current) {
+                bottomGroupRef.current.style.opacity = '1';
+                bottomGroupRef.current.style.transform = 'translateY(0)';
+            }
+        }, 600);
+    };
+
     useEffect(() => {
         if (isOpen) {
             if (googleButtonRef.current) {
                 googleButtonRef.current.innerHTML = '';
             }
-            
+
             checkGoogleAvailability();
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
         }
     }, [isOpen]);
 
@@ -106,7 +156,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 setIsLoading(false);
                 onClose();
                 const rol = Array.isArray(gerenteData.nombreRol) ? gerenteData.nombreRol[0] : gerenteData.nombreRol;
-            
+
                 setNameRol(rol);
                 localStorage.setItem("nameRol", rol);
 
@@ -200,9 +250,9 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 </button>
 
                 <div className="login-form-container">
-                    <h2>INICIAR SESIÓN</h2>
-                    <form className="login-form" onSubmit={handleSubmit}>
-                        <div className="login-input-group">
+                    <h2 ref={titleRef}>INICIAR SESIÓN</h2>
+                    <form ref={formRef} className="login-form" onSubmit={handleSubmit}>
+                        <div ref={inputGroupRef} className="login-input-group">
                             <div className="login-input-field">
                                 <label>Correo *</label>
                                 <input
@@ -237,7 +287,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                             </div>
                         </div>
 
-                        <div className="login-group-bottom">
+                        <div ref={bottomGroupRef} className="login-group-bottom">
                             <button type="submit" className="login-submit-btn">
                                 {isLoading ? (
                                     <img src={wheelIcon} alt="Cargando..." className="login-spinner" />
@@ -263,11 +313,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                 <span className="divider-vertical"></span>
 
                                 <div ref={googleButtonRef} id="google-signin-button">
-                                    <div style={{ 
-                                        width: '40px', 
-                                        height: '40px', 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
+                                    <div style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        display: 'flex',
+                                        alignItems: 'center',
                                         justifyContent: 'center',
                                         fontSize: '12px',
                                         color: '#666'

@@ -32,7 +32,6 @@
     overflow: visible;
     opacity: 0;
     transform: scale(0.85);
-    /* transform: translateY(-30px); */
     transition: all 0.35s ease;
     z-index: 10000;
 }
@@ -80,12 +79,18 @@
     font-weight: bold;
     text-align: center;
     margin-bottom: 30px;
+    /* Iniciamos oculto para JavaScript */
+    opacity: 0;
+    transform: translateY(30px);
 }
 
 form {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    /* Iniciamos oculto para JavaScript */
+    opacity: 0;
+    transform: translateY(30px);
 }
 
 .input-group-register {
@@ -98,6 +103,7 @@ form {
     flex: 1;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .input-field label {
@@ -118,6 +124,9 @@ form {
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    /* Iniciamos oculto para JavaScript */
+    opacity: 0;
+    transform: translateY(30px);
 }
 
 .submit-btn {
@@ -160,6 +169,9 @@ form {
     gap: 10px;
     justify-content: center;
     align-items: center;
+    /* Iniciamos oculto para JavaScript */
+    opacity: 0;
+    transform: translateY(30px);
 }
 
 .divider-vertical {
@@ -169,7 +181,6 @@ form {
     background-color: #fff;
     margin: 0 10px;
 }
-
 
 .social {
     width: 35px;
@@ -185,35 +196,40 @@ form {
 }
 
 .spinner {
-  border: 3px solid #f3f3f3;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
-  margin-right: 3.5rem;
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-right: 3.5rem;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .status-message.error {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 8px 12px;
-  background-color: #ffe1e1;
-  color: #d32f2f;
-  border: 1px solid #d32f2f;
-  border-radius: 6px;
-  font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background-color: #ffe1e1;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+    border-radius: 6px;
+    font-size: 14px;
 }
 
 .status-message.error i {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 .facebook {
@@ -255,41 +271,38 @@ form {
 }
 
 .password-conditions-register-modal {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background-color: #fff;
-  padding: 10px 15px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,8);
-  color: #ff3a3d;
-  font-size: 14px;
-  margin-top: 4px;
-  opacity: 0;
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: all 0.3s ease;
-  z-index: 10;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    color: #ff3a3d;
+    font-size: 14px;
+    margin-top: 4px;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: all 0.3s ease;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .password-conditions-register-modal.visible {
-  opacity: 1;
-  transform: scaleY(1);
-  pointer-events: auto;
-  text-align: left;
-  padding-left: 1rem;
+    opacity: 1;
+    transform: scaleY(1);
+    pointer-events: auto;
+    text-align: left;
+    padding-left: 1rem;
 }
 
-.input-field {
-  position: relative;
-}
-
-@media (max-width: 394px){
+/* MEDIA QUERIES */
+@media (max-width: 394px) {
     .modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
@@ -310,7 +323,7 @@ form {
     }
 }
 
-@media (min-width: 395px) and (max-width: 431px){
+@media (min-width: 395px) and (max-width: 431px) {
     .modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
@@ -331,7 +344,7 @@ form {
     }
 }
 
-@media (min-width: 432px) and (max-width: 481px){
+@media (min-width: 432px) and (max-width: 481px) {
     .modal-box {
         background: radial-gradient(circle at 50% 50%, #1f1fa2, #06003b);
         flex-direction: column;
@@ -352,14 +365,14 @@ form {
     }
 }
 
-@media (min-width: 482px) and (max-width: 821px){
+@media (min-width: 482px) and (max-width: 821px) {
     .modal-box {
         flex-direction: column;
         width: 84%;
         height: auto;
     }
 
-    .input-group-register input{
+    .input-group-register input {
         width: 95%;
     }
 
