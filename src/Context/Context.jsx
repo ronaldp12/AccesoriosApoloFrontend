@@ -68,6 +68,14 @@ export const Provider = ({ children }) => {
     const normalizeText = (text) =>
         text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
+    const updateStickerName = (id, newName) => {
+        setSavedStickers((prevStickers) =>
+            prevStickers.map((sticker) =>
+                sticker.id === id ? { ...sticker, name: newName } : sticker
+            )
+        );
+    };
+
     // Funciones para Stickers
     const saveSticker = () => {
         const imageToSave = croppedImage || selectedImage;
@@ -115,7 +123,7 @@ export const Provider = ({ children }) => {
             nameRol, setNameRol,
             validatePassword,
             isLoggingOut, setIsLoggingOut,
-            normalizeText,
+            normalizeText, updateStickerName,
 
             // Estados y funciones para Stickers
             savedStickers, setSavedStickers,
