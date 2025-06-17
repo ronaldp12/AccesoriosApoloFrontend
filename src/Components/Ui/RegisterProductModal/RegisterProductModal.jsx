@@ -49,9 +49,9 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             modalRef.current.querySelector('.group-register-product:nth-of-type(1)'),
             modalRef.current.querySelector('.group-register-product:nth-of-type(2)'),
             modalRef.current.querySelector('.form-group-full'),
-            modalRef.current.querySelector('.group-register-product:nth-of-type(3)'),
             modalRef.current.querySelector('.group-register-product:nth-of-type(4)'),
-            modalRef.current.querySelector('.group-register-product:nth-of-type(5)'), // Correctamente apuntando al quinto grupo
+            modalRef.current.querySelector('.group-register-product:nth-of-type(5)'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(6)'),
             modalRef.current.querySelector('.modal-buttons-register-product')
         ].filter(Boolean);
 
@@ -105,7 +105,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         }, 500);
 
         setTimeout(() => {
-            const thirdGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(3)');
+            const thirdGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(4)');
             if (thirdGroup) {
                 thirdGroup.style.opacity = '1';
                 thirdGroup.style.transform = 'translateY(0)';
@@ -113,7 +113,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         }, 600);
 
         setTimeout(() => {
-            const fourthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(4)');
+            const fourthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(5)');
             if (fourthGroup) {
                 fourthGroup.style.opacity = '1';
                 fourthGroup.style.transform = 'translateY(0)';
@@ -121,7 +121,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         }, 700);
 
         setTimeout(() => {
-            const fifthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(5)');
+            const fifthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(6)');
             if (fifthGroup) {
                 fifthGroup.style.opacity = '1';
                 fifthGroup.style.transform = 'translateY(0)';

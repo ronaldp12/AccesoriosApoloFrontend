@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterSubcategoryModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -17,6 +17,93 @@ export const RegisterSubcategoryModal = ({ isOpen, onClose, onRegisterSuccess })
         FK_id_categoria: "",
         imagen: null,
     };
+
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const firstGroupRef = useRef(null);
+    const secondGroupRef = useRef(null);
+    const thirdGroupRef = useRef(null);
+    const buttonsRef = useRef(null);
+
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-register-subcategory'),
+            modalRef.current.querySelector('.group-register-subcategory:nth-of-type(1)'),
+            modalRef.current.querySelector('.group-register-subcategory:nth-of-type(2)'),
+            modalRef.current.querySelector('.group-register-subcategory:nth-of-type(3)'),
+            modalRef.current.querySelector('.modal-buttons-register-subcategory')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const form = modalRef.current?.querySelector('.form-register-subcategory');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const firstGroup = modalRef.current?.querySelector('.group-register-subcategory:nth-of-type(1)');
+            if (firstGroup) {
+                firstGroup.style.opacity = '1';
+                firstGroup.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const secondGroup = modalRef.current?.querySelector('.group-register-subcategory:nth-of-type(2)');
+            if (secondGroup) {
+                secondGroup.style.opacity = '1';
+                secondGroup.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            const thirdGroup = modalRef.current?.querySelector('.group-register-subcategory:nth-of-type(3)');
+            if (thirdGroup) {
+                thirdGroup.style.opacity = '1';
+                thirdGroup.style.transform = 'translateY(0)';
+            }
+        }, 500);
+
+        setTimeout(() => {
+            const buttons = modalRef.current?.querySelector('.modal-buttons-register-subcategory');
+            if (buttons) {
+                buttons.style.opacity = '1';
+                buttons.style.transform = 'translateY(0)';
+            }
+        }, 600);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            resetForm();
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
+        }
+    }, [isOpen]);
 
     const [formData, setFormData] = useState(initialFormData);
 
@@ -121,10 +208,10 @@ export const RegisterSubcategoryModal = ({ isOpen, onClose, onRegisterSuccess })
 
     return (
         <div className="modal-overlay-register-subcategory">
-            <div className={`modal-content-register-subcategory ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar subcategoría</h2>
-                <form className="form-register-subcategory" onSubmit={handleSubmit}>
-                    <div className="group-register-subcategory">
+            <div ref={modalRef} className={`modal-content-register-subcategory ${isClosing ? "exit" : "entry"}`}>
+                <h2 ref={titleRef}>Registrar subcategoría</h2>
+                <form ref={formRef} className="form-register-subcategory" onSubmit={handleSubmit}>
+                    <div ref={firstGroupRef} className="group-register-subcategory">
                         <div className="form-group-register-subcategory">
                             <label>Nombre de subcategoría *</label>
                             <input
@@ -149,7 +236,7 @@ export const RegisterSubcategoryModal = ({ isOpen, onClose, onRegisterSuccess })
                         </div>
                     </div>
 
-                    <div className="group-register-subcategory">
+                    <div ref={secondGroupRef} className="group-register-subcategory">
                         <div className="form-group-register-subcategory">
                             <label>Descuento *</label>
                             <input
@@ -176,7 +263,7 @@ export const RegisterSubcategoryModal = ({ isOpen, onClose, onRegisterSuccess })
                         </div>
                     </div>
 
-                    <div className="group-register-subcategory">
+                    <div ref={thirdGroupRef} className="group-register-subcategory">
                         <div className="form-group-register-subcategory">
                             <label>Categoría que pertenece *</label>
                             <select
@@ -195,7 +282,7 @@ export const RegisterSubcategoryModal = ({ isOpen, onClose, onRegisterSuccess })
                         </div>
                     </div>
 
-                    <div className="modal-buttons-register-subcategory">
+                    <div ref={buttonsRef} className="modal-buttons-register-subcategory">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>

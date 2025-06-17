@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterCategoryModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -14,6 +14,84 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
         descripcion: "",
         descuento: "",
     };
+
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const firstGroupRef = useRef(null);
+    const secondGroupRef = useRef(null);
+    const fullGroupRef = useRef(null);
+    const buttonsRef = useRef(null);
+
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-register-categorie'),
+            modalRef.current.querySelector('.group-register-categorie:nth-of-type(1)'),
+            modalRef.current.querySelector('.group-register-categorie:nth-of-type(2)'),
+            modalRef.current.querySelector('.modal-buttons-register-categorie')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const form = modalRef.current?.querySelector('.form-register-categorie');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const firstGroup = modalRef.current?.querySelector('.group-register-categorie:nth-of-type(1)');
+            if (firstGroup) {
+                firstGroup.style.opacity = '1';
+                firstGroup.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const secondGroup = modalRef.current?.querySelector('.group-register-categorie:nth-of-type(2)');
+            if (secondGroup) {
+                secondGroup.style.opacity = '1';
+                secondGroup.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            const buttons = modalRef.current?.querySelector('.modal-buttons-register-categorie');
+            if (buttons) {
+                buttons.style.opacity = '1';
+                buttons.style.transform = 'translateY(0)';
+            }
+        }, 500);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            resetForm();
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
+        }
+    }, [isOpen]);
 
     const [formData, setFormData] = useState(initialFormData);
 
@@ -98,10 +176,10 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
 
     return (
         <div className="modal-overlay-register-categorie">
-            <div className={`modal-content-register-categorie ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar Categoría</h2>
-                <form className="form-register-categorie" onSubmit={handleSubmit}>
-                    <div className="group-register-categorie">
+            <div ref={modalRef} className={`modal-content-register-categorie ${isClosing ? "exit" : "entry"}`}>
+                <h2 ref={titleRef}>Registrar Categoría</h2>
+                <form ref={formRef} className="form-register-categorie" onSubmit={handleSubmit}>
+                    <div ref={firstGroupRef} className="group-register-categorie">
                         <div className="form-group-register-categorie">
                             <label>Nombre de categoría *</label>
                             <input
@@ -125,7 +203,7 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
                         </div>
                     </div>
 
-                    <div className="group-register-categorie">
+                    <div ref={secondGroupRef} className="group-register-categorie">
                         <div className="form-group-register-categorie">
                             <label>Descuento *</label>
                             <input
@@ -140,7 +218,7 @@ export const RegisterCategorieModal = ({ isOpen, onClose, onRegisterSuccess }) =
                         <p>%</p>
                     </div>
 
-                    <div className="modal-buttons-register-categorie">
+                    <div ref={buttonsRef} className="modal-buttons-register-categorie">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>

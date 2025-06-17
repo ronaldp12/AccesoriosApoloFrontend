@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterInvoiceModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -8,6 +8,15 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
+
+    // Referencias para las animaciones
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const invoiceHeaderRef = useRef(null);
+    const addProductSectionRef = useRef(null);
+    const productsTableRef = useRef(null);
+    const buttonsRef = useRef(null);
 
     const initialInvoiceData = {
         nit_proveedor: "",
@@ -22,11 +31,91 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     };
 
     const [invoiceData, setInvoiceData] = useState(initialInvoiceData);
-
     const [productData, setProductData] = useState(initialProductData);
-
     const [products, setProducts] = useState([]);
     const [searchingProduct, setSearchingProduct] = useState(false);
+
+    // Función de animación
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            titleRef.current,           // título
+            formRef.current,           // formulario
+            invoiceHeaderRef.current,  // sección de datos principales
+            addProductSectionRef.current, // sección agregar producto
+            productsTableRef.current,  // tabla de productos (si existe)
+            buttonsRef.current         // botones
+        ].filter(Boolean);
+
+        // Aplicar estilos iniciales
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        // Animar elementos con retrasos progresivos
+        setTimeout(() => {
+            if (titleRef.current) {
+                titleRef.current.style.opacity = '1';
+                titleRef.current.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            if (formRef.current) {
+                formRef.current.style.opacity = '1';
+                formRef.current.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            if (invoiceHeaderRef.current) {
+                invoiceHeaderRef.current.style.opacity = '1';
+                invoiceHeaderRef.current.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            if (addProductSectionRef.current) {
+                addProductSectionRef.current.style.opacity = '1';
+                addProductSectionRef.current.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            if (productsTableRef.current) {
+                productsTableRef.current.style.opacity = '1';
+                productsTableRef.current.style.transform = 'translateY(0)';
+            }
+        }, 500);
+
+        setTimeout(() => {
+            if (buttonsRef.current) {
+                buttonsRef.current.style.opacity = '1';
+                buttonsRef.current.style.transform = 'translateY(0)';
+            }
+        }, 600);
+    };
+
+    // Función para animar la tabla cuando se agrega un producto
+    const animateProductsTable = () => {
+        if (productsTableRef.current) {
+            productsTableRef.current.style.opacity = '0';
+            productsTableRef.current.style.transform = 'translateY(20px)';
+            productsTableRef.current.style.transition = 'all 0.4s ease';
+
+            setTimeout(() => {
+                if (productsTableRef.current) {
+                    productsTableRef.current.style.opacity = '1';
+                    productsTableRef.current.style.transform = 'translateY(0)';
+                }
+            }, 50);
+        }
+    };
 
     const clearMessages = () => {
         setErrorMessage("");
@@ -43,8 +132,18 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     useEffect(() => {
         if (isOpen) {
             clearMessages();
+            setTimeout(() => {
+                animateElements();
+            }, 100);
         }
     }, [isOpen]);
+
+    // Animar tabla cuando cambian los productos
+    useEffect(() => {
+        if (products.length > 0) {
+            animateProductsTable();
+        }
+    }, [products.length]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -243,12 +342,12 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
     return (
         <div className="modal-overlay-register-invoice">
-            <div className={`modal-content-register-invoice ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar Factura Proveedor</h2>
+            <div ref={modalRef} className={`modal-content-register-invoice ${isClosing ? "exit" : "entry"}`}>
+                <h2 ref={titleRef}>Registrar Factura Proveedor</h2>
 
-                <form className="form-register-invoice" onSubmit={handleSubmit}>
+                <form ref={formRef} className="form-register-invoice" onSubmit={handleSubmit}>
                     {/* Datos principales de la factura */}
-                    <div className="invoice-header-section">
+                    <div ref={invoiceHeaderRef} className="invoice-header-section">
                         <div className="invoice-header-group">
                             <div className="form-group-register-invoice">
                                 <label>NIT Proveedor *</label>
@@ -288,7 +387,7 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                     </div>
 
                     {/* Formulario para agregar productos */}
-                    <div className="add-product-section">
+                    <div ref={addProductSectionRef} className="add-product-section">
                         <h3>Agregar Producto</h3>
                         <div className="add-product-form">
                             <div className="form-group-register-invoice">
@@ -332,7 +431,6 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                                         clearMessages();
                                     }}
                                 />
-
                             </div>
 
                             <div className="add-product-button-container">
@@ -354,7 +452,7 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                     {/* Tabla de productos */}
                     {products.length > 0 && (
-                        <div className="products-table-section-invoice">
+                        <div ref={productsTableRef} className="products-table-section-invoice">
                             <h3>Productos Agregados</h3>
                             <div className="table-container-invoice">
                                 <table className="products-table-invoice">
@@ -399,7 +497,7 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         </div>
                     )}
 
-                    <div className="modal-buttons-register-invoice">
+                    <div ref={buttonsRef} className="modal-buttons-register-invoice">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>
@@ -429,4 +527,4 @@ export const RegisterInvoiceModal = ({ isOpen, onClose, onRegisterSuccess }) => 
             </div>
         </div>
     );
-}
+};

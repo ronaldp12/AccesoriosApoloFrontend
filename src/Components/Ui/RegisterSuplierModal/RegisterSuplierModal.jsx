@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterSuplierModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -18,6 +18,99 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
         telefono: "",
         direccion: "",
     };
+
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const firstGroupRef = useRef(null);
+    const secondGroupRef = useRef(null);
+    const thirdGroupRef = useRef(null);
+    const groupFull = useRef(null);
+    const buttonsRef = useRef(null);
+
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        // Usar las referencias directas en lugar de selectores CSS problemáticos
+        const elements = [
+            titleRef.current,        // h2 título
+            formRef.current,        // formulario
+            firstGroupRef.current,  // primer grupo (nit, representante)
+            secondGroupRef.current, // segundo grupo (empresa, correo)
+            thirdGroupRef.current,  // grupo teléfono
+            groupFull.current,      // grupo dirección
+            buttonsRef.current      // botones
+        ].filter(Boolean);
+
+        // Aplicar estilos iniciales a todos los elementos
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        // Animar elementos uno por uno con retrasos progresivos
+        setTimeout(() => {
+            if (titleRef.current) {
+                titleRef.current.style.opacity = '1';
+                titleRef.current.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            if (formRef.current) {
+                formRef.current.style.opacity = '1';
+                formRef.current.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            if (firstGroupRef.current) {
+                firstGroupRef.current.style.opacity = '1';
+                firstGroupRef.current.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            if (secondGroupRef.current) {
+                secondGroupRef.current.style.opacity = '1';
+                secondGroupRef.current.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            if (thirdGroupRef.current) { 
+                thirdGroupRef.current.style.opacity = '1';
+                thirdGroupRef.current.style.transform = 'translateY(0)';
+            }
+        }, 500);
+
+        setTimeout(() => {
+            if (groupFull.current) { 
+                groupFull.current.style.opacity = '1';
+                groupFull.current.style.transform = 'translateY(0)';
+            }
+        }, 600);
+
+        setTimeout(() => {
+            if (buttonsRef.current) {
+                buttonsRef.current.style.opacity = '1';
+                buttonsRef.current.style.transform = 'translateY(0)';
+            }
+        }, 700);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            resetForm();
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
+        }
+    }, [isOpen]);
 
     const [formData, setFormData] = useState(initialFormData);
 
@@ -101,10 +194,10 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
     return (
         <div className="modal-overlay-register-suplier">
-            <div className={`modal-content-register-suplier ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar Proveedor</h2>
-                <form className="form-register-suplier" onSubmit={handleSubmit}>
-                    <div className="group-register-suplier">
+            <div ref={modalRef} className={`modal-content-register-suplier ${isClosing ? "exit" : "entry"}`}>
+                <h2 ref={titleRef}>Registrar Proveedor</h2>
+                <form ref={formRef} className="form-register-suplier" onSubmit={handleSubmit}>
+                    <div ref={firstGroupRef} className="group-register-suplier">
 
                         <div className="form-group-register-suplier">
                             <label>Nit</label>
@@ -130,7 +223,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                     </div>
 
-                    <div className="group-register-suplier">
+                    <div ref={secondGroupRef} className="group-register-suplier">
                         <div className="form-group-register-suplier">
                             <label>Nombre Empresa</label>
                             <input
@@ -155,7 +248,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                     </div>
 
-                    <div className="form-group-register-suplier">
+                    <div ref={thirdGroupRef} className="form-group-register-suplier">
                         <label>Teléfono</label>
                         <input
                             type="tel"
@@ -173,7 +266,7 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
                     </div>
 
-                    <div className="form-group-full">
+                    <div ref={groupFull} className="form-group-full">
                         <label>Dirección</label>
                         <input
                             type="text"
@@ -183,7 +276,8 @@ export const RegisterSuplierModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="modal-buttons-register-suplier">
+
+                    <div ref={buttonsRef} className="modal-buttons-register-suplier">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>

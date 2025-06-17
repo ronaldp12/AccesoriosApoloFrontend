@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterUserModal.css";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -17,9 +17,90 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         rol: ""
     });
 
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const firstGroupRef = useRef(null);
+    const secondGroupRef = useRef(null);
+    const fullGroupRef = useRef(null);
+    const buttonsRef = useRef(null);
+
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-register-user'),
+            modalRef.current.querySelector('.group-register-user:nth-of-type(1)'),
+            modalRef.current.querySelector('.group-register-user:nth-of-type(2)'),
+            modalRef.current.querySelector('.form-group-full'),
+            modalRef.current.querySelector('.modal-buttons-register-user')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const form = modalRef.current?.querySelector('.form-register-user');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const firstGroup = modalRef.current?.querySelector('.group-register-user:nth-of-type(1)');
+            if (firstGroup) {
+                firstGroup.style.opacity = '1';
+                firstGroup.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const secondGroup = modalRef.current?.querySelector('.group-register-user:nth-of-type(2)');
+            if (secondGroup) {
+                secondGroup.style.opacity = '1';
+                secondGroup.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            const fullGroup = modalRef.current?.querySelector('.form-group-full');
+            if (fullGroup) {
+                fullGroup.style.opacity = '1';
+                fullGroup.style.transform = 'translateY(0)';
+            }
+        }, 500);
+
+        setTimeout(() => {
+            const buttons = modalRef.current?.querySelector('.modal-buttons-register-user');
+            if (buttons) {
+                buttons.style.opacity = '1';
+                buttons.style.transform = 'translateY(0)';
+            }
+        }, 600);
+    };
+
     useEffect(() => {
         if (isOpen) {
             resetForm();
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
         }
     }, [isOpen]);
 
@@ -64,7 +145,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         setIsClosing(true);
         setTimeout(() => {
             setIsClosing(false);
-            resetForm(); 
+            resetForm();
             onClose();
         }, 400);
     };
@@ -72,8 +153,8 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrorMessage(""); 
-        setSuccessMessage(""); 
+        setErrorMessage("");
+        setSuccessMessage("");
 
         if (!/^\d{10}$/.test(phone)) {
             setErrorMessage("El número de teléfono debe tener 10 dígitos.");
@@ -123,10 +204,13 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
 
     return (
         <div className="modal-overlay-register-user">
-            <div className={`modal-content-register-user ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar Usuario</h2>
-                <form className="form-register-user" onSubmit={handleSubmit}>
-                    <div className="group-register-user">
+            <div
+                ref={modalRef}
+                className={`modal-content-register-user ${isClosing ? "exit" : "entry"}`}
+            >
+                <h2 ref={titleRef}>Registrar Usuario</h2>
+                <form ref={formRef} className="form-register-user" onSubmit={handleSubmit}>
+                    <div ref={firstGroupRef} className="group-register-user">
                         <div className="form-group-register-user">
                             <label>Nombre</label>
                             <input
@@ -148,7 +232,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             </select>
                         </div>
                     </div>
-                    <div className="group-register-user">
+                    <div ref={secondGroupRef} className="group-register-user">
                         <div className="form-group-register-user">
                             <label>Cédula</label>
                             <input
@@ -174,7 +258,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                         </div>
                     </div>
 
-                    <div className="form-group-full">
+                    <div ref={fullGroupRef} className="form-group-full">
                         <label>Correo</label>
                         <input
                             type="email"
@@ -186,7 +270,7 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                         />
                     </div>
 
-                    <div className="modal-buttons-register-user">
+                    <div ref={buttonsRef} className="modal-buttons-register-user">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>
