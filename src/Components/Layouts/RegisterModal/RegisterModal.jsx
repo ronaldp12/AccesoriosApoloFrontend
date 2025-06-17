@@ -21,6 +21,8 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
     const googleButtonRef = useRef(null);
 
+    // Referencias para animación específica del RegisterModal
+    const modalRef = useRef(null);
     const titleRef = useRef(null);
     const formRef = useRef(null);
     const bottomGroupRef = useRef(null);
@@ -67,10 +69,18 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         }, 100);
     };
 
+    // Función de animación que SOLO afecta elementos dentro de este modal
     const animateElements = () => {
-        if (!isOpen) return;
+        if (!isOpen || !modalRef.current) return;
 
-        const elements = [titleRef.current, formRef.current, bottomGroupRef.current, socialIconsRef.current];
+        // Solo selecciona elementos dentro de este modal específico usando las clases CSS existentes
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('form'),
+            modalRef.current.querySelector('.group-bottom'),
+            modalRef.current.querySelector('.social-icons')
+        ].filter(Boolean); // Filtra elementos que existen
+
         elements.forEach(el => {
             if (el) {
                 el.style.opacity = '0';
@@ -79,31 +89,36 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             }
         });
 
+        // Animar elementos uno por uno
         setTimeout(() => {
-            if (titleRef.current) {
-                titleRef.current.style.opacity = '1';
-                titleRef.current.style.transform = 'translateY(0)';
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
             }
         }, 200);
 
         setTimeout(() => {
-            if (formRef.current) {
-                formRef.current.style.opacity = '1';
-                formRef.current.style.transform = 'translateY(0)';
+            const form = modalRef.current?.querySelector('form');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
             }
         }, 400);
 
         setTimeout(() => {
-            if (bottomGroupRef.current) {
-                bottomGroupRef.current.style.opacity = '1';
-                bottomGroupRef.current.style.transform = 'translateY(0)';
+            const bottomGroup = modalRef.current?.querySelector('.group-bottom');
+            if (bottomGroup) {
+                bottomGroup.style.opacity = '1';
+                bottomGroup.style.transform = 'translateY(0)';
             }
         }, 600);
 
         setTimeout(() => {
-            if (socialIconsRef.current) {
-                socialIconsRef.current.style.opacity = '1';
-                socialIconsRef.current.style.transform = 'translateY(0)';
+            const socialIcons = modalRef.current?.querySelector('.social-icons');
+            if (socialIcons) {
+                socialIcons.style.opacity = '1';
+                socialIcons.style.transform = 'translateY(0)';
             }
         }, 800);
     };
@@ -205,7 +220,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 setNameRol(rol);
                 localStorage.setItem("nameRol", rol);
 
-                if (gerenteData.esGerente) {
+                if (gerenteData.esGerente || rol === "vendedor") {
                     navigate("/dashboard");
 
                 } else {
@@ -227,7 +242,10 @@ export const RegisterModal = ({ isOpen, onClose }) => {
 
     return (
         <div className={`modal-overlay ${isOpen ? "active" : ""}`}>
-            <div className={`modal-box ${isOpen ? "active" : ""}`}>
+            <div
+                ref={modalRef}
+                className={`modal-box ${isOpen ? "active" : ""}`}
+            >
                 <button className="close-btn" onClick={onClose}>×</button>
 
                 <div className="modal-form-container">

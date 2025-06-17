@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterSaleModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -8,6 +8,15 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const { getErrorMessage, isLoading, setIsLoading } = useContext(context);
     const [successMessage, setSuccessMessage] = useState("");
+
+    // Refs para las animaciones
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const clientSectionRef = useRef(null);
+    const saleSectionRef = useRef(null);
+    const productSectionRef = useRef(null);
+    const tableRef = useRef(null);
+    const buttonsRef = useRef(null);
 
     const initialSaleData = {
         cedula_cliente: "",
@@ -33,6 +42,109 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [searchingProduct, setSearchingProduct] = useState(false);
     const [searchingClient, setSearchingClient] = useState(false);
     const [clientFound, setClientFound] = useState(false);
+
+    // Función para animar elementos
+    const animateElements = () => {
+        if (!isOpen) return;
+
+        const elements = [
+            titleRef.current,
+            formRef.current,
+            clientSectionRef.current,
+            saleSectionRef.current,
+            productSectionRef.current,
+            tableRef.current,
+            buttonsRef.current
+        ];
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        // Animar título
+        setTimeout(() => {
+            if (titleRef.current) {
+                titleRef.current.style.opacity = '1';
+                titleRef.current.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        // Animar formulario principal
+        setTimeout(() => {
+            if (formRef.current) {
+                formRef.current.style.opacity = '1';
+                formRef.current.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        // Animar sección de cliente
+        setTimeout(() => {
+            if (clientSectionRef.current) {
+                clientSectionRef.current.style.opacity = '1';
+                clientSectionRef.current.style.transform = 'translateY(0)';
+            }
+        }, 600);
+
+        // Animar sección de venta
+        setTimeout(() => {
+            if (saleSectionRef.current) {
+                saleSectionRef.current.style.opacity = '1';
+                saleSectionRef.current.style.transform = 'translateY(0)';
+            }
+        }, 800);
+
+        // Animar sección de productos
+        setTimeout(() => {
+            if (productSectionRef.current) {
+                productSectionRef.current.style.opacity = '1';
+                productSectionRef.current.style.transform = 'translateY(0)';
+            }
+        }, 1000);
+
+        // Animar botones
+        setTimeout(() => {
+            if (buttonsRef.current) {
+                buttonsRef.current.style.opacity = '1';
+                buttonsRef.current.style.transform = 'translateY(0)';
+            }
+        }, 1200);
+    };
+
+    // Animar tabla cuando se agregan productos
+    const animateTable = () => {
+        if (tableRef.current) {
+            tableRef.current.style.opacity = '0';
+            tableRef.current.style.transform = 'translateY(30px)';
+            tableRef.current.style.transition = 'all 0.6s ease';
+
+            setTimeout(() => {
+                if (tableRef.current) {
+                    tableRef.current.style.opacity = '1';
+                    tableRef.current.style.transform = 'translateY(0)';
+                }
+            }, 100);
+        }
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            clearMessages();
+            setTimeout(() => {
+                animateElements();
+            }, 100);
+        }
+    }, [isOpen]);
+
+    // Animar tabla cuando cambian los productos
+    useEffect(() => {
+        if (products.length > 0) {
+            animateTable();
+        }
+    }, [products.length]);
 
     const getCurrentDate = () => {
         const colombiaDate = new Date().toLocaleString("en-CA", {
@@ -67,12 +179,6 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         setClientFound(false);
         clearMessages();
     };
-
-    useEffect(() => {
-        if (isOpen) {
-            clearMessages();
-        }
-    }, [isOpen]);
 
     if (!isOpen && !isClosing) return null;
 
@@ -344,11 +450,11 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     return (
         <div className="modal-overlay-register-sale">
             <div className={`modal-content-register-sale ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar Venta</h2>
+                <h2 ref={titleRef}>Registrar Venta</h2>
 
-                <form className="form-register-sale" onSubmit={handleSubmit}>
+                <form ref={formRef} className="form-register-sale" onSubmit={handleSubmit}>
                     {/* Datos del cliente */}
-                    <div className="sale-header-section">
+                    <div ref={clientSectionRef} className="sale-header-section">
                         <div className="sale-header-group">
                             <div className="form-group-register-sale">
                                 <label>Cédula Cliente *</label>
@@ -407,7 +513,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                     )}
 
                     {/* Datos de la venta */}
-                    <div className="sale-header-section">
+                    <div ref={saleSectionRef} className="sale-header-section">
                         <div className="sale-header-group">
                             <div className="form-group-register-sale">
                                 <label>Fecha de Venta</label>
@@ -433,7 +539,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                     </div>
 
                     {/* Formulario para agregar productos */}
-                    <div className="add-product-section">
+                    <div ref={productSectionRef} className="add-product-section">
                         <h3>Agregar Producto</h3>
                         <div className="add-product-form-sale">
                             <div className="form-group-register-sale">
@@ -479,7 +585,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
 
                     {/* Tabla de productos */}
                     {products.length > 0 && (
-                        <div className="products-table-section-sale">
+                        <div ref={tableRef} className="products-table-section-sale">
                             <h3>Productos Agregados</h3>
                             <div className="table-container-sale">
                                 <table className="products-table-sale">
@@ -551,7 +657,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                         </div>
                     )}
 
-                    <div className="modal-buttons-register-sale">
+                    <div ref={buttonsRef} className="modal-buttons-register-sale">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>

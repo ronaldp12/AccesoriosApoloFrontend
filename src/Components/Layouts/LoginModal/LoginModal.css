@@ -81,18 +81,12 @@
     font-weight: bold;
     margin-bottom: 30px;
     text-align: center;
-    /* Iniciamos oculto para JavaScript */
-    opacity: 0;
-    transform: translateY(30px);
 }
 
 .login-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    /* Iniciamos oculto para JavaScript */
-    opacity: 0;
-    transform: translateY(30px);
 }
 
 .login-input-group {
@@ -101,9 +95,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* Iniciamos oculto para JavaScript */
-    opacity: 0;
-    transform: translateY(30px);
 }
 
 .login-input-field {

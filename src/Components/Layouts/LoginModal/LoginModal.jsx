@@ -17,10 +17,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
     const googleButtonRef = useRef(null);
 
+    const modalRef = useRef(null);
     const titleRef = useRef(null);
     const formRef = useRef(null);
-    const inputGroupRef = useRef(null);
     const bottomGroupRef = useRef(null);
+    const socialIconsRef = useRef(null);
 
     const initializeGoogleSignIn = () => {
         if (window.google && googleButtonRef.current) {
@@ -64,9 +65,16 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     };
 
     const animateElements = () => {
-        if (!isOpen) return;
+        if (!isOpen || !modalRef.current) return;
 
-        const elements = [titleRef.current, formRef.current, inputGroupRef.current, bottomGroupRef.current];
+        // Solo selecciona elementos dentro de este modal específico usando las clases CSS existentes
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.login-form'),
+            modalRef.current.querySelector('.login-group-bottom'),
+            modalRef.current.querySelector('.login-social-icons')
+        ].filter(Boolean); // Filtra elementos que existen
+
         elements.forEach(el => {
             if (el) {
                 el.style.opacity = '0';
@@ -75,33 +83,39 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             }
         });
 
+        // Animar elementos uno por uno
         setTimeout(() => {
-            if (titleRef.current) {
-                titleRef.current.style.opacity = '1';
-                titleRef.current.style.transform = 'translateY(0)';
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
             }
         }, 200);
 
         setTimeout(() => {
-            if (formRef.current) {
-                formRef.current.style.opacity = '1';
-                formRef.current.style.transform = 'translateY(0)';
-            }
-        }, 300);
-
-        setTimeout(() => {
-            if (inputGroupRef.current) {
-                inputGroupRef.current.style.opacity = '1';
-                inputGroupRef.current.style.transform = 'translateY(0)';
+            const form = modalRef.current?.querySelector('.login-form'); // <-- Aquí el cambio
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
             }
         }, 400);
 
+
         setTimeout(() => {
-            if (bottomGroupRef.current) {
-                bottomGroupRef.current.style.opacity = '1';
-                bottomGroupRef.current.style.transform = 'translateY(0)';
+            const bottomGroup = modalRef.current?.querySelector('.login-group-bottom');
+            if (bottomGroup) {
+                bottomGroup.style.opacity = '1';
+                bottomGroup.style.transform = 'translateY(0)';
             }
         }, 600);
+
+        setTimeout(() => {
+            const socialIcons = modalRef.current?.querySelector('.login-social-icons');
+            if (socialIcons) {
+                socialIcons.style.opacity = '1';
+                socialIcons.style.transform = 'translateY(0)';
+            }
+        }, 800);
     };
 
     useEffect(() => {
@@ -222,7 +236,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 setNameRol(rol);
                 localStorage.setItem("nameRol", rol);
 
-                if (gerenteData.esGerente) {
+                if (gerenteData.esGerente || rol === "vendedor") {
                     navigate("/dashboard");
 
                 } else {
@@ -244,7 +258,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
     return (
         <div id="loginModal" className={`modal-overlay ${isOpen ? "active" : ""}`}>
-            <div className={`login-modal-box ${isOpen ? "active" : ""}`}>
+            <div ref={modalRef} className={`login-modal-box ${isOpen ? "active" : ""}`}>
                 <button className="login-close-btn" onClick={onClose}>
                     ×
                 </button>
@@ -252,7 +266,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 <div className="login-form-container">
                     <h2 ref={titleRef}>INICIAR SESIÓN</h2>
                     <form ref={formRef} className="login-form" onSubmit={handleSubmit}>
-                        <div ref={inputGroupRef} className="login-input-group">
+                        <div className="login-input-group">
                             <div className="login-input-field">
                                 <label>Correo *</label>
                                 <input
@@ -305,7 +319,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
 
                             <div className="login-divider">o</div>
 
-                            <div className="login-social-icons">
+                            <div ref={socialIconsRef} className="login-social-icons">
                                 <button type="button" className="social facebook">
                                     <img src={iconFacebook} alt="facebook" />
                                 </button>

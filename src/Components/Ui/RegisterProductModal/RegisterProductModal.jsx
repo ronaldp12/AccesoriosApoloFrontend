@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterProductModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
@@ -14,6 +14,17 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     const [subcategorias, setSubcategorias] = useState([]);
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const firstGroupRef = useRef(null);
+    const secondGroupRef = useRef(null);
+    const fullGroupRef = useRef(null);
+    const thirdGroupRef = useRef(null);
+    const fourthGroupRef = useRef(null);
+    const fifthGroupRef = useRef(null);
+    const buttonsRef = useRef(null);
+
     const initialFormData = {
         referencia: "",
         nombre: "",
@@ -28,6 +39,115 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
     };
 
     const [formData, setFormData] = useState(initialFormData);
+
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-register-product'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(1)'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(2)'),
+            modalRef.current.querySelector('.form-group-full'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(3)'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(4)'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(5)'), // Correctamente apuntando al quinto grupo
+            modalRef.current.querySelector('.modal-buttons-register-product')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        // Animar elementos uno por uno con retrasos
+        setTimeout(() => {
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const form = modalRef.current?.querySelector('.form-register-product');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const firstGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(1)');
+            if (firstGroup) {
+                firstGroup.style.opacity = '1';
+                firstGroup.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const secondGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(2)');
+            if (secondGroup) {
+                secondGroup.style.opacity = '1';
+                secondGroup.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            const fullGroup = modalRef.current?.querySelector('.form-group-full');
+            if (fullGroup) {
+                fullGroup.style.opacity = '1';
+                fullGroup.style.transform = 'translateY(0)';
+            }
+        }, 500);
+
+        setTimeout(() => {
+            const thirdGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(3)');
+            if (thirdGroup) {
+                thirdGroup.style.opacity = '1';
+                thirdGroup.style.transform = 'translateY(0)';
+            }
+        }, 600);
+
+        setTimeout(() => {
+            const fourthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(4)');
+            if (fourthGroup) {
+                fourthGroup.style.opacity = '1';
+                fourthGroup.style.transform = 'translateY(0)';
+            }
+        }, 700);
+
+        setTimeout(() => {
+            const fifthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(5)');
+            if (fifthGroup) {
+                fifthGroup.style.opacity = '1';
+                fifthGroup.style.transform = 'translateY(0)';
+            }
+        }, 800); // <-- Cambiado este retraso a 800ms
+
+        setTimeout(() => {
+            const buttons = modalRef.current?.querySelector('.modal-buttons-register-product');
+            if (buttons) {
+                buttons.style.opacity = '1';
+                buttons.style.transform = 'translateY(0)';
+            }
+        }, 900); // <-- Cambiado este retraso a 900ms (para que siga al quinto grupo)
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            fetchCategorias();
+            clearMessages();
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
+        }
+    }, [isOpen]);
+
 
     const clearMessages = () => {
         setErrorMessage("");
@@ -169,10 +289,13 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
 
     return (
         <div className="modal-overlay-register-product">
-            <div className={`modal-content-register-product ${isClosing ? "exit" : "entry"}`}>
-                <h2>Registrar producto</h2>
-                <form className="form-register-product" onSubmit={handleSubmit}>
-                    <div className="group-register-product">
+            <div
+                ref={modalRef}
+                className={`modal-content-register-product ${isClosing ? "exit" : "entry"}`}
+            >
+                <h2 ref={titleRef}>Registrar producto</h2>
+                <form ref={formRef} className="form-register-product" onSubmit={handleSubmit}>
+                    <div ref={firstGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Referencia *</label>
                             <input
@@ -198,7 +321,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         </div>
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={secondGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Descripción *</label>
                             <button
@@ -222,7 +345,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         </div>
                     </div>
 
-                    <div className="form-group-full">
+                    <div ref={fullGroupRef} className="form-group-full">
                         <label>Marca *</label>
                         <input
                             type="text"
@@ -233,7 +356,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         />
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={thirdGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <div className="label-with-icon">
                                 <label>Imagenes Producto *</label>
@@ -271,7 +394,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         </div>
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={fourthGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Descuento *</label>
                             <input
@@ -294,7 +417,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         </div>
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={fifthGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Categoría que pertenece *</label>
                             <select
@@ -331,7 +454,7 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                         </div>
                     </div>
 
-                    <div className="modal-buttons-register-product">
+                    <div ref={buttonsRef} className="modal-buttons-register-product">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>
                             CANCELAR
                         </button>
@@ -366,7 +489,6 @@ export const RegisterProductModal = ({ isOpen, onClose, onRegisterSuccess }) => 
                 onSave={handleSaveDescription}
                 initialValue={formData.descripcion}
             />
-
         </div>
     );
 };
