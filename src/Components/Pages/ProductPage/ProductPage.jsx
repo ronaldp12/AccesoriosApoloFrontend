@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { products as allProducts } from "../../products";
-import { ProductFilterSidebar } from "../../Ui/ProductFilterSidebar/ProductFilterSidebar";
 import { ProductGrid } from "../../Ui/ProductGrid/ProductGrid";
 import { useLocation } from "react-router-dom";
 import "./ProductPage.css";
 import img1 from "../../../assets/images/img1-helmet-product.png"
-
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img42-marca.png';
+import { ProductFilterSidebar } from "../../Ui/ProductFilterSidebar/ProductFilterSideBar";
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
