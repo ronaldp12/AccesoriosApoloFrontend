@@ -2,8 +2,9 @@ import { useContext, useState } from "react";
 import iconBack from "../../../assets/icons/backpack.png";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
+import { Link } from "react-router-dom";
 
-export const ProductCard = ({ id, image, brand, title, price, rating, discount }) => {
+export const ProductCard = ({ id, slug, image, brand, title, price, rating, discount }) => {
   const { handleAddToCart } = useContext(context);
   const [isAdding, setIsAdding] = useState(false);
   const [addedMessage, setAddedMessage] = useState(false);
@@ -21,7 +22,7 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
   };
 
   return (
-    <div className="product-card">
+    <Link to={`/product/${slug}`} className="product-card">
       <div className="image-container">
         <img src={image} alt={title} />
         {discount && <span className="discount-badge">{discount}</span>}
@@ -56,6 +57,6 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
           )}
         </span>
       </p>
-    </div>
+    </Link>
   );
 };

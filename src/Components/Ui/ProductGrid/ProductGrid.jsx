@@ -9,6 +9,7 @@ export const ProductGrid = ({ products }) => {
                 <ProductCard
                     key={p.id}
                     id={p.id}
+                    slug={p.slug}
                     image={p.image}
                     brand={p.brand}
                     title={p.title}

@@ -32,6 +32,7 @@ import { StickersUpload } from "./Components/Layouts/StickersUpload/StickersUplo
 import { StickerGallery } from "./Components/Layouts/StickerGallery/StickerGallery.jsx";
 import { StickersLayout } from "./Components/Layouts/StickersLayout/StickersLayout.jsx";
 import { ProductPage } from "./Components/Pages/ProductPage/ProductPage.jsx";
+import { ProductDetailPage } from "./Components/Layouts/ProductDetailPage/ProductDetailPage.jsx";
 
 export function App() {
 
@@ -66,6 +67,20 @@ export function App() {
             </>
           }
         />
+
+        <Route
+          path="/product/:slug"
+          element={
+            <>
+              <Header />
+              <Container>
+                <ProductDetailPage />
+              </Container>
+              <Footer />
+            </>
+          }
+        />
+
 
         <Route
           path="/stickers"
