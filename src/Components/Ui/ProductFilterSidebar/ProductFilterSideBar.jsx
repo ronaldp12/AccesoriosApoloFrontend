@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./ProductFilterSideBar.css";
+import "./ProductFilterSidebar.css";
 
 export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory }) => {
     const [priceLimit, setPriceLimit] = useState(300000);

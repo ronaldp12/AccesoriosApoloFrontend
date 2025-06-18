@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { products as allProducts } from "../../products";
-import { ProductFilterSidebar } from "../../Ui/ProductFilterSidebar/ProductFilterSideBar";
+import { ProductFilterSidebar } from "../../Ui/ProductFilterSidebar/ProductFilterSidebar";
 import { ProductGrid } from "../../Ui/ProductGrid/ProductGrid";
 import { useLocation } from "react-router-dom";
 import "./ProductPage.css";
