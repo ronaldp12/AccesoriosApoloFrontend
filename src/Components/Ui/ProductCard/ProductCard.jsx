@@ -17,7 +17,7 @@ export const ProductCard = ({ id, image, brand, title, price, rating, discount }
       setTimeout(() => {
         setAddedMessage(false);
       }, 1200);
-    }, 800); //cargando
+    }, 800);
   };
 
   return (

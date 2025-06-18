@@ -10,6 +10,7 @@ import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
+import { Link } from "react-router-dom";
 
 export const HelmetSubmenu = () => {
   return (
@@ -17,37 +18,37 @@ export const HelmetSubmenu = () => {
 
       <div className="helmets-submenu">
 
-        <div className='submenu-title'>
+        <Link to="/products" className='submenu-title'>
           <h2>Cascos</h2>
           <span>Ver más </span>
-        </div>
+        </Link>
 
         <div className="container-helmets2">
 
-          <div className="submenu-item">
+          <Link to="/products?category=Cascos&subcategory=novedades" className="submenu-item">
             <img src={img1} alt="Helmet 1" />
             <p>Novedades</p>
-          </div>
+          </Link>
 
-          <div className="submenu-item">
+          <Link to="/products?category=Cascos&subcategory=integral" className="submenu-item">
             <img src={img2} alt="Helmet 1" />
-            <p>Novedades</p>
-          </div>
+            <p>Integral</p>
+          </Link>
 
-          <div className="submenu-item">
+          <Link to="/products?category=Cascos&subcategory=abatible" className="submenu-item">
             <img src={img3} alt="Helmet 1" />
-            <p>Novedades</p>
-          </div>
+            <p>Abatible</p>
+          </Link>
 
-          <div className="submenu-item">
+          <Link to="/products?category=Cascos&subcategory=abierto" className="submenu-item">
             <img src={img4} alt="Helmet 1" />
-            <p>Novedades</p>
-          </div>
+            <p>Abierto</p>
+          </Link>
 
-          <div className="submenu-item" >
+          <Link to="/products?category=Cascos&subcategory=cross" className="submenu-item" >
             <img src={img5} alt="Helmet 1" />
-            <p>Novedades</p>
-          </div>
+            <p>Cross</p>
+          </Link>
 
         </div>
 

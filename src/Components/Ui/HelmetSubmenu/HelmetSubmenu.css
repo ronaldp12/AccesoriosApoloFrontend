@@ -31,6 +31,8 @@
   display: flex;
   gap: 6px;
   padding-left: 4rem;
+  text-decoration: none;
+  color: black;
 }
 
 .submenu-title span {
@@ -50,6 +52,7 @@
   margin-right: 10rem;
   margin-bottom: 2rem;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .submenu-item img {
