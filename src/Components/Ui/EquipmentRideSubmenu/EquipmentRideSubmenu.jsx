@@ -14,7 +14,7 @@ import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
 import { Link } from "react-router-dom";
 
-export const EquipmentRideSubmenu = () => {
+export const EquipmentRideSubmenu = ({ onCloseSubmenu }) => {
 
   const equipmentItems = [
     { label: "Chaquetas", img: img1 },
@@ -33,7 +33,8 @@ export const EquipmentRideSubmenu = () => {
 
       <div className="equipment-submenu">
 
-        <Link to={`/products?category=${encodeURIComponent("Equipacion Carretera")}`} className='submenu-title-equipment'>
+        <Link to={`/products?category=${encodeURIComponent("Equipacion Carretera")}`} className='submenu-title-equipment'
+          onClick={onCloseSubmenu}>
           <h2>Equipación Carretera</h2>
           <span>Ver más </span>
         </Link>
@@ -44,6 +45,7 @@ export const EquipmentRideSubmenu = () => {
               key={item.label}
               to={`/products?category=${encodeURIComponent("Equipacion Carretera")}&subcategory=${encodeURIComponent(item.label)}`}
               className="submenu-item"
+              onClick={onCloseSubmenu}
             >
               <img src={item.img} alt={`equipment - ${item.label}`} />
               <p>{item.label}</p>

@@ -31,7 +31,7 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Cascos</span>
         </Item>
-        {helmetMenu.isOpen && <HelmetSubmenu />}
+        {helmetMenu.isOpen && <HelmetSubmenu onCloseSubmenu={() => helmetMenu.handleHover(false)} />}
       </div>
 
       <div
@@ -44,7 +44,7 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item-extend">
           <span className="nav-cascos">Equipación Carretera</span>
         </Item>
-        {equipmentMenu.isOpen && <EquipmentRideSubmenu />}
+        {equipmentMenu.isOpen && <EquipmentRideSubmenu onCloseSubmenu={() => equipmentMenu.handleHover(false)} />}
       </div>
 
       <Item styleLi="item" contenido="Accesorios" />
@@ -91,7 +91,7 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Luces</span>
         </Item>
-        {lightMenu.isOpen && <LightsSubmenu />}
+        {lightMenu.isOpen && <LightsSubmenu onCloseSubmenu={() => lightMenu.handleHover(false)} />}
       </div>
 
       <div
@@ -104,7 +104,7 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Limpieza</span>
         </Item>
-        {cleaningMenu.isOpen && <CleaningSubmenu />}
+        {cleaningMenu.isOpen && <CleaningSubmenu onCloseSubmenu={() => cleaningMenu.handleHover(false)} />}
       </div>
     </div>
   );

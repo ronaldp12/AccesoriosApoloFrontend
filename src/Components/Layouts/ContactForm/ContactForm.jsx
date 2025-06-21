@@ -15,6 +15,100 @@ export const ContactForm = () => {
     const [animatedElements, setAnimatedElements] = useState(new Set());
     const sectionRef = useRef(null);
 
+    // Función para animar elementos internos
+    const animateInternalElements = () => {
+        if (!sectionRef.current) return;
+
+        const elements = [
+            sectionRef.current.querySelector('.logo-contact-form h1'),
+            sectionRef.current.querySelector('.logo-contact-form .img-background-contact-form'),
+            sectionRef.current.querySelector('.contact-form-container form'),
+            ...sectionRef.current.querySelectorAll('.form-row'),
+            sectionRef.current.querySelector('.contact-method'),
+            sectionRef.current.querySelector('.terms-checkbox'),
+            sectionRef.current.querySelector('.submit-btn-contact-form')
+        ].filter(Boolean);
+
+        // Inicializar todos los elementos con opacity 0
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        // Animar elementos secuencialmente
+        setTimeout(() => {
+            const img = sectionRef.current?.querySelector('.logo-contact-form .img-background-contact-form');
+            if (img) {
+                img.style.opacity = '1';
+                img.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const title = sectionRef.current?.querySelector('.logo-contact-form h1');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const form = sectionRef.current?.querySelector('.contact-form-container form');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        // Animar form-rows
+        const formRows = sectionRef.current?.querySelectorAll('.form-row');
+        formRows?.forEach((row, index) => {
+            setTimeout(() => {
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, 400 + (index * 100));
+        });
+
+        // Animar contact method
+        setTimeout(() => {
+            const contactMethod = sectionRef.current?.querySelector('.contact-method');
+            if (contactMethod) {
+                contactMethod.style.opacity = '1';
+                contactMethod.style.transform = 'translateY(0)';
+
+                // Animar opciones de contacto
+                const options = contactMethod.querySelectorAll('.contact-option');
+                options.forEach((option, index) => {
+                    setTimeout(() => {
+                        option.style.opacity = '1';
+                        option.style.transform = 'translateY(0)';
+                    }, 100 + (index * 50));
+                });
+            }
+        }, 700);
+
+        // Animar checkbox de términos
+        setTimeout(() => {
+            const termsCheckbox = sectionRef.current?.querySelector('.terms-checkbox');
+            if (termsCheckbox) {
+                termsCheckbox.style.opacity = '1';
+                termsCheckbox.style.transform = 'translateY(0)';
+            }
+        }, 800);
+
+        // Animar botón de envío
+        setTimeout(() => {
+            const submitBtn = sectionRef.current?.querySelector('.submit-btn-contact-form');
+            if (submitBtn) {
+                submitBtn.style.opacity = '1';
+                submitBtn.style.transform = 'translateY(0)';
+            }
+        }, 900);
+    };
+
     useEffect(() => {
         const observerOptions = {
             root: null,
@@ -29,38 +123,10 @@ export const ContactForm = () => {
                     element.classList.add('animate-in');
 
                     if (element.classList.contains('contact-form-container')) {
+                        // Ejecutar animaciones internas cuando el contenedor sea visible
                         setTimeout(() => {
-                            const formRows = element.querySelectorAll('.form-row');
-                            formRows.forEach((row, index) => {
-                                setTimeout(() => {
-                                    row.classList.add('animate-in');
-                                }, index * 100);
-                            });
-                        }, 300);
-
-                        setTimeout(() => {
-                            const contactMethod = element.querySelector('.contact-method');
-                            if (contactMethod) {
-                                contactMethod.classList.add('animate-in');
-
-                                const options = contactMethod.querySelectorAll('.contact-option');
-                                options.forEach((option, index) => {
-                                    setTimeout(() => {
-                                        option.classList.add('animate-in');
-                                    }, index * 100);
-                                });
-                            }
-                        }, 600);
-
-                        setTimeout(() => {
-                            const termsCheckbox = element.querySelector('.terms-checkbox');
-                            if (termsCheckbox) termsCheckbox.classList.add('animate-in');
-                        }, 900);
-
-                        setTimeout(() => {
-                            const submitBtn = element.querySelector('.submit-btn-contact-form');
-                            if (submitBtn) submitBtn.classList.add('animate-in');
-                        }, 1000);
+                            animateInternalElements();
+                        }, 200);
                     }
 
                     setAnimatedElements(prev => new Set([...prev, element]));

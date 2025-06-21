@@ -33,6 +33,7 @@ import { StickerGallery } from "./Components/Layouts/StickerGallery/StickerGalle
 import { StickersLayout } from "./Components/Layouts/StickersLayout/StickersLayout.jsx";
 import { ProductPage } from "./Components/Pages/ProductPage/ProductPage.jsx";
 import { ProductDetailPage } from "./Components/Layouts/ProductDetailPage/ProductDetailPage.jsx";
+import { ScrollToTop } from "./Components/Ui/ScrollToTop/ScrollToTop.jsx";
 
 export function App() {
 
@@ -40,6 +41,7 @@ export function App() {
 
   return (
     <>
+      <ScrollToTop />
       <Routes>
 
         <Route

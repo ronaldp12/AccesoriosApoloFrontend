@@ -52,7 +52,11 @@ export const ProductCard = ({ id, slug, image, brand, title, price, rating, disc
             <img
               src={iconBack}
               alt="icon Backpack"
-              onClick={handleAddClick}
+              onClick={(e) => {
+                e.preventDefault(); 
+                e.stopPropagation();
+                handleAddClick();
+              }}
             />
           )}
         </span>

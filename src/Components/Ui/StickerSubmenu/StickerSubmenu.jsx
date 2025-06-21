@@ -46,13 +46,14 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
   return (
     <>
       <div className="sticker-submenu">
-        <Link to={`/products?category=${encodeURIComponent("Calcomanías")}`} className='submenu-title-sticker'>
+        <Link to={`/products?category=${encodeURIComponent("Calcomanías")}`} className='submenu-title-sticker' 
+        onClick={onCloseSubmenu}>
           <h2>Calcomanías</h2>
           <span>Ver más </span>
         </Link>
 
         <div className="container-stickers2">
-          <Link to={`/products?category=${encodeURIComponent("Calcomanías")}`} className="submenu-item">
+          <Link to={`/products?category=${encodeURIComponent("Calcomanías")}`} className="submenu-item" onClick={onCloseSubmenu}>
             <img src={img1} alt="Sticker" />
             <p>Calcomanías</p>
           </Link>
