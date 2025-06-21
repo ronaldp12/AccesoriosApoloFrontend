@@ -21,16 +21,14 @@ export const ProductPage = () => {
     const categoryFromURL = queryParams.get("category");
     const subcategoryFromURL = queryParams.get("subcategory");
 
-    if (categoryFromURL) setSelectedCategory(categoryFromURL);
-    if (subcategoryFromURL) setSelectedSubcategory(subcategoryFromURL);
+    if (categoryFromURL) setSelectedCategory(decodeURIComponent(categoryFromURL));
+    if (subcategoryFromURL) setSelectedSubcategory(decodeURIComponent(subcategoryFromURL));
   }, [location.search]);
 
-  // Cerrar filtro mobile si se hace clic en el overlay
   const handleOverlayClick = () => {
     setShowMobileFilter(false);
   };
 
-  // Filtrado dinámico
   const filteredProducts = allProducts.filter((p) => {
     if (selectedCategory && selectedSubcategory) {
       return (
@@ -61,7 +59,7 @@ export const ProductPage = () => {
           </div>
 
           <div className="img-category-container">
-            <h2>CASCOS</h2>
+            <h2>{selectedCategory ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).toLowerCase() : "Productos"}</h2>
             <img className="img-category" src={img1} alt="img categoria" />
             <div className="logo-brand-container">
               <img className="logo-category-1" src={logo1} alt="logo 1" />

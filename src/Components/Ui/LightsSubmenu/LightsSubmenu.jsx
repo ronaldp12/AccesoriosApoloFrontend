@@ -10,53 +10,47 @@ import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
+import { Link } from 'react-router-dom';
 
 export const LightsSubmenu = () => {
+
+    const lightItems = [
+        { label: "Bombillos", imgs: [img1] },
+        { label: "Exploradoras", imgs: [img2] },
+        { label: "Direccionales", imgs: [img3, img32] },
+        { label: "Luces LED", imgs: [img4] }
+    ];
+
+    const lightBrandLogos = [logo1, logo2, logo3, logo4, logo5];
+
     return (
         <>
 
             <div className="light-submenu">
 
-                <div className='submenu-title-light'>
+                <Link to={`/products?category=${encodeURIComponent("Luces")}`} className='submenu-title-light'>
                     <h2>Luces</h2>
                     <span>Ver más </span>
-                </div>
+                </Link>
 
                 <div className="container-lights2">
-
-                    <div className="submenu-item">
-                        <img src={img1} alt="Bombillos" />
-                        <p>Bombillos</p>
-                    </div>
-
-                    <div className="submenu-item">
-                        <img src={img2} alt="Exploradoras" />
-                        <p>Exploradoras</p>
-                    </div>
-
-                    <div className="submenu-item">
-                        <img src={img3} alt="Direccionales" />
-                        <img src={img32} alt="Direccionales" />
-                        <p>Direccionales</p>
-                    </div>
-
-                    <div className="submenu-item">
-                        <img src={img4} alt="Luces LED" />
-                        <p>Luces LED</p>
-                    </div>
-
+                    {lightItems.map((item) => (
+                        <Link to={`/products?category=${encodeURIComponent("Luces")}&subcategory=${encodeURIComponent(item.label)}`} key={item.label} className="submenu-item">
+                            {item.imgs.map((src, i) => (
+                                <img key={i} src={src} alt={item.label} />
+                            ))}
+                            <p>{item.label}</p>
+                        </Link>
+                    ))}
                 </div>
 
                 <div className="container-brands">
                     <p>Marcas destacadas</p>
                     <div className='brands-logos'>
-                        <img className='logo1' src={logo1} alt="brand" />
-                        <img className='logo2' src={logo2} alt="brand" />
-                        <img className='logo3' src={logo3} alt="brand" />
-                        <img className='logo4' src={logo4} alt="brand" />
-                        <img className='logo5' src={logo5} alt="brand" />
+                        {lightBrandLogos.map((logo, i) => (
+                            <img key={i} className={`logo${i + 1}`} src={logo} alt={`brand logo ${i + 1}`} />
+                        ))}
                     </div>
-
                 </div>
             </div>
 

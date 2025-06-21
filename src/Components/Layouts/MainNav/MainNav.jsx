@@ -42,7 +42,7 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         onClick={equipmentMenu.handleClick}
       >
         <Item styleLi="item-extend">
-          <span className="nav-cascos">Equipacion Carretera</span>
+          <span className="nav-cascos">Equipación Carretera</span>
         </Item>
         {equipmentMenu.isOpen && <EquipmentRideSubmenu />}
       </div>

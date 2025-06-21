@@ -1,66 +1,53 @@
 import '../CleaningSubmenu/CleaningSubmenu.css';
-import img1 from '../../../assets/images/img1-light.png';
-import img2 from '../../../assets/images/img2-light.png';
-import img3 from '../../../assets/images/img3-light.png';
-import img32 from '../../../assets/images/img3.2-light.png';
-import img4 from '../../../assets/images/img4-light.png';
+import img1 from '../../../assets/images/img1-cleaning.png';
+import img2 from '../../../assets/images/img2-cleaning.png';
+import img3 from '../../../assets/images/img3-cleaning.png';
+import img4 from '../../../assets/images/img4-cleaning.png';
 
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
+import { Link } from 'react-router-dom';
 
 export const CleaningSubmenu = () => {
+    const cleaningItems = [
+        { label: "Desengrasante", imgs: [img1] },
+        { label: "Restaurador partes negras", imgs: [img2] },
+        { label: "Silicona", imgs: [img3] },
+        { label: "Shampoo", imgs: [img4] },
+        { label: "Ambientador", imgs: [img4] }
+    ];
+
+    const cleaningBrandLogos = [logo1, logo2, logo3, logo4, logo5];
+
     return (
-        <>
+        <div className="cleaning-submenu">
+            <Link to={`/products?category=${encodeURIComponent("Limpieza")}`} className='submenu-title-cleaning'>
+                <h2>Limpieza</h2>
+                <span>Ver más </span>
+            </Link>
 
-            <div className="cleaning-submenu">
-
-                <div className='submenu-title-cleaning'>
-                    <h2>Limpieza</h2>
-                    <span>Ver más </span>
-                </div>
-
-                <div className="container-cleaning2">
-
-                    <div className="submenu-item">
-                        <img src={img1} alt="Bombillos" />
-                        <p>Bombillos</p>
-                    </div>
-
-                    <div className="submenu-item">
-                        <img src={img2} alt="Exploradoras" />
-                        <p>Exploradoras</p>
-                    </div>
-
-                    <div className="submenu-item">
-                        <img src={img3} alt="Direccionales" />
-                        <img src={img32} alt="Direccionales" />
-                        <p>Direccionales</p>
-                    </div>
-
-                    <div className="submenu-item">
-                        <img src={img4} alt="Luces LED" />
-                        <p>Luces LED</p>
-                    </div>
-
-                </div>
-
-                <div className="container-brands">
-                    <p>Marcas destacadas</p>
-                    <div className='brands-logos'>
-                        <img className='logo1' src={logo1} alt="brand" />
-                        <img className='logo2' src={logo2} alt="brand" />
-                        <img className='logo3' src={logo3} alt="brand" />
-                        <img className='logo4' src={logo4} alt="brand" />
-                        <img className='logo5' src={logo5} alt="brand" />
-                    </div>
-
-                </div>
+            <div className="container-cleaning2">
+                {cleaningItems.map((item) => (
+                    <Link to={`/products?category=${encodeURIComponent("Limpieza")}&subcategory=${encodeURIComponent(item.label)}`} key={item.label} className="submenu-item">
+                        {item.imgs.map((src, i) => (
+                            <img key={i} src={src} alt={item.label} />
+                        ))}
+                        <p>{item.label}</p>
+                    </Link>
+                ))}
             </div>
 
-        </>
-
+            <div className="container-brands">
+                <p>Marcas destacadas</p>
+                <div className='brands-logos'>
+                    {cleaningBrandLogos.map((logo, i) => (
+                        <img key={i} className={`logo${i + 1}`} src={logo} alt={`brand logo ${i + 1}`} />
+                    ))}
+                </div>
+            </div>
+        </div>
     );
 };

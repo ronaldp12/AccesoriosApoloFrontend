@@ -31,11 +31,13 @@
     text-transform: uppercase;
     display: flex;
     gap: 6px;
-    padding-left: 5rem
+    padding-left: 5rem;
+    text-decoration: none;
 }
 
 .submenu-title-light h2{
     padding-left: 7rem;
+    color: black;
 }
 
 .submenu-title-light span {

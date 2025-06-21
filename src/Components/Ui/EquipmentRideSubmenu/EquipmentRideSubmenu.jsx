@@ -12,65 +12,51 @@ import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
+import { Link } from "react-router-dom";
 
 export const EquipmentRideSubmenu = () => {
+
+  const equipmentItems = [
+    { label: "Chaquetas", img: img1 },
+    { label: "Impermeables", img: img2 },
+    { label: "Cuello y Rostro", img: img3 },
+    { label: "Chaleco", img: img4 },
+    { label: "Guantes", img: img5 },
+    { label: "Mangas", img: img6 },
+    { label: "Botas", img: img7 }
+  ];
+
+  const equipmentRideBrandLogos = [logo1, logo2, logo3, logo4, logo5];
+
   return (
     <>
 
       <div className="equipment-submenu">
 
-        <div className='submenu-title-equipment'>
+        <Link to={`/products?category=${encodeURIComponent("Equipacion Carretera")}`} className='submenu-title-equipment'>
           <h2>Equipación Carretera</h2>
           <span>Ver más </span>
-        </div>
+        </Link>
 
         <div className="container-equipment2">
-
-          <div className="submenu-item">
-            <img src={img1} alt="equipment1" />
-            <p>Chaquetas</p>
-          </div>
-
-          <div className="submenu-item">
-            <img src={img2} alt="equipment1" />
-            <p>Impermeables</p>
-          </div>
-
-          <div className="submenu-item">
-            <img src={img3} alt="equipment1" />
-            <p>Cuello y Rostro</p>
-          </div>
-
-          <div className="submenu-item">
-            <img src={img4} alt="equipment1" />
-            <p>Chaleco</p>
-          </div>
-
-          <div className="submenu-item">
-            <img src={img5} alt="equipment1" />
-            <p>Guantes</p>
-          </div>
-
-          <div className="submenu-item">
-            <img src={img6} alt="equipment1" />
-            <p>Mangas</p>
-          </div>
-
-          <div className="submenu-item">
-            <img src={img7} alt="equipment1" />
-            <p>Botas</p>
-          </div>
-
+          {equipmentItems.map((item) => (
+            <Link
+              key={item.label}
+              to={`/products?category=${encodeURIComponent("Equipacion Carretera")}&subcategory=${encodeURIComponent(item.label)}`}
+              className="submenu-item"
+            >
+              <img src={item.img} alt={`equipment - ${item.label}`} />
+              <p>{item.label}</p>
+            </Link>
+          ))}
         </div>
 
         <div className="container-brands">
           <p>Marcas destacadas</p>
           <div className='brands-logos'>
-            <img className='logo1' src={logo1} alt="brand" />
-            <img className='logo2' src={logo2} alt="brand" />
-            <img className='logo3' src={logo3} alt="brand" />
-            <img className='logo4' src={logo4} alt="brand" />
-            <img className='logo5' src={logo5} alt="brand" />
+            {equipmentRideBrandLogos.map((logo, i) => (
+              <img key={i} className={`logo${i + 1}`} src={logo} alt={`brand logo ${i + 1}`} />
+            ))}
           </div>
 
         </div>

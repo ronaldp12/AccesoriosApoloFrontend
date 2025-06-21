@@ -60,11 +60,11 @@ export const ProductDetailPage = () => {
                     </button>
 
                     {/* Indicadores de puntos */}
-                    <div className="dots-container">
+                    <div className="dots-container-product-detail">
                         {product.image.map((_, index) => (
                             <button
                                 key={index}
-                                className={`dot ${index === currentImageIndex ? 'active' : ''}`}
+                                className={`dot-product-detail ${index === currentImageIndex ? 'active' : ''}`}
                                 onClick={() => goToImage(index)}
                             />
                         ))}

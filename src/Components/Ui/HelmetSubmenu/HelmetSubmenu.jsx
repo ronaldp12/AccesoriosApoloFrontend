@@ -13,53 +13,47 @@ import logo5 from '../../../assets/images/img5-marca.png';
 import { Link } from "react-router-dom";
 
 export const HelmetSubmenu = () => {
+
+  const helmetItems = [
+    { label: "Novedades", img: img1 },
+    { label: "Integral", img: img2 },
+    { label: "Abatible", img: img3 },
+    { label: "Abierto", img: img4 },
+    { label: "Cross", img: img5 }
+  ];
+
+  const helmetBrandLogos = [logo1, logo2, logo3, logo4, logo5];
+
   return (
     <>
 
       <div className="helmets-submenu">
 
-        <Link to="/products" className='submenu-title'>
+        <Link to={`/products?category=${encodeURIComponent("Cascos")}`} className='submenu-title'>
           <h2>Cascos</h2>
           <span>Ver más </span>
         </Link>
 
         <div className="container-helmets2">
-
-          <Link to="/products?category=Cascos&subcategory=novedades" className="submenu-item">
-            <img src={img1} alt="Helmet 1" />
-            <p>Novedades</p>
-          </Link>
-
-          <Link to="/products?category=Cascos&subcategory=integral" className="submenu-item">
-            <img src={img2} alt="Helmet 1" />
-            <p>Integral</p>
-          </Link>
-
-          <Link to="/products?category=Cascos&subcategory=abatible" className="submenu-item">
-            <img src={img3} alt="Helmet 1" />
-            <p>Abatible</p>
-          </Link>
-
-          <Link to="/products?category=Cascos&subcategory=abierto" className="submenu-item">
-            <img src={img4} alt="Helmet 1" />
-            <p>Abierto</p>
-          </Link>
-
-          <Link to="/products?category=Cascos&subcategory=cross" className="submenu-item" >
-            <img src={img5} alt="Helmet 1" />
-            <p>Cross</p>
-          </Link>
-
+          {helmetItems.map((item) => (
+            <Link
+              key={item.label}
+              to={`/products?category=${encodeURIComponent("Cascos")}&subcategory=${encodeURIComponent(item.label)}`}
+              className="submenu-item"
+            >
+              <img src={item.img} alt={`Helmet ${item.label}`} />
+              <p>{item.label}</p>
+            </Link>
+          ))}
         </div>
+
 
         <div className="container-brands">
           <p>Marcas destacadas</p>
           <div className='brands-logos'>
-            <img className='logo1' src={logo1} alt="brand" />
-            <img className='logo2' src={logo2} alt="brand" />
-            <img className='logo3' src={logo3} alt="brand" />
-            <img className='logo4' src={logo4} alt="brand" />
-            <img className='logo5' src={logo5} alt="brand" />
+            {helmetBrandLogos.map((logo, i) => (
+              <img key={i} className={`logo${i + 1}`} src={logo} alt={`brand logo ${i + 1}`} />
+            ))}
           </div>
 
         </div>

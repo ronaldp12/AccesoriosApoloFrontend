@@ -2313,7 +2313,7 @@ export const products = [
   {
     id: 106,
     category: "Limpieza",
-    subcategory: "Desengrasantes",
+    subcategory: "Desengrasante",
     slug: "desengrasantes-1",
     image: [
       "/images/desengrasantes-1_1.png",
@@ -2335,7 +2335,7 @@ export const products = [
   {
     id: 107,
     category: "Limpieza",
-    subcategory: "Desengrasantes",
+    subcategory: "Desengrasante",
     slug: "desengrasantes-2",
     image: [
       "/images/desengrasantes-2_1.png",
@@ -2357,7 +2357,7 @@ export const products = [
   {
     id: 108,
     category: "Limpieza",
-    subcategory: "Desengrasantes",
+    subcategory: "Desengrasante",
     slug: "desengrasantes-3",
     image: [
       "/images/desengrasantes-3_1.png",
@@ -2379,7 +2379,7 @@ export const products = [
   {
     id: 109,
     category: "Limpieza",
-    subcategory: "Desengrasantes",
+    subcategory: "Desengrasante",
     slug: "desengrasantes-4",
     image: [
       "/images/desengrasantes-4_1.png",
@@ -2401,7 +2401,7 @@ export const products = [
   {
     id: 110,
     category: "Limpieza",
-    subcategory: "Desengrasantes",
+    subcategory: "Desengrasante",
     slug: "desengrasantes-5",
     image: [
       "/images/desengrasantes-5_1.png",
@@ -2423,7 +2423,7 @@ export const products = [
   {
     id: 111,
     category: "Limpieza",
-    subcategory: "Pulidores",
+    subcategory: "Restaurador partes negras",
     slug: "pulidores-1",
     image: [
       "/images/pulidores-1_1.png",
@@ -2445,7 +2445,7 @@ export const products = [
   {
     id: 112,
     category: "Limpieza",
-    subcategory: "Pulidores",
+    subcategory: "Restaurador partes negras",
     slug: "pulidores-2",
     image: [
       "/images/pulidores-2_1.png",
@@ -2467,7 +2467,7 @@ export const products = [
   {
     id: 113,
     category: "Limpieza",
-    subcategory: "Pulidores",
+    subcategory: "Restaurador partes negras",
     slug: "pulidores-3",
     image: [
       "/images/pulidores-3_1.png",
@@ -2489,7 +2489,7 @@ export const products = [
   {
     id: 114,
     category: "Limpieza",
-    subcategory: "Pulidores",
+    subcategory: "Restaurador partes negras",
     slug: "pulidores-4",
     image: [
       "/images/pulidores-4_1.png",
@@ -2511,7 +2511,7 @@ export const products = [
   {
     id: 115,
     category: "Limpieza",
-    subcategory: "Pulidores",
+    subcategory: "Restaurador partes negras",
     slug: "pulidores-5",
     image: [
       "/images/pulidores-5_1.png",
@@ -2533,7 +2533,7 @@ export const products = [
   {
     id: 116,
     category: "Limpieza",
-    subcategory: "Limpiadores",
+    subcategory: "Silicona",
     slug: "limpiadores-1",
     image: [
       "/images/limpiadores-1_1.png",
@@ -2555,7 +2555,7 @@ export const products = [
   {
     id: 117,
     category: "Limpieza",
-    subcategory: "Limpiadores",
+    subcategory: "Silicona",
     slug: "limpiadores-2",
     image: [
       "/images/limpiadores-2_1.png",
@@ -2577,7 +2577,7 @@ export const products = [
   {
     id: 118,
     category: "Limpieza",
-    subcategory: "Limpiadores",
+    subcategory: "Silicona",
     slug: "limpiadores-3",
     image: [
       "/images/limpiadores-3_1.png",
@@ -2599,7 +2599,7 @@ export const products = [
   {
     id: 119,
     category: "Limpieza",
-    subcategory: "Limpiadores",
+    subcategory: "Silicona",
     slug: "limpiadores-4",
     image: [
       "/images/limpiadores-4_1.png",
@@ -2621,7 +2621,7 @@ export const products = [
   {
     id: 120,
     category: "Limpieza",
-    subcategory: "Limpiadores",
+    subcategory: "Silicona",
     slug: "limpiadores-5",
     image: [
       "/images/limpiadores-5_1.png",
@@ -2643,7 +2643,7 @@ export const products = [
   {
     id: 121,
     category: "Limpieza",
-    subcategory: "Ceras",
+    subcategory: "Shampoo",
     slug: "ceras-1",
     image: [
       "/images/ceras-1_1.png",
@@ -2665,7 +2665,7 @@ export const products = [
   {
     id: 122,
     category: "Limpieza",
-    subcategory: "Ceras",
+    subcategory: "Shampoo",
     slug: "ceras-2",
     image: [
       "/images/ceras-2_1.png",
@@ -2687,7 +2687,7 @@ export const products = [
   {
     id: 123,
     category: "Limpieza",
-    subcategory: "Ceras",
+    subcategory: "Shampoo",
     slug: "ceras-3",
     image: [
       "/images/ceras-3_1.png",
@@ -2709,7 +2709,7 @@ export const products = [
   {
     id: 124,
     category: "Limpieza",
-    subcategory: "Ceras",
+    subcategory: "Shampoo",
     slug: "ceras-4",
     image: [
       "/images/ceras-4_1.png",
@@ -2731,7 +2731,7 @@ export const products = [
   {
     id: 125,
     category: "Limpieza",
-    subcategory: "Ceras",
+    subcategory: "Shampoo",
     slug: "ceras-5",
     image: [
       "/images/ceras-5_1.png",
@@ -2740,7 +2740,117 @@ export const products = [
       "/images/ceras-5_4.png"
     ],
     brand: "LS2",
-    title: "Ceras Producto 5",
+    title: "Shampoo Producto 5",
+    price: 100000,
+    rating: 1,
+    discount: "25%",
+    originalPrice: 125000,
+    currentPrice: 100000,
+    reviews: 20,
+    installments: "Desde 8333 COP/mes sin intereses"
+  },
+
+  {
+    id: 126,
+    category: "Limpieza",
+    subcategory: "Ambientador",
+    slug: "ceras-1",
+    image: [
+      "/images/ceras-1_1.png",
+      "/images/ceras-1_2.png",
+      "/images/ceras-1_3.png",
+      "/images/ceras-1_4.png"
+    ],
+    brand: "Shaft",
+    title: "Ambientador Producto 1",
+    price: 60000,
+    rating: 2,
+    discount: "5%",
+    originalPrice: 63000,
+    currentPrice: 60000,
+    reviews: 12,
+    installments: "Desde 5000 COP/mes sin intereses"
+  },
+
+  {
+    id: 127,
+    category: "Limpieza",
+    subcategory: "Ambientador",
+    slug: "ceras-2",
+    image: [
+      "/images/ceras-2_1.png",
+      "/images/ceras-2_2.png",
+      "/images/ceras-2_3.png",
+      "/images/ceras-2_4.png"
+    ],
+    brand: "Alpinestars",
+    title: "Ambientador Producto 2",
+    price: 70000,
+    rating: 3,
+    discount: "10%",
+    originalPrice: 77000,
+    currentPrice: 70000,
+    reviews: 14,
+    installments: "Desde 5833 COP/mes sin intereses"
+  },
+
+  {
+    id: 128,
+    category: "Limpieza",
+    subcategory: "Ambientador",
+    slug: "ceras-3",
+    image: [
+      "/images/ceras-3_1.png",
+      "/images/ceras-3_2.png",
+      "/images/ceras-3_3.png",
+      "/images/ceras-3_4.png"
+    ],
+    brand: "Osram",
+    title: "Ambientador Producto 3",
+    price: 80000,
+    rating: 4,
+    discount: "15%",
+    originalPrice: 92000,
+    currentPrice: 80000,
+    reviews: 16,
+    installments: "Desde 6666 COP/mes sin intereses"
+  },
+
+  {
+    id: 129,
+    category: "Limpieza",
+    subcategory: "Ambientador",
+    slug: "ceras-4",
+    image: [
+      "/images/ceras-4_1.png",
+      "/images/ceras-4_2.png",
+      "/images/ceras-4_3.png",
+      "/images/ceras-4_4.png"
+    ],
+    brand: "Street",
+    title: "Ambientador Producto 4",
+    price: 90000,
+    rating: 5,
+    discount: "20%",
+    originalPrice: 108000,
+    currentPrice: 90000,
+    reviews: 18,
+    installments: "Desde 7500 COP/mes sin intereses"
+  },
+
+  {
+    id: 130,
+    category: "Limpieza",
+    subcategory: "Ambientador",
+    slug: "ceras-5",
+    image: [
+      "/images/ceras-5_1.png",
+      "/images/ceras-5_2.png",
+      "/images/ceras-5_3.png",
+      "/images/ceras-5_4.png"
+    ],
+    brand: "LS2",
+    title: "Ambientador Producto 5",
     price: 100000,
     rating: 1,
     discount: "25%",
