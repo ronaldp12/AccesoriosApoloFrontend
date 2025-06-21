@@ -1,7 +1,7 @@
-.cleaning-submenu {
+.accesories-submenu {
     position: absolute;
     top: 100%;
-    left: -70rem;
+    left: -43rem;
     width: 100rem;
     padding-top: 2rem;
     background-color: white;
@@ -15,39 +15,35 @@
     display: flex;
 }
 
-.container-cleaning2 {
+.container-accesories2 {
     display: flex;
     flex-direction: row;
     justify-content: left;
     align-items: center;
     flex-wrap: wrap;
-    padding-left: 17rem;
+    padding-left: 23rem;
     padding-top: 1rem;
 }
 
-.submenu-title-cleaning {
+.submenu-title-accesories {
     width: 100%;
     text-align: left;
     text-transform: uppercase;
     display: flex;
     gap: 6px;
-    padding-left: 5rem;
+    padding-left: 8rem;
+    color: black;
     text-decoration: none;
 }
 
-.submenu-title-cleaning h2 {
-    padding-left: 7rem;
-    color: black;
-}
-
-.submenu-title-cleaning span {
+.submenu-title-accesories span {
     width: 15%;
     font-size: 12px;
     padding-top: 1.1rem;
     color: #014aad;
 }
 
-.submenu-title-cleaning span:hover {
+.submenu-title-accesories span:hover {
     text-decoration: underline;
     cursor: pointer;
 }
@@ -60,7 +56,7 @@
 }
 
 .submenu-item img {
-    width: 80px;
+    width: 110px !important;
     height: 80px;
     object-fit: contain;
     margin-bottom: 8px;
@@ -90,11 +86,6 @@
 
 .brands-logos {
     width: 50%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
 }
 
 .logo1 {
@@ -129,7 +120,7 @@
 }
 
 @media (max-width: 394px) {
-    .cleaning-submenu {
+    .accesories-submenu {
         position: static;
         width: 90%;
         margin-top: 0;
@@ -139,7 +130,7 @@
         margin-bottom: 6px;
     }
 
-    .container-cleaning2 {
+    .container-accesories2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -151,18 +142,14 @@
         margin: 10px 0;
     }
 
-    .submenu-title-cleaning {
+    .submenu-title-accesories {
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding-left: 0;
     }
 
-    .submenu-title-cleaning h2 {
-        padding-left: 0;
-    }
-
-    .submenu-title-cleaning span {
+    .submenu-title-accesories span {
         width: auto;
         padding-top: 0.5rem;
     }
@@ -182,45 +169,16 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.6rem;
     }
 
-    .logo1 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
+    .container-brands img {
+        width: 60px;
+        height: 60px;
     }
-
-    .logo2 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-    }
-
-    .logo5 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-    }
-
 }
 
 @media (min-width: 395px) and (max-width: 431px) {
-    .cleaning-submenu {
+    .accesories-submenu {
         position: static;
         width: 15.2rem;
         margin-top: 0;
@@ -230,7 +188,7 @@
         margin-bottom: 8px;
     }
 
-    .container-cleaning2 {
+    .container-accesories2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -242,18 +200,14 @@
         margin: 10px 0;
     }
 
-    .submenu-title-cleaning {
+    .submenu-title-accesories {
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding-left: 0;
     }
 
-    .submenu-title-cleaning h2 {
-        padding-left: 0;
-    }
-
-    .submenu-title-cleaning span {
+    .submenu-title-accesories span {
         width: auto;
         padding-top: 0.5rem;
     }
@@ -273,49 +227,16 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.6rem;
     }
 
     .container-brands img {
         width: 60px;
         height: 60px;
     }
-
-    .logo1 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
-
-    .logo2 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
-
-    .logo5 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
 }
 
 @media (min-width: 432px) and (max-width: 481px) {
-    .cleaning-submenu {
+    .accesories-submenu {
         position: static;
         width: 16.3rem;
         margin-top: 0;
@@ -325,7 +246,7 @@
         margin-bottom: 8px;
     }
 
-    .container-cleaning2 {
+    .container-accesories2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -337,18 +258,14 @@
         margin: 10px 0;
     }
 
-    .submenu-title-cleaning {
+    .submenu-title-accesories {
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding-left: 0;
     }
 
-    .submenu-title-cleaning h2 {
-        padding-left: 0;
-    }
-
-    .submenu-title-cleaning span {
+    .submenu-title-accesories span {
         width: auto;
         padding-top: 0.5rem;
     }
@@ -368,49 +285,16 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.6rem;
     }
 
     .container-brands img {
         width: 60px;
         height: 60px;
     }
-
-    .logo1 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-    }
-
-    .logo2 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-    }
-
-    .logo5 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-    }
 }
 
 @media (min-width: 482px) and (max-width: 821px) {
-    .cleaning-submenu {
+    .accesories-submenu {
         position: static;
         width: 18rem;
         margin-top: 0;
@@ -420,7 +304,7 @@
         margin-bottom: 8px;
     }
 
-    .container-cleaning2 {
+    .container-accesories2 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -432,7 +316,7 @@
         margin: 10px 0;
     }
 
-    .submenu-title-cleaning {
+    .submenu-title-accesories {
         flex-direction: column;
         align-items: center;
         text-align: center;
@@ -440,11 +324,7 @@
         padding-left: 0;
     }
 
-    .submenu-title-cleaning h2 {
-        padding-left: 0;
-    }
-
-    .submenu-title-cleaning span {
+    .submenu-title-accesories span {
         width: auto;
         padding-top: 0.5rem;
         font-size: 15px;
@@ -465,43 +345,10 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.6rem;
     }
 
     .container-brands img {
         width: 60px;
         height: 60px;
-    }
-
-    .logo1 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-    }
-
-    .logo2 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-    }
-
-    .logo5 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
     }
 }

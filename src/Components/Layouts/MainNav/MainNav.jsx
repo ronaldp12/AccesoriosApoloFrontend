@@ -7,6 +7,7 @@ import { StickerSubmenu } from '../../Ui/StickerSubmenu/StickerSubmenu.jsx';
 import { LightsSubmenu } from '../../Ui/LightsSubmenu/LightsSubmenu.jsx';
 import { CleaningSubmenu } from '../../Ui/CleaningSubmenu/CleaningSubmenu.jsx';
 import { BrandSubmenu } from '../../Ui/BrandSubmenu/BrandSubmenu.jsx';
+import { AccesoriesSubmenu } from '../../Ui/AccesoriesSubmenu/AccesoriesSubmenu.jsx';
 
 export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
   const helmetMenu = useSubmenu();
@@ -15,6 +16,7 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
   const stickerMenu = useSubmenu();
   const lightMenu = useSubmenu();
   const cleaningMenu = useSubmenu();
+  const accesoriesMenu= useSubmenu();
 
   return (
     <div className={styleContainer}>
@@ -47,7 +49,18 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         {equipmentMenu.isOpen && <EquipmentRideSubmenu onCloseSubmenu={() => equipmentMenu.handleHover(false)} />}
       </div>
 
-      <Item styleLi="item" contenido="Accesorios" />
+      <div
+        className="container-helmets"
+        ref={accesoriesMenu.submenuRef}
+        onMouseEnter={() => accesoriesMenu.handleHover(true)}
+        onMouseLeave={() => accesoriesMenu.handleHover(false)}
+        onClick={accesoriesMenu.handleClick}
+      >
+        <Item styleLi="item">
+          <span className="nav-cascos">Accesorios</span>
+        </Item>
+        {accesoriesMenu.isOpen && <AccesoriesSubmenu onCloseSubmenu={() => accesoriesMenu.handleHover(false)} />}
+      </div>
 
       <div
         className="container-brand"

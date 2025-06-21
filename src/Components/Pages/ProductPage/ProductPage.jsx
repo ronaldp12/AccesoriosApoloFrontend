@@ -3,12 +3,17 @@ import { products as allProducts } from "../../products";
 import { ProductGrid } from "../../Ui/ProductGrid/ProductGrid";
 import { useLocation } from "react-router-dom";
 import "./ProductPage.css";
-import img1 from "../../../assets/images/img1-helmet-product.png"
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img42-marca.png';
 import { ProductFilterSidebar } from "../../Ui/ProductFilterSidebar/ProductFilterSideBar";
+import imgHelmet from "../../../assets/images/img1-helmet-product.png";
+import imgEquipment from "../../../assets/images/img1-equipment-ride-product.png";
+import imgCleaning from "../../../assets/images/img1-cleaning-product.png";
+import imgLight from "../../../assets/images/img1-light-product.png";
+import imgDefault from "../../../assets/images/img1-helmet-product.png";
+
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -24,6 +29,21 @@ export const ProductPage = () => {
     if (categoryFromURL) setSelectedCategory(decodeURIComponent(categoryFromURL));
     if (subcategoryFromURL) setSelectedSubcategory(decodeURIComponent(subcategoryFromURL));
   }, [location.search]);
+
+  const getCategoryImage = (category) => {
+    switch (category) {
+      case "Cascos":
+        return imgHelmet;
+      case "Equipacion Carretera":
+        return imgEquipment;
+      case "Limpieza":
+        return imgCleaning;
+      case "Luces":
+        return imgLight;
+      default:
+        return imgDefault;
+    }
+  };
 
   const handleOverlayClick = () => {
     setShowMobileFilter(false);
@@ -60,7 +80,12 @@ export const ProductPage = () => {
 
           <div className="img-category-container">
             <h2>{selectedCategory ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).toLowerCase() : "Productos"}</h2>
-            <img className="img-category" src={img1} alt="img categoria" />
+            <img
+              className="img-category"
+              src={getCategoryImage(selectedCategory)}
+              alt={`Imagen de categoría ${selectedCategory}`}
+            />
+
             <div className="logo-brand-container">
               <img className="logo-category-1" src={logo1} alt="logo 1" />
               <img className="logo-category-1" src={logo2} alt="logo 2" />

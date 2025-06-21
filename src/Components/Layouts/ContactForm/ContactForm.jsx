@@ -15,7 +15,6 @@ export const ContactForm = () => {
     const [animatedElements, setAnimatedElements] = useState(new Set());
     const sectionRef = useRef(null);
 
-    // Función para animar elementos internos
     const animateInternalElements = () => {
         if (!sectionRef.current) return;
 
@@ -29,7 +28,6 @@ export const ContactForm = () => {
             sectionRef.current.querySelector('.submit-btn-contact-form')
         ].filter(Boolean);
 
-        // Inicializar todos los elementos con opacity 0
         elements.forEach(el => {
             if (el) {
                 el.style.opacity = '0';
@@ -38,7 +36,6 @@ export const ContactForm = () => {
             }
         });
 
-        // Animar elementos secuencialmente
         setTimeout(() => {
             const img = sectionRef.current?.querySelector('.logo-contact-form .img-background-contact-form');
             if (img) {
@@ -63,7 +60,6 @@ export const ContactForm = () => {
             }
         }, 300);
 
-        // Animar form-rows
         const formRows = sectionRef.current?.querySelectorAll('.form-row');
         formRows?.forEach((row, index) => {
             setTimeout(() => {
@@ -72,14 +68,12 @@ export const ContactForm = () => {
             }, 400 + (index * 100));
         });
 
-        // Animar contact method
         setTimeout(() => {
             const contactMethod = sectionRef.current?.querySelector('.contact-method');
             if (contactMethod) {
                 contactMethod.style.opacity = '1';
                 contactMethod.style.transform = 'translateY(0)';
 
-                // Animar opciones de contacto
                 const options = contactMethod.querySelectorAll('.contact-option');
                 options.forEach((option, index) => {
                     setTimeout(() => {
@@ -90,7 +84,6 @@ export const ContactForm = () => {
             }
         }, 700);
 
-        // Animar checkbox de términos
         setTimeout(() => {
             const termsCheckbox = sectionRef.current?.querySelector('.terms-checkbox');
             if (termsCheckbox) {
@@ -99,7 +92,6 @@ export const ContactForm = () => {
             }
         }, 800);
 
-        // Animar botón de envío
         setTimeout(() => {
             const submitBtn = sectionRef.current?.querySelector('.submit-btn-contact-form');
             if (submitBtn) {
@@ -123,7 +115,7 @@ export const ContactForm = () => {
                     element.classList.add('animate-in');
 
                     if (element.classList.contains('contact-form-container')) {
-                        // Ejecutar animaciones internas cuando el contenedor sea visible
+
                         setTimeout(() => {
                             animateInternalElements();
                         }, 200);

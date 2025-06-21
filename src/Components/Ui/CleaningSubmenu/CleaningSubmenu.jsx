@@ -3,6 +3,7 @@ import img1 from '../../../assets/images/img1-cleaning.png';
 import img2 from '../../../assets/images/img2-cleaning.png';
 import img3 from '../../../assets/images/img3-cleaning.png';
 import img4 from '../../../assets/images/img4-cleaning.png';
+import img5 from '../../../assets/images/img5-cleaning.png';
 
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
@@ -17,7 +18,7 @@ export const CleaningSubmenu = ({ onCloseSubmenu }) => {
         { label: "Restaurador partes negras", imgs: [img2] },
         { label: "Silicona", imgs: [img3] },
         { label: "Shampoo", imgs: [img4] },
-        { label: "Ambientador", imgs: [img4] }
+        { label: "Ambientador", imgs: [img5] }
     ];
 
     const cleaningBrandLogos = [logo1, logo2, logo3, logo4, logo5];
