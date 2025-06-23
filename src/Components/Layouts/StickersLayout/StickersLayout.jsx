@@ -16,7 +16,8 @@ export const StickersLayout = () => {
         setCroppedImage,
         isCropping,
         setIsCropping,
-        saveSticker
+        saveSticker,
+        isLoading
     } = useContext(context);
 
     const navigate = useNavigate();
@@ -25,9 +26,9 @@ export const StickersLayout = () => {
     const isUploadRoute = location.pathname.includes('/upload');
     const isGalleryRoute = location.pathname.includes('/gallery');
 
-    const handleAddSticker = () => {
+    const handleAddSticker = async () => {
         if (selectedImage) {
-            saveSticker();
+            await saveSticker();
         } else {
             navigate('/stickers/upload');
         }
@@ -39,9 +40,9 @@ export const StickersLayout = () => {
         }
     };
 
-    const handleSaveClick = () => {
+    const handleSaveClick = async () => {
         if (isUploadRoute && selectedImage) {
-            saveSticker();
+            await saveSticker();
         }
     };
 
@@ -56,16 +57,17 @@ export const StickersLayout = () => {
                         <button
                             className="sticker-upload-btn-secondary"
                             onClick={handleAddSticker}
+                            disabled={isLoading}
                         >
-                            AGREGAR
+                            {isLoading ? 'GUARDANDO...' : 'AGREGAR'}
                         </button>
                         <button
                             className="sticker-upload-btn-primary"
                             onClick={() => setConfigModalOpen(true)}
+                            disabled={isLoading}
                         >
                             COMPRAR
                         </button>
-
                     </div>
                 </div>
 
@@ -73,37 +75,35 @@ export const StickersLayout = () => {
                     <aside className="sticker-upload-sidebar">
                         <div
                             className={`sticker-upload-sidebar-item ${isUploadRoute ? 'active' : ''}`}
-                            onClick={() => navigate('/stickers/upload')}
+                            onClick={() => !isLoading && navigate('/stickers/upload')}
                         >
                             <Upload size={20} />
                             <span>Subir archivo</span>
                         </div>
 
                         <div
-                            className={`sticker-upload-sidebar-item ${(isGalleryRoute || !selectedImage) ? 'disabled' : ''}`}
+                            className={`sticker-upload-sidebar-item ${(isGalleryRoute || !selectedImage || isLoading) ? 'disabled' : ''}`}
                             onClick={() => {
-                                if (!isGalleryRoute && selectedImage) handleCropClick();
+                                if (!isGalleryRoute && selectedImage && !isLoading) handleCropClick();
                             }}
                         >
-
                             <Scissors size={20} />
                             <span>Recortar</span>
                         </div>
 
                         <div
-                            className={`sticker-upload-sidebar-item ${(isGalleryRoute || (isUploadRoute && !selectedImage)) ? 'disabled' : ''}`}
+                            className={`sticker-upload-sidebar-item ${(isGalleryRoute || (isUploadRoute && !selectedImage) || isLoading) ? 'disabled' : ''}`}
                             onClick={() => {
-                                if (!isGalleryRoute && isUploadRoute && selectedImage) handleSaveClick();
+                                if (!isGalleryRoute && isUploadRoute && selectedImage && !isLoading) handleSaveClick();
                             }}
                         >
-
                             <Save size={20} />
                             <span>Guardar Calcomanía</span>
                         </div>
 
                         <div
                             className={`sticker-upload-sidebar-item ${isGalleryRoute ? 'active' : ''}`}
-                            onClick={() => navigate('/stickers/gallery')}
+                            onClick={() => !isLoading && navigate('/stickers/gallery')}
                         >
                             <Plus size={20} />
                             <span>Mis Calcomanías</span>
@@ -113,12 +113,12 @@ export const StickersLayout = () => {
                     <Outlet />
                 </div>
             </div>
+
             <ConfigureStickerModal
                 isOpen={configModalOpen}
                 onClose={() => setConfigModalOpen(false)}
                 imageSrc={selectedImage}
             />
-
         </div>
     );
 };

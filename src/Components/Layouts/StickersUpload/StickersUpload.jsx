@@ -1,8 +1,9 @@
 import React, { useRef, useCallback, useState, useEffect, useContext } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, CheckCircle, AlertCircle } from 'lucide-react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { context } from "../../../Context/Context.jsx";
+import wheelIcon from '../../../assets/icons/img1-loader.png';
 
 export const StickersUpload = () => {
     const {
@@ -12,7 +13,11 @@ export const StickersUpload = () => {
         setCroppedImage,
         isCropping,
         setIsCropping,
-        clearStickerState
+        clearStickerState,
+        handleFileSelect,
+        successMessage,
+        errorMessage,
+        isLoading
     } = useContext(context);
 
     const [isDragging, setIsDragging] = useState(false);
@@ -40,17 +45,11 @@ export const StickersUpload = () => {
         imgRef.current = e.currentTarget;
     }, []);
 
-    const handleFileSelect = (file) => {
+    const handleFileSelectLocal = (file) => {
         if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setSelectedImage(e.target.result);
-                setCroppedImage(null);
-                setIsCropping(false);
-                setCrop(undefined);
-                setCompletedCrop(null);
-            };
-            reader.readAsDataURL(file);
+            handleFileSelect(file); // Usar la función del contexto
+            setCrop(undefined);
+            setCompletedCrop(null);
         }
     };
 
@@ -59,7 +58,7 @@ export const StickersUpload = () => {
         setIsDragging(false);
         const files = e.dataTransfer.files;
         if (files.length > 0) {
-            handleFileSelect(files[0]);
+            handleFileSelectLocal(files[0]);
         }
     };
 
@@ -76,7 +75,7 @@ export const StickersUpload = () => {
     const handleFileInputChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            handleFileSelect(file);
+            handleFileSelectLocal(file);
         }
     };
 
@@ -99,6 +98,45 @@ export const StickersUpload = () => {
         setCrop(undefined);
     };
 
+    // Función para completar el recorte
+    const completeCrop = useCallback(() => {
+        if (completedCrop && imgRef.current && canvasRef.current) {
+            const image = imgRef.current;
+            const canvas = canvasRef.current;
+            const crop = completedCrop;
+
+            const scaleX = image.naturalWidth / image.width;
+            const scaleY = image.naturalHeight / image.height;
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = crop.width * scaleX;
+            canvas.height = crop.height * scaleY;
+
+            ctx.drawImage(
+                image,
+                crop.x * scaleX,
+                crop.y * scaleY,
+                crop.width * scaleX,
+                crop.height * scaleY,
+                0,
+                0,
+                crop.width * scaleX,
+                crop.height * scaleY
+            );
+
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        setCroppedImage(e.target.result);
+                        setIsCropping(false);
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            }, 'image/png');
+        }
+    }, [completedCrop, setCroppedImage, setIsCropping]);
+
     // Efecto para manejar el modo de recorte desde el contexto
     useEffect(() => {
         if (isCropping && selectedImage) {
@@ -106,9 +144,31 @@ export const StickersUpload = () => {
         }
     }, [isCropping, selectedImage]);
 
+    // Efecto para completar el recorte cuando se termine
+    useEffect(() => {
+        if (completedCrop && !isCropping && imgRef.current) {
+            completeCrop();
+        }
+    }, [completedCrop, isCropping, completeCrop]);
+
     return (
         <>
             <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+            {/* Mensajes de estado */}
+            {successMessage && (
+                <div className="message-container success-message">
+                    <CheckCircle size={20} />
+                    <span>{successMessage}</span>
+                </div>
+            )}
+
+            {errorMessage && (
+                <div className="message-container error-message">
+                    <AlertCircle size={20} />
+                    <span>{errorMessage}</span>
+                </div>
+            )}
 
             {/* Botón de eliminar imagen */}
             {selectedImage && (
@@ -117,6 +177,7 @@ export const StickersUpload = () => {
                         className="delete-image-btn"
                         onClick={deleteImage}
                         title="Eliminar imagen"
+                        disabled={isLoading}
                     >
                         <Trash2 size={20} />
                     </button>
@@ -125,12 +186,19 @@ export const StickersUpload = () => {
 
             <main className="upload-area">
                 <div
-                    className={`drop-zone ${selectedImage ? 'has-image' : ''} ${isDragging ? 'dragging' : ''} ${isCropping ? 'cropping' : ''}`}
+                    className={`drop-zone ${selectedImage ? 'has-image' : ''} ${isDragging ? 'dragging' : ''} ${isCropping ? 'cropping' : ''} ${isLoading ? 'loading' : ''}`}
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
-                    onClick={() => !selectedImage && !isCropping && fileInputRef.current?.click()}
+                    onClick={() => !selectedImage && !isCropping && !isLoading && fileInputRef.current?.click()}
                 >
+                    {isLoading && (
+                        <div className="loading-overlay">
+                            <img src={wheelIcon} alt="cargando" className="loading-spinner" />
+                            <span>Guardando calcomanía...</span>
+                        </div>
+                    )}
+
                     {selectedImage ? (
                         !isCropping ? (
                             <div className="sticker-upload-image-container">
@@ -162,6 +230,7 @@ export const StickersUpload = () => {
                     ) : (
                         <div className="drop-zone-content">
                             <p>Arrastra tu imagen aquí o haz clic para seleccionar</p>
+                            <small>Formatos soportados: JPG, PNG, GIF</small>
                         </div>
                     )}
 
@@ -171,6 +240,7 @@ export const StickersUpload = () => {
                         accept="image/*"
                         onChange={handleFileInputChange}
                         style={{ display: 'none' }}
+                        disabled={isLoading}
                     />
                 </div>
             </main>

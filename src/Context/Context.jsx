@@ -16,11 +16,13 @@ export const Provider = ({ children }) => {
     const [nameRol, setNameRol] = useState(localStorage.getItem("nameRol") || "");
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-    // Estados para Stickers
     const [savedStickers, setSavedStickers] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
     const [isCropping, setIsCropping] = useState(false);
+    const [originalFile, setOriginalFile] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
@@ -76,23 +78,92 @@ export const Provider = ({ children }) => {
         );
     };
 
-    // Funciones para Stickers
-    const saveSticker = () => {
-        const imageToSave = croppedImage || selectedImage;
-        if (imageToSave) {
-            const newSticker = {
-                id: Date.now(),
-                image: imageToSave,
-                name: `Calcomanía ${savedStickers.length + 1}`,
-                createdAt: new Date().toLocaleDateString()
-            };
-            setSavedStickers(prev => [...prev, newSticker]);
-            console.log('Calcomanía guardada exitosamente!');
+    const clearMessages = () => {
+        setSuccessMessage('');
+        setErrorMessage('');
+    };
 
-            // Limpiar estado después de guardar
-            setSelectedImage(null);
-            setCroppedImage(null);
-            setIsCropping(false);
+    const dataURLtoBlob = (dataURL) => {
+        const arr = dataURL.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
+    };
+
+    const saveSticker = async () => {
+        if (!token) {
+            setErrorMessage('Debe estar autenticado para guardar calcomanías');
+            return;
+        }
+
+        const imageToSave = croppedImage || selectedImage;
+        if (!imageToSave) {
+            setErrorMessage('No hay imagen para guardar');
+            return;
+        }
+
+        setIsLoading(true);
+        clearMessages();
+
+        try {
+            const formData = new FormData();
+
+            const nombre = `Calcomanía ${savedStickers.length + 1}`;
+            formData.append('nombre', nombre);
+
+            let imageFile;
+            if (originalFile && !croppedImage) {
+                imageFile = originalFile;
+            } else {
+                const blob = dataURLtoBlob(imageToSave);
+                imageFile = new File([blob], `${nombre}.png`, { type: 'image/png' });
+            }
+
+            formData.append('imagen', imageFile);
+
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/registrar-calcomania', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                const newSticker = {
+                    id: data.calcomania.id_calcomania,
+                    image: imageToSave,
+                    name: data.calcomania.nombre,
+                    createdAt: new Date(data.calcomania.fecha_subida).toLocaleDateString(),
+                    formato: data.calcomania.formato,
+                    tamano_archivo: data.calcomania.tamano_archivo,
+                    url_archivo: data.calcomania.url_archivo
+                };
+
+                setSavedStickers(prev => [...prev, newSticker]);
+                setSuccessMessage('¡Calcomanía guardada exitosamente!');
+
+                clearStickerState();
+
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 3000);
+
+            } else {
+                setErrorMessage(getErrorMessage(data, 'Error al guardar la calcomanía'));
+            }
+        } catch (error) {
+            console.error('Error guardando calcomanía:', error);
+            setErrorMessage('Error de conexión al guardar la calcomanía');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -104,6 +175,19 @@ export const Provider = ({ children }) => {
         setSelectedImage(null);
         setCroppedImage(null);
         setIsCropping(false);
+        setOriginalFile(null);
+        clearMessages();
+    };
+
+    const handleFileSelect = (file) => {
+        setOriginalFile(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setSelectedImage(e.target.result);
+            setCroppedImage(null);
+            setIsCropping(false);
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -130,9 +214,14 @@ export const Provider = ({ children }) => {
             selectedImage, setSelectedImage,
             croppedImage, setCroppedImage,
             isCropping, setIsCropping,
+            originalFile, setOriginalFile,
+            successMessage, setSuccessMessage,
+            errorMessage, setErrorMessage,
             saveSticker,
             deleteSticker,
-            clearStickerState
+            clearStickerState,
+            handleFileSelect,
+            clearMessages
         }}>
             {children}
         </context.Provider>
