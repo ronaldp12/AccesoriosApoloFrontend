@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './ContactForm.css';
 import img1 from '../../../assets/images/img1-background-contact.png'
+import wheelIcon from '../../../assets/icons/img1-loader.png';
 
 export const ContactForm = () => {
     const [formData, setFormData] = useState({
@@ -8,10 +9,11 @@ export const ContactForm = () => {
         email: '',
         phone: '',
         message: '',
-        contactMethod: '',
-        acceptTerms: false
+        contactMethod: ''
     });
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitMessage, setSubmitMessage] = useState('');
     const [animatedElements, setAnimatedElements] = useState(new Set());
     const sectionRef = useRef(null);
 
@@ -24,7 +26,6 @@ export const ContactForm = () => {
             sectionRef.current.querySelector('.contact-form-container form'),
             ...sectionRef.current.querySelectorAll('.form-row'),
             sectionRef.current.querySelector('.contact-method'),
-            sectionRef.current.querySelector('.terms-checkbox'),
             sectionRef.current.querySelector('.submit-btn-contact-form')
         ].filter(Boolean);
 
@@ -85,20 +86,12 @@ export const ContactForm = () => {
         }, 700);
 
         setTimeout(() => {
-            const termsCheckbox = sectionRef.current?.querySelector('.terms-checkbox');
-            if (termsCheckbox) {
-                termsCheckbox.style.opacity = '1';
-                termsCheckbox.style.transform = 'translateY(0)';
-            }
-        }, 800);
-
-        setTimeout(() => {
             const submitBtn = sectionRef.current?.querySelector('.submit-btn-contact-form');
             if (submitBtn) {
                 submitBtn.style.opacity = '1';
                 submitBtn.style.transform = 'translateY(0)';
             }
-        }, 900);
+        }, 800);
     };
 
     useEffect(() => {
@@ -115,7 +108,6 @@ export const ContactForm = () => {
                     element.classList.add('animate-in');
 
                     if (element.classList.contains('contact-form-container')) {
-
                         setTimeout(() => {
                             animateInternalElements();
                         }, 200);
@@ -156,10 +148,10 @@ export const ContactForm = () => {
     }, []);
 
     const handleInputChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: value
         }));
 
         e.target.style.transform = 'scale(1.02)';
@@ -168,8 +160,10 @@ export const ContactForm = () => {
         }, 150);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (isSubmitting) return;
 
         const requiredFields = ['name', 'email', 'phone', 'message'];
         let isValid = true;
@@ -202,43 +196,59 @@ export const ContactForm = () => {
             isValid = false;
         }
 
-        if (!formData.acceptTerms) {
-            const termsCheckbox = sectionRef.current.querySelector('.terms-checkbox');
-            if (termsCheckbox) {
-                termsCheckbox.style.animation = 'shake 0.5s ease-in-out';
-                setTimeout(() => {
-                    termsCheckbox.style.animation = 'none';
-                }, 500);
-            }
-            isValid = false;
+        if (!isValid) {
+            setSubmitMessage('Por favor, completa todos los campos requeridos.');
+            setTimeout(() => setSubmitMessage(''), 3000);
+            return;
         }
 
-        if (isValid) {
-            const submitBtn = sectionRef.current.querySelector('.submit-btn-contact-form');
-            if (submitBtn) {
-                submitBtn.style.background = 'linear-gradient(135deg, #16a34a, #22c55e)';
-                submitBtn.textContent = '¡ENVIADO!';
-                submitBtn.style.transform = 'scale(1.05)';
+        setIsSubmitting(true);
+
+        try {
+            const apiData = {
+                nombre: formData.name,
+                correo: formData.email,
+                telefono: formData.phone,
+                mensaje: formData.message,
+                metodo_contacto: formData.contactMethod
+            };
+
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/contacto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(apiData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                setSubmitMessage('¡Mensaje enviado correctamente! Te contactaremos pronto.');
 
                 setTimeout(() => {
-                    submitBtn.style.background = 'linear-gradient(135deg, #1e40af, #3b82f6)';
-                    submitBtn.textContent = 'ENVIAR';
-                    submitBtn.style.transform = 'scale(1)';
-                }, 2000);
+                    setFormData({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        message: '',
+                        contactMethod: ''
+                    });
+
+                    setSubmitMessage('');
+                }, 3000);
+
+            } else {
+                throw new Error(result.message || 'Error al enviar el mensaje');
             }
 
-            console.log('Form submitted:', formData);
+        } catch (error) {
+            console.error('Error al enviar formulario:', error);
 
-            setTimeout(() => {
-                setFormData({
-                    name: '',
-                    email: '',
-                    phone: '',
-                    message: '',
-                    contactMethod: '',
-                    acceptTerms: false
-                });
-            }, 2000);
+            setSubmitMessage('Error al enviar el mensaje. Por favor, intenta nuevamente.');
+
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -279,6 +289,7 @@ export const ContactForm = () => {
                                     onChange={handleInputChange}
                                     onFocus={handleFocus}
                                     onBlur={handleBlur}
+                                    disabled={isSubmitting}
                                 />
                             </div>
                             <div className="contact-form-group">
@@ -292,6 +303,7 @@ export const ContactForm = () => {
                                     onChange={handleInputChange}
                                     onFocus={handleFocus}
                                     onBlur={handleBlur}
+                                    disabled={isSubmitting}
                                 />
                             </div>
                         </div>
@@ -308,6 +320,7 @@ export const ContactForm = () => {
                                     onChange={handleInputChange}
                                     onFocus={handleFocus}
                                     onBlur={handleBlur}
+                                    disabled={isSubmitting}
                                 />
                             </div>
                         </div>
@@ -324,6 +337,7 @@ export const ContactForm = () => {
                                     onFocus={handleFocus}
                                     onBlur={handleBlur}
                                     rows="4"
+                                    disabled={isSubmitting}
                                 />
                             </div>
                         </div>
@@ -336,9 +350,10 @@ export const ContactForm = () => {
                                         type="radio"
                                         id="email-contact"
                                         name="contactMethod"
-                                        value="email"
-                                        checked={formData.contactMethod === 'email'}
+                                        value="correo"
+                                        checked={formData.contactMethod === 'correo'}
                                         onChange={handleInputChange}
+                                        disabled={isSubmitting}
                                     />
                                     <label htmlFor="email-contact">Correo electrónico</label>
                                 </div>
@@ -347,9 +362,10 @@ export const ContactForm = () => {
                                         type="radio"
                                         id="phone-contact"
                                         name="contactMethod"
-                                        value="phone"
-                                        checked={formData.contactMethod === 'phone'}
+                                        value="telefono"
+                                        checked={formData.contactMethod === 'telefono'}
                                         onChange={handleInputChange}
+                                        disabled={isSubmitting}
                                     />
                                     <label htmlFor="phone-contact">Teléfono</label>
                                 </div>
@@ -361,33 +377,36 @@ export const ContactForm = () => {
                                         value="whatsapp"
                                         checked={formData.contactMethod === 'whatsapp'}
                                         onChange={handleInputChange}
+                                        disabled={isSubmitting}
                                     />
                                     <label htmlFor="whatsapp-contact">WhatsApp</label>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="terms-checkbox">
-                            <input
-                                type="checkbox"
-                                id="acceptTerms"
-                                name="acceptTerms"
-                                checked={formData.acceptTerms}
-                                onChange={handleInputChange}
-                            />
-                            <label htmlFor="acceptTerms">
-                                Acepto los términos y condiciones y autorizo el tratamiento de mis datos personales
-                                de acuerdo con la política de privacidad.
-                            </label>
-                        </div>
+                        {submitMessage && (
+                            <div className={`submit-message ${submitMessage.includes('Error') || submitMessage.includes('completa') ? 'error' : 'success'}`}>
+                                {submitMessage}
+                            </div>
+                        )}
 
-                        <button type="submit" className="submit-btn-contact-form">
-                            ENVIAR
+                        <button
+                            type="submit"
+                            className="submit-btn-contact-form"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    ENVIANDO...
+                                    <img src={wheelIcon} alt="cargando" className="wheel-loader" />
+                                </>
+                            ) : (
+                                'ENVIAR'
+                            )}
                         </button>
                     </form>
                 </div>
             </section>
         </div>
     );
-
-}
+};

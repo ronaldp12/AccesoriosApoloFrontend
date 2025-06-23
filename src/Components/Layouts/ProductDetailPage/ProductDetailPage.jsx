@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { ChevronLeft, ChevronRight, ShoppingCart, Heart } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { products } from '../../products.js';
 import './ProductDetailPage.css'
+import { context } from '../../../Context/Context.jsx';
+import wheelIcon from '../../../assets/icons/img1-loader.png';
+
 
 export const ProductDetailPage = () => {
+    const { handleAddToCart } = useContext(context);
+    const [isAdding, setIsAdding] = useState(false);
+    const [addedMessage, setAddedMessage] = useState(false);
+
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const { slug } = useParams();
@@ -30,6 +37,25 @@ export const ProductDetailPage = () => {
     const goToImage = (index) => {
         setCurrentImageIndex(index);
     };
+
+    const handleAddClick = () => {
+        setIsAdding(true);
+        setTimeout(() => {
+            handleAddToCart({
+                id: product.id,
+                image: product.image[0],
+                brand: product.brand,
+                title: product.title,
+                price: product.currentPrice,
+            });
+            setIsAdding(false);
+            setAddedMessage(true);
+            setTimeout(() => {
+                setAddedMessage(false);
+            }, 1200);
+        }, 800);
+    };
+
 
     return (
         <div className="product-container">
@@ -79,11 +105,13 @@ export const ProductDetailPage = () => {
                         <div className="rating-container">
                             <div className="stars">
                                 {[...Array(5)].map((_, i) => (
-                                    <span key={i} className={`star ${i < product.rating ? 'filled' : ''}`}>
-                                        ★
-                                    </span>
+                                    <i
+                                        key={i}
+                                        className={`fa-solid fa-star ${i < product.rating ? 'filled' : ''}`}
+                                    ></i>
                                 ))}
                             </div>
+
                             <span className="reviews-count">{product.reviews} valoraciones</span>
                         </div>
                     </div>
@@ -100,10 +128,19 @@ export const ProductDetailPage = () => {
 
                     {/* Botones de acción */}
                     <div className="action-buttons">
-                        <button className="btn-secondary">
-                            <Heart size={20} />
-                            AÑADIR AL MALETERO
+                        <button className="btn-secondary" onClick={handleAddClick} disabled={isAdding}>
+                            {isAdding ? (
+                                <img src={wheelIcon} alt="cargando" className="wheel-loader" />
+                            ) : addedMessage ? (
+                                <span className="added-message">Agregado</span>
+                            ) : (
+                                <>
+                                    <Heart size={20} />
+                                    AÑADIR AL MALETERO
+                                </>
+                            )}
                         </button>
+
                         <button className="btn-primary">
                             <ShoppingCart size={20} />
                             COMPRAR AHORA

@@ -123,13 +123,14 @@
     gap: 2px;
 }
 
-.star {
-    color: #ddd;
-    font-size: 18px;
+.stars i {
+  color: #ccc;
+  margin-right: 4px;
+  font-size: 16px;
 }
 
-.star.filled {
-    color: #ffd700;
+.stars i.filled {
+  color: #014aad;
 }
 
 .reviews-count {
@@ -251,6 +252,11 @@
 
 .table-value {
     color: #1a1a1a;
+}
+
+.wheel-loader{
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 @media (max-width: 820px) {
