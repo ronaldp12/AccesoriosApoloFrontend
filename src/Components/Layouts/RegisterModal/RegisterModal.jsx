@@ -13,15 +13,15 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [animationStep, setAnimationStep] = useState(0);
 
-    const { setUserLogin, setToken, setName, isLoading, setIsLoading, setIsWelcomeOpen,
+    const { setUserLogin, setToken, setName, setIsWelcomeOpen,
         setIsIntermediateLoading, getErrorMessage, setAvatar, validatePassword, setNameRol } = useContext(context);
     const [userName, setUserName] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
     const googleButtonRef = useRef(null);
 
-    // Referencias para animación específica del RegisterModal
     const modalRef = useRef(null);
     const titleRef = useRef(null);
     const formRef = useRef(null);
@@ -246,7 +246,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 ref={modalRef}
                 className={`modal-box ${isOpen ? "active" : ""}`}
             >
-                <button className="close-btn" onClick={onClose}>×</button>
+                <button className="close-btn-register-modal" onClick={onClose}>×</button>
 
                 <div className="modal-form-container">
                     <h2 ref={titleRef}>REGÍSTRATE</h2>
