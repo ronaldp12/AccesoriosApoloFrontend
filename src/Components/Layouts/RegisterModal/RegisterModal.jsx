@@ -79,7 +79,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
             modalRef.current.querySelector('form'),
             modalRef.current.querySelector('.group-bottom'),
             modalRef.current.querySelector('.social-icons')
-        ].filter(Boolean); // Filtra elementos que existen
+        ].filter(Boolean);
 
         elements.forEach(el => {
             if (el) {

@@ -7,9 +7,10 @@ import { Pagination } from "../../Ui/Pagination/Pagination";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { ConfirmModal } from "../../Ui/ConfirmModal/ConfirmModal.jsx";
-import { TopProductsChart } from "../InventoryStatistics/TopProductsCharts.jsx";
+import { TopMasStockChart } from "../InventoryStatistics/TopMasStockChart.jsx";
 import { InventoryEvolutionChart } from "../InventoryStatistics/InventoryEvolutionChart.jsx";
 import { CategoryValueChart } from "../InventoryStatistics/CategoryValueChart.jsx";
+import { TopMenosStockChart } from "../InventoryStatistics/TopMenosStockChart.jsx";
 
 export const ManageInventory = () => {
     const [inventarios, setInventarios] = useState([]);
@@ -196,10 +197,17 @@ export const ManageInventory = () => {
                 </div>
             )}
 
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+            />
+
             <div className="inventory-statistics">
                 <h3>Estadísticas del Inventario</h3>
                 <div className="charts-grid">
-                    <TopProductsChart />
+                    <TopMasStockChart />
+                    <TopMenosStockChart />
                     <InventoryEvolutionChart/>
                     <CategoryValueChart/>
                 </div>
@@ -216,12 +224,6 @@ export const ManageInventory = () => {
                 errorMessage={errorMessage}
                 successMessage={successMessage}
                 isLoading={isLoading}
-            />
-
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                setCurrentPage={setCurrentPage}
             />
         </div>
     );
