@@ -226,9 +226,9 @@ export const RegisterUserModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                             <label>Selecciona el rol</label>
                             <select name="rol" value={formData.rol} onChange={handleChange} required>
                                 <option value="">Rol</option>
-                                <option value="cliente">Cliente</option>
-                                <option value="gerente">Gerente</option>
-                                <option value="vendedor">Vendedor</option>
+                                <option value="Cliente">Cliente</option>
+                                <option value="Gerente">Gerente</option>
+                                <option value="Vendedor">Vendedor</option>
                             </select>
                         </div>
                     </div>

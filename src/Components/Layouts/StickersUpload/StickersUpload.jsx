@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useState, useEffect, useContext } from 'react';
-import { Trash2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Trash2, CheckCircle, AlertCircle, Check, X } from 'lucide-react';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { context } from "../../../Context/Context.jsx";
@@ -51,6 +51,8 @@ export const StickersUpload = () => {
             handleFileSelect(file);
             setCrop(undefined);
             setCompletedCrop(null);
+            // Limpiar imagen recortada previa
+            setCroppedImage(null);
         }
     };
 
@@ -84,10 +86,10 @@ export const StickersUpload = () => {
         setIsCropping(true);
         const initialCrop = {
             unit: '%',
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100,
+            x: 10,
+            y: 10,
+            width: 80,
+            height: 80,
         };
         setCrop(initialCrop);
         setCompletedCrop(initialCrop);
@@ -99,7 +101,7 @@ export const StickersUpload = () => {
         setCrop(undefined);
     };
 
-    const completeCrop = useCallback(() => {
+    const confirmCrop = useCallback(() => {
         if (completedCrop && imgRef.current && canvasRef.current) {
             const image = imgRef.current;
             const canvas = canvasRef.current;
@@ -109,19 +111,22 @@ export const StickersUpload = () => {
             const scaleY = image.naturalHeight / image.height;
             const ctx = canvas.getContext('2d');
 
-            canvas.width = crop.width * scaleX;
-            canvas.height = crop.height * scaleY;
+            const cropWidth = crop.width * scaleX;
+            const cropHeight = crop.height * scaleY;
+
+            canvas.width = cropWidth;
+            canvas.height = cropHeight;
 
             ctx.drawImage(
                 image,
                 crop.x * scaleX,
                 crop.y * scaleY,
-                crop.width * scaleX,
-                crop.height * scaleY,
+                cropWidth,
+                cropHeight,
                 0,
                 0,
-                crop.width * scaleX,
-                crop.height * scaleY
+                cropWidth,
+                cropHeight
             );
 
             canvas.toBlob((blob) => {
@@ -130,6 +135,7 @@ export const StickersUpload = () => {
                     reader.onload = (e) => {
                         setCroppedImage(e.target.result);
                         setIsCropping(false);
+                        console.log('Imagen recortada guardada');
                     };
                     reader.readAsDataURL(blob);
                 }
@@ -137,19 +143,18 @@ export const StickersUpload = () => {
         }
     }, [completedCrop, setCroppedImage, setIsCropping]);
 
+    const cancelCrop = () => {
+        setIsCropping(false);
+        setCrop(undefined);
+        setCompletedCrop(null);
+    };
+
     useEffect(() => {
         if (isCropping && selectedImage) {
             startCrop();
         }
     }, [isCropping, selectedImage]);
 
-    useEffect(() => {
-        if (completedCrop && !isCropping && imgRef.current) {
-            completeCrop();
-        }
-    }, [completedCrop, isCropping, completeCrop]);
-
-    // Determinar si debe mostrar el loading overlay
     const shouldShowLoadingOverlay = (isLoading || isSaveSuccess) && selectedImage;
 
     return (
@@ -217,6 +222,11 @@ export const StickersUpload = () => {
                                     className="uploaded-image"
                                     style={{ opacity: isSaveSuccess ? 0.7 : 1 }}
                                 />
+                                {croppedImage && (
+                                    <div className="crop-indicator">
+                                        <span>Imagen recortada</span>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <div className="crop-container">
@@ -235,6 +245,26 @@ export const StickersUpload = () => {
                                         onLoad={onImageLoad}
                                     />
                                 </ReactCrop>
+
+                                {/* Botones para confirmar o cancelar el recorte */}
+                                <div className="crop-controls">
+                                    <button
+                                        className="crop-btn confirm"
+                                        onClick={confirmCrop}
+                                        title="Confirmar recorte"
+                                    >
+                                        <Check size={20} />
+                                        Confirmar
+                                    </button>
+                                    <button
+                                        className="crop-btn cancel"
+                                        onClick={cancelCrop}
+                                        title="Cancelar recorte"
+                                    >
+                                        <X size={20} />
+                                        Cancelar
+                                    </button>
+                                </div>
                             </div>
                         )
                     ) : (

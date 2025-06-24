@@ -96,9 +96,9 @@ export const StickersLayout = () => {
                         </div>
 
                         <div
-                            className={`sticker-upload-sidebar-item ${(isGalleryRoute || (isUploadRoute && !selectedImage) || isSavingSticker) ? 'disabled' : ''}`}
+                            className={`sticker-upload-sidebar-item ${(!selectedImage || isGalleryRoute || isSavingSticker) ? 'disabled' : ''}`}
                             onClick={() => {
-                                if (!isGalleryRoute && isUploadRoute && selectedImage && !isSavingSticker) handleSaveClick();
+                                if (selectedImage && !isGalleryRoute && isUploadRoute && !isSavingSticker) handleSaveClick();
                             }}
                         >
                             <Save size={20} />

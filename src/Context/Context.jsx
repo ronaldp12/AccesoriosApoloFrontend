@@ -205,10 +205,15 @@ export const Provider = ({ children }) => {
             formData.append('nombre', nombre);
 
             let imageFile;
-            if (originalFile && !croppedImage) {
+
+            if (croppedImage) {
+                const blob = dataURLtoBlob(croppedImage);
+                imageFile = new File([blob], `${nombre}.png`, { type: 'image/png' });
+            } else if (originalFile) {
+
                 imageFile = originalFile;
             } else {
-                const blob = dataURLtoBlob(imageToSave);
+                const blob = dataURLtoBlob(selectedImage);
                 imageFile = new File([blob], `${nombre}.png`, { type: 'image/png' });
             }
 
