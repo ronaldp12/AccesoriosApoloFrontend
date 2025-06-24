@@ -23,7 +23,7 @@ export const StickersLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isUploadRoute = location.pathname.includes('/upload');
+    const isUploadRoute = location.pathname.endsWith('/upload') || location.pathname === '/stickers';
     const isGalleryRoute = location.pathname.includes('/gallery');
 
     const isSavingSticker = isLoading && selectedImage;
@@ -37,16 +37,48 @@ export const StickersLayout = () => {
     };
 
     const handleCropClick = () => {
-        if (selectedImage && isUploadRoute) {
+        console.log('handleCropClick llamado - Estados:', {
+            selectedImage: !!selectedImage,
+            isUploadRoute,
+            pathname: location.pathname,
+            isCropping
+        });
+
+        if (selectedImage && isUploadRoute && !isCropping && !isSavingSticker) {
+            console.log('Activando modo recorte');
             setIsCropping(true);
+        } else {
+            console.log('No se puede activar recorte - condiciones no cumplidas', {
+                selectedImage: !!selectedImage,
+                isUploadRoute,
+                isCropping,
+                isSavingSticker
+            });
         }
     };
 
     const handleSaveClick = async () => {
-        if (isUploadRoute && selectedImage) {
+        console.log('handleSaveClick llamado - Estados:', {
+            selectedImage: !!selectedImage,
+            isUploadRoute,
+            pathname: location.pathname,
+            isSavingSticker
+        });
+
+        if (isUploadRoute && selectedImage && !isSavingSticker) {
+            console.log('Guardando calcomanía');
             await saveSticker();
+        } else {
+            console.log('No se puede guardar - condiciones no cumplidas', {
+                selectedImage: !!selectedImage,
+                isUploadRoute,
+                isSavingSticker
+            });
         }
     };
+
+    const canCrop = selectedImage && isUploadRoute && !isCropping && !isSavingSticker;
+    const canSave = selectedImage && isUploadRoute && !isSavingSticker;
 
     return (
         <div className="sticker-upload">
@@ -60,7 +92,7 @@ export const StickersLayout = () => {
                             <button
                                 className="sticker-upload-btn-secondary"
                                 onClick={handleAddSticker}
-                                disabled={isSavingSticker || !selectedImage}
+                                disabled={!canSave}
                             >
                                 {isSavingSticker ? 'GUARDANDO...' : 'GUARDAR'}
                             </button>
@@ -86,9 +118,12 @@ export const StickersLayout = () => {
                         </div>
 
                         <div
-                            className={`sticker-upload-sidebar-item ${(isGalleryRoute || !selectedImage || isSavingSticker) ? 'disabled' : ''}`}
+                            className={`sticker-upload-sidebar-item ${!canCrop ? 'disabled' : ''}`}
                             onClick={() => {
-                                if (!isGalleryRoute && selectedImage && !isSavingSticker) handleCropClick();
+                                if (canCrop) {
+                                    console.log('Iniciando recorte desde sidebar');
+                                    handleCropClick();
+                                }
                             }}
                         >
                             <Scissors size={20} />
@@ -96,9 +131,12 @@ export const StickersLayout = () => {
                         </div>
 
                         <div
-                            className={`sticker-upload-sidebar-item ${(!selectedImage || isGalleryRoute || isSavingSticker) ? 'disabled' : ''}`}
+                            className={`sticker-upload-sidebar-item ${!canSave ? 'disabled' : ''}`}
                             onClick={() => {
-                                if (selectedImage && !isGalleryRoute && isUploadRoute && !isSavingSticker) handleSaveClick();
+                                if (canSave) {
+                                    console.log('Guardando desde sidebar');
+                                    handleSaveClick();
+                                }
                             }}
                         >
                             <Save size={20} />

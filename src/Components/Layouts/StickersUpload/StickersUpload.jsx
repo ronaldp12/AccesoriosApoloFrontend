@@ -30,10 +30,11 @@ export const StickersUpload = () => {
     const imgRef = useRef(null);
 
     const onImageLoad = useCallback((e) => {
+        console.log('Imagen cargada completamente');
         const { width, height } = e.currentTarget;
 
         // Crop inicial que cubra TODA la imagen
-        const crop = {
+        const initialCrop = {
             unit: '%',
             x: 0,
             y: 0,
@@ -41,18 +42,18 @@ export const StickersUpload = () => {
             height: 100,
         };
 
-        setCrop(crop);
-        setCompletedCrop(crop);
+        setCrop(initialCrop);
+        setCompletedCrop(initialCrop);
         imgRef.current = e.currentTarget;
     }, []);
 
     const handleFileSelectLocal = (file) => {
         if (file && file.type.startsWith('image/')) {
-            handleFileSelect(file);
+            console.log('Seleccionando archivo:', file.name);
             setCrop(undefined);
             setCompletedCrop(null);
-            // Limpiar imagen recortada previa
             setCroppedImage(null);
+            handleFileSelect(file);
         }
     };
 
@@ -82,26 +83,15 @@ export const StickersUpload = () => {
         }
     };
 
-    const startCrop = () => {
-        setIsCropping(true);
-        const initialCrop = {
-            unit: '%',
-            x: 10,
-            y: 10,
-            width: 80,
-            height: 80,
-        };
-        setCrop(initialCrop);
-        setCompletedCrop(initialCrop);
-    };
-
     const deleteImage = () => {
+        console.log('Eliminando imagen...');
         clearStickerState();
         setCompletedCrop(null);
         setCrop(undefined);
     };
 
     const confirmCrop = useCallback(() => {
+        console.log('Confirmando recorte...');
         if (completedCrop && imgRef.current && canvasRef.current) {
             const image = imgRef.current;
             const canvas = canvasRef.current;
@@ -135,25 +125,37 @@ export const StickersUpload = () => {
                     reader.onload = (e) => {
                         setCroppedImage(e.target.result);
                         setIsCropping(false);
-                        console.log('Imagen recortada guardada');
+                        console.log('Imagen recortada guardada exitosamente');
                     };
                     reader.readAsDataURL(blob);
                 }
             }, 'image/png');
+        } else {
+            console.log('No se puede confirmar recorte - elementos faltantes');
         }
     }, [completedCrop, setCroppedImage, setIsCropping]);
 
     const cancelCrop = () => {
+        console.log('Cancelando recorte...');
         setIsCropping(false);
         setCrop(undefined);
         setCompletedCrop(null);
     };
 
     useEffect(() => {
-        if (isCropping && selectedImage) {
-            startCrop();
+        if (isCropping && selectedImage && !crop) {
+            console.log('Inicializando crop para recorte');
+            const initialCrop = {
+                unit: '%',
+                x: 10,
+                y: 10,
+                width: 80,
+                height: 80,
+            };
+            setCrop(initialCrop);
+            setCompletedCrop(initialCrop);
         }
-    }, [isCropping, selectedImage]);
+    }, [isCropping, selectedImage, crop]);
 
     const shouldShowLoadingOverlay = (isLoading || isSaveSuccess) && selectedImage;
 
@@ -221,6 +223,7 @@ export const StickersUpload = () => {
                                     alt="Calcomanía"
                                     className="uploaded-image"
                                     style={{ opacity: isSaveSuccess ? 0.7 : 1 }}
+                                    onLoad={onImageLoad}
                                 />
                                 {croppedImage && (
                                     <div className="crop-indicator">
