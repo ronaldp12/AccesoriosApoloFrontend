@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const context = createContext();
 
@@ -23,6 +23,49 @@ export const Provider = ({ children }) => {
     const [originalFile, setOriginalFile] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isSaveSuccess, setIsSaveSuccess] = useState(false);
+
+    const loadUserStickers = async () => {
+        if (!token) return;
+
+        setIsLoading(true);
+        try {
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/calcomanias-usuario', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                const formattedStickers = data.calcomanias.map((calcomania, index) => ({
+                    id: calcomania.id_calcomania,
+                    name: calcomania.nombre,
+                    image: calcomania.url_archivo,
+                    formato: calcomania.formato
+                }));
+
+                setSavedStickers(formattedStickers);
+            } else {
+                console.error('Error cargando calcomanías:', data.mensaje);
+                setErrorMessage(getErrorMessage(data, 'Error al cargar las calcomanías'));
+            }
+        } catch (error) {
+            console.error('Error de conexión cargando calcomanías:', error);
+            setErrorMessage('Error de conexión al cargar las calcomanías');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (token && userLogin) {
+            loadUserStickers();
+        }
+    }, [token, userLogin]);
 
     const handleAddToCart = (product) => {
         const existingProduct = cartProducts.find(p => p.id === product.id);
@@ -49,6 +92,7 @@ export const Provider = ({ children }) => {
         setName("");
         setToken("");
         setUserLogin(null);
+        setSavedStickers([]);
         localStorage.removeItem("token");
         localStorage.removeItem("usuarioLogueado");
         localStorage.removeItem("nameRol");
@@ -70,17 +114,60 @@ export const Provider = ({ children }) => {
     const normalizeText = (text) =>
         text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-    const updateStickerName = (id, newName) => {
-        setSavedStickers((prevStickers) =>
-            prevStickers.map((sticker) =>
-                sticker.id === id ? { ...sticker, name: newName } : sticker
-            )
-        );
+    const updateStickerName = async (id, newName) => {
+        if (!token) {
+            setErrorMessage('Debe estar autenticado para actualizar calcomanías');
+            return false;
+        }
+
+        if (!newName || newName.trim() === '') {
+            setErrorMessage('El nombre de la calcomanía no puede estar vacío');
+            return false;
+        }
+
+        try {
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/editar-nombre-calcomanias/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nombre: newName.trim()
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setSavedStickers((prevStickers) =>
+                    prevStickers.map((sticker) =>
+                        sticker.id === id ? { ...sticker, name: newName.trim() } : sticker
+                    )
+                );
+
+                setSuccessMessage('Nombre actualizado exitosamente');
+
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 3000);
+
+                return true;
+            } else {
+                setErrorMessage(getErrorMessage(data, 'Error al actualizar el nombre'));
+                return false;
+            }
+        } catch (error) {
+            console.error('Error actualizando nombre de calcomanía:', error);
+            setErrorMessage('Error de conexión al actualizar el nombre');
+            return false;
+        }
     };
 
     const clearMessages = () => {
         setSuccessMessage('');
         setErrorMessage('');
+        setIsSaveSuccess(false);
     };
 
     const dataURLtoBlob = (dataURL) => {
@@ -108,6 +195,7 @@ export const Provider = ({ children }) => {
         }
 
         setIsLoading(true);
+        setIsSaveSuccess(false);
         clearMessages();
 
         try {
@@ -137,38 +225,64 @@ export const Provider = ({ children }) => {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                const newSticker = {
-                    id: data.calcomania.id_calcomania,
-                    image: imageToSave,
-                    name: data.calcomania.nombre,
-                    createdAt: new Date(data.calcomania.fecha_subida).toLocaleDateString(),
-                    formato: data.calcomania.formato,
-                    tamano_archivo: data.calcomania.tamano_archivo,
-                    url_archivo: data.calcomania.url_archivo
-                };
+                setIsLoading(false);
+                setIsSaveSuccess(true);
 
-                setSavedStickers(prev => [...prev, newSticker]);
-                setSuccessMessage('¡Calcomanía guardada exitosamente!');
-
-                clearStickerState();
+                await loadUserStickers();
 
                 setTimeout(() => {
-                    setSuccessMessage('');
+                    setSelectedImage(null);
+                    setCroppedImage(null);
+                    setIsCropping(false);
+                    setOriginalFile(null);
+                }, 3000);
+
+                setTimeout(() => {
+                    setIsSaveSuccess(false);
                 }, 3000);
 
             } else {
                 setErrorMessage(getErrorMessage(data, 'Error al guardar la calcomanía'));
+                setIsLoading(false);
             }
         } catch (error) {
             console.error('Error guardando calcomanía:', error);
             setErrorMessage('Error de conexión al guardar la calcomanía');
-        } finally {
             setIsLoading(false);
         }
     };
 
-    const deleteSticker = (id) => {
-        setSavedStickers(prev => prev.filter(sticker => sticker.id !== id));
+    const deleteSticker = async (id) => {
+        if (!token) {
+            setErrorMessage('Debe estar autenticado para eliminar calcomanías');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/eliminar-calcomanias/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setSavedStickers(prev => prev.filter(sticker => sticker.id !== id));
+                setSuccessMessage(data.mensaje || 'Calcomanía eliminada exitosamente');
+
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 3000);
+            } else {
+                setErrorMessage(getErrorMessage(data, 'Error al eliminar la calcomanía'));
+            }
+        } catch (error) {
+            console.error('Error eliminando calcomanía:', error);
+            setErrorMessage('Error de conexión al eliminar la calcomanía');
+        }
     };
 
     const clearStickerState = () => {
@@ -176,7 +290,9 @@ export const Provider = ({ children }) => {
         setCroppedImage(null);
         setIsCropping(false);
         setOriginalFile(null);
-        clearMessages();
+        if (!isSaveSuccess) {
+            clearMessages();
+        }
     };
 
     const handleFileSelect = (file) => {
@@ -221,7 +337,9 @@ export const Provider = ({ children }) => {
             deleteSticker,
             clearStickerState,
             handleFileSelect,
-            clearMessages
+            clearMessages,
+            loadUserStickers,
+            isSaveSuccess, setIsSaveSuccess
         }}>
             {children}
         </context.Provider>

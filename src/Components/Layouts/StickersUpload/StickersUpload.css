@@ -322,7 +322,6 @@
     transform: scale(0.95);
 }
 
-/* Estilos para mensajes de estado */
 .message-container {
     position: fixed;
     top: 20px;
@@ -360,7 +359,6 @@
     }
 }
 
-/* Estados de carga */
 .drop-zone.loading {
     position: relative;
     pointer-events: none;
@@ -383,9 +381,14 @@
 }
 
 .loading-spinner {
-    width: 32px;
-    height: 32px;
-    animation: spin 1s linear infinite;
+  width: 32px;
+  height: 32px;
+  animation: spin 1s linear infinite;
+  border: none;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  display: block;
 }
 
 @keyframes spin {
@@ -398,7 +401,6 @@
     font-weight: 500;
 }
 
-/* Botones deshabilitados */
 .sticker-upload-btn-secondary:disabled,
 .sticker-upload-btn-primary:disabled {
     opacity: 0.6;

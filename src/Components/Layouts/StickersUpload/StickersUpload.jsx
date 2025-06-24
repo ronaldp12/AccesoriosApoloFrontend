@@ -17,7 +17,8 @@ export const StickersUpload = () => {
         handleFileSelect,
         successMessage,
         errorMessage,
-        isLoading
+        isLoading,
+        isSaveSuccess
     } = useContext(context);
 
     const [isDragging, setIsDragging] = useState(false);
@@ -47,7 +48,7 @@ export const StickersUpload = () => {
 
     const handleFileSelectLocal = (file) => {
         if (file && file.type.startsWith('image/')) {
-            handleFileSelect(file); // Usar la función del contexto
+            handleFileSelect(file);
             setCrop(undefined);
             setCompletedCrop(null);
         }
@@ -98,7 +99,6 @@ export const StickersUpload = () => {
         setCrop(undefined);
     };
 
-    // Función para completar el recorte
     const completeCrop = useCallback(() => {
         if (completedCrop && imgRef.current && canvasRef.current) {
             const image = imgRef.current;
@@ -137,25 +137,25 @@ export const StickersUpload = () => {
         }
     }, [completedCrop, setCroppedImage, setIsCropping]);
 
-    // Efecto para manejar el modo de recorte desde el contexto
     useEffect(() => {
         if (isCropping && selectedImage) {
             startCrop();
         }
     }, [isCropping, selectedImage]);
 
-    // Efecto para completar el recorte cuando se termine
     useEffect(() => {
         if (completedCrop && !isCropping && imgRef.current) {
             completeCrop();
         }
     }, [completedCrop, isCropping, completeCrop]);
 
+    // Determinar si debe mostrar el loading overlay
+    const shouldShowLoadingOverlay = (isLoading || isSaveSuccess) && selectedImage;
+
     return (
         <>
             <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-            {/* Mensajes de estado */}
             {successMessage && (
                 <div className="message-container success-message">
                     <CheckCircle size={20} />
@@ -186,26 +186,36 @@ export const StickersUpload = () => {
 
             <main className="upload-area">
                 <div
-                    className={`drop-zone ${selectedImage ? 'has-image' : ''} ${isDragging ? 'dragging' : ''} ${isCropping ? 'cropping' : ''} ${isLoading ? 'loading' : ''}`}
+                    className={`drop-zone ${selectedImage ? 'has-image' : ''} ${isDragging ? 'dragging' : ''} ${isCropping ? 'cropping' : ''} ${shouldShowLoadingOverlay ? 'loading' : ''}`}
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
-                    onClick={() => !selectedImage && !isCropping && !isLoading && fileInputRef.current?.click()}
+                    onClick={() => !selectedImage && !isCropping && !shouldShowLoadingOverlay && fileInputRef.current?.click()}
                 >
-                    {isLoading && (
+                    {shouldShowLoadingOverlay && (
                         <div className="loading-overlay">
-                            <img src={wheelIcon} alt="cargando" className="loading-spinner" />
-                            <span>Guardando calcomanía...</span>
+                            {isSaveSuccess ? (
+                                <>
+                                    <CheckCircle size={40} className="success-icon" />
+                                    <span>Guardado con éxito</span>
+                                </>
+                            ) : (
+                                <>
+                                    <img src={wheelIcon} alt="cargando" className="loading-spinner" />
+                                    <span>Guardando calcomanía...</span>
+                                </>
+                            )}
                         </div>
                     )}
 
-                    {selectedImage ? (
+                    {(selectedImage || isSaveSuccess) ? (
                         !isCropping ? (
                             <div className="sticker-upload-image-container">
                                 <img
                                     src={croppedImage || selectedImage}
                                     alt="Calcomanía"
                                     className="uploaded-image"
+                                    style={{ opacity: isSaveSuccess ? 0.7 : 1 }}
                                 />
                             </div>
                         ) : (
@@ -240,7 +250,7 @@ export const StickersUpload = () => {
                         accept="image/*"
                         onChange={handleFileInputChange}
                         style={{ display: 'none' }}
-                        disabled={isLoading}
+                        disabled={shouldShowLoadingOverlay}
                     />
                 </div>
             </main>

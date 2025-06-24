@@ -185,7 +185,7 @@ export const WelcomeNoLoginModal = ({ isOpen, onClose, onOpenRegister, onOpenLog
                         <div className="action-group-welcome-no-login">
                             <p className="action-label-welcome-no-login">¿Eres nuevo?</p>
                             <button
-                                className="btn-primary"
+                                className="btn-primary-welcome-no-login"
                                 onClick={handleRegisterClick}
                             >
                                 Regístrate
@@ -195,7 +195,7 @@ export const WelcomeNoLoginModal = ({ isOpen, onClose, onOpenRegister, onOpenLog
                         <div className="action-group-welcome-no-login">
                             <p className="action-label-welcome-no-login">¿Ya tienes una cuenta?</p>
                             <button
-                                className="btn-secondary"
+                                className="btn-secondary-welcome-no-login"
                                 onClick={handleLoginClick}
                             >
                                 Inicia sesión

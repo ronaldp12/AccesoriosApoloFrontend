@@ -200,7 +200,7 @@
     width: 8rem;
 }
 
-.btn-primary {
+.btn-primary-welcome-no-login {
     width: 9rem;
     background-color: #004aad;
     color: white;
@@ -213,13 +213,13 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.btn-primary:hover {
+.btn-primary-welcome-no-login:hover {
     background-color: #1d4ed8;
     transform: translateY(-2px);
     box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2);
 }
 
-.btn-secondary {
+.btn-secondary-welcome-no-login {
     width: 9rem;
     background-color: #0f0b60;
     border: none;
@@ -232,7 +232,7 @@
     white-space: nowrap;
 }
 
-.btn-secondary:hover {
+.btn-secondary-welcome-no-login:hover {
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
     box-shadow: 0 8px 12px -2px rgba(0, 0, 0, 0.2);
