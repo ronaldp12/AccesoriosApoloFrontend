@@ -12,7 +12,6 @@ export const TopMenosStockChart = () => {
             try {
                 const response = await fetch('https://accesoriosapolobackend.onrender.com/productos/menos-stock');
                 const result = await response.json();
-                console.log(result);
 
                 if (result.success) {
                     const dataFormateada = (result.data || []).map(item => ({
