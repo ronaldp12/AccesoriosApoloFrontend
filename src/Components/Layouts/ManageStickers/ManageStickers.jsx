@@ -143,25 +143,30 @@ export const ManageStickers = () => {
                             <tr>
                                 <th>Id</th>
                                 <th>Nombre</th>
-                                <th>Formato</th>
-                                <th>Tamaño</th>
-                                <th>Fecha Subida</th>
-                                <th>Usuario</th>
+                                <th>Precio Unidad</th>
+                                <th>Precio Descuento</th>
+                                <th>Stocks</th>
                                 <th>Vista Previa</th>
                                 <th>Estado</th>
                                 <th>Editar</th>
                                 <th>Eliminar</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             {currentCalcomanias.map((calcomania) => (
                                 <tr key={calcomania.id_calcomania}>
                                     <td>{calcomania.id_calcomania}</td>
                                     <td>{calcomania.nombre}</td>
-                                    <td>{calcomania.formato}</td>
-                                    <td>{calcomania.tamano_archivo}</td>
-                                    <td>{formatDate(calcomania.fecha_subida)}</td>
-                                    <td>{calcomania.nombre_usuario}</td>
+                                    <td>${Number(calcomania.precio_unidad).toLocaleString("es-CO")}</td>
+                                    <td>${Number(calcomania.precio_descuento).toLocaleString("es-CO")}</td>
+                                    <td>
+                                        <div>
+                                            <strong>Pequeño:</strong> {calcomania.stock_pequeno}<br />
+                                            <strong>Mediano:</strong> {calcomania.stock_mediano}<br />
+                                            <strong>Grande:</strong> {calcomania.stock_grande}
+                                        </div>
+                                    </td>
                                     <td>
                                         {calcomania.url_archivo && (
                                             <img
@@ -175,7 +180,7 @@ export const ManageStickers = () => {
                                         )}
                                     </td>
                                     <td>
-                                        <span className={`estado ${calcomania.estado === 'Activo' ? "activo" : "inactivo"}`}>
+                                        <span className={`estado ${calcomania.estado === 'Activo' ? 'activo' : 'inactivo'}`}>
                                             {calcomania.estado}
                                         </span>
                                     </td>
@@ -192,6 +197,7 @@ export const ManageStickers = () => {
                                 </tr>
                             ))}
                         </tbody>
+
                     </table>
                 </div>
             )}
