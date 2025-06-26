@@ -139,6 +139,12 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         e.preventDefault();
         setIsLoading(true);
 
+        if (!userName || !email || !phone || !password) {
+            setErrorMessage("Por favor completa todos los campos obligatorios.");
+            setIsLoading(false);
+            return;
+        }
+
         if (phone.length !== 10) {
             setErrorMessage("El número de teléfono debe tener 10 dígitos.");
             setIsLoading(false);
@@ -250,13 +256,23 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         }
     };
 
+    const handleCloseModal = () => {
+        setErrorMessage("");
+        setUserName("");
+        setEmail("");
+        setPhone("");
+        setPassword("");
+        onClose();
+    };
+
+
     return (
         <div className={`modal-overlay ${isOpen ? "active" : ""}`}>
             <div
                 ref={modalRef}
                 className={`modal-box ${isOpen ? "active" : ""}`}
             >
-                <button className="close-btn-register-modal" onClick={onClose}>×</button>
+                <button className="close-btn-register-modal" onClick={handleCloseModal}>×</button>
 
                 <div className="modal-form-container">
                     <h2 ref={titleRef}>REGÍSTRATE</h2>
