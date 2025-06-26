@@ -76,19 +76,27 @@
 }
 
 .remove-button {
-  background-color: #040d7d !important;
+  background-color: #040d7d;
   color: #fff;
   border: none;
   padding: 8px 10px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  transition: background 0.2s;
+  transition: all 0.4s;
   margin-left: auto;
 }
 
 .remove-button:hover {
-  background: #040d7d;
+  background: red;
+  transform: scale(1.1);
+}
+
+.product-type {
+  color: #007bff;
+  font-size: 0.85em;
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
 @media (max-width: 820px) {

@@ -193,7 +193,7 @@ footer {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  padding: 40px 20px 40px 20px;
+  padding: 40px 20px 30px 20px;
   border-top: 1px solid #ddd;
   background-color: #e6e6e6;
   margin-top: 30px;
@@ -216,18 +216,18 @@ footer {
   font-family: 'Poppins', sans-serif;
 }
 
-.social-icons {
+.social-icons-footer-bottom {
   display: flex;
   gap: 15px;
 }
 
-.social-icons i {
+.social-icons-footer-bottom i {
   font-size: 20px;
   color: #333;
   cursor: pointer;
 }
 
-.social-icons i:hover {
+.social-icons-footer-bottom i:hover {
   color: #001ba3;
 }
 

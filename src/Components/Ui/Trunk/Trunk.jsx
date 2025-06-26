@@ -19,7 +19,7 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange })
         if (isOpen) {
             const timer = setTimeout(() => {
                 document.addEventListener('mousedown', handleClickOutside);
-                document.addEventListener('touchstart', handleClickOutside); // Para móviles
+                document.addEventListener('touchstart', handleClickOutside);
             }, 100);
 
             return () => {
@@ -46,6 +46,14 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange })
         if (e.target === e.currentTarget) {
             onClose();
         }
+    };
+
+    // Función para generar una clave única para cada producto
+    const generateUniqueKey = (product, index) => {
+        if (product.type === 'sticker') {
+            return `${product.id}-${product.size || 'default'}-${index}`;
+        }
+        return `${product.id}-${index}`;
     };
 
     return (
@@ -77,9 +85,9 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange })
                         {products.length === 0 ? (
                             <p>NO HAY PRODUCTOS REGISTRADOS</p>
                         ) : (
-                            products.map((product) => (
+                            products.map((product, index) => (
                                 <TrunkProductCard
-                                    key={product.id}
+                                    key={generateUniqueKey(product, index)}
                                     product={product}
                                     onRemove={onRemove}
                                     onQuantityChange={onQuantityChange}
@@ -92,7 +100,7 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange })
                         <>
                             <div className="drawer-total">
                                 <p>Total:
-                                    <strong>${totalPrice.toLocaleString("es-ES", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+                                    <strong>${totalPrice.toLocaleString("es-ES", { maximumFractionDigits: 2 })}</strong>
                                 </p>
                             </div>
 

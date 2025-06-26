@@ -182,7 +182,7 @@ export const StickerGallery = () => {
             <ConfigureStickerModal
                 isOpen={configModalOpen}
                 onClose={() => setConfigModalOpen(false)}
-                imageSrc={selectedSticker?.image}
+                sticker={selectedSticker}
             />
 
             <ConfirmModal

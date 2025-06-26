@@ -7,7 +7,7 @@ export const FooterBottom = () => (
             <span>ACCESORIOS APOLO - 2024</span>
         </div>
 
-        <div className="social-icons">
+        <div className="social-icons-footer-bottom">
             <i className="hgi hgi-stroke hgi-facebook-02"></i>
             <i className="hgi hgi-stroke hgi-instagram"></i>
             <i className="hgi hgi-stroke hgi-new-twitter"></i>
