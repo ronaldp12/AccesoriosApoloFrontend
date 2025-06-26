@@ -20,12 +20,12 @@ export const Header = () => {
   const [isTrunkOpen, setIsTrunkOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false)
 
   const {
     cartProducts, handleRemoveProduct, handleQuantityChange, userLogin,
     registerOpen, openRegister, closeRegister,
     loginOpen, openLogin, closeLogin,
-    isWelcomeOpen, setIsWelcomeOpen,
   } = useContext(context);
 
 
@@ -38,8 +38,9 @@ export const Header = () => {
 
   const closeTrunk = () => setIsTrunkOpen(false);
 
-  const showWelcome = () => setWelcomeOpen(true);
-  const closeWelcome = () => setWelcomeOpen(false);
+  const showWelcome = () => setIsWelcomeModalOpen(true);
+  const closeWelcome = () => setIsWelcomeModalOpen(false);
+
 
   const handleProfile = () => {
     if (userLogin) {
@@ -132,7 +133,7 @@ export const Header = () => {
       <HamburgerMenu isOpen={menuOpen} onClose={closeMenu} onOpenRegister={openRegister} onOpenLogin={openLogin} />
       <RegisterModal isOpen={registerOpen} onClose={closeRegister} />
       <LoginModal isOpen={loginOpen} onClose={closeLogin} onLoginSuccess={showWelcome} />
-      <WelcomeModal isOpen={isWelcomeOpen} onClose={closeWelcome} />
+      <WelcomeModal isOpen={isWelcomeModalOpen} onClose={closeWelcome} />
 
       <Trunk
         isOpen={isTrunkOpen}

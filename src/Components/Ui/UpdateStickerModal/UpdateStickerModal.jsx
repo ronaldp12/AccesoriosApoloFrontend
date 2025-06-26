@@ -337,11 +337,6 @@ export const UpdateStickerModal = ({ isOpen, onClose, idCalcomania, onUpdateSucc
                             accept="image/*"
                             onChange={handleChange}
                         />
-                        {originalData && originalData.url_archivo && (
-                            <div className="current-image-info">
-                                <small>Imagen actual: {originalData.nombre}</small>
-                            </div>
-                        )}
                     </div>
 
                     <div className="form-row-register-sticker">
