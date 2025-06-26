@@ -10,11 +10,15 @@ export const Provider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token") || "");
     const [userLogin, setUserLogin] = useState(localStorage.getItem("usuarioLogueado") || null);
     const [isWelcomeOpen, setIsWelcomeOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [isIntermediateLoading, setIsIntermediateLoading] = useState(false);
     const [avatar, setAvatar] = useState(localStorage.getItem("avatar") || null);
     const [nameRol, setNameRol] = useState(localStorage.getItem("nameRol") || "");
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSavingSticker, setIsSavingSticker] = useState(false);
+    const [isLoadingCart, setIsLoadingCart] = useState(false);
+    const [isLoadingStickers, setIsLoadingStickers] = useState(false);
 
     const [savedStickers, setSavedStickers] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
@@ -43,7 +47,7 @@ export const Provider = ({ children }) => {
     const loadCartFromBackend = async () => {
         if (!token || !userLogin) return;
 
-        setIsLoading(true);
+        setIsLoadingCart(true);
         try {
             const response = await fetch('https://accesoriosapolobackend.onrender.com/consultar-carrito-usuario', {
                 method: 'GET',
@@ -96,7 +100,7 @@ export const Provider = ({ children }) => {
             console.error('Error de conexión cargando carrito:', error);
             setErrorMessage('Error de conexión al cargar el carrito');
         } finally {
-            setIsLoading(false);
+            setIsLoadingCart(false);
         }
     };
 
@@ -160,7 +164,7 @@ export const Provider = ({ children }) => {
     const loadUserStickers = async () => {
         if (!token) return;
 
-        setIsLoading(true);
+        setIsLoadingStickers(true);
         try {
             const response = await fetch('https://accesoriosapolobackend.onrender.com/calcomanias-usuario', {
                 method: 'GET',
@@ -189,7 +193,7 @@ export const Provider = ({ children }) => {
             console.error('Error de conexión cargando calcomanías:', error);
             setErrorMessage('Error de conexión al cargar las calcomanías');
         } finally {
-            setIsLoading(false);
+            setIsLoadingStickers(false);
         }
     };
 
@@ -424,7 +428,7 @@ export const Provider = ({ children }) => {
             return;
         }
 
-        setIsLoading(true);
+        setIsSavingSticker(true);
         setIsSaveSuccess(false);
         clearMessages();
 
@@ -459,7 +463,7 @@ export const Provider = ({ children }) => {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                setIsLoading(false);
+                setIsSavingSticker(false);
                 setIsSaveSuccess(true);
 
                 await loadUserStickers();
@@ -477,12 +481,12 @@ export const Provider = ({ children }) => {
 
             } else {
                 setErrorMessage(getErrorMessage(data, 'Error al guardar la calcomanía'));
-                setIsLoading(false);
+                setIsSavingSticker(false);
             }
         } catch (error) {
             console.error('Error guardando calcomanía:', error);
             setErrorMessage('Error de conexión al guardar la calcomanía');
-            setIsLoading(false);
+            setIsSavingSticker(false);
         }
     };
 
@@ -561,7 +565,7 @@ export const Provider = ({ children }) => {
         }
 
         try {
-            setIsLoading(true);
+            setIsLoadingCart(true);
 
             const response = await fetch('https://accesoriosapolobackend.onrender.com/calcomanias/actualizar-y-agregar-carrito', {
                 method: 'PUT',
@@ -579,7 +583,6 @@ export const Provider = ({ children }) => {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // Recargar el carrito desde el backend para obtener la información actualizada
                 await loadCartFromBackend();
 
                 setSuccessMessage('Calcomanía agregada al carrito exitosamente');
@@ -594,7 +597,7 @@ export const Provider = ({ children }) => {
             setErrorMessage('Error de conexión al agregar al carrito');
             return false;
         } finally {
-            setIsLoading(false);
+            setIsLoadingCart(false);
         }
     };
 
@@ -639,7 +642,9 @@ export const Provider = ({ children }) => {
             welcomeNoLoginOpen, openWelcomeNoLogin, closeWelcomeNoLogin,
             calculateStickerPrice, getSizeDimensions, handleAddStickerToCart,
 
-            loadCartFromBackend
+            loadCartFromBackend, isSavingSticker, setIsSavingSticker,
+            isLoadingCart, setIsLoadingCart,
+            isLoadingStickers, setIsLoadingStickers,
 
         }}>
             {children}

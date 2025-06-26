@@ -17,7 +17,8 @@ export const StickersLayout = () => {
         isCropping,
         setIsCropping,
         saveSticker,
-        isLoading
+        isLoading,
+        isSavingSticker
     } = useContext(context);
 
     const navigate = useNavigate();
@@ -25,8 +26,6 @@ export const StickersLayout = () => {
 
     const isUploadRoute = location.pathname.endsWith('/upload') || location.pathname === '/stickers';
     const isGalleryRoute = location.pathname.includes('/gallery');
-
-    const isSavingSticker = isLoading && selectedImage;
 
     const handleAddSticker = async () => {
         if (selectedImage) {

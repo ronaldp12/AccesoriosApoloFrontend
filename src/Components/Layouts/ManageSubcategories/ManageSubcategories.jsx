@@ -35,7 +35,7 @@ export const ManageSubcategories = () => {
             const data = await response.json();
             console.log(data.subcategorias);
             if (data.success) {
-                const subcategoriasOrdenadas = data.subcategorias.sort((a, b) => a.id - b.id);
+                const subcategoriasOrdenadas = data.subcategorias.sort((a, b) => a.id_subcategoria - b.id_subcategoria);
                 setSubcategories(subcategoriasOrdenadas);
             } else {
                 console.error("Error en la respuesta al obtener subcategorías");

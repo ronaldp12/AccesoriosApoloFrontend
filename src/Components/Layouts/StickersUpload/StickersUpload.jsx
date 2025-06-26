@@ -18,6 +18,7 @@ export const StickersUpload = () => {
         successMessage,
         errorMessage,
         isLoading,
+        isSavingSticker,
         isSaveSuccess
     } = useContext(context);
 
@@ -157,7 +158,7 @@ export const StickersUpload = () => {
         }
     }, [isCropping, selectedImage, crop]);
 
-    const shouldShowLoadingOverlay = (isLoading || isSaveSuccess) && selectedImage;
+    const shouldShowLoadingOverlay = (isSavingSticker || isSaveSuccess) && selectedImage;
 
     return (
         <>

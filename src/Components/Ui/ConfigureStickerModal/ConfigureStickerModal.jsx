@@ -21,7 +21,6 @@ export const ConfigureStickerModal = ({ isOpen, onClose, sticker }) => {
         errorMessage
     } = useContext(context);
 
-    // Calcular precio cuando cambie el tamaño
     useEffect(() => {
         let width, height;
 
@@ -70,7 +69,6 @@ export const ConfigureStickerModal = ({ isOpen, onClose, sticker }) => {
     const handleCustomInput = (e, dimension) => {
         const value = e.target.value;
 
-        // Permitir campo vacío
         if (value === "") {
             if (dimension === "width") {
                 setCustomWidth("");
@@ -80,30 +78,16 @@ export const ConfigureStickerModal = ({ isOpen, onClose, sticker }) => {
             return;
         }
 
-        // Validar que solo sean números
-        if (!/^\d+$/.test(value)) {
+        if (!/^\d{1,2}$/.test(value)) {
             return;
         }
 
-        const numValue = parseInt(value);
-
-        // Validar rangos según la dimensión
-        if (dimension === "width" && (numValue < 5 || numValue > 20)) {
-            return;
-        }
-
-        if (dimension === "height" && (numValue < 5 || numValue > 30)) {
-            return;
-        }
-
-        // Actualizar el estado correspondiente
         if (dimension === "width") {
             setCustomWidth(value);
         } else {
             setCustomHeight(value);
         }
 
-        // Limpiar selección de tamaño predefinido cuando se escriba algo
         setSelectedSize(null);
     };
 
