@@ -235,6 +235,10 @@ hr{
   .sidebar.open ~ .dashboard-content {
     margin-left: 0;
   }
+
+  .logo-dashboard{
+    margin-left: 0.9rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -249,5 +253,24 @@ hr{
   .menu-items a {
     padding: 0.5rem 0.8rem;
     font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 394px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar.open {
+    width: 200px;
+  }
+
+  .menu-items a {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .logo-dashboard{
+    margin-left: 0.9rem;
   }
 }
