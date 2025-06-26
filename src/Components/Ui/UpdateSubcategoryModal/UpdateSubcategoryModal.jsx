@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import "./UpdateSubcategoryModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
@@ -16,6 +16,92 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
         FK_id_categoria: "",
         imagen: null
     });
+
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const firstGroupRef = useRef(null);
+    const secondGroupRef = useRef(null);
+    const thirdGroupRef = useRef(null);
+    const buttonsRef = useRef(null);
+
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-update-subcategorie'),
+            modalRef.current.querySelector('.group-update-subcategorie:nth-of-type(1)'),
+            modalRef.current.querySelector('.group-update-subcategorie:nth-of-type(2)'),
+            modalRef.current.querySelector('.group-update-subcategorie:nth-of-type(3)'),
+            modalRef.current.querySelector('.modal-buttons-update-subcategorie')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const form = modalRef.current?.querySelector('.form-update-subcategorie');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const firstGroup = modalRef.current?.querySelector('.group-update-subcategorie:nth-of-type(1)');
+            if (firstGroup) {
+                firstGroup.style.opacity = '1';
+                firstGroup.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const secondGroup = modalRef.current?.querySelector('.group-update-subcategorie:nth-of-type(2)');
+            if (secondGroup) {
+                secondGroup.style.opacity = '1';
+                secondGroup.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            const thirdGroup = modalRef.current?.querySelector('.group-update-subcategorie:nth-of-type(3)');
+            if (thirdGroup) {
+                thirdGroup.style.opacity = '1';
+                thirdGroup.style.transform = 'translateY(0)';
+            }
+        }, 500);
+
+        setTimeout(() => {
+            const buttons = modalRef.current?.querySelector('.modal-buttons-update-subcategorie');
+            if (buttons) {
+                buttons.style.opacity = '1';
+                buttons.style.transform = 'translateY(0)';
+            }
+        }, 600);
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+
+            setTimeout(() => {
+                animateElements();
+            }, 100);
+        }
+    }, [isOpen]);
 
     const clearStatusMessages = useCallback(() => {
         setErrorMessage("");
@@ -124,10 +210,10 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
 
     return (
         <div className="modal-overlay-update-subcategorie">
-            <div className={`modal-content-update-subcategorie ${isClosing ? "exit" : "entry"}`}>
-                <h2>Editar Subcategoría</h2>
-                <form className="form-update-subcategorie">
-                    <div className="group-update-subcategorie">
+            <div ref={modalRef} className={`modal-content-update-subcategorie ${isClosing ? "exit" : "entry"}`}>
+                <h2 ref={titleRef}>Editar Subcategoría</h2>
+                <form ref={formRef} className="form-update-subcategorie">
+                    <div ref={firstGroupRef} className="group-update-subcategorie">
                         <div className="form-group-update-subcategorie">
                             <label>Nombre de Subcategoría</label>
                             <input
@@ -148,7 +234,7 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
                         </div>
                     </div>
 
-                    <div className="group-update-subcategorie">
+                    <div ref={secondGroupRef} className="group-update-subcategorie">
                         <div className="form-group-update-subcategorie">
                             <label>Descuento (%)</label>
                             <input
@@ -168,7 +254,7 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
                         </div>
                     </div>
 
-                    <div className="form-group-update-subcategorie">
+                    <div ref={thirdGroupRef} className="form-group-update-subcategorie">
                         <label>Categoría a la que pertenece</label>
                         <select
                             name="FK_id_categoria"
@@ -184,7 +270,7 @@ export const UpdateSubcategoryModal = ({ isOpen, onClose, idSubcategoria, onUpda
                         </select>
                     </div>
 
-                    <div className="modal-buttons-update-subcategorie">
+                    <div ref={buttonsRef} className="modal-buttons-update-subcategorie">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>
                         <button type="button" className="btn-agregar" onClick={handleUpdate}>
                             {isLoading ? <img src={wheelIcon} alt="Cargando..." className="update-subcategorie-spinner" /> : <span>EDITAR</span>}

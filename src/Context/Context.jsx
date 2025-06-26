@@ -234,7 +234,7 @@ const closeWelcomeNoLogin = () => setWelcomeNoLoginOpen(false);
 
             formData.append('imagen', imageFile);
 
-            const response = await fetch('https://accesoriosapolobackend.onrender.com/registrar-calcomania', {
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/registrar-calcomania-usuario', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

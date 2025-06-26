@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import "./UpdateCategoryModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
@@ -15,14 +15,81 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
         descuento: ""
     });
 
+    const modalRef = useRef(null);
+
     const clearStatusMessages = useCallback(() => {
         setErrorMessage("");
         setSuccessMessage("");
         setIsLoading(false);
     }, [setIsLoading]);
 
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-update-categorie'),
+            modalRef.current.querySelector('.group-update-categorie'),
+            modalRef.current.querySelector('.form-group-update-categorie:last-of-type'),
+            modalRef.current.querySelector('.modal-buttons-update-categorie')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const form = modalRef.current?.querySelector('.form-update-categorie');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const group = modalRef.current?.querySelector('.group-update-categorie');
+            if (group) {
+                group.style.opacity = '1';
+                group.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const lastGroup = modalRef.current?.querySelector('.form-group-update-categorie:last-of-type');
+            if (lastGroup) {
+                lastGroup.style.opacity = '1';
+                lastGroup.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            const buttons = modalRef.current?.querySelector('.modal-buttons-update-categorie');
+            if (buttons) {
+                buttons.style.opacity = '1';
+                buttons.style.transform = 'translateY(0)';
+            }
+        }, 500);
+    };
+
     useEffect(() => {
-        if (isOpen && idCategoria) fetchCategoria();
+        if (isOpen && idCategoria) {
+            fetchCategoria();
+            setTimeout(() => {
+                animateElements();
+            }, 100);
+        }
     }, [isOpen, idCategoria]);
 
     useEffect(() => {
@@ -103,7 +170,7 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
 
     return (
         <div className="modal-overlay-update-categorie">
-            <div className={`modal-content-update-categorie ${isClosing ? "exit" : "entry"}`}>
+            <div ref={modalRef} className={`modal-content-update-categorie ${isClosing ? "exit" : "entry"}`}>
                 <h2>Editar Categoría</h2>
                 <form className="form-update-categorie">
                     <div className="group-update-categorie">
