@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import "./UpdateProductModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 import { context } from "../../../Context/Context";
@@ -19,6 +19,17 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
 
     const [precioDescuentoFromBackend, setPrecioDescuentoFromBackend] = useState(0);
     const [shouldRecalculate, setShouldRecalculate] = useState(false);
+
+    const modalRef = useRef(null);
+    const titleRef = useRef(null);
+    const formRef = useRef(null);
+    const firstGroupRef = useRef(null);
+    const secondGroupRef = useRef(null);
+    const fullGroupRef = useRef(null);
+    const thirdGroupRef = useRef(null);
+    const fourthGroupRef = useRef(null);
+    const fifthGroupRef = useRef(null);
+    const buttonsRef = useRef(null);
 
     const [formData, setFormData] = useState({
         referencia: "",
@@ -49,6 +60,103 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
     const formatNumber = (value) => {
         if (!value && value !== 0) return "";
         return Number(value).toLocaleString("es-ES");
+    };
+
+    // Función para animar elementos
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-update-product'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(1)'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(2)'),
+            modalRef.current.querySelector('.form-group-full'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(4)'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(5)'),
+            modalRef.current.querySelector('.group-register-product:nth-of-type(6)'),
+            modalRef.current.querySelector('.modal-buttons-update-product')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        setTimeout(() => {
+            const title = modalRef.current?.querySelector('h2');
+            if (title) {
+                title.style.opacity = '1';
+                title.style.transform = 'translateY(0)';
+            }
+        }, 100);
+
+        setTimeout(() => {
+            const form = modalRef.current?.querySelector('.form-update-product');
+            if (form) {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            }
+        }, 200);
+
+        setTimeout(() => {
+            const firstGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(1)');
+            if (firstGroup) {
+                firstGroup.style.opacity = '1';
+                firstGroup.style.transform = 'translateY(0)';
+            }
+        }, 300);
+
+        setTimeout(() => {
+            const secondGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(2)');
+            if (secondGroup) {
+                secondGroup.style.opacity = '1';
+                secondGroup.style.transform = 'translateY(0)';
+            }
+        }, 400);
+
+        setTimeout(() => {
+            const fullGroup = modalRef.current?.querySelector('.form-group-full');
+            if (fullGroup) {
+                fullGroup.style.opacity = '1';
+                fullGroup.style.transform = 'translateY(0)';
+            }
+        }, 500);
+
+        setTimeout(() => {
+            const thirdGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(4)');
+            if (thirdGroup) {
+                thirdGroup.style.opacity = '1';
+                thirdGroup.style.transform = 'translateY(0)';
+            }
+        }, 600);
+
+        setTimeout(() => {
+            const fourthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(5)');
+            if (fourthGroup) {
+                fourthGroup.style.opacity = '1';
+                fourthGroup.style.transform = 'translateY(0)';
+            }
+        }, 700);
+
+        setTimeout(() => {
+            const fifthGroup = modalRef.current?.querySelector('.group-register-product:nth-of-type(6)');
+            if (fifthGroup) {
+                fifthGroup.style.opacity = '1';
+                fifthGroup.style.transform = 'translateY(0)';
+            }
+        }, 800);
+
+        setTimeout(() => {
+            const buttons = modalRef.current?.querySelector('.modal-buttons-update-product');
+            if (buttons) {
+                buttons.style.opacity = '1';
+                buttons.style.transform = 'translateY(0)';
+            }
+        }, 900);
     };
 
     const fetchProducto = useCallback(async () => {
@@ -89,6 +197,10 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                 if (producto.subcategoria.todas) {
                     setSubcategorias(producto.subcategoria.todas);
                 }
+
+                setTimeout(() => {
+                    animateElements();
+                }, 100);
             } else {
                 setErrorMessage(data.mensaje);
             }
@@ -248,9 +360,10 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
     useEffect(() => {
         if (isOpen && referencia) {
             console.log("Referencia recibida:", referencia);
+            clearStatusMessages();
             fetchProducto();
         }
-    }, [isOpen, referencia, fetchProducto]);
+    }, [isOpen, referencia, fetchProducto, clearStatusMessages]);
 
     useEffect(() => {
         if (formData.FK_id_categoria) {
@@ -271,20 +384,17 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
         }
     }, [formData.precio_unidad, formData.descuento, shouldRecalculate]);
 
-    useEffect(() => {
-        if (isOpen) {
-            clearStatusMessages();
-        }
-    }, [isOpen, clearStatusMessages]);
-
     if (!isOpen && !isClosing) return null;
 
     return (
         <div className="modal-overlay-update-product">
-            <div className={`modal-content-update-product ${isClosing ? "exit" : "entry"}`}>
-                <h2>Editar Producto</h2>
-                <form className="form-update-product">
-                    <div className="group-register-product">
+            <div
+                ref={modalRef}
+                className={`modal-content-update-product ${isClosing ? "exit" : "entry"}`}
+            >
+                <h2 ref={titleRef}>Editar Producto</h2>
+                <form ref={formRef} className="form-update-product">
+                    <div ref={firstGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Referencia *</label>
                             <input
@@ -308,7 +418,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         </div>
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={secondGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Descripción *</label>
                             <button
@@ -332,7 +442,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         </div>
                     </div>
 
-                    <div className="form-group-full">
+                    <div ref={fullGroupRef} className="form-group-full">
                         <label>Marca *</label>
                         <input
                             type="text"
@@ -343,7 +453,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         />
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={thirdGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <div className="label-with-icon">
                                 <label>Imagenes Producto *</label>
@@ -385,7 +495,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         </div>
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={fourthGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Descuento *</label>
                             <input
@@ -413,7 +523,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         </div>
                     </div>
 
-                    <div className="group-register-product">
+                    <div ref={fifthGroupRef} className="group-register-product">
                         <div className="form-group-register-product">
                             <label>Categoría que pertenece *</label>
                             <select
@@ -447,7 +557,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                         </div>
                     </div>
 
-                    <div className="modal-buttons-update-product">
+                    <div ref={buttonsRef} className="modal-buttons-update-product">
                         <button type="button" className="btn-cancelar" onClick={handleClose}>CANCELAR</button>
                         <button type="button" className="btn-agregar" onClick={handleUpdate}>
                             {isLoading ? <img src={wheelIcon} alt="Cargando..." className="update-product-spinner" /> : <span>EDITAR</span>}
@@ -458,6 +568,7 @@ export const UpdateProductModal = ({ isOpen, onClose, referencia, onUpdateSucces
                 {errorMessage && <div className="status-message-update error"><span>{errorMessage}</span></div>}
                 {successMessage && <div className="status-message-update success"><span>{successMessage}</span></div>}
             </div>
+
             <DescriptionProductModal
                 isOpen={isDescriptionModalOpen}
                 onClose={() => setIsDescriptionModalOpen(false)}

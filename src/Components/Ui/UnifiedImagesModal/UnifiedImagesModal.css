@@ -146,11 +146,11 @@
 }
 
 .remove-main-image-btn.current {
-    background: rgba(37, 99, 235, 0.9);
+    background: #dc3545;
 }
 
 .remove-main-image-btn.current:hover {
-    background: #2563eb;
+    background: #bd1324;
 }
 
 .remove-main-image-btn.new {
