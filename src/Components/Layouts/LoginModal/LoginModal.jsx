@@ -136,6 +136,18 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         e.preventDefault();
         setIsLoading(true);
 
+        if (!correo || !contrasena) {
+            setErrorMessage("Por favor completa todos los campos obligatorios.");
+            setIsLoading(false);
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+            setErrorMessage("Por favor ingresa un correo válido.");
+            setIsLoading(false);
+            return;
+        }
+
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/login", {
                 method: "POST",
@@ -270,14 +282,13 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                             <div className="login-input-field">
                                 <label>Correo *</label>
                                 <input
-                                    type="email"
+                                    type="text"
                                     placeholder="example@example.com"
                                     value={correo}
                                     onChange={(e) => {
                                         setCorreo(e.target.value)
                                         setErrorMessage("")
                                     }}
-                                    required
                                 />
                             </div>
                             <div className="login-input-field">
@@ -290,7 +301,6 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                                         setContrasena(e.target.value)
                                         setErrorMessage("")
                                     }}
-                                    required
                                 />
                                 <u onClick={() => {
                                     onClose();
