@@ -171,7 +171,7 @@ export const ContactAboutUsHelp = () => {
               <img src={img2} alt="Tienda Accesorios Apolo" />
             </div>
 
-            <div className="about-text animate-child">
+            <div id='mision-vision' className="about-text animate-child">
               <div className="mission-vision">
                 <div className="mission animate-child">
                   <h3>Misión</h3>
@@ -215,6 +215,7 @@ export const ContactAboutUsHelp = () => {
                 </div>
               </div>
             </div>
+            <div id='values'></div>
           </div>
         </div>
       </section>

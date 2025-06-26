@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./UpdateSuplierModal.css";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
-import { context } from "../../../Context/Context.jsx"
+import { context } from "../../../Context/Context.jsx";
 
 export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
@@ -16,14 +16,49 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
         telefono: "",
         direccion: "",
     });
+    const modalRef = useRef(null); // Initialize useRef
+
+    const animateElements = () => {
+        if (!isOpen || !modalRef.current) return;
+
+        const elements = [
+            modalRef.current.querySelector('h2'),
+            modalRef.current.querySelector('.form-update-suplier'),
+            ...modalRef.current.querySelectorAll('.group-update-suplier'),
+            ...modalRef.current.querySelectorAll('.form-group-update-suplier'),
+            modalRef.current.querySelector('.form-group-full'),
+            modalRef.current.querySelector('.modal-buttons-update-suplier')
+        ].filter(Boolean);
+
+        elements.forEach(el => {
+            if (el) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+            }
+        });
+
+        elements.forEach((el, index) => {
+            setTimeout(() => {
+                if (el) {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }
+            }, 100 + (index * 100));
+        });
+    };
 
     useEffect(() => {
         if (isOpen && nitProveedor) {
             fetchProveedor();
+            setTimeout(() => {
+                animateElements();
+            }, 100);
         }
     }, [isOpen, nitProveedor]);
 
     const fetchProveedor = async () => {
+        setIsLoading(true); // Set loading true before fetching
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/obtener-proveedor", {
                 method: "POST",
@@ -34,10 +69,13 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
             if (data.success) {
                 setFormData(data.proveedor);
             } else {
-                alert(data.mensaje);
+                setErrorMessage(data.mensaje); // Use setErrorMessage
             }
         } catch (error) {
             console.error("Error consultando proveedor:", error);
+            setErrorMessage("Error al cargar los datos del proveedor."); // Set error message
+        } finally {
+            setIsLoading(false); // Set loading false after fetching
         }
     };
 
@@ -101,7 +139,7 @@ export const UpdateSuplierModal = ({ isOpen, onClose, nitProveedor, onUpdateSucc
 
     return (
         <div className="modal-overlay-update-suplier">
-            <div className={`modal-content-update-suplier ${isClosing ? "exit" : "entry"}`}>
+            <div ref={modalRef} className={`modal-content-update-suplier ${isClosing ? "exit" : "entry"}`}>
                 <h2>Editar Proveedor</h2>
                 <form className="form-update-suplier">
                     <div className="group-update-suplier">

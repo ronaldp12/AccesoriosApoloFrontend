@@ -1,34 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* Desktop: Barra lateral fija */
+/* Desktop: Barra lateral sticky */
 .filter-sidebar {
-    position: fixed;
+    position: sticky;
     top: var(--header-height, 150px);
     left: 0;
     width: 350px;
-    height: calc(100vh - var(--header-height, 80px));
+    height: fit-content;
+    max-height: calc(100vh - var(--header-height, 150px) - 20px);
     background: #fff;
-    border-right: 1px solid #ddd;
     padding: 35px;
     overflow-y: auto;
     z-index: 100;
     box-sizing: border-box;
     padding-top: 0;
+    align-self: flex-start;
 }
 
-.filter-title{
+.filter-title {
     display: flex;
     border-bottom: 1px solid #d6d7e6;
     height: 3rem;
 }
 
-.filter-sort{
+.filter-sort {
     display: flex;
     padding-top: 1rem;
     align-items: center;
 }
 
-.filter-sort select{
+.filter-sort select {
     background-color: transparent;
     border: none;
     font-family: "Barlow Condensed", sans-serif;
@@ -36,7 +37,7 @@
 
 .filter-title h2 {
     font-size: 3rem;
-    margin-top: 0 ;
+    margin-top: 0;
     color: #040d7d;
     font-family: "Barlow Condensed", sans-serif;
     display: flex;
@@ -63,24 +64,24 @@
     color: #014aad;
 }
 
-.filter-brand{
+.filter-brand {
     margin-top: 2rem;
 }
 
-.filter-brand h2{
+.filter-brand h2 {
     font-size: 1.3rem;
     font-weight: 500;
     border-bottom: 1px solid #d6d7e6;
     font-family: "Barlow Condensed", sans-serif;
 }
 
-.filter-sort-brand{
+.filter-sort-brand {
     display: flex;
     justify-content: left;
     margin-top: 1rem;
 }
 
-.filter-sort-brand select{
+.filter-sort-brand select {
     padding: 0.7rem;
     border-radius: 10px;
     border-color: #8286be;
@@ -91,7 +92,7 @@
     display: none;
 }
 
-.price-value{
+.price-value {
     font-family: 'Open sans';
 }
 
@@ -105,6 +106,7 @@
         min-width: 300px !important;
         max-width: 300px !important;
         height: 100vh;
+        max-height: 100vh;
         background: #fff;
         border-right: none;
         box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
@@ -112,6 +114,7 @@
         z-index: 9999;
         padding: 25px !important;
         box-sizing: border-box !important;
+        align-self: unset;
     }
 
     .filter-sidebar.mobile {

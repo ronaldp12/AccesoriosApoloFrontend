@@ -242,6 +242,7 @@ body.header-fixed {
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
     transition: transform 0.3s ease-in-out;
+    overflow-x: hidden;
 }
 
 .hamburger-actions {

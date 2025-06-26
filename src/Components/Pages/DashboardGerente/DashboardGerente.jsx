@@ -32,6 +32,29 @@ export const DashboardGerente = () => {
         }
     };
 
+    const sidebarLinks = [
+        { label: "Inicio", icon: <FaHome />, route: "/dashboard" },
+        { label: "Usuario", icon: <FaUser />, route: "/dashboard/manage-users" },
+        { label: "Producto", icon: <FaBox />, route: "/dashboard/manage-products" },
+        { label: "Categorías", icon: <FaBars />, route: "/dashboard/manage-categories" },
+        { label: "Subcategorías", icon: <FaList />, route: "/dashboard/manage-subcategories" },
+        { label: "Proveedores", icon: <FaTruck />, route: "/dashboard/manage-supliers", roles: ["gerente"] },
+        { label: "Ventas", icon: <FaMoneyBill />, route: "/dashboard/manage-sales" },
+        { label: "Factura Proveedor", icon: <FaFileInvoice />, route: "/dashboard/manage-invoice" },
+        { label: "Inventario", icon: <FaClipboard />, route: "/dashboard/manage-inventory" },
+        { label: "Calcomanías", icon: <FaMagic />, route: "/dashboard/manage-stickers" },
+    ];
+
+    const allowedSidebarLinks = sidebarLinks.filter(
+        (item) => !item.roles || item.roles.includes(nameRol)
+    );
+
+    const isActive = (route) => {
+        if (route === "/dashboard") {
+            return location.pathname === "/dashboard";
+        }
+        return location.pathname.startsWith(route);
+    };
 
     return (
         <div className="dashboard-layout">
@@ -41,52 +64,24 @@ export const DashboardGerente = () => {
             </button>
 
             <div className={`sidebar ${isOpen ? "open" : ""}`}>
-                    <Logo route="/dashboard" styleContainer="logo-section" styleLogo="logo-dashboard" />
+                <Logo route="/dashboard" styleContainer="logo-section" styleLogo="logo-dashboard" />
                 <hr />
 
                 <div className="menu-items">
-                    <Link to="/dashboard" className={location.pathname === "/dashboard" ? "active" : ""}>
-                        <FaHome /><span>Inicio</span>
-                    </Link>
+                    {allowedSidebarLinks.map((item, idx) => (
+                        <Link
+                            key={idx}
+                            to={item.route}
+                            className={isActive(item.route) ? "active" : ""}
+                        >
+                            {item.icon}<span>{item.label}</span>
+                        </Link>
 
-                    <Link to="/dashboard/manage-users" className={location.pathname.startsWith("/dashboard/manage-users") ? "active" : ""}>
-                        <FaUser /><span>Usuario</span>
-                    </Link>
+                    ))}
 
-                    <Link to="/dashboard/manage-products" className={location.pathname.startsWith("/dashboard/manage-products") ? "active" : ""}>
-                        <FaBox /><span>Producto</span>
-                    </Link>
-
-                    <Link to="/dashboard/manage-categories" className={location.pathname.startsWith("/dashboard/manage-categories") ? "active" : ""}>
-                        <FaBars /><span>Categorías</span>
-                    </Link>
-
-                    <Link to="/dashboard/manage-subcategories" className={location.pathname.startsWith("/dashboard/manage-subcategories") ? "active" : ""}>
-                        <FaList /><span>Subcategorías</span>
-                    </Link>
-
-                    <Link to="/dashboard/manage-supliers" className={location.pathname.startsWith("/dashboard/manage-supliers") ? "active" : ""}>
-                        <FaTruck /><span>Proveedores</span>
-                    </Link>
-
-                    <Link to="/dashboard/manage-sales" className={location.pathname.startsWith("/dashboard/manage-sales") ? "active" : ""}>
-                        <FaMoneyBill /><span>Ventas</span>
-                    </Link>
-
-                    <Link to="/dashboard/manage-invoice" className={location.pathname.startsWith("/dashboard/manage-invoice") ? "active" : ""}>
-                        <FaFileInvoice /><span>Factura Proveedor</span>
-                    </Link>
-
-                    <Link to="/dashboard/manage-inventory" className={location.pathname.startsWith("/dashboard/manage-inventory") ? "active" : ""}>
-                        <FaClipboard /><span>Inventario</span>
-                    </Link>
-
-                    <Link to="/dashboard/manage-stickers" className={location.pathname.startsWith("/dashboard/manage-stickers") ? "active" : ""}>
-                        <FaMagic /><span>Calcomanías</span>
-                    </Link>
-
-                    <a href="#" onClick={openConfirmLogout}
-                    ><FaSignOutAlt /><span>Salir</span></a>
+                    <a href="#" onClick={openConfirmLogout}>
+                        <FaSignOutAlt /><span>Salir</span>
+                    </a>
                 </div>
 
                 <div className="bottom-profile">

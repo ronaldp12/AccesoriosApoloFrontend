@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RegisterSaleModal.css";
 import { context } from "../../../Context/Context";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
+import { FaMagic, FaBox } from "react-icons/fa";
 
 export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [isClosing, setIsClosing] = useState(false);
@@ -14,7 +15,9 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const formRef = useRef(null);
     const clientSectionRef = useRef(null);
     const saleSectionRef = useRef(null);
+    const itemSelectorRef = useRef(null);
     const productSectionRef = useRef(null);
+    const calcomaniasSectionRef = useRef(null);
     const tableRef = useRef(null);
     const buttonsRef = useRef(null);
 
@@ -29,6 +32,12 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         cantidad: ""
     };
 
+    const initialCalcomaniaData = {
+        id_calcomania: "",
+        cantidad: "",
+        tamano: "pequeno"
+    };
+
     const initialClientData = {
         nombre: "",
         correo: "",
@@ -38,10 +47,14 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
     const [saleData, setSaleData] = useState(initialSaleData);
     const [clientData, setClientData] = useState(initialClientData);
     const [productData, setProductData] = useState(initialProductData);
+    const [calcomaniaData, setCalcomaniaData] = useState(initialCalcomaniaData);
     const [products, setProducts] = useState([]);
+    const [calcomanias, setCalcomanias] = useState([]);
     const [searchingProduct, setSearchingProduct] = useState(false);
+    const [searchingCalcomania, setSearchingCalcomania] = useState(false);
     const [searchingClient, setSearchingClient] = useState(false);
     const [clientFound, setClientFound] = useState(false);
+    const [itemType, setItemType] = useState(""); // "producto" o "calcomania"
 
     // Función para animar elementos
     const animateElements = () => {
@@ -52,7 +65,9 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             formRef.current,
             clientSectionRef.current,
             saleSectionRef.current,
+            itemSelectorRef.current,
             productSectionRef.current,
+            calcomaniasSectionRef.current,
             tableRef.current,
             buttonsRef.current
         ];
@@ -97,11 +112,11 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             }
         }, 800);
 
-        // Animar sección de productos
+        // Animar selector de items
         setTimeout(() => {
-            if (productSectionRef.current) {
-                productSectionRef.current.style.opacity = '1';
-                productSectionRef.current.style.transform = 'translateY(0)';
+            if (itemSelectorRef.current) {
+                itemSelectorRef.current.style.opacity = '1';
+                itemSelectorRef.current.style.transform = 'translateY(0)';
             }
         }, 1000);
 
@@ -139,12 +154,12 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         }
     }, [isOpen]);
 
-    // Animar tabla cuando cambian los productos
+    // Animar tabla cuando cambian los items
     useEffect(() => {
-        if (products.length > 0) {
+        if (products.length > 0 || calcomanias.length > 0) {
             animateTable();
         }
-    }, [products.length]);
+    }, [products.length, calcomanias.length]);
 
     const getCurrentDate = () => {
         const colombiaDate = new Date().toLocaleString("en-CA", {
@@ -175,8 +190,11 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         setSaleData(initialSaleData);
         setClientData(initialClientData);
         setProductData(initialProductData);
+        setCalcomaniaData(initialCalcomaniaData);
         setProducts([]);
+        setCalcomanias([]);
         setClientFound(false);
+        setItemType("");
         clearMessages();
     };
 
@@ -243,14 +261,15 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             });
 
             const data = await response.json();
+            console.log(data);
 
-            if (response.ok && data.success) {
+            if (response.ok && data.success && data.producto) {
                 return {
                     nombre: data.producto.nombre,
                     referencia: data.producto.referencia,
                     stock: data.producto.stock,
                     precio_unidad: data.producto.precio_unidad,
-                    precio_descuento: data.producto.precio_descuento
+                    precio_final_con_descuento: data.producto.precio_final_con_descuento
                 };
             } else {
                 console.log("Producto no encontrado:", data.mensaje);
@@ -262,6 +281,44 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             return null;
         } finally {
             setSearchingProduct(false);
+        }
+    };
+
+    const searchCalcomaniaById = async (id, tamano, cantidad) => {
+        if (!id.trim()) return null;
+
+        setSearchingCalcomania(true);
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/buscar-calcomania-venta-id?id=${encodeURIComponent(id)}&tamano=${encodeURIComponent(tamano)}&cantidad=${encodeURIComponent(cantidad)}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                return {
+                    id_calcomania: data.calcomania.id_calcomania,
+                    nombre: data.calcomania.nombre,
+                    precio_unidad: data.calcomania.precio_unidad,
+                    precio_descuento: data.calcomania.precio_descuento,
+                    subtotal: data.calcomania.subtotal
+                };
+            } else {
+                console.log("Calcomanía no encontrada:", data.mensaje);
+                return null;
+            }
+
+        } catch (error) {
+            console.error("Error buscando calcomanía:", error);
+            return null;
+        } finally {
+            setSearchingCalcomania(false);
         }
     };
 
@@ -285,6 +342,19 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         clearMessages();
     };
 
+    const handleCalcomaniaChange = (e) => {
+        const { name, value } = e.target;
+        setCalcomaniaData(prev => ({ ...prev, [name]: value }));
+        clearMessages();
+    };
+
+    const handleItemTypeChange = (type) => {
+        setItemType(type);
+        setProductData(initialProductData);
+        setCalcomaniaData(initialCalcomaniaData);
+        clearMessages();
+    };
+
     const handleAddProduct = async () => {
         const { referencia, cantidad } = productData;
 
@@ -294,6 +364,11 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         }
         if (!cantidad || parseFloat(cantidad) <= 0) {
             setErrorMessage("La cantidad debe ser mayor a 0");
+            return;
+        }
+
+        if (!Number.isInteger(parseFloat(cantidad))) {
+            setErrorMessage("La cantidad debe ser un número entero");
             return;
         }
 
@@ -308,40 +383,116 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             return;
         }
 
-        if (products.some(p => p.referencia === referencia)) {
-            setErrorMessage("Esta referencia ya está agregada");
-            return;
-        }
-
         const cantidadNum = parseFloat(cantidad);
 
         let precio_usado = productInfo.precio_unidad;
         let descuento_aplicado = 0;
         let precio_descuento_mostrar = 0;
 
-        if (productInfo.precio_descuento && productInfo.precio_descuento > 0 && productInfo.precio_descuento !== productInfo.precio_unidad) {
-            precio_usado = productInfo.precio_descuento;
-            descuento_aplicado = (productInfo.precio_unidad - productInfo.precio_descuento) * cantidadNum;
-            precio_descuento_mostrar = productInfo.precio_descuento;
+        if (productInfo.precio_final_con_descuento && productInfo.precio_final_con_descuento > 0 && productInfo.precio_final_con_descuento < productInfo.precio_unidad) {
+            precio_usado = productInfo.precio_final_con_descuento;
+            descuento_aplicado = (productInfo.precio_unidad - productInfo.precio_final_con_descuento) * cantidadNum;
+            precio_descuento_mostrar = productInfo.precio_final_con_descuento;
         }
 
         const subtotal = cantidadNum * precio_usado;
 
-        const newProduct = {
-            id: Date.now(),
-            referencia,
-            nombre: productInfo.nombre,
-            cantidad: cantidadNum,
-            precio_unidad: productInfo.precio_unidad,
-            precio_descuento: precio_descuento_mostrar,
-            precio_usado: precio_usado,
-            descuento_aplicado: descuento_aplicado,
-            subtotal,
-            stock: productInfo.stock
-        };
+        const existingProductIndex = products.findIndex(p => p.referencia === referencia);
+        if (existingProductIndex !== -1) {
+            // Producto existe, actualizar cantidad
+            const existingProduct = products[existingProductIndex];
+            const nuevaCantidad = existingProduct.cantidad + cantidadNum;
 
-        setProducts(prev => [...prev, newProduct]);
+            if (nuevaCantidad > productInfo.stock) {
+                setErrorMessage(`Stock insuficiente. Disponible: ${productInfo.stock}, solicitado: ${nuevaCantidad}`);
+                return;
+            }
+
+            const updatedProducts = [...products];
+            updatedProducts[existingProductIndex] = {
+                ...existingProduct,
+                cantidad: nuevaCantidad,
+                subtotal: nuevaCantidad * existingProduct.precio_usado
+            };
+            setProducts(updatedProducts);
+        } else {
+            const newProduct = {
+                id: Date.now(),
+                referencia,
+                nombre: productInfo.nombre,
+                cantidad: cantidadNum,
+                precio_unidad: productInfo.precio_unidad,
+                precio_descuento: precio_descuento_mostrar,
+                precio_usado: precio_usado,
+                descuento_aplicado: descuento_aplicado,
+                subtotal,
+                stock: productInfo.stock
+            };
+            setProducts(prev => [...prev, newProduct]);
+        }
+
         setProductData(initialProductData);
+        clearMessages();
+    };
+
+    const handleAddCalcomania = async () => {
+        const { id_calcomania, cantidad, tamano } = calcomaniaData;
+
+        if (!id_calcomania.trim()) {
+            setErrorMessage("El ID de la calcomanía es obligatorio");
+            return;
+        }
+        if (!cantidad || parseFloat(cantidad) <= 0) {
+            setErrorMessage("La cantidad debe ser mayor a 0");
+            return;
+        }
+        if (!Number.isInteger(parseFloat(cantidad))) {
+            setErrorMessage("La cantidad debe ser un número entero");
+            return;
+        }
+        if (!tamano) {
+            setErrorMessage("Debe seleccionar un tamaño");
+            return;
+        }
+
+        const calcomaniaInfo = await searchCalcomaniaById(id_calcomania, tamano, cantidad);
+        if (!calcomaniaInfo) {
+            setErrorMessage(`No se encontró la calcomanía con ID: ${id_calcomania} o no hay stock suficiente`);
+            return;
+        }
+
+        const claveUnica = `${id_calcomania}-${tamano}`;
+
+        const cantidadNum = parseFloat(cantidad);
+
+        const existingCalcomaniaIndex = calcomanias.findIndex(c => `${c.id_calcomania}-${c.tamano}` === claveUnica);
+        if (existingCalcomaniaIndex !== -1) {
+            const existingCalcomania = calcomanias[existingCalcomaniaIndex];
+            const nuevaCantidad = existingCalcomania.cantidad + cantidadNum;
+
+            const updatedCalcomanias = [...calcomanias];
+            updatedCalcomanias[existingCalcomaniaIndex] = {
+                ...existingCalcomania,
+                cantidad: nuevaCantidad,
+                subtotal: calcomaniaInfo.subtotal + existingCalcomania.subtotal
+            };
+            setCalcomanias(updatedCalcomanias);
+        } else {
+            const newCalcomania = {
+                id: Date.now(),
+                id_calcomania: calcomaniaInfo.id_calcomania,
+                nombre: calcomaniaInfo.nombre,
+                cantidad: cantidadNum,
+                tamano: tamano,
+                precio_unidad: calcomaniaInfo.precio_unidad,
+                precio_descuento: calcomaniaInfo.precio_descuento,
+                precio_usado: calcomaniaInfo.precio_descuento > 0 ? calcomaniaInfo.precio_descuento : calcomaniaInfo.precio_unidad,
+                subtotal: calcomaniaInfo.subtotal,
+            };
+            setCalcomanias(prev => [...prev, newCalcomania]);
+        }
+
+        setCalcomaniaData(initialCalcomaniaData);
         clearMessages();
     };
 
@@ -349,16 +500,31 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         setProducts(prev => prev.filter(p => p.id !== id));
     };
 
+    const handleRemoveCalcomania = (id) => {
+        setCalcomanias(prev => prev.filter(c => c.id !== id));
+    };
+
     const calculateSubtotal = () => {
-        return products.reduce((total, product) => total + (product.cantidad * product.precio_unidad), 0);
+        const productSubtotal = products.reduce((total, product) => total + (product.cantidad * product.precio_unidad), 0);
+        const calcomaniaSubtotal = calcomanias.reduce((total, calcomania) => total + (calcomania.cantidad * calcomania.precio_unidad), 0);
+        return productSubtotal + calcomaniaSubtotal;
     };
 
     const calculateTotalDiscount = () => {
-        return products.reduce((total, product) => total + product.descuento_aplicado, 0);
+        const productDiscount = products.reduce((total, product) => total + product.descuento_aplicado, 0);
+        const calcomaniaDiscount = calcomanias.reduce((total, calcomania) => {
+            if (calcomania.precio_descuento && calcomania.precio_descuento > 0) {
+                return total + ((calcomania.precio_unidad - calcomania.precio_descuento) * calcomania.cantidad);
+            }
+            return total;
+        }, 0);
+        return productDiscount + calcomaniaDiscount;
     };
 
     const calculateTotal = () => {
-        return products.reduce((total, product) => total + product.subtotal, 0);
+        const productTotal = products.reduce((total, product) => total + product.subtotal, 0);
+        const calcomaniaTotal = calcomanias.reduce((total, calcomania) => total + calcomania.subtotal, 0);
+        return productTotal + calcomaniaTotal;
     };
 
     const handleClose = () => {
@@ -383,8 +549,8 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
             return;
         }
 
-        if (products.length === 0) {
-            setErrorMessage("Debe agregar al menos un producto");
+        if (products.length === 0 && calcomanias.length === 0) {
+            setErrorMessage("Debe agregar al menos un producto o calcomanía");
             return;
         }
 
@@ -396,10 +562,15 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
 
             const productosParaEnviar = products.map(product => ({
                 referencia: product.referencia,
-                nombre: product.nombre,
                 cantidad: product.cantidad,
-                precio_unidad: product.precio_unidad,
-                precio_descuento: product.precio_descuento > 0 ? product.precio_descuento : null
+                precio_usado: product.precio_usado
+            }));
+
+            const calcomaniasParaEnviar = calcomanias.map(calcomania => ({
+                id_calcomania: calcomania.id_calcomania,
+                cantidad: calcomania.cantidad,
+                tamano: calcomania.tamano,
+                precio_usado: calcomania.precio_usado
             }));
 
             const ventaData = {
@@ -408,6 +579,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                 fecha_venta: getCurrentDate(),
                 valor_total: calculateTotal(),
                 productos: productosParaEnviar,
+                calcomanias: calcomaniasParaEnviar,
                 enviar_correo: saleData.enviar_correo
             };
 
@@ -445,6 +617,19 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const getTamanoDisplayName = (tamano) => {
+        switch (tamano) {
+            case 'pequeno': return 'Pequeño';
+            case 'mediano': return 'Mediano';
+            case 'grande': return 'Grande';
+            default: return tamano;
+        }
+    };
+
+    const formatNumber = (num) => {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     };
 
     return (
@@ -538,111 +723,279 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                         </div>
                     </div>
 
-                    {/* Formulario para agregar productos */}
-                    <div ref={productSectionRef} className="add-product-section">
-                        <h3>Agregar Producto</h3>
-                        <div className="add-product-form-sale">
-                            <div className="form-group-register-sale">
-                                <label>Referencia *</label>
-                                <input
-                                    type="text"
-                                    name="referencia"
-                                    placeholder="REF001"
-                                    value={productData.referencia}
-                                    onChange={handleProductChange}
-                                />
-                            </div>
-
-                            <div className="form-group-register-sale">
-                                <label>Cantidad *</label>
-                                <input
-                                    type="number"
-                                    name="cantidad"
-                                    placeholder="1"
-                                    min="0.01"
-                                    step="0.01"
-                                    value={productData.cantidad}
-                                    onChange={handleProductChange}
-                                />
-                            </div>
-
-                            <div className="add-product-button-container">
-                                <button
-                                    type="button"
-                                    className="btn-add-product"
-                                    onClick={handleAddProduct}
-                                    disabled={searchingProduct}
-                                >
-                                    {searchingProduct ? (
-                                        <img src={wheelIcon} alt="Buscando..." className="search-spinner" />
-                                    ) : (
-                                        "Agregar"
-                                    )}
-                                </button>
-                            </div>
+                    {/* Selector de tipo de ítem */}
+                    <div ref={itemSelectorRef} className="item-type-selector">
+                        <h3>¿Qué desea agregar?</h3>
+                        <div className="item-type-buttons">
+                            <button
+                                type="button"
+                                className={`item-type-btn ${itemType === 'producto' ? 'active' : ''}`}
+                                onClick={() => handleItemTypeChange('producto')}
+                            >
+                                <FaBox className="sticker-selector" />
+                                <span>Producto</span>
+                            </button>
+                            <button
+                                type="button"
+                                className={`item-type-btn ${itemType === 'calcomania' ? 'active' : ''}`}
+                                onClick={() => handleItemTypeChange('calcomania')}
+                            >
+                                <FaMagic className="sticker-selector" />
+                                <span>Calcomanía</span>
+                            </button>
                         </div>
                     </div>
 
-                    {/* Tabla de productos */}
-                    {products.length > 0 && (
-                        <div ref={tableRef} className="products-table-section-sale">
-                            <h3>Productos Agregados</h3>
+                    {/* Formulario para agregar productos */}
+                    {itemType === 'producto' && (
+                        <div ref={productSectionRef} className="add-product-section">
+                            <h3>Agregar Producto</h3>
+                            <div className="add-item-form-sale">
+                                <div className="form-group-register-sale">
+                                    <label>Referencia *</label>
+                                    <input
+                                        type="text"
+                                        name="referencia"
+                                        placeholder="REF001"
+                                        value={productData.referencia}
+                                        onChange={handleProductChange}
+                                    />
+                                </div>
+
+                                <div className="form-group-register-sale">
+                                    <label>Cantidad *</label>
+                                    <input
+                                        type="number"
+                                        name="cantidad"
+                                        placeholder="1"
+                                        min="1"
+                                        step="1"
+                                        value={productData.cantidad}
+                                        onChange={handleProductChange}
+                                    />
+                                </div>
+
+                                <div className="add-item-button-container">
+                                    <button
+                                        type="button"
+                                        className="btn-add-product"
+                                        onClick={handleAddProduct}
+                                        disabled={searchingProduct}
+                                    >
+                                        {searchingProduct ? (
+                                            <img src={wheelIcon} alt="Buscando..." className="search-spinner" />
+                                        ) : (
+                                            "Agregar Producto"
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Formulario para agregar calcomanías */}
+                    {itemType === 'calcomania' && (
+                        <div ref={calcomaniasSectionRef} className="add-product-section">
+                            <h3>Agregar Calcomanía</h3>
+                            <div className="add-item-form-sale">
+                                <div className="form-group-register-sale">
+                                    <label>ID Calcomanía *</label>
+                                    <input
+                                        type="text"
+                                        name="id_calcomania"
+                                        placeholder="ID001"
+                                        value={calcomaniaData.id_calcomania}
+                                        onChange={handleCalcomaniaChange}
+                                    />
+                                </div>
+
+                                <div className="form-group-register-sale">
+                                    <label>Tamaño *</label>
+                                    <select
+                                        name="tamano"
+                                        value={calcomaniaData.tamano}
+                                        onChange={handleCalcomaniaChange}
+                                    >
+                                        <option value="pequeno">Pequeño</option>
+                                        <option value="mediano">Mediano (+125%)</option>
+                                        <option value="grande">Grande (+300%)</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group-register-sale">
+                                    <label>Cantidad *</label>
+                                    <input
+                                        type="number"
+                                        name="cantidad"
+                                        placeholder="1"
+                                        min="1"
+                                        step="1"
+                                        value={calcomaniaData.cantidad}
+                                        onChange={handleCalcomaniaChange}
+                                    />
+                                </div>
+
+                                <div className="add-item-button-container">
+                                    <button
+                                        type="button"
+                                        className="btn-add-product"
+                                        onClick={handleAddCalcomania}
+                                        disabled={searchingCalcomania}
+                                    >
+                                        {searchingCalcomania ? (
+                                            <img src={wheelIcon} alt="Buscando..." className="search-spinner" />
+                                        ) : (
+                                            "Agregar Calcomanía"
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Tabla de productos y calcomanías */}
+                    {(products.length > 0 || calcomanias.length > 0) && (
+                        <div ref={tableRef} className="items-table-section-sale">
+                            <h3>Items Agregados</h3>
                             <div className="table-container-sale">
-                                <table className="products-table-sale">
-                                    <thead>
-                                        <tr>
-                                            <th>Referencia</th>
-                                            <th>Nombre</th>
-                                            <th>Cantidad</th>
-                                            <th>Precio Unit.</th>
-                                            <th>Precio Descuento</th>
-                                            <th>Subtotal</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {products.map(product => (
-                                            <tr key={product.id}>
-                                                <td>{product.referencia}</td>
-                                                <td>{product.nombre}</td>
-                                                <td>{product.cantidad}</td>
-                                                <td>${product.precio_unidad.toLocaleString()}</td>
-                                                <td>
-                                                    {product.precio_descuento > 0
-                                                        ? `$${product.precio_descuento.toLocaleString()}`
-                                                        : '$0'
-                                                    }
-                                                </td>
-                                                <td>${product.subtotal.toLocaleString()}</td>
-                                                <td>
-                                                    <button
-                                                        type="button"
-                                                        className="btn-remove-product"
-                                                        onClick={() => handleRemoveProduct(product.id)}
-                                                    >
-                                                        <i className="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                {products.length > 0 && (
+                                    <div className="table-section">
+                                        <h4>Productos</h4>
+                                        <div className="table-container">
+                                            <table className="products-table-sale">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Referencia</th>
+                                                        <th>Nombre</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Precio Unit.</th>
+                                                        <th>Precio Desc.</th>
+                                                        <th>Subtotal</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {products.map((product) => (
+                                                        <tr key={product.id}>
+                                                            <td>{product.referencia}</td>
+                                                            <td>{product.nombre}</td>
+                                                            <td>{product.cantidad}</td>
+                                                            <td>${product.precio_unidad.toLocaleString()}</td>
+                                                            <td>
+                                                                {product.precio_descuento > 0 ? (
+                                                                    <span className="discount-price">
+                                                                        ${product.precio_descuento.toLocaleString()}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="no-discount">--</span>
+                                                                )}
+                                                            </td>
+                                                            <td className="subtotal-cell">
+                                                                ${product.subtotal.toLocaleString()}
+                                                            </td>
+                                                            <td>
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn-remove-item"
+                                                                    onClick={() => handleRemoveProduct(product.id)}
+                                                                    title="Eliminar producto"
+                                                                >
+                                                                    <i className="bi bi-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Tabla de calcomanías */}
+                                {calcomanias.length > 0 && (
+                                    <div className="table-section">
+                                        <h4 className="table-subtitle">
+                                            <i className="bi bi-stickers"></i>
+                                            Calcomanías
+                                        </h4>
+                                        <div className="table-container">
+                                            <table className="products-table-sale">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Nombre</th>
+                                                        <th>Tamaño</th>
+                                                        <th>Cantidad</th>
+                                                        <th>Precio Unit.</th>
+                                                        <th>Precio Desc.</th>
+                                                        <th>Subtotal</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {calcomanias.map((calcomania) => (
+                                                        <tr key={calcomania.id_calcomania}>
+                                                            <td>{calcomania.id_calcomania}</td>
+                                                            <td>{calcomania.nombre}</td>
+                                                            <td>
+                                                                <span className={`size-badge size-${calcomania.tamano}`}>
+                                                                    {getTamanoDisplayName(calcomania.tamano)}
+                                                                </span>
+                                                            </td>
+                                                            <td>{calcomania.cantidad}</td>
+                                                            <td>${calcomania.precio_unidad?.toLocaleString() ?? '--'}</td>
+                                                            <td>
+                                                                {calcomania.precio_descuento > 0 ? (
+                                                                    <span className="discount-price">
+                                                                        ${calcomania.precio_descuento.toLocaleString()}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="no-discount">--</span>
+                                                                )}
+                                                            </td>
+                                                            <td className="subtotal-cell">
+                                                                ${calcomania.subtotal.toLocaleString()}
+                                                            </td>
+                                                            <td>
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn-remove-item"
+                                                                    onClick={() => handleRemoveCalcomania(calcomania.id)}
+                                                                    title="Eliminar calcomanía"
+                                                                >
+                                                                    <i className="bi bi-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Totales */}
+                                <div className="totals-section">
+                                    <div className="totals-row">
+                                        <span className="totals-label">Subtotal:</span>
+                                        <span className="totals-value">${calculateSubtotal().toLocaleString()}</span>
+                                    </div>
+                                    {calculateTotalDiscount() > 0 && (
+                                        <div className="totals-row discount-row">
+                                            <span className="totals-label">Descuento:</span>
+                                            <span className="totals-value discount-value">
+                                                -${formatNumber(calculateTotalDiscount())}
+                                            </span>
+                                        </div>
+                                    )}
+                                    <div className="totals-row total-row">
+                                        <span className="totals-label">Total:</span>
+                                        <span className="totals-value total-value">
+                                            ${calculateTotal().toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div className="total-section">
-                                <div className="total-row">
-                                    <span>Subtotal: ${calculateSubtotal().toLocaleString()}</span>
-                                </div>
-                                <div className="total-row">
-                                    <span>Descuento: ${calculateTotalDiscount().toLocaleString('es-CO')}</span>
-                                </div>
-                                <div className="total-display">
-                                    <strong>Total: ${calculateTotal().toLocaleString()}</strong>
-                                </div>
-
-                            </div>
-
-                            {/* Checkbox para enviar correo después de los totales */}
                             <div className="email-checkbox-section">
                                 <label className="checkbox-label">
                                     <input
@@ -657,33 +1010,49 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                         </div>
                     )}
 
+                    {/* Mensajes */}
+                    {errorMessage && (
+                        <div className="status-message-register error">
+                            <i className="bi bi-exclamation-triangle"></i>
+                            {errorMessage}
+                        </div>
+                    )}
+
+                    {successMessage && (
+                        <div className="status-message-register success">
+                            <i className="bi bi-check-circle"></i>
+                            {successMessage}
+                        </div>
+                    )}
+
+                    {/* Botones */}
                     <div ref={buttonsRef} className="modal-buttons-register-sale">
-                        <button type="button" className="btn-cancelar" onClick={handleClose}>
-                            CANCELAR
+                        <button
+                            type="button"
+                            className="btn-cancelar-register-sale"
+                            onClick={handleClose}
+                            disabled={isLoading}
+                        >
+                            Cancelar
                         </button>
-                        <button type="submit" className="btn-agregar" disabled={isLoading}>
+                        <button
+                            type="submit"
+                            className="btn-add-register-sale"
+                            disabled={isLoading || (products.length === 0 && calcomanias.length === 0)}
+                        >
                             {isLoading ? (
-                                <img src={wheelIcon} alt="Cargando..." className="register-sale-spinner" />
+                                <>
+                                    <img src={wheelIcon} alt="Cargando..." className="register-sale-spinner" />
+                                    Registrando...
+                                </>
                             ) : (
-                                <span>REGISTRAR VENTA</span>
+                                <>
+                                    Registrar Venta
+                                </>
                             )}
                         </button>
                     </div>
                 </form>
-
-                {errorMessage && (
-                    <div className="status-message-register error">
-                        <span>{errorMessage}</span>
-                        <i className="bi bi-x-circle"></i>
-                    </div>
-                )}
-
-                {successMessage && (
-                    <div className="status-message-register success">
-                        <span>{successMessage}</span>
-                        <i className="bi bi-check-circle"></i>
-                    </div>
-                )}
             </div>
         </div>
     );

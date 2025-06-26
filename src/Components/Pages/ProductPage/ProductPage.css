@@ -1,14 +1,16 @@
-/* Desktop: Layout con sidebar fijo */
+/* Desktop: Layout con sidebar sticky */
 .store-container {
     display: flex;
     min-height: 100vh;
+    align-items: flex-start;
 }
 
 .store-content {
     flex: 1;
-    margin-left: 350px;
+    margin-left: 0;
     padding: 20px;
     min-height: 100vh;
+    width: calc(100% - 350px);
 }
 
 .store-header {
@@ -89,11 +91,15 @@
     height: 3.5rem;
 }
 
-/* Mobile: Sin sidebar, botón de filtro visible */
 @media (max-width: 820px) {
+    .store-container {
+        align-items: stretch;
+    }
+
     .store-content {
         margin-left: 0;
         padding: 15px;
+        width: 100%;
     }
 
     .filter-btn {
@@ -187,7 +193,6 @@
         gap: 5px;
     }
 }
-
 
 @media (min-width: 480px) and (max-width: 819px) {
     .img-category-container h2 {

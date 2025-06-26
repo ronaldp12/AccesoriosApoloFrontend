@@ -251,6 +251,7 @@
     padding: 1rem;
     border-radius: 30px;
     transition: all 0.3s ease;
+    scroll-margin-top: 150px;
 }
 
 .about-text:hover {

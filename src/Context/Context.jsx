@@ -25,6 +25,21 @@ export const Provider = ({ children }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isSaveSuccess, setIsSaveSuccess] = useState(false);
 
+    // 📦 Estados de modales de auth
+    const [registerOpen, setRegisterOpen] = useState(false);
+    const [loginOpen, setLoginOpen] = useState(false);
+
+    const openRegister = () => setRegisterOpen(true);
+    const closeRegister = () => setRegisterOpen(false);
+
+    const openLogin = () => setLoginOpen(true);
+    const closeLogin = () => setLoginOpen(false);
+
+    const [welcomeNoLoginOpen, setWelcomeNoLoginOpen] = useState(false);
+
+const openWelcomeNoLogin = () => setWelcomeNoLoginOpen(true);
+const closeWelcomeNoLogin = () => setWelcomeNoLoginOpen(false);
+
     const loadUserStickers = async () => {
         if (!token) return;
 
@@ -344,7 +359,12 @@ export const Provider = ({ children }) => {
             handleFileSelect,
             clearMessages,
             loadUserStickers,
-            isSaveSuccess, setIsSaveSuccess
+            isSaveSuccess, setIsSaveSuccess,
+
+            registerOpen, openRegister, closeRegister,
+            loginOpen, openLogin, closeLogin, 
+
+            welcomeNoLoginOpen, openWelcomeNoLogin, closeWelcomeNoLogin
         }}>
             {children}
         </context.Provider>

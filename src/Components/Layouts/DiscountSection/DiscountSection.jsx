@@ -10,7 +10,7 @@ export const DiscountSection = () => {
   return (
     <>
     
-    <section className="descuentos-section">
+    <section id='offers' className="descuentos-section">
       <h2 className="section-title-discount-section">LOS MEJORES DESCUENTOS</h2>
 
       <div className="cards-container">

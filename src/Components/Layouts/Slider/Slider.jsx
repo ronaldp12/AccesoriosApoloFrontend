@@ -21,20 +21,20 @@ export const Slider = () => {
 
   return (
     <>
-    
-    <div className="slider">
-      <div className="slider-inner">
-        {images.map((image, index) => (
-          <div
-            key={index}
-            className={`slide ${index === currentIndex ? "active" : ""}`}
-          >
-            <img src={image} alt={`Slide ${index}`} />
-          </div>
-        ))}
+
+      <div className="slider">
+        <div className="slider-inner">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className={`slide ${index === currentIndex ? "active" : ""}`}
+            >
+              <img src={image} alt={`Slide ${index}`} />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-    <div className="dots-container">
+      <div className="dots-container">
         {images.map((_, index) => (
           <button
             key={index}

@@ -17,7 +17,7 @@ export const WelcomeNoLoginModal = ({ isOpen, onClose, onOpenRegister, onOpenLog
         setIsIntermediateLoading,
         getErrorMessage,
         setAvatar,
-        setNameRol
+        setNameRol, closeWelcomeNoLogin
     } = useContext(context);
 
     const navigate = useNavigate();
@@ -141,16 +141,15 @@ export const WelcomeNoLoginModal = ({ isOpen, onClose, onOpenRegister, onOpenLog
     };
 
     const handleRegisterClick = () => {
-        if (onOpenRegister) {
-            onOpenRegister();
-        }
+        closeWelcomeNoLogin();  // cerrar welcome modal
+        if (onOpenRegister) onOpenRegister(); // abrir registro
     };
 
     const handleLoginClick = () => {
-        if (onOpenLogin) {
-            onOpenLogin();
-        }
+        closeWelcomeNoLogin();  // cerrar welcome modal
+        if (onOpenLogin) onOpenLogin(); // abrir login
     };
+
 
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {

@@ -17,14 +17,17 @@ import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [registerOpen, setRegisterOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [welcomeOpen, setWelcomeOpen] = useState(false);
   const [isTrunkOpen, setIsTrunkOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
-  const { cartProducts, handleRemoveProduct, handleQuantityChange, userLogin } = useContext(context);
+  const {
+    cartProducts, handleRemoveProduct, handleQuantityChange, userLogin,
+    registerOpen, openRegister, closeRegister,
+    loginOpen, openLogin, closeLogin,
+    isWelcomeOpen, setIsWelcomeOpen,
+  } = useContext(context);
+
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
@@ -34,20 +37,6 @@ export const Header = () => {
   }
 
   const closeTrunk = () => setIsTrunkOpen(false);
-
-  const openRegister = () => {
-    setRegisterOpen(true);
-    setMenuOpen(false);
-  };
-
-  const closeRegister = () => setRegisterOpen(false);
-
-  const openLogin = () => {
-    setLoginOpen(true);
-    setMenuOpen(false);
-  };
-
-  const closeLogin = () => setLoginOpen(false);
 
   const showWelcome = () => setWelcomeOpen(true);
   const closeWelcome = () => setWelcomeOpen(false);
@@ -143,7 +132,8 @@ export const Header = () => {
       <HamburgerMenu isOpen={menuOpen} onClose={closeMenu} onOpenRegister={openRegister} onOpenLogin={openLogin} />
       <RegisterModal isOpen={registerOpen} onClose={closeRegister} />
       <LoginModal isOpen={loginOpen} onClose={closeLogin} onLoginSuccess={showWelcome} />
-      <WelcomeModal isOpen={welcomeOpen} onClose={closeWelcome} />
+      <WelcomeModal isOpen={isWelcomeOpen} onClose={closeWelcome} />
+
       <Trunk
         isOpen={isTrunkOpen}
         onClose={closeTrunk}

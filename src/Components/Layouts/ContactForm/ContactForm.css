@@ -102,7 +102,6 @@
     }
 }
 
-/* ===== CLASES DE ANIMACIÓN ===== */
 .animate-on-scroll {
     opacity: 0;
     transform: translateY(30px);
@@ -261,9 +260,7 @@
 .form-row {
     display: flex;
     gap: 1rem;
-    /* Reducido */
     margin-bottom: 1.2rem;
-    /* Reducido */
     opacity: 0;
     transform: translateX(-20px);
     transition: all 0.6s ease-out;
@@ -319,6 +316,10 @@
     backdrop-filter: blur(5px);
     position: relative;
     overflow: hidden;
+}
+
+.contact-form-group textarea {
+    overflow-y: auto;
 }
 
 .contact-form-group input::before,

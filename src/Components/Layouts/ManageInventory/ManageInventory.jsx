@@ -155,6 +155,8 @@ export const ManageInventory = () => {
                             <th>Fecha de Informe</th>
                             <th>Total de Productos</th>
                             <th>Total de Unidades</th>
+                            <th>Total de Calcomanías</th>
+                            <th>Total de Unidades Calcomanías</th>
                             <th>Valor Total</th>
                             <th>Responsable</th>
                             <th>Ver PDF</th>
@@ -168,7 +170,9 @@ export const ManageInventory = () => {
                                 <td>{inventario.fecha_creacion}</td>
                                 <td>{inventario.cantidad_productos}</td>
                                 <td>{inventario.cantidad_unidades}</td>
-                                <td>${inventario.valor_total}</td>
+                                <td>{inventario.cantidad_calcomanias}</td>
+                                <td>{inventario.cantidad_unidades_calcomanias}</td>
+                                <td>{inventario.valor_total}</td>
                                 <td>{inventario.responsable}</td>
                                 <td>
                                     <FaEye
