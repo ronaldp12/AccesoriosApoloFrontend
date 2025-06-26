@@ -69,11 +69,9 @@ export const RegisterModal = ({ isOpen, onClose }) => {
         }, 100);
     };
 
-    // Función de animación que SOLO afecta elementos dentro de este modal
     const animateElements = () => {
         if (!isOpen || !modalRef.current) return;
 
-        // Solo selecciona elementos dentro de este modal específico usando las clases CSS existentes
         const elements = [
             modalRef.current.querySelector('h2'),
             modalRef.current.querySelector('form'),
@@ -140,6 +138,18 @@ export const RegisterModal = ({ isOpen, onClose }) => {
     const handleRegister = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+
+        if (phone.length !== 10) {
+            setErrorMessage("El número de teléfono debe tener 10 dígitos.");
+            setIsLoading(false);
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setErrorMessage("Por favor ingresa un correo válido.");
+            setIsLoading(false);
+            return;
+        }
 
         const requestData = {
             nombre: userName,
@@ -286,7 +296,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                             <div className="input-field">
                                 <label>Correo *</label>
                                 <input
-                                    type="email"
+                                    type="text"
                                     placeholder="example@example.com"
                                     value={email}
                                     onChange={(e) => {
