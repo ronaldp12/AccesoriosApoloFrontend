@@ -31,7 +31,7 @@ export const ManageSales = () => {
 
             const data = await response.json();
             if (data.success) {
-                const ventasOrdenadas = data.ventas.sort((a, b) => a.id - b.id);
+                const ventasOrdenadas = data.ventas.sort((a, b) => a.id_factura - b.id_factura);
                 setVentas(ventasOrdenadas);
             } else {
                 console.error("Error al obtener las ventas:", data.mensaje);

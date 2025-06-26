@@ -176,7 +176,6 @@
     margin: 5px 0;
     font-size: 12px;
     color: #666;
-    text-transform: capitalize;
 }
 
 .sale-title {
@@ -231,7 +230,7 @@
     font-weight: bold;
 }
 
-/* Parties Info */
+/* ies Info */
 .parties-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -260,8 +259,8 @@
     margin: 3px 0;
     font-size: 12px;
     color: #666;
-    text-transform: capitalize;
     padding-left: 1rem;
+    text-transform: lowercase;
 }
 
 /* Products Table */
@@ -367,12 +366,115 @@
 }
 
 .discount-row {
-    color: #d32f2f;
+    color: #014aad;
 }
 
 .discount-value {
-    color: #d32f2f;
+    color: #014aad;
     font-weight: bold;
+}
+
+.items-section-preview-sale {
+    margin-bottom: 20px;
+}
+
+.items-section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #014aad;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.items-table-preview-sale {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 12px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.items-table-preview-sale th {
+    background-color: #014aad;
+    color: white;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 1px solid #014aad;
+}
+
+.items-table-preview-sale td {
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    vertical-align: middle;
+}
+
+.items-table-preview-sale tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.items-table-preview-sale tbody tr:hover {
+    background-color: #f0f8ff;
+    transition: background-color 0.2s ease;
+}
+
+/* Celdas específicas para calcomanías */
+.calcomania-id {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.size-cell {
+    text-align: center;
+}
+
+.size-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.size-badge.size-pequeño {
+    background-color: #d5f4e6;
+    color: #27ae60;
+    border: 1px solid #27ae60;
+}
+
+.size-badge.size-mediano {
+    background-color: #fff3cd;
+    color: #f39c12;
+    border: 1px solid #f39c12;
+}
+
+.size-badge.size-grande {
+    background-color: #f8d7da;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+}
+
+/* Celda de precio original */
+.original-price-cell {
+    font-style: italic;
+    color: #7f8c8d;
+    position: relative;
+    text-decoration: line-through;
+}
+
+.original-price-cell:not(:contains('-')) {
+    text-decoration: line-through;
 }
 
 @media (max-width: 820px) {
@@ -398,6 +500,25 @@
 
     .sale-modal-content {
         padding: 15px;
+    }
+
+    .items-table-preview-sale {
+        font-size: 10px;
+    }
+    
+    .items-table-preview-sale th,
+    .items-table-preview-sale td {
+        padding: 6px 4px;
+    }
+    
+    .items-section-title {
+        font-size: 14px;
+        padding: 6px 10px;
+    }
+    
+    .size-badge {
+        padding: 2px 6px;
+        font-size: 9px;
     }
 }
 
@@ -664,7 +785,7 @@
 
     .sale-number,
     .section-title,
-    .products-table-preview-sale th,
+    .items-table-preview-sale th,
     .final-total {
         background-color: #014aad !important;
         color: white !important;
