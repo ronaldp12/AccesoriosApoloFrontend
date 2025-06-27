@@ -3,13 +3,15 @@ import "./ConfigureStickerModal.css";
 import { X, Loader2 } from "lucide-react";
 import ReactDOM from 'react-dom';
 import { context } from "../../../Context/Context.jsx";
-import { UseStickers } from "../../Hook/UseStickers/UseStickers.jsx"; 
+import { UseStickers } from "../../Hook/UseStickers/UseStickers.jsx";
 
 export const ConfigureStickerModal = ({
     isOpen,
     onClose,
     sticker,
     brand,
+    // Nuevo prop para indicar si es una calcomanía personalizada
+    isPersonalSticker = false
 }) => {
     const stickerCartFunctions = UseStickers();
 
@@ -19,59 +21,82 @@ export const ConfigureStickerModal = ({
     const [customHeight, setCustomHeight] = useState("");
     const [currentPrice, setCurrentPrice] = useState(0);
 
-    const { userLogin } = useContext(context);
-
+    // Estados para manejar loading y mensajes independientes
+    const [isAddingToCartLocal, setIsAddingToCartLocal] = useState(false);
+    const [localSuccessMessage, setLocalSuccessMessage] = useState('');
+    const [localErrorMessage, setLocalErrorMessage] = useState('');
 
     const {
-        addStickerToCart,
-        getSizeDimensions,
-        calculateStickerPrice,
+        userLogin,
+        handleAddStickerToCart, // Función del contexto para calcomanías personalizadas
+        calculateStickerPrice: contextCalculatePrice,
+        getSizeDimensions: contextGetSizeDimensions
+    } = useContext(context);
+
+    const {
+        addStickerToCart, // Función del hook para calcomanías generales
+        getSizeDimensions: hookGetSizeDimensions,
+        calculateStickerPrice: hookCalculatePrice,
         checkStock,
-        isAddingToCart,
-        cartSuccessMessage,
-        cartErrorMessage
+        isAddingToCart: hookIsAddingToCart,
+        cartSuccessMessage: hookSuccessMessage,
+        cartErrorMessage: hookErrorMessage
     } = stickerCartFunctions || {};
 
-    console.log('Modal - Funciones del hook cargadas:', {
-        addStickerToCart: !!addStickerToCart,
-        getSizeDimensions: !!getSizeDimensions,
-        calculateStickerPrice: !!calculateStickerPrice,
-        checkStock: !!checkStock,
-        isAddingToCart,
-        cartSuccessMessage,
-        cartErrorMessage
+    console.log('Modal - Tipo de calcomanía:', {
+        isPersonalSticker,
+        stickerType: sticker?.type,
+        brand: brand || sticker?.brand
     });
 
+    // Determinar si es una calcomanía (general o personalizada)
     const isSticker = () => {
         const brandToCheck = brand || sticker?.brand;
         const normalizedBrand = brandToCheck?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         return normalizedBrand === "calcomania" || sticker?.type === 'sticker';
     };
 
+    // Limpiar mensajes después de 3 segundos
+    useEffect(() => {
+        if (localSuccessMessage || localErrorMessage) {
+            const timer = setTimeout(() => {
+                setLocalSuccessMessage('');
+                setLocalErrorMessage('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [localSuccessMessage, localErrorMessage]);
+
     useEffect(() => {
         if (!sticker) return;
 
         let width, height;
 
+        // Usar las funciones correctas según el tipo de calcomanía
+        const getSizeDimensions = isPersonalSticker ? contextGetSizeDimensions : hookGetSizeDimensions;
+        const calculatePrice = isPersonalSticker ? contextCalculatePrice : hookCalculatePrice;
+
         if (selectedSize && getSizeDimensions) {
             const dimensions = getSizeDimensions(selectedSize);
-            width = dimensions.width;
-            height = dimensions.height;
+            width = dimensions?.width;
+            height = dimensions?.height;
         } else if (customWidth && customHeight) {
             width = parseInt(customWidth);
             height = parseInt(customHeight);
         }
 
         if (width && height && !isNaN(width) && !isNaN(height)) {
-            if (isSticker() && sticker?.price) {
+            if (isSticker() && sticker?.price && !isPersonalSticker) {
+                // Para calcomanías generales, usar el precio base
                 setCurrentPrice(sticker.price);
-            } else if (calculateStickerPrice) {
-                setCurrentPrice(calculateStickerPrice(sticker, { width, height }));
+            } else if (calculatePrice) {
+                // Para calcomanías personalizadas, calcular precio dinámicamente
+                setCurrentPrice(calculatePrice(width, height));
             }
         } else {
             setCurrentPrice(sticker?.price || 0);
         }
-    }, [selectedSize, customWidth, customHeight, sticker, getSizeDimensions, calculateStickerPrice]);
+    }, [selectedSize, customWidth, customHeight, sticker, isPersonalSticker, contextGetSizeDimensions, hookGetSizeDimensions, contextCalculatePrice, hookCalculatePrice]);
 
     const handleClose = () => {
         setIsClosing(true);
@@ -90,6 +115,8 @@ export const ConfigureStickerModal = ({
         setCustomWidth("");
         setCustomHeight("");
         setCurrentPrice(sticker?.price || 0);
+        setLocalSuccessMessage('');
+        setLocalErrorMessage('');
     };
 
     const handleSizeSelect = (size) => {
@@ -124,6 +151,8 @@ export const ConfigureStickerModal = ({
     };
 
     const getSizeConfig = () => {
+        const getSizeDimensions = isPersonalSticker ? contextGetSizeDimensions : hookGetSizeDimensions;
+
         if (selectedSize && getSizeDimensions) {
             return getSizeDimensions(selectedSize);
         } else if (customWidth && customHeight) {
@@ -146,15 +175,17 @@ export const ConfigureStickerModal = ({
     };
 
     const getAvailableStock = () => {
-        if (!selectedSize || !checkStock || !sticker) return null;
+        // Solo verificar stock para calcomanías generales, no para personalizadas
+        if (isPersonalSticker || !selectedSize || !checkStock || !sticker) return null;
         return checkStock(sticker, selectedSize);
     };
 
     const handleAddToCart = async () => {
-        console.log('handleAddToCart llamado');
-        console.log('isValidConfiguration():', isValidConfiguration());
-        console.log('userLogin:', userLogin);
-        console.log('addStickerToCart disponible:', !!addStickerToCart);
+        console.log('handleAddToCart llamado para:', {
+            isPersonalSticker,
+            stickerType: sticker?.type,
+            selectedSize
+        });
 
         if (!isValidConfiguration()) {
             console.log('Configuración no válida');
@@ -163,37 +194,78 @@ export const ConfigureStickerModal = ({
 
         if (!userLogin) {
             console.log('Usuario no logueado');
+            setLocalErrorMessage('Debes iniciar sesión para agregar productos al carrito');
             return;
         }
 
-        if (!addStickerToCart) {
-            console.log('Función addStickerToCart no disponible - esto no debería pasar ahora');
-            return;
-        }
+        setIsAddingToCartLocal(true);
+        setLocalSuccessMessage('');
+        setLocalErrorMessage('');
 
-        const sizeConfig = {
-            ...getSizeConfig(),
-            size: selectedSize,
-            cantidad: 1
-        };
+        try {
+            let success = false;
 
-        console.log('Agregando al carrito:', {
-            sticker,
-            sizeConfig
-        });
+            if (isPersonalSticker) {
+                // Usar la función del contexto para calcomanías personalizadas
+                console.log('Usando handleAddStickerToCart del contexto');
 
-        const success = await addStickerToCart(sticker, sizeConfig);
+                if (!handleAddStickerToCart) {
+                    setLocalErrorMessage('Error: función de carrito no disponible');
+                    return;
+                }
 
-        if (success) {
-            setTimeout(() => {
-                handleClose();
-            }, 1500);
+                const sizeConfig = getSizeConfig();
+                success = await handleAddStickerToCart(sticker, sizeConfig);
+
+                // Los mensajes ya se manejan en el contexto, pero agregamos confirmación local
+                if (success) {
+                    setLocalSuccessMessage('Calcomanía agregada al carrito exitosamente');
+                }
+            } else {
+                // Usar la función del hook para calcomanías generales
+                console.log('Usando addStickerToCart del hook');
+
+                if (!addStickerToCart) {
+                    setLocalErrorMessage('Error: función de carrito no disponible');
+                    return;
+                }
+
+                const sizeConfig = {
+                    ...getSizeConfig(),
+                    size: selectedSize,
+                    cantidad: 1
+                };
+
+                success = await addStickerToCart(sticker, sizeConfig);
+
+                // Para el hook, los mensajes se manejan internamente
+                if (success) {
+                    setLocalSuccessMessage('Calcomanía agregada al carrito exitosamente');
+                }
+            }
+
+            if (success) {
+                setTimeout(() => {
+                    handleClose();
+                }, 1500);
+            }
+
+        } catch (error) {
+            console.error('Error en handleAddToCart:', error);
+            setLocalErrorMessage('Error inesperado al agregar al carrito');
+        } finally {
+            setIsAddingToCartLocal(false);
         }
     };
 
     if (!isOpen || !sticker) return null;
 
     const availableStock = getAvailableStock();
+
+    // Determinar el estado de loading y mensajes según el tipo
+    const isCurrentlyAdding = isPersonalSticker ? isAddingToCartLocal : (hookIsAddingToCart || isAddingToCartLocal);
+    const currentSuccessMessage = isPersonalSticker ? localSuccessMessage : (hookSuccessMessage || localSuccessMessage);
+    const currentErrorMessage = isPersonalSticker ? localErrorMessage : (hookErrorMessage || localErrorMessage);
 
     return ReactDOM.createPortal(
         <div
@@ -215,7 +287,7 @@ export const ConfigureStickerModal = ({
                             className={selectedSize === "small" ? "selected-size" : ""}
                         >
                             Pequeño (5×5 cm)
-                            {checkStock && (
+                            {!isPersonalSticker && checkStock && (
                                 <span className="stock-info">
                                     Stock: {checkStock(sticker, 'small')}
                                 </span>
@@ -226,7 +298,7 @@ export const ConfigureStickerModal = ({
                             className={selectedSize === "medium" ? "selected-size" : ""}
                         >
                             Mediano (7×5 cm)
-                            {checkStock && (
+                            {!isPersonalSticker && checkStock && (
                                 <span className="stock-info">
                                     Stock: {checkStock(sticker, 'medium')}
                                 </span>
@@ -237,7 +309,7 @@ export const ConfigureStickerModal = ({
                             className={selectedSize === "large" ? "selected-size" : ""}
                         >
                             Grande (9×5 cm)
-                            {checkStock && (
+                            {!isPersonalSticker && checkStock && (
                                 <span className="stock-info">
                                     Stock: {checkStock(sticker, 'large')}
                                 </span>
@@ -245,8 +317,8 @@ export const ConfigureStickerModal = ({
                         </button>
                     </div>
 
-                    {/* Mostrar stock disponible para el tamaño seleccionado */}
-                    {selectedSize && availableStock !== null && (
+                    {/* Mostrar stock solo para calcomanías generales */}
+                    {!isPersonalSticker && selectedSize && availableStock !== null && (
                         <div className="selected-stock-info">
                             {availableStock > 0 ? (
                                 <span className="stock-available">
@@ -257,6 +329,15 @@ export const ConfigureStickerModal = ({
                                     ❌ Sin stock disponible
                                 </span>
                             )}
+                        </div>
+                    )}
+
+                    {/* Para calcomanías personalizadas, mostrar que no hay límite de stock */}
+                    {isPersonalSticker && selectedSize && (
+                        <div className="selected-stock-info">
+                            <span className="stock-available">
+                                ✅ Disponible (Calcomanía personalizada)
+                            </span>
                         </div>
                     )}
                 </div>
@@ -310,15 +391,15 @@ export const ConfigureStickerModal = ({
                 )}
 
                 {/* Mostrar mensajes */}
-                {cartSuccessMessage && (
+                {currentSuccessMessage && (
                     <div className="status-message-register success">
-                        {cartSuccessMessage}
+                        {currentSuccessMessage}
                     </div>
                 )}
 
-                {cartErrorMessage && (
+                {currentErrorMessage && (
                     <div className="status-message-register error">
-                        {cartErrorMessage}
+                        {currentErrorMessage}
                     </div>
                 )}
 
@@ -331,19 +412,20 @@ export const ConfigureStickerModal = ({
                         onClick={handleAddToCart}
                         disabled={
                             !isValidConfiguration() ||
-                            isAddingToCart ||
+                            isCurrentlyAdding ||
                             !userLogin ||
-                            (availableStock !== null && availableStock <= 0)
+                            // Solo verificar stock para calcomanías generales
+                            (!isPersonalSticker && availableStock !== null && availableStock <= 0)
                         }
                     >
-                        {isAddingToCart ? (
+                        {isCurrentlyAdding ? (
                             <>
                                 <Loader2 className="animate-spin" size={16} />
                                 Agregando...
                             </>
                         ) : !userLogin ? (
                             'Inicia sesión'
-                        ) : (availableStock !== null && availableStock <= 0) ? (
+                        ) : (!isPersonalSticker && availableStock !== null && availableStock <= 0) ? (
                             'Sin stock'
                         ) : (
                             'Agregar al carrito'

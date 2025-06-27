@@ -199,6 +199,7 @@ export const ProductCard = ({
           }}
           brand={brand}
           stickerCartFunctions={stickerCartFunctions}
+          isPersonalSticker={false}
         />
       )}
     </>

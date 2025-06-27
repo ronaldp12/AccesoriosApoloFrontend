@@ -1,4 +1,3 @@
-// hooks/useSubcategories.js
 import { useState, useEffect } from 'react';
 
 export const useSubcategories = (categoryName) => {

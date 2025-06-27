@@ -183,6 +183,7 @@ export const StickerGallery = () => {
                 isOpen={configModalOpen}
                 onClose={() => setConfigModalOpen(false)}
                 sticker={selectedSticker}
+                isPersonalSticker={true}
             />
 
             <ConfirmModal

@@ -58,10 +58,11 @@ export const Provider = ({ children }) => {
             });
 
             const data = await response.json();
-            console.log(data)
+            console.log(data);
 
             if (response.ok && data.success) {
                 const formattedCartItems = data.carrito.map(item => {
+                    // 🛍️ Productos regulares
                     if (item.tipo === 'producto') {
                         return {
                             id: item.referencia,
@@ -74,7 +75,9 @@ export const Provider = ({ children }) => {
                             quantity: item.cantidad,
                             type: 'product'
                         };
-                    } else if (item.tipo === 'calcomania_cliente') {
+                    }
+                    // 🎨 Calcomanías personalizadas del cliente
+                    else if (item.tipo === 'calcomania_cliente') {
                         return {
                             id: `sticker-${item.id_calcomania}-${item.tamano_x}x${item.tamano_y}`,
                             originalId: item.id_calcomania,
@@ -89,6 +92,23 @@ export const Provider = ({ children }) => {
                             type: 'sticker'
                         };
                     }
+                    // ⭐ NUEVO: Calcomanías del staff (venta general)
+                    else if (item.tipo === 'calcomania_staff') {
+                        return {
+                            id: `staff-sticker-${item.id_calcomania}-${item.tamano}`,
+                            originalId: item.id_calcomania,
+                            cartItemId: item.id_carrito_item,
+                            image: item.url_archivo,
+                            title: item.nombre,
+                            price: item.precio_actual,
+                            originalPrice: item.precio_unidad_original,
+                            size: item.tamano, // "pequeño", "mediano", "grande"
+                            quantity: item.cantidad,
+                            type: 'staff_sticker',
+                            brand: 'Calcomanía' // O cualquier brand por defecto
+                        };
+                    }
+
                     return null;
                 }).filter(item => item !== null);
 
@@ -223,14 +243,18 @@ export const Provider = ({ children }) => {
     };
 
     const handleRemoveProduct = async (id, size = null) => {
-        console.log('=== DEBUG FRONTEND - handleRemoveProduct ===');
-        console.log('Parámetros recibidos:', { id, size });
 
-        const cartItem = cartProducts.find(product =>
-            product.id === id && (size ? product.size === size : true)
-        );
-
-        console.log('Item del carrito encontrado:', cartItem);
+        const cartItem = cartProducts.find(product => {
+            // Para productos regulares
+            if (product.type === 'product') {
+                return product.id === id;
+            }
+            // Para calcomanías (cliente y staff)
+            else if (product.type === 'sticker' || product.type === 'staff_sticker') {
+                return product.id === id && (size ? product.size === size : true);
+            }
+            return false;
+        });
 
         if (!cartItem) {
             console.error('No se encontró el item en el carrito');
@@ -246,12 +270,16 @@ export const Provider = ({ children }) => {
 
         const originalCartState = [...cartProducts];
 
-        const updatedCart = cartProducts.filter(product =>
-            product.id !== id || (size && product.size !== size)
-        );
-        setCartProducts(updatedCart);
+        const updatedCart = cartProducts.filter(product => {
+            if (product.type === 'product') {
+                return product.id !== id;
+            } else if (product.type === 'sticker' || product.type === 'staff_sticker') {
+                return product.id !== id || (size && product.size !== size);
+            }
+            return true;
+        });
 
-        console.log('Eliminando del backend con cartItemId:', cartItem.cartItemId);
+        setCartProducts(updatedCart);
 
         const success = await removeCartItemFromBackend(cartItem.cartItemId);
 
@@ -267,13 +295,15 @@ export const Provider = ({ children }) => {
     };
 
     const handleQuantityChange = async (id, quantity, size = null) => {
-        console.log('handleQuantityChange en contexto:', { id, quantity, size });
 
-        const cartItem = cartProducts.find(product =>
-            product.id === id && (size ? product.size === size : true)
-        );
-
-        console.log('cartItem encontrado:', cartItem);
+        const cartItem = cartProducts.find(product => {
+            if (product.type === 'product') {
+                return product.id === id;
+            } else if (product.type === 'sticker' || product.type === 'staff_sticker') {
+                return product.id === id && (size ? product.size === size : true);
+            }
+            return false;
+        });
 
         if (!cartItem) {
             console.error('No se encontró el item en el carrito');
@@ -284,16 +314,24 @@ export const Provider = ({ children }) => {
         const willBeDeleted = cartItem.quantity === 1 && quantity === 0;
 
         if (willBeDeleted) {
-            console.log('El item será eliminado por el backend (cantidad 1 -> 0)');
 
-            const updatedCart = cartProducts.filter(product =>
-                product.id !== id || (size && product.size !== size)
-            );
+            const updatedCart = cartProducts.filter(product => {
+                if (product.type === 'product') {
+                    return product.id !== id;
+                } else if (product.type === 'sticker' || product.type === 'staff_sticker') {
+                    return product.id !== id || (size && product.size !== size);
+                }
+                return true;
+            });
             setCartProducts(updatedCart);
         } else {
             const updatedCart = cartProducts.map(product => {
-                if (product.id === id && (size ? product.size === size : true)) {
-                    return { ...product, quantity };
+                if (product.type === 'product') {
+                    return product.id === id ? { ...product, quantity } : product;
+                } else if (product.type === 'sticker' || product.type === 'staff_sticker') {
+                    if (product.id === id && (size ? product.size === size : true)) {
+                        return { ...product, quantity };
+                    }
                 }
                 return product;
             });
