@@ -1,0 +1,355 @@
+/* StickersPage.css */
+
+.stickers-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+
+.stickers-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.stickers-header {
+    margin-bottom: 20px;
+}
+
+.results-info {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+.img-category-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.img-category-container h1 {
+    position: absolute;
+    top: 6rem;
+    font-size: 5rem;
+    color: #fff;
+}
+
+.img-category {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.logo-brand-container {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 0 1rem;
+}
+
+.logo-category-1,
+.logo-category-4 {
+    height: 40px;
+    object-fit: contain;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.logo-category-1:hover,
+.logo-category-4:hover {
+    opacity: 1;
+}
+
+.stickers-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.upload-sticker-btn {
+    background: #014aad;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.upload-sticker-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
+.order-by-select select {
+    padding: 10px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    cursor: pointer;
+    min-width: 200px;
+    transition: border-color 0.3s ease;
+}
+
+.order-by-select select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.refresh-btn {
+    background: #014aad;
+    color: white;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background: #1465d8;
+    transform: rotate(180deg);
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background: white;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-container p {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+}
+
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background: white;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.error-message {
+    text-align: center;
+    color: #dc3545;
+    max-width: 400px;
+}
+
+.error-message i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #ffc107;
+}
+
+.error-message h3 {
+    margin-bottom: 10px;
+    color: #dc3545;
+}
+
+.error-message p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.retry-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.retry-btn:hover {
+    background: #c82333;
+}
+
+.empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+    background: white;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.empty-message {
+    text-align: center;
+    color: #666;
+    max-width: 400px;
+}
+
+.empty-message i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.empty-message h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.empty-message p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.upload-first-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.upload-first-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+}
+
+.stickers-grid-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f1f3f4;
+}
+
+.section-header h2 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.section-header i {
+    color: #014aad;
+}
+
+.section-header p {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stickers-container {
+        padding: 15px;
+    }
+
+    .img-category-container h1 {
+        font-size: 2rem;
+    }
+
+    .img-category {
+        width: 80px;
+        height: 80px;
+    }
+
+    .stickers-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .upload-sticker-btn,
+    .order-by-select select {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .logo-brand-container {
+        gap: 15px;
+    }
+
+    .logo-category-1,
+    .logo-category-4 {
+        height: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .img-category-container {
+        padding: 30px 15px;
+    }
+
+    .img-category-container h1 {
+        font-size: 1.8rem;
+    }
+
+    .stickers-grid-section {
+        padding: 20px 15px;
+    }
+
+    .section-header h2 {
+        font-size: 1.5rem;
+    }
+}

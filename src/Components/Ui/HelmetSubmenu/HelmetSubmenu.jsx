@@ -1,5 +1,5 @@
 import '../HelmetSubmenu/HelmetSubmenu.css';
-import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
+import { useSubcategories } from '../../Hook/UseSubcategories/UseSubcategories.jsx';
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';

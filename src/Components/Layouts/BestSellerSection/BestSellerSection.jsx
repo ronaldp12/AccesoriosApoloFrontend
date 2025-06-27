@@ -6,7 +6,7 @@ import "../BestSellerSection/BestSellerSection.css";
 export const BestSellersSection = () => {
   return (
     <section className="best-sellers-section">
-      <div className="section-header">
+      <div className="section-header-best-sellers">
         <h2>LO MAS VENDIDO</h2>
         <button>VER MAS</button>
       </div>

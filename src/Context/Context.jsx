@@ -58,6 +58,7 @@ export const Provider = ({ children }) => {
             });
 
             const data = await response.json();
+            console.log(data)
 
             if (response.ok && data.success) {
                 const formattedCartItems = data.carrito.map(item => {
@@ -73,7 +74,7 @@ export const Provider = ({ children }) => {
                             quantity: item.cantidad,
                             type: 'product'
                         };
-                    } else if (item.tipo === 'calcomania') {
+                    } else if (item.tipo === 'calcomania_cliente') {
                         return {
                             id: `sticker-${item.id_calcomania}-${item.tamano_x}x${item.tamano_y}`,
                             originalId: item.id_calcomania,
@@ -197,7 +198,6 @@ export const Provider = ({ children }) => {
         }
     };
 
-    // useEffect para cargar carrito y stickers cuando el usuario se autentica
     useEffect(() => {
         if (token && userLogin) {
             loadCartFromBackend();

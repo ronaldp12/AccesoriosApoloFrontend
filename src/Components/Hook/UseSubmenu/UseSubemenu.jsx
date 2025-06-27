@@ -5,7 +5,6 @@ export const useSubmenu = () => {
   const submenuRef = useRef(null);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 820);
 
-  // Detectar clicks fuera del submenu
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (submenuRef.current && !submenuRef.current.contains(event.target)) {
@@ -16,7 +15,6 @@ export const useSubmenu = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Detectar cambio de tamaño de ventana
   useEffect(() => {
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 820);

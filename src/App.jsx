@@ -9,7 +9,7 @@ import { ProfileLayout } from "./Components/Layouts/ProfileLayout/ProfileLayout.
 import { ProfileOrders } from "./Components/Ui/ProfileOrders/ProfileOrders.jsx";
 import { WishList } from "./Components/Ui/WishList/WishList.jsx";
 import { WelcomeModal } from "./Components/Layouts/WelcomeModal/WelcomeModal.jsx";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { context } from "./Context/Context.jsx";
 import { IntermediateLoaderModal } from "./Components/Ui/IntermediateLoaderModal/IntermedaiteLoaderModal.jsx";
 import { RequestResetEmail } from "./Components/Ui/RequestResetEmail/RequestResetEmail.jsx";
@@ -34,10 +34,31 @@ import { StickersLayout } from "./Components/Layouts/StickersLayout/StickersLayo
 import { ProductPage } from "./Components/Pages/ProductPage/ProductPage.jsx";
 import { ProductDetailPage } from "./Components/Layouts/ProductDetailPage/ProductDetailPage.jsx";
 import { ScrollToTop } from "./Components/Ui/ScrollToTop/ScrollToTop.jsx";
+import { StickersPage } from "./Components/Pages/StickersPage/StickersPage.jsx";
+import { RegisterModal } from "./Components/Layouts/RegisterModal/RegisterModal.jsx";
+import { LoginModal } from "./Components/Layouts/LoginModal/LoginModal.jsx";
 
 export function App() {
 
   const { isWelcomeOpen, setIsWelcomeOpen } = useContext(context);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+
+  const handleOpenRegister = () => {
+    setShowRegister(true);
+  };
+
+  const handleOpenLogin = () => {
+    setShowLogin(true);
+  };
+
+  const handleCloseRegister = () => {
+    setShowRegister(false);
+  };
+
+  const handleCloseLogin = () => {
+    setShowLogin(false);
+  };
 
   return (
     <>
@@ -82,6 +103,20 @@ export function App() {
             </>
           }
         />
+
+        <Route
+          path="/stickers/all"
+          element={
+            <>
+              <Header />
+              <Container>
+                <StickersPage onOpenRegister={handleOpenRegister}
+                  onOpenLogin={handleOpenLogin} />
+              </Container>
+              <Footer />
+            </>
+          }
+        ></Route>
 
 
         <Route
@@ -163,6 +198,8 @@ export function App() {
       </Routes>
       <IntermediateLoaderModal />
       <WelcomeModal isOpen={isWelcomeOpen} onClose={() => setIsWelcomeOpen(false)} />
+      {showRegister && <RegisterModal onClose={handleCloseRegister} />}
+      {showLogin && <LoginModal onClose={handleCloseLogin} />}
     </>
   );
 }

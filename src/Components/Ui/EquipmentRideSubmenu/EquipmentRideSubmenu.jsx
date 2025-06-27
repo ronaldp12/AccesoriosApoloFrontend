@@ -1,12 +1,11 @@
 import '../EquipmentRideSubmenu/EquipmentRideSubmenu.css';
-import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
+import { useSubcategories } from '../../Hook/UseSubcategories/UseSubcategories.jsx';
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
 
-// Importar todas las imágenes de equipación
 import img1Equipment from '../../../assets/images/img1-equipment.png';
 import img2Equipment from '../../../assets/images/img2-equipment.png';
 import img3Equipment from '../../../assets/images/img3-equipment.png';

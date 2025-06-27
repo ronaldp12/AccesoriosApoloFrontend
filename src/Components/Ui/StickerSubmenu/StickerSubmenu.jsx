@@ -16,11 +16,16 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
   const handleUploadSticker = () => {
     if (userLogin && nameRol === 'cliente') {
       onCloseSubmenu();
-      navigate("/stickers");
+      navigate("stickers/upload");
       console.log('Navegando a subir calcomanía');
     } else {
       setIsModalOpen(true);
     }
+  };
+
+  const handleViewStickers = () => {
+    onCloseSubmenu();
+    navigate("/stickers/all");
   };
 
   const closeModal = () => {
@@ -46,24 +51,22 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
   return (
     <>
       <div className="sticker-submenu">
-        <Link to={`/products?category=${encodeURIComponent("Calcomanías")}`} className='submenu-title-sticker' 
-        onClick={onCloseSubmenu}>
+        <div className='submenu-title-sticker' onClick={handleViewStickers} style={{ cursor: 'pointer' }}>
           <h2>Calcomanías</h2>
           <span>Ver más </span>
-        </Link>
+        </div>
 
         <div className="container-stickers2">
-          <Link to={`/products?category=${encodeURIComponent("Calcomanías")}`} className="submenu-item" onClick={onCloseSubmenu}>
-            <img src={img1} alt="Sticker" />
-            <p>Calcomanías</p>
-          </Link>
+          <div className="submenu-item" onClick={handleViewStickers} style={{ cursor: 'pointer' }}>
+            <img src={img1} alt="Ver Calcomanías" />
+            <p>Ver Calcomanías</p>
+          </div>
 
           <div className="submenu-item" onClick={handleUploadSticker} style={{ cursor: 'pointer' }}>
-            <img src={img2} alt="Sticker2" />
+            <img src={img2} alt="Subir Calcomanía" />
             <p>Sube tu Calcomanía</p>
           </div>
         </div>
-
       </div>
 
       <WelcomeNoLoginModal

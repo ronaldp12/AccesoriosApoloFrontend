@@ -1,4 +1,4 @@
-import { useSubmenu } from '../../UseSubmenu/UseSubemenu.jsx';
+import { useSubmenu } from '../../Hook/UseSubmenu/UseSubemenu.jsx';
 import { Item } from '../../Ui/Item/Item.jsx';
 import { NavLink } from 'react-router-dom';
 import { HelmetSubmenu } from '../../Ui/HelmetSubmenu/HelmetSubmenu.jsx';
@@ -16,13 +16,14 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
   const stickerMenu = useSubmenu();
   const lightMenu = useSubmenu();
   const cleaningMenu = useSubmenu();
-  const accesoriesMenu= useSubmenu();
+  const accesoriesMenu = useSubmenu();
 
   return (
     <div className={styleContainer}>
       <NavLink className="navlink" to="/">
         <Item contenido={"Inicio"} styleLi="item" />
       </NavLink>
+
       <div
         className="container-helmets"
         ref={helmetMenu.submenuRef}
@@ -33,7 +34,9 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Cascos</span>
         </Item>
-        {helmetMenu.isOpen && <HelmetSubmenu onCloseSubmenu={() => helmetMenu.handleHover(false)} />}
+        {helmetMenu.isOpen && (
+          <HelmetSubmenu onCloseSubmenu={() => helmetMenu.handleHover(false)} />
+        )}
       </div>
 
       <div
@@ -46,7 +49,9 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item-extend">
           <span className="nav-cascos">Equipación Carretera</span>
         </Item>
-        {equipmentMenu.isOpen && <EquipmentRideSubmenu onCloseSubmenu={() => equipmentMenu.handleHover(false)} />}
+        {equipmentMenu.isOpen && (
+          <EquipmentRideSubmenu onCloseSubmenu={() => equipmentMenu.handleHover(false)} />
+        )}
       </div>
 
       <div
@@ -59,7 +64,9 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Accesorios</span>
         </Item>
-        {accesoriesMenu.isOpen && <AccesoriesSubmenu onCloseSubmenu={() => accesoriesMenu.handleHover(false)} />}
+        {accesoriesMenu.isOpen && (
+          <AccesoriesSubmenu onCloseSubmenu={() => accesoriesMenu.handleHover(false)} />
+        )}
       </div>
 
       <div
@@ -72,7 +79,9 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Marcas</span>
         </Item>
-        {brandMenu.isOpen && <BrandSubmenu />}
+        {brandMenu.isOpen && (
+          <BrandSubmenu onCloseSubmenu={() => brandMenu.handleHover(false)} />
+        )}
       </div>
 
       <div
@@ -104,7 +113,9 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Luces</span>
         </Item>
-        {lightMenu.isOpen && <LightsSubmenu onCloseSubmenu={() => lightMenu.handleHover(false)} />}
+        {lightMenu.isOpen && (
+          <LightsSubmenu onCloseSubmenu={() => lightMenu.handleHover(false)} />
+        )}
       </div>
 
       <div
@@ -117,7 +128,9 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
         <Item styleLi="item">
           <span className="nav-cascos">Limpieza</span>
         </Item>
-        {cleaningMenu.isOpen && <CleaningSubmenu onCloseSubmenu={() => cleaningMenu.handleHover(false)} />}
+        {cleaningMenu.isOpen && (
+          <CleaningSubmenu onCloseSubmenu={() => cleaningMenu.handleHover(false)} />
+        )}
       </div>
     </div>
   );

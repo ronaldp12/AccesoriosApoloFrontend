@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { products as allProducts } from "../../products";
 import { ProductGrid } from "../../Ui/ProductGrid/ProductGrid";
 import { useLocation } from "react-router-dom";
 import "./ProductPage.css";
@@ -13,21 +12,42 @@ import imgEquipment from "../../../assets/images/img1-equipment-ride-product.png
 import imgCleaning from "../../../assets/images/img1-cleaning-product.png";
 import imgLight from "../../../assets/images/img1-light-product.png";
 import imgDefault from "../../../assets/images/img1-helmet-product.png";
-
+import { useProductsBySubcategory } from "../../Hook/UseProductsBySubcategory/UseProductsBySubcategory.jsx";
+import { UseProductsByBrand } from "../../Hook/UseProductsByBrand/UseProductsByBrand.jsx";
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
   const location = useLocation();
+
+  const {
+    products: apiProducts,
+    loading: apiLoading,
+    error: apiError
+  } = useProductsBySubcategory(selectedSubcategory);
+
+  const {
+    products: brandProducts,
+    loading: brandLoading,
+    error: brandError
+  } = UseProductsByBrand(selectedBrand);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const categoryFromURL = queryParams.get("category");
     const subcategoryFromURL = queryParams.get("subcategory");
+    const brandFromURL = queryParams.get("brand");
+
+    setSelectedCategory("");
+    setSelectedSubcategory("");
+    setSelectedBrand("");
 
     if (categoryFromURL) setSelectedCategory(decodeURIComponent(categoryFromURL));
     if (subcategoryFromURL) setSelectedSubcategory(decodeURIComponent(subcategoryFromURL));
+    if (brandFromURL) setSelectedBrand(decodeURIComponent(brandFromURL));
   }, [location.search]);
 
   const getCategoryImage = (category) => {
@@ -45,22 +65,81 @@ export const ProductPage = () => {
     }
   };
 
+  const getBrandImage = (brand) => {
+    const brandImages = {
+      'Ich': logo1,
+      'Shaft': logo2,
+      'Hro': logo3,
+      'Arai': logo4,
+      'Shoei': logo4,
+    };
+    return brandImages[brand] || imgDefault;
+  };
+
   const handleOverlayClick = () => {
     setShowMobileFilter(false);
   };
 
-  const filteredProducts = allProducts.filter((p) => {
-    if (selectedCategory && selectedSubcategory) {
-      return (
-        p.category === selectedCategory &&
-        p.subcategory.toLowerCase() === selectedSubcategory.toLowerCase()
-      );
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+  };
+
+  // Determinar qué productos mostrar
+  const getFilteredProducts = () => {
+    let productsToShow = [];
+
+    if (selectedBrand) {
+      productsToShow = brandProducts;
+    } else if (selectedSubcategory) {
+      productsToShow = apiProducts;
+    } else {
+      productsToShow = [];
+    }
+
+    if (sortOrder && productsToShow.length > 0) {
+      productsToShow = [...productsToShow].sort((a, b) => {
+        switch (sortOrder) {
+          case "price-high-low":
+            return b.price - a.price;
+          case "price-low-high":
+            return a.price - b.price;
+          case "name-a-z":
+            return a.title.localeCompare(b.title);
+          case "name-z-a":
+            return b.title.localeCompare(a.title);
+          default:
+            return 0;
+        }
+      });
+    }
+
+    return productsToShow;
+  };
+
+  const filteredProducts = getFilteredProducts();
+
+  const isLoading = selectedBrand ? brandLoading : apiLoading;
+  const currentError = selectedBrand ? brandError : apiError;
+
+  const getPageTitle = () => {
+    if (selectedBrand) {
+      return selectedBrand === 'Otros' ? 'Otras Marcas' : `Marca ${selectedBrand}`;
+    }
+    if (selectedSubcategory) {
+      return selectedSubcategory.charAt(0).toUpperCase() + selectedSubcategory.slice(1).toLowerCase();
     }
     if (selectedCategory) {
-      return p.category === selectedCategory;
+      return selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).toLowerCase();
     }
-    return true;
-  });
+    return "Productos";
+  };
+
+  const getDisplayImage = () => {
+    if (selectedBrand && selectedBrand !== 'Otros') {
+      return getBrandImage(selectedBrand);
+    }
+    return getCategoryImage(selectedCategory);
+  };
 
   return (
     <>
@@ -74,25 +153,35 @@ export const ProductPage = () => {
         <div className="store-content">
           <div className="store-header">
             <div className="results-info">
-              {filteredProducts.length} productos encontrados
+              {isLoading ? (
+                "Cargando productos..."
+              ) : currentError ? (
+                `Error: ${currentError}`
+              ) : (
+                `${filteredProducts.length} productos encontrados`
+              )}
             </div>
           </div>
 
           <div className="img-category-container">
-            <h2>{selectedCategory ? selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1).toLowerCase() : "Productos"}</h2>
-            <img
-              className="img-category"
-              src={getCategoryImage(selectedCategory)}
-              alt={`Imagen de categoría ${selectedCategory}`}
-            />
+            <h2>{getPageTitle()}</h2>
 
-            <div className="logo-brand-container">
-              <img className="logo-category-1" src={logo1} alt="logo 1" />
-              <img className="logo-category-1" src={logo2} alt="logo 2" />
-              <img className="logo-category-1" src={logo3} alt="logo 3" />
-              <img className="logo-category-4" src={logo4} alt="logo 4" />
-            </div>
+            {(!selectedBrand || selectedBrand !== 'Otros') && (
+              <img
+                className="img-category"
+                src={getDisplayImage()}
+                alt={`Imagen de ${selectedBrand || selectedCategory || 'categoría'}`}
+              />
+            )}
 
+            {!selectedBrand && (
+              <div className="logo-brand-container">
+                <img className="logo-category-1" src={logo1} alt="logo 1" />
+                <img className="logo-category-1" src={logo2} alt="logo 2" />
+                <img className="logo-category-1" src={logo3} alt="logo 3" />
+                <img className="logo-category-4" src={logo4} alt="logo 4" />
+              </div>
+            )}
           </div>
 
           <div className="order-by-container">
@@ -103,17 +192,21 @@ export const ProductPage = () => {
               FILTRAR
             </button>
             <div className="order-by-select">
-              <select name="" id="">
+              <select value={sortOrder} onChange={handleSortChange}>
                 <option value="">Ordenar por</option>
-                <option value="">Ordenar por precio: alto a bajo</option>
-                <option value="">Ordenar por precio: bajo a alto</option>
+                <option value="price-high-low">Ordenar por precio: alto a bajo</option>
+                <option value="price-low-high">Ordenar por precio: bajo a alto</option>
               </select>
             </div>
-
-
           </div>
 
-          <ProductGrid products={filteredProducts} />
+          {isLoading ? (
+            <div className="loading-container">
+              <p>Cargando productos...</p>
+            </div>
+          ) : (
+            <ProductGrid products={filteredProducts} />
+          )}
         </div>
       </div>
 

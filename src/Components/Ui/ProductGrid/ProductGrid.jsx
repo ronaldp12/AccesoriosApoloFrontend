@@ -2,20 +2,26 @@ import React from "react";
 import { ProductCard } from "../ProductCard/ProductCard.jsx";
 import "./ProductGrid.css";
 
-export const ProductGrid = ({ products }) => {
+export const ProductGrid = ({ products, stickerCartFunctions }) => {
+    console.log('ProductGrid recibió:', products);
     return (
         <div className="product-grid">
-            {products.map((p) => (
+            {products.map((product) => (
                 <ProductCard
-                    key={p.id}
-                    id={p.id}
-                    slug={p.slug}
-                    image={p.image}
-                    brand={p.brand}
-                    title={p.title}
-                    price={p.price}
-                    rating={p.rating}
-                    discount={p.discount}
+                    key={product.id}
+                    id={product.id}
+                    slug={product.slug}
+                    image={product.image}
+                    brand={product.brand}
+                    title={product.title}
+                    price={product.price}
+                    originalPrice={product.originalPrice}
+                    discount={product.discount}
+                    rating={product.rating}
+                    
+                    {...(product.type === 'sticker' && stickerCartFunctions && {
+                        stickerCartFunctions
+                    })}
                 />
             ))}
         </div>

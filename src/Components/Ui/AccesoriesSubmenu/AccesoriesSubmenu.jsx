@@ -13,7 +13,7 @@ import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
 import { Link } from "react-router-dom";
-import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
+import { useSubcategories } from '../../Hook/UseSubcategories/UseSubcategories.jsx';
 
 export const AccesoriesSubmenu = ({ onCloseSubmenu }) => {
     const { subcategories, loading, error } = useSubcategories("Accesorios");
@@ -49,17 +49,6 @@ export const AccesoriesSubmenu = ({ onCloseSubmenu }) => {
                 </Link>
 
                 <div className="container-accesories2">
-                    {loading && subcategories?.length === 0 && (
-                        <div className="loading-message">
-                            <p>Cargando subcategorías...</p>
-                        </div>
-                    )}
-
-                    {error && !loading && (
-                        <div className="error-message">
-                            <p>Error al cargar subcategorías. Mostrando opciones por defecto.</p>
-                        </div>
-                    )}
 
                     {accesoriesItems.map((item, index) => (
                         <Link

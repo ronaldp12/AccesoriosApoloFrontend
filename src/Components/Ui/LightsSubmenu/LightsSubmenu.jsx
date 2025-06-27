@@ -11,7 +11,7 @@ import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
 import { Link } from 'react-router-dom';
-import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
+import { useSubcategories } from '../../Hook/UseSubcategories/UseSubcategories.jsx';
 
 export const LightsSubmenu = ({ onCloseSubmenu }) => {
     const { subcategories, loading, error } = useSubcategories("Luces");
