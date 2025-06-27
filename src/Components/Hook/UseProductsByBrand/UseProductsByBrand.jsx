@@ -24,7 +24,6 @@ export const UseProductsByBrand = (marca) => {
                 }
 
                 const data = await response.json();
-                console.log(data)
 
                 if (data.success) {
                     const transformedProducts = data.productos.map(producto => ({
@@ -39,8 +38,6 @@ export const UseProductsByBrand = (marca) => {
                         discount: producto.descuento || null, 
                         referencia: producto.referencia
                     }));
-
-                    console.log('Productos transformados:', transformedProducts);
 
                     setProducts(transformedProducts);
                 } else {

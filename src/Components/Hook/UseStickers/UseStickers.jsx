@@ -27,7 +27,6 @@ export const UseStickers = () => {
             const url = 'https://accesoriosapolobackend.onrender.com/calcomanias/staff';
             const response = await fetch(url);
             const data = await response.json();
-            console.log(data)
 
             if (data.success) {
                 const mappedStickers = data.calcomanias.map(sticker => ({

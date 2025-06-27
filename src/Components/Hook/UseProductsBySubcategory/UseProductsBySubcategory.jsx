@@ -18,13 +18,10 @@ export const useProductsBySubcategory = (subcategoryName) => {
             try {
                 console.log('Fetching products for subcategory:', subcategoryName);
                 const url = `https://accesoriosapolobackend.onrender.com/productos-por-subcategoria/${encodeURIComponent(subcategoryName)}`;
-                console.log('Request URL:', url);
 
                 const response = await fetch(url);
-                console.log('Response status:', response.status);
 
                 const data = await response.json();
-                console.log('Response data:', data);
 
                 if (data.success) {
                     const mappedProducts = data.productos.map(product => ({
@@ -41,8 +38,6 @@ export const useProductsBySubcategory = (subcategoryName) => {
                         promedio_calificacion: product.promedio_calificacion
                     }));
 
-
-                    console.log('Mapped products:', mappedProducts);
                     setProducts(mappedProducts);
                 } else {
                     console.log('API Error:', data.mensaje);
