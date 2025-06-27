@@ -11,17 +11,33 @@ import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
 import { Link } from 'react-router-dom';
+import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
 
 export const LightsSubmenu = ({ onCloseSubmenu }) => {
+    const { subcategories, loading, error } = useSubcategories("Luces");
 
-    const lightItems = [
-        { label: "Bombillos", imgs: [img1] },
-        { label: "Exploradoras", imgs: [img2] },
-        { label: "Direccionales", imgs: [img3, img32] },
-        { label: "Luces LED", imgs: [img4] }
+    const fallbackItems = [
+        { label: "Bombillos", img: img1 },
+        { label: "Exploradoras", img: img2 },
+        { label: "Direccionales", img: [img3, img32] },
+        { label: "Luces LED", img: img4 }
     ];
 
     const lightBrandLogos = [logo1, logo2, logo3, logo4, logo5];
+
+    const accesoriesItems = (!loading && !error && subcategories?.length > 0)
+        ? subcategories.map(item => ({
+            ...item,
+            img: item.img || fallbackItems.find(fallback => fallback.label === item.label)?.img || img1
+        }))
+        : fallbackItems;
+
+    const getMainImage = (imgData) => {
+        if (Array.isArray(imgData)) {
+            return imgData[0];
+        }
+        return imgData;
+    };
 
     return (
         <>
@@ -34,12 +50,38 @@ export const LightsSubmenu = ({ onCloseSubmenu }) => {
                     <span>Ver más </span>
                 </Link>
 
-                <div className="container-lights2">
-                    {lightItems.map((item) => (
-                        <Link to={`/products?category=${encodeURIComponent("Luces")}&subcategory=${encodeURIComponent(item.label)}`} key={item.label} className="submenu-item" onClick={onCloseSubmenu}>
-                            {item.imgs.map((src, i) => (
-                                <img key={i} src={src} alt={item.label} />
-                            ))}
+                <div className="container-accesories2">
+
+                    {accesoriesItems.map((item, index) => (
+                        <Link
+                            key={`${item.label}-${index}`}
+                            to={`/products?category=${encodeURIComponent("Luces")}&subcategory=${encodeURIComponent(item.label)}`}
+                            className={`submenu-item ${loading ? 'loading' : ''}`}
+                            onClick={onCloseSubmenu}
+                        >
+                            <div className="item-image-container">
+                                {Array.isArray(item.img) ? (
+                                    <div className="multiple-images">
+                                        {item.img.map((imgSrc, imgIndex) => (
+                                            <img
+                                                key={imgIndex}
+                                                src={imgSrc}
+                                                alt={`luces - ${item.label} ${imgIndex + 1}`}
+                                                className={`multi-img-${imgIndex}`}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <img
+                                        src={item.img}
+                                        alt={`luces - ${item.label}`}
+                                        onError={(e) => {
+                                            const fallbackItem = fallbackItems[index % fallbackItems.length];
+                                            e.target.src = getMainImage(fallbackItem?.img) || img1;
+                                        }}
+                                    />
+                                )}
+                            </div>
                             <p>{item.label}</p>
                         </Link>
                     ))}

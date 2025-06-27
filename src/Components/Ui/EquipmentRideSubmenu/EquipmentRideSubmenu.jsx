@@ -1,38 +1,47 @@
 import '../EquipmentRideSubmenu/EquipmentRideSubmenu.css';
-import img1 from '../../../assets/images/img1-equipment.png';
-import img2 from '../../../assets/images/img2-equipment.png';
-import img3 from '../../../assets/images/img3-equipment.png';
-import img4 from '../../../assets/images/img4-equipment.png';
-import img5 from '../../../assets/images/img5-equipment.png';
-import img6 from '../../../assets/images/img6-equipment.png';
-import img7 from '../../../assets/images/img7-equipment.png';
-
+import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
+
+// Importar todas las imágenes de equipación
+import img1Equipment from '../../../assets/images/img1-equipment.png';
+import img2Equipment from '../../../assets/images/img2-equipment.png';
+import img3Equipment from '../../../assets/images/img3-equipment.png';
+import img4Equipment from '../../../assets/images/img4-equipment.png';
+import img5Equipment from '../../../assets/images/img5-equipment.png';
+import img6Equipment from '../../../assets/images/img6-equipment.png';
+import img7Equipment from '../../../assets/images/img7-equipment.png';
+
 import { Link } from "react-router-dom";
 
 export const EquipmentRideSubmenu = ({ onCloseSubmenu }) => {
+  const { subcategories, loading, error } = useSubcategories("Equipación Carretera");
 
-  const equipmentItems = [
-    { label: "Chaquetas", img: img1 },
-    { label: "Impermeables", img: img2 },
-    { label: "Cuello y Rostro", img: img3 },
-    { label: "Chaleco", img: img4 },
-    { label: "Guantes", img: img5 },
-    { label: "Mangas", img: img6 },
-    { label: "Botas", img: img7 }
+  const fallbackItems = [
+    { label: "Chaquetas", img: img1Equipment },
+    { label: "Impermeables", img: img2Equipment },
+    { label: "Cuello y Rostro", img: img3Equipment },
+    { label: "Chaleco", img: img4Equipment },
+    { label: "Guantes", img: img5Equipment },
+    { label: "Mangas", img: img6Equipment },
+    { label: "Botas", img: img7Equipment }
   ];
+
+  const equipmentItems = (!loading && !error && subcategories?.length > 0)
+    ? subcategories.map(item => ({
+      ...item,
+      img: item.img || fallbackItems.find(fallback => fallback.label === item.label)?.img || img1Equipment
+    }))
+    : fallbackItems;
 
   const equipmentRideBrandLogos = [logo1, logo2, logo3, logo4, logo5];
 
   return (
     <>
-
       <div className="equipment-submenu">
-
         <Link to={`/products?category=${encodeURIComponent("Equipacion Carretera")}`} className='submenu-title-equipment'
           onClick={onCloseSubmenu}>
           <h2>Equipación Carretera</h2>
@@ -40,14 +49,24 @@ export const EquipmentRideSubmenu = ({ onCloseSubmenu }) => {
         </Link>
 
         <div className="container-equipment2">
-          {equipmentItems.map((item) => (
+
+          {/* Mostrar items (fallback durante carga, API data cuando esté listo) */}
+          {equipmentItems.map((item, index) => (
             <Link
-              key={item.label}
+              key={`${item.label}-${index}`}
               to={`/products?category=${encodeURIComponent("Equipacion Carretera")}&subcategory=${encodeURIComponent(item.label)}`}
-              className="submenu-item"
+              className={`submenu-item ${loading ? 'loading' : ''}`}
               onClick={onCloseSubmenu}
             >
-              <img src={item.img} alt={`equipment - ${item.label}`} />
+              <div className="item-image-container">
+                <img
+                  src={item.img}
+                  alt={`equipment - ${item.label}`}
+                  onError={(e) => {
+                    e.target.src = fallbackItems[index % fallbackItems.length]?.img || img1Equipment;
+                  }}
+                />
+              </div>
               <p>{item.label}</p>
             </Link>
           ))}
@@ -60,11 +79,8 @@ export const EquipmentRideSubmenu = ({ onCloseSubmenu }) => {
               <img key={i} className={`logo${i + 1}`} src={logo} alt={`brand logo ${i + 1}`} />
             ))}
           </div>
-
         </div>
       </div>
-
     </>
-
   );
 };

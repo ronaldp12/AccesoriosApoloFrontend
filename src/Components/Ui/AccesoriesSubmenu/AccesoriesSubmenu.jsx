@@ -13,10 +13,12 @@ import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
 import { Link } from "react-router-dom";
+import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
 
 export const AccesoriesSubmenu = ({ onCloseSubmenu }) => {
+    const { subcategories, loading, error } = useSubcategories("Accesorios");
 
-    const accesoriesItems = [
+    const fallbackItems = [
         { label: "Llaveros", img: img1 },
         { label: "Retrovisores", img: img2 },
         { label: "Pulpos", img: img3 },
@@ -28,26 +30,53 @@ export const AccesoriesSubmenu = ({ onCloseSubmenu }) => {
 
     const accesoriesBrandLogos = [logo1, logo2, logo3, logo4, logo5];
 
+    const accesoriesItems = (!loading && !error && subcategories?.length > 0)
+        ? subcategories.map(item => ({
+            ...item,
+            img: item.img || fallbackItems.find(fallback => fallback.label === item.label)?.img || img1
+        }))
+        : fallbackItems;
+
     return (
         <>
 
             <div className="accesories-submenu">
 
-                <Link to={`/products?category=${encodeURIComponent("Equipacion Carretera")}`} className='submenu-title-accesories'
+                <Link to={`/products?category=${encodeURIComponent("Accesorios")}`} className='submenu-title-accesories'
                     onClick={onCloseSubmenu}>
                     <h2>Accesorios</h2>
                     <span>Ver más </span>
                 </Link>
 
                 <div className="container-accesories2">
-                    {accesoriesItems.map((item) => (
+                    {loading && subcategories?.length === 0 && (
+                        <div className="loading-message">
+                            <p>Cargando subcategorías...</p>
+                        </div>
+                    )}
+
+                    {error && !loading && (
+                        <div className="error-message">
+                            <p>Error al cargar subcategorías. Mostrando opciones por defecto.</p>
+                        </div>
+                    )}
+
+                    {accesoriesItems.map((item, index) => (
                         <Link
-                            key={item.label}
-                            to={`/products?category=${encodeURIComponent("Equipacion Carretera")}&subcategory=${encodeURIComponent(item.label)}`}
-                            className="submenu-item"
+                            key={`${item.label}-${index}`}
+                            to={`/products?category=${encodeURIComponent("Accesorios")}&subcategory=${encodeURIComponent(item.label)}`}
+                            className={`submenu-item ${loading ? 'loading' : ''}`}
                             onClick={onCloseSubmenu}
                         >
-                            <img src={item.img} alt={`equipment - ${item.label}`} />
+                            <div className="item-image-container">
+                                <img
+                                    src={item.img}
+                                    alt={`accesorio - ${item.label}`}
+                                    onError={(e) => {
+                                        e.target.src = fallbackItems[index % fallbackItems.length]?.img || img1;
+                                    }}
+                                />
+                            </div>
                             <p>{item.label}</p>
                         </Link>
                     ))}

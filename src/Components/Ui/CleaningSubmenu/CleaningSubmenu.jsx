@@ -11,17 +11,27 @@ import logo3 from '../../../assets/images/img3-marca.png';
 import logo4 from '../../../assets/images/img4-marca.png';
 import logo5 from '../../../assets/images/img5-marca.png';
 import { Link } from 'react-router-dom';
+import { useSubcategories } from '../../Ui/UseSubcategories/UseSubcategories.jsx';
 
 export const CleaningSubmenu = ({ onCloseSubmenu }) => {
-    const cleaningItems = [
-        { label: "Desengrasante", imgs: [img1] },
-        { label: "Restaurador partes negras", imgs: [img2] },
-        { label: "Silicona", imgs: [img3] },
-        { label: "Shampoo", imgs: [img4] },
-        { label: "Ambientador", imgs: [img5] }
+    const { subcategories, loading, error } = useSubcategories("Limpieza");
+
+    const fallbackItems = [
+        { label: "Desengrasante", img: [img1] },
+        { label: "Restaurador partes negras", img: [img2] },
+        { label: "Silicona", img: [img3] },
+        { label: "Shampoo", img: [img4] },
+        { label: "Ambientador", img: [img5] }
     ];
 
     const cleaningBrandLogos = [logo1, logo2, logo3, logo4, logo5];
+
+    const lightsItems = (!loading && !error && subcategories?.length > 0)
+        ? subcategories.map(item => ({
+            ...item,
+            img: item.img || fallbackItems.find(fallback => fallback.label === item.label)?.img || img1
+        }))
+        : fallbackItems;
 
     return (
         <div className="cleaning-submenu">
@@ -31,12 +41,24 @@ export const CleaningSubmenu = ({ onCloseSubmenu }) => {
                 <span>Ver más </span>
             </Link>
 
-            <div className="container-cleaning2">
-                {cleaningItems.map((item) => (
-                    <Link to={`/products?category=${encodeURIComponent("Limpieza")}&subcategory=${encodeURIComponent(item.label)}`} key={item.label} className="submenu-item" onClick={onCloseSubmenu}>
-                        {item.imgs.map((src, i) => (
-                            <img key={i} src={src} alt={item.label} />
-                        ))}
+            <div className="container-accesories2">
+
+                {lightsItems.map((item, index) => (
+                    <Link
+                        key={`${item.label}-${index}`}
+                        to={`/products?category=${encodeURIComponent("Limpieza")}&subcategory=${encodeURIComponent(item.label)}`}
+                        className={`submenu-item ${loading ? 'loading' : ''}`}
+                        onClick={onCloseSubmenu}
+                    >
+                        <div className="item-image-container">
+                            <img
+                                src={item.img}
+                                alt={`limpieza - ${item.label}`}
+                                onError={(e) => {
+                                    e.target.src = fallbackItems[index % fallbackItems.length]?.img || img1;
+                                }}
+                            />
+                        </div>
                         <p>{item.label}</p>
                     </Link>
                 ))}
