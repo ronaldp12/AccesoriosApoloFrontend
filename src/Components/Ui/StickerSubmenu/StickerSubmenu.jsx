@@ -16,7 +16,7 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
   const handleUploadSticker = () => {
     if (userLogin && nameRol === 'cliente') {
       onCloseSubmenu();
-      navigate("stickers/upload");
+      navigate("/stickers/upload");
       console.log('Navegando a subir calcomanía');
     } else {
       setIsModalOpen(true);

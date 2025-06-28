@@ -118,7 +118,6 @@ export function App() {
           }
         ></Route>
 
-
         <Route
           path="/stickers"
           element={

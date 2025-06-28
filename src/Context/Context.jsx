@@ -58,25 +58,23 @@ export const Provider = ({ children }) => {
             });
 
             const data = await response.json();
-            console.log(data);
 
             if (response.ok && data.success) {
                 const formattedCartItems = data.carrito.map(item => {
-                    // 🛍️ Productos regulares
                     if (item.tipo === 'producto') {
                         return {
                             id: item.referencia,
-                            cartItemId: item.id_carrito_item,
-                            image: item.url_archivo,
-                            brand: item.marca,
-                            title: item.nombre,
-                            price: item.precio_actual,
-                            originalPrice: item.precio_unidad_original,
-                            quantity: item.cantidad,
-                            type: 'product'
+                        cartItemId: item.id_carrito_item,
+                        image: item.url_imagen || item.url_archivo,
+                        brand: item.marca,
+                        title: item.nombre,
+                        price: item.precio_actual,
+                        originalPrice: item.precio_unidad_original,
+                        quantity: item.cantidad,
+                        type: 'product',
+                        referencia: item.referencia
                         };
                     }
-                    // 🎨 Calcomanías personalizadas del cliente
                     else if (item.tipo === 'calcomania_cliente') {
                         return {
                             id: `sticker-${item.id_calcomania}-${item.tamano_x}x${item.tamano_y}`,
@@ -92,7 +90,6 @@ export const Provider = ({ children }) => {
                             type: 'sticker'
                         };
                     }
-                    // ⭐ NUEVO: Calcomanías del staff (venta general)
                     else if (item.tipo === 'calcomania_staff') {
                         return {
                             id: `staff-sticker-${item.id_calcomania}-${item.tamano}`,
@@ -102,10 +99,10 @@ export const Provider = ({ children }) => {
                             title: item.nombre,
                             price: item.precio_actual,
                             originalPrice: item.precio_unidad_original,
-                            size: item.tamano, // "pequeño", "mediano", "grande"
+                            size: item.tamano,
                             quantity: item.cantidad,
                             type: 'staff_sticker',
-                            brand: 'Calcomanía' // O cualquier brand por defecto
+                            brand: 'Calcomanía'
                         };
                     }
 
@@ -125,7 +122,6 @@ export const Provider = ({ children }) => {
         }
     };
 
-    // 🛒 NUEVA: Función para actualizar cantidad en el backend
     const updateCartItemQuantity = async (cartItemId, newQuantity, token) => {
         if (!token) return false;
 
@@ -157,7 +153,6 @@ export const Provider = ({ children }) => {
     };
 
 
-    // 🛒 NUEVA: Función para eliminar item del carrito en el backend
     const removeCartItemFromBackend = async (cartItemId) => {
         if (!token) return false;
 

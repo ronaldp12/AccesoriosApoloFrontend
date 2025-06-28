@@ -12,18 +12,20 @@ export const ProductCard = ({
   image,
   brand,
   title,
-  price,           
-  originalPrice,   
-  rating,          
+  price,
+  originalPrice,
+  rating,
   discount,
   type,
+  referencia,
   stickerCartFunctions,
+  productCartFunctions,
   ...otherProps
 }) => {
-  const { handleAddToCart, userLogin } = useContext(context);
+  const { userLogin } = useContext(context);
+  const [showStickerModal, setShowStickerModal] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [addedMessage, setAddedMessage] = useState(false);
-  const [showStickerModal, setShowStickerModal] = useState(false);
 
   const isSticker = () => {
     const normalizedBrand = brand?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -32,35 +34,54 @@ export const ProductCard = ({
       normalizedBrand === 'calcomanía';
   };
 
-  const handleAddClick = (e) => {
+  const handleAddClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
+    if (!userLogin) {
+      console.log('Usuario debe iniciar sesión');
+      // Aquí puedes redirigir al login o mostrar un modal
+      return;
+    }
+
     if (isSticker()) {
-      if (!userLogin) {
-        console.log('Usuario debe iniciar sesión para configurar calcomanías');
-        return;
-      }
       setShowStickerModal(true);
       return;
     }
 
     setIsAdding(true);
-    setTimeout(() => {
-      handleAddToCart({
-        id,
-        image,
-        brand,
+
+    try {
+      await productCartFunctions.addProductToCart(
+        referencia || id,
+        1,
         title,
-        price,
-        ...otherProps
-      });
+        {
+          id: id,
+          title: title,
+          price: price,
+          originalPrice: originalPrice,
+          image: image,
+          brand: brand,
+          discount: discount,
+          referencia: referencia || id,
+          type: type
+        }
+      );
+
+      await new Promise(resolve => setTimeout(resolve, 800));
+
       setIsAdding(false);
       setAddedMessage(true);
+
       setTimeout(() => {
         setAddedMessage(false);
       }, 1200);
-    }, 800);
+
+    } catch (error) {
+      console.error('Error al agregar producto:', error);
+      setIsAdding(false);
+    }
   };
 
   const renderStars = () => {
@@ -98,10 +119,31 @@ export const ProductCard = ({
   };
 
   const getAddButtonContent = () => {
-    const isAddingSticker = isSticker() && stickerCartFunctions?.isAddingToCart;
-    const isGeneralAdding = !isSticker() && isAdding;
+    if (isSticker()) {
+      const isAddingSticker = stickerCartFunctions?.isAddingToCart;
+      const stickerSuccessMessage = stickerCartFunctions?.cartSuccessMessage;
 
-    if (isAddingSticker || isGeneralAdding) {
+      if (isAddingSticker) {
+        return <img src={wheelIcon} alt="cargando" className="wheel-loader" />;
+      }
+
+      if (stickerSuccessMessage) {
+        return <span className="added-message">Agregado</span>;
+      }
+
+      return (
+        <img
+          src={iconBack}
+          alt="icon Backpack"
+          onClick={handleAddClick}
+          style={{ cursor: 'pointer' }}
+        />
+      );
+    }
+
+    const isAddingProduct = isAdding || productCartFunctions?.isProductAdding?.(referencia || id);
+
+    if (isAddingProduct) {
       return <img src={wheelIcon} alt="cargando" className="wheel-loader" />;
     }
 
@@ -119,70 +161,74 @@ export const ProductCard = ({
     );
   };
 
+  const productLink = `/product/${referencia || slug || id}`;
+
   return (
     <>
-      <div className="product-card">
-        <div className="image-container">
-          <img
-            src={image}
-            alt={title}
-            onError={(e) => {
-              e.target.src = "/path/to/default-image.png";
-            }}
-          />
-          {discount && <span className="discount-badge">{discount}</span>}
-          {isSticker() && (
-            <span className="sticker-badge">
-              <i className="fa-solid fa-tags"></i>
-              Calcomanía
-            </span>
-          )}
-        </div>
-
-        {typeof rating === 'number' ? (
-          <div className="rating">
-            {rating > 0 ? renderStars() : (
-              Array.from({ length: 5 }).map((_, index) => (
-                <span key={index} className="star empty">
-                  <i className="fa-regular fa-star"></i>
-                </span>
-              ))
+      <Link to={productLink} className="product-card-link">
+        <div className="product-card">
+          <div className="image-container">
+            <img
+              src={image}
+              alt={title}
+              onError={(e) => {
+                e.target.src = "/path/to/default-image.png";
+              }}
+            />
+            {discount && <span className="discount-badge">{discount}</span>}
+            {isSticker() && (
+              <span className="sticker-badge">
+                <i className="fa-solid fa-tags"></i>
+                Calcomanía
+              </span>
             )}
           </div>
-        ) : null}
 
-        <p className="brand">{brand}</p>
-        <p className="title-product-card">{title}</p>
+          {typeof rating === 'number' ? (
+            <div className="rating">
+              {rating > 0 ? renderStars() : (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <span key={index} className="star empty">
+                    <i className="fa-regular fa-star"></i>
+                  </span>
+                ))
+              )}
+            </div>
+          ) : null}
 
-        <div className="price-container">
-          {originalPrice ? (
-            <div className="prices-group">
-              <span className="original-price">
-                ${originalPrice.toLocaleString("es-ES", {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2
-                })}
-              </span>
-              <p className="price discounted">
+          <p className="brand">{brand}</p>
+          <p className="title-product-card">{title}</p>
+
+          <div className="price-container">
+            {originalPrice ? (
+              <div className="prices-group">
+                <span className="original-price">
+                  ${originalPrice.toLocaleString("es-ES", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                  })}
+                </span>
+                <p className="price discounted">
+                  ${price.toLocaleString("es-ES", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                  })}
+                </p>
+              </div>
+            ) : (
+              <p className="price">
                 ${price.toLocaleString("es-ES", {
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 2
                 })}
               </p>
-            </div>
-          ) : (
-            <p className="price">
-              ${price.toLocaleString("es-ES", {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2
-              })}
-            </p>
-          )}
-          <span className="icon-backpack-container">
-            {getAddButtonContent()}
-          </span>
+            )}
+            <span className="icon-backpack-container">
+              {getAddButtonContent()}
+            </span>
+          </div>
         </div>
-      </div>
+      </Link>
 
       {showStickerModal && isSticker() && (
         <ConfigureStickerModal
@@ -195,6 +241,7 @@ export const ProductCard = ({
             title,
             price,
             type,
+            referencia: referencia || id,
             ...otherProps
           }}
           brand={brand}

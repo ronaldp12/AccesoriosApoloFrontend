@@ -14,6 +14,7 @@ import imgLight from "../../../assets/images/img1-light-product.png";
 import imgDefault from "../../../assets/images/img1-helmet-product.png";
 import { useProductsBySubcategory } from "../../Hook/UseProductsBySubcategory/UseProductsBySubcategory.jsx";
 import { UseProductsByBrand } from "../../Hook/UseProductsByBrand/UseProductsByBrand.jsx";
+import { UseProductsCart } from "../../Hook/UseProductsCart/UseProductsCart.jsx";
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -22,6 +23,15 @@ export const ProductPage = () => {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const location = useLocation();
+
+  const {
+    isAddingToCart,
+    cartSuccessMessage,
+    cartErrorMessage,
+    addProductToCart,
+    isProductAdding,
+    resetCartState
+  } = UseProductsCart();
 
   const {
     products: apiProducts,
@@ -48,7 +58,9 @@ export const ProductPage = () => {
     if (categoryFromURL) setSelectedCategory(decodeURIComponent(categoryFromURL));
     if (subcategoryFromURL) setSelectedSubcategory(decodeURIComponent(subcategoryFromURL));
     if (brandFromURL) setSelectedBrand(decodeURIComponent(brandFromURL));
-  }, [location.search]);
+
+    resetCartState();
+  }, [location.search, resetCartState]);
 
   const getCategoryImage = (category) => {
     switch (category) {
@@ -84,7 +96,6 @@ export const ProductPage = () => {
     setSortOrder(e.target.value);
   };
 
-  // Determinar qué productos mostrar
   const getFilteredProducts = () => {
     let productsToShow = [];
 
@@ -117,7 +128,6 @@ export const ProductPage = () => {
   };
 
   const filteredProducts = getFilteredProducts();
-
   const isLoading = selectedBrand ? brandLoading : apiLoading;
   const currentError = selectedBrand ? brandError : apiError;
 
@@ -163,6 +173,21 @@ export const ProductPage = () => {
             </div>
           </div>
 
+          {/* Mensajes del carrito */}
+          {cartSuccessMessage && (
+            <div className="cart-message success">
+              <i className="fa-solid fa-check-circle"></i>
+              {cartSuccessMessage}
+            </div>
+          )}
+
+          {cartErrorMessage && (
+            <div className="cart-message error">
+              <i className="fa-solid fa-exclamation-triangle"></i>
+              {cartErrorMessage}
+            </div>
+          )}
+
           <div className="img-category-container">
             <h2>{getPageTitle()}</h2>
 
@@ -205,7 +230,16 @@ export const ProductPage = () => {
               <p>Cargando productos...</p>
             </div>
           ) : (
-            <ProductGrid products={filteredProducts} />
+            <ProductGrid
+              products={filteredProducts}
+              productCartFunctions={{
+                addProductToCart,
+                isProductAdding,
+                isAddingToCart,
+                cartSuccessMessage,
+                cartErrorMessage
+              }}
+            />
           )}
         </div>
       </div>
