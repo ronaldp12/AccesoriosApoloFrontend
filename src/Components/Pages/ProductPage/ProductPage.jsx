@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { ProductGrid } from "../../Ui/ProductGrid/ProductGrid";
 import { useLocation } from "react-router-dom";
 import "./ProductPage.css";
@@ -15,6 +15,7 @@ import imgDefault from "../../../assets/images/img1-helmet-product.png";
 import { useProductsBySubcategory } from "../../Hook/UseProductsBySubcategory/UseProductsBySubcategory.jsx";
 import { UseProductsByBrand } from "../../Hook/UseProductsByBrand/UseProductsByBrand.jsx";
 import { UseProductsCart } from "../../Hook/UseProductsCart/UseProductsCart.jsx";
+import { context } from "../../../Context/Context.jsx";
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -23,6 +24,7 @@ export const ProductPage = () => {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const location = useLocation();
+  const { loadCartFromBackend } = useContext(context);
 
   const {
     isAddingToCart,
@@ -237,7 +239,8 @@ export const ProductPage = () => {
                 isProductAdding,
                 isAddingToCart,
                 cartSuccessMessage,
-                cartErrorMessage
+                cartErrorMessage, 
+                loadCartFromBackend
               }}
             />
           )}

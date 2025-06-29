@@ -29,7 +29,8 @@ export const ConfigureStickerModal = ({
         userLogin,
         handleAddStickerToCart, // Función del contexto para calcomanías personalizadas
         calculateStickerPrice: contextCalculatePrice,
-        getSizeDimensions: contextGetSizeDimensions
+        getSizeDimensions: contextGetSizeDimensions,
+        loadCartFromBackend 
     } = useContext(context);
 
     const {
@@ -231,6 +232,8 @@ export const ConfigureStickerModal = ({
 
                 if (success) {
                     setLocalSuccessMessage('Calcomanía agregada al carrito exitosamente');
+
+                    await loadCartFromBackend();
                 }
             } else {
                 console.log('Usando addStickerToCart del hook');
@@ -248,9 +251,10 @@ export const ConfigureStickerModal = ({
 
                 success = await addStickerToCart(sticker, sizeConfig);
 
-                // Para el hook, los mensajes se manejan internamente
                 if (success) {
                     setLocalSuccessMessage('Calcomanía agregada al carrito exitosamente');
+                    
+                    await loadCartFromBackend();
                 }
             }
 

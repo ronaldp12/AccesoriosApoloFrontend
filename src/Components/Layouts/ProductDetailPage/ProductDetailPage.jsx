@@ -5,11 +5,10 @@ import './ProductDetailPage.css'
 import { context } from '../../../Context/Context.jsx';
 import wheelIcon from '../../../assets/icons/img1-loader.png';
 import { useProductsBySubcategory } from '../../Hook/UseProductsBySubcategory/UseProductsBySubcategory.jsx';
+import { UseProductsCart } from '../../Hook/UseProductsCart/UseProductsCart.jsx';
 
 export const ProductDetailPage = () => {
-    const { handleAddToCart } = useContext(context);
-    const [isAdding, setIsAdding] = useState(false);
-    const [addedMessage, setAddedMessage] = useState(false);
+    const { handleAddToCart, loadCartFromBackend } = useContext(context);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -18,6 +17,16 @@ export const ProductDetailPage = () => {
     const { slug } = useParams();
 
     const { product, loading, error } = useProductsBySubcategory(null, slug);
+
+    // Integración del hook UseProductsCart
+    const {
+        isAddingToCart,
+        cartSuccessMessage,
+        cartErrorMessage,
+        addingProductId,
+        addProductToCart,
+        isProductAdding
+    } = UseProductsCart();
 
     if (loading) {
         return (
@@ -119,24 +128,38 @@ export const ProductDetailPage = () => {
         }
     };
 
-    const handleAddClick = () => {
-        setIsAdding(true);
-        setTimeout(() => {
-            handleAddToCart({
-                id: product.id,
-                image: product.image[0],
-                brand: product.brand,
+    // Nueva función para agregar al carrito usando el hook
+    const handleAddClick = async () => {
+        try {
+            const productData = {
                 title: product.title,
+                brand: product.brand,
                 price: product.currentPrice || product.price,
-                referencia: product.referencia,
-                quantity: quantity
-            });
-            setIsAdding(false);
-            setAddedMessage(true);
-            setTimeout(() => {
-                setAddedMessage(false);
-            }, 1200);
-        }, 800);
+                originalPrice: product.originalPrice,
+                discount: product.discount,
+                image: product.image?.[0] || '',
+                referencia: product.referencia || product.id,
+                id: product.id
+            };
+
+            // Pasar la función loadCartFromBackend del contexto al hook
+            const result = await addProductToCart(
+                product.referencia || product.id,
+                quantity,
+                product.title,
+                productData,
+                loadCartFromBackend  // Aquí pasamos la función del contexto
+            );
+
+            if (result.success) {
+                setQuantity(1)
+                console.log('Producto agregado exitosamente al carrito');
+            } else {
+                console.error('Error al agregar producto:', result.error);
+            }
+        } catch (error) {
+            console.error('Error en handleAddClick:', error);
+        }
     };
 
     // Renderizar estrellas de rating
@@ -168,8 +191,12 @@ export const ProductDetailPage = () => {
         return stars;
     };
 
+    // Verificar si este producto específico se está agregando
+    const isCurrentProductAdding = isProductAdding(product.referencia || product.id);
+
     return (
         <div className="product-container">
+
             <div className="product-layout">
                 {/* Galería de imágenes */}
                 <div className="image-gallery">
@@ -240,7 +267,7 @@ export const ProductDetailPage = () => {
                         </div>
                     </div>
 
-                    <div className="product-details">
+                    <div className="product-details-product-detail">
                         <div className="detail-item">
                             <span className="detail-label">Referencia:</span>
                             <span className="detail-value">{product.referencia}</span>
@@ -289,7 +316,7 @@ export const ProductDetailPage = () => {
                             <button
                                 className="quantity-btn"
                                 onClick={decreaseQuantity}
-                                disabled={quantity <= 1}
+                                disabled={quantity <= 1 || isCurrentProductAdding}
                             >
                                 -
                             </button>
@@ -297,15 +324,20 @@ export const ProductDetailPage = () => {
                             <button
                                 className="quantity-btn"
                                 onClick={increaseQuantity}
+                                disabled={isCurrentProductAdding}
                             >
                                 +
                             </button>
                         </div>
 
-                        <button className="btn-secondary" onClick={handleAddClick} disabled={isAdding}>
-                            {isAdding ? (
+                        <button
+                            className="btn-secondary"
+                            onClick={handleAddClick}
+                            disabled={isCurrentProductAdding}
+                        >
+                            {isCurrentProductAdding ? (
                                 <img src={wheelIcon} alt="cargando" className="wheel-loader" />
-                            ) : addedMessage ? (
+                            ) : cartSuccessMessage && !cartErrorMessage ? (
                                 <span className="added-message">Agregado</span>
                             ) : (
                                 <>

@@ -52,34 +52,47 @@ export const ProductCard = ({
     setIsAdding(true);
 
     try {
-      await productCartFunctions.addProductToCart(
+      // ← Preparamos los datos del producto igual que en ProductDetailPage
+      const productData = {
+        id: id,
+        title: title,
+        price: price,
+        originalPrice: originalPrice,
+        image: image,
+        brand: brand,
+        discount: discount,
+        referencia: referencia || id,
+        type: type
+      };
+
+      // ← Llamamos a addProductToCart pasando loadCartFromBackend
+      const result = await productCartFunctions.addProductToCart(
         referencia || id,
-        1,
-        title,
-        {
-          id: id,
-          title: title,
-          price: price,
-          originalPrice: originalPrice,
-          image: image,
-          brand: brand,
-          discount: discount,
-          referencia: referencia || id,
-          type: type
-        }
+        1, // cantidad
+        title, // nombre del producto
+        productData, // datos del producto
+        productCartFunctions.loadCartFromBackend // ← Pasamos loadCartFromBackend aquí
       );
 
-      await new Promise(resolve => setTimeout(resolve, 800));
+      if (result && result.success) {
+        console.log('Producto agregado exitosamente desde ProductCard');
+        
+        // Simulamos un pequeño delay para la UX
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        setIsAdding(false);
+        setAddedMessage(true);
 
-      setIsAdding(false);
-      setAddedMessage(true);
-
-      setTimeout(() => {
-        setAddedMessage(false);
-      }, 1200);
+        setTimeout(() => {
+          setAddedMessage(false);
+        }, 1200);
+      } else {
+        console.error('Error al agregar producto:', result?.error);
+        setIsAdding(false);
+      }
 
     } catch (error) {
-      console.error('Error al agregar producto:', error);
+      console.error('Error en handleAddClick:', error);
       setIsAdding(false);
     }
   };

@@ -1,4 +1,3 @@
-// pages/StickersPage/StickersPage.js
 import { useState, useContext } from "react";
 import { ProductGrid } from "../../Ui/ProductGrid/ProductGrid";
 import "./StickersPage.css";
@@ -15,7 +14,7 @@ import imgHelmet from "../../../assets/images/img1-helmet-product.png";
 export const StickersPage = ({ onOpenRegister, onOpenLogin }) => {
     const [sortOrder, setSortOrder] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { userLogin, nameRol } = useContext(context);
+    const { userLogin, nameRol, loadCartFromBackend } = useContext(context);
     const navigate = useNavigate();
 
     const {
@@ -215,7 +214,8 @@ export const StickersPage = ({ onOpenRegister, onOpenLogin }) => {
                                     checkStock,
                                     isAddingToCart,
                                     cartSuccessMessage,
-                                    cartErrorMessage
+                                    cartErrorMessage,
+                                    loadCartFromBackend
                                 }}
                             />
                         </div>

@@ -324,7 +324,7 @@
     border-bottom: none;
 }
 
-.product-details {
+.product-details-product-detail {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -498,7 +498,7 @@
         gap: 8px;
     }
 
-    .product-details {
+    .product-details-product-detail {
         gap: 8px;
         padding: 15px 0;
     }

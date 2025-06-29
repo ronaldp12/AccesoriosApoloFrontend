@@ -13,7 +13,7 @@ export const UseProductsCart = () => {
         }, 3000);
     }, []);
 
-    const addProductToCart = useCallback(async (referencia_producto, cantidad = 1, productName = '', productData = null) => {
+    const addProductToCart = useCallback(async (referencia_producto, cantidad = 1, productName = '', productData = null, loadCartFromBackend = null) => {
         setIsAddingToCart(true);
         setAddingProductId(referencia_producto);
         setCartErrorMessage('');
@@ -68,6 +68,17 @@ export const UseProductsCart = () => {
                     : data.mensaje || 'Producto agregado al carrito'
             );
             clearMessages();
+
+            // Recargar el carrito usando la función del contexto
+            if (loadCartFromBackend && typeof loadCartFromBackend === 'function') {
+                try {
+                    await loadCartFromBackend();
+                    console.log('Carrito recargado automáticamente');
+                } catch (reloadError) {
+                    console.error('Error recargando carrito:', reloadError);
+                    // No mostrar error al usuario, el producto se agregó correctamente
+                }
+            }
 
             return {
                 success: true,
