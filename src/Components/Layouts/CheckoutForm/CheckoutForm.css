@@ -1,0 +1,385 @@
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    min-height: 100vh;
+}
+
+/* Header */
+.header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+    margin-bottom: 12px;
+}
+
+.logo-checkout-form{
+    width: 8rem;
+    height: 4rem;
+}
+
+.breadcrumb-checkout-form {
+    font-size: 14px;
+    color: #6b7280;
+    padding: 1rem;
+}
+
+/* Layout principal */
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 24px;
+}
+
+/* Sección del formulario */
+.form-section {
+    flex: 1;
+}
+
+.form-section h2 {
+    color: #1e40af;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.shipping-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-group input,
+.form-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-top: 2px;
+    accent-color: #3b82f6;
+}
+
+.checkbox-group label {
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.btn-guardar {
+    background: #1e40af;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    align-self: flex-start;
+}
+
+.btn-guardar:hover {
+    background: #1d4ed8;
+}
+
+/* Productos section */
+.productos-section {
+    margin-top: 32px;
+}
+
+.productos-section h3 {
+    color: #1e40af;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+}
+
+.producto-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.producto-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #e5e7eb;
+}
+
+.producto-precio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.producto-precio .precio {
+    font-weight: 600;
+    font-size: 14px;
+    color: #374151;
+}
+
+.producto-precio .moneda {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Resumen del pedido */
+.summary-section {
+    position: sticky;
+    top: 20px;
+}
+
+.order-summary {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.order-summary h3 {
+    color: #1e40af;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.summary-line.discount {
+    color: #059669;
+}
+
+.summary-line.subtotal {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 8px;
+    padding-top: 12px;
+    font-weight: 500;
+}
+
+.summary-line.total {
+    border-top: 2px solid #e5e7eb;
+    margin-top: 8px;
+    padding-top: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #1e40af;
+}
+
+.terms-text {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+    margin: 16px 0 20px 0;
+    text-align: justify;
+}
+
+.btn-finalizar {
+    width: 100%;
+    background: #1e40af;
+    color: white;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-finalizar:hover {
+    background: #1d4ed8;
+}
+
+/* Responsive Design */
+
+/* Móviles pequeños (393px) */
+@media (max-width: 393px) {
+    .checkout-container {
+        margin: 0;
+    }
+
+    .header {
+        padding: 12px 16px;
+    }
+
+    .logo-checkout-form {
+        width: 6.5rem;
+        height: 3.5rem;
+    }
+
+    .content-wrapper {
+        padding: 16px;
+        gap: 20px;
+    }
+
+    .form-section h2 {
+        font-size: 18px;
+    }
+
+    .productos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .producto-item img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .order-summary {
+        padding: 16px;
+    }
+
+    .btn-finalizar {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Móviles medianos (430px) */
+@media (min-width: 394px) and (max-width: 430px) {
+    .content-wrapper {
+        padding: 18px;
+    }
+
+    .productos-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Móviles grandes (480px) */
+@media (min-width: 431px) and (max-width: 480px) {
+    .productos-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Tablets (820px) */
+@media (min-width: 481px) and (max-width: 820px) {
+    .content-wrapper {
+        padding: 24px;
+    }
+
+    .productos-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Desktop (mayor a 820px) */
+@media (min-width: 821px) {
+    .content-wrapper {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 40px;
+    }
+
+    .form-section {
+        flex: 2;
+    }
+
+    .summary-section {
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .productos-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .shipping-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 20px;
+    }
+
+    .form-group:nth-child(1),
+    .form-group:nth-child(7),
+    .form-group:nth-child(8) {
+        grid-column: span 2;
+    }
+
+    .checkbox-group {
+        grid-column: span 2;
+    }
+
+    .btn-guardar {
+        grid-column: span 2;
+        justify-self: start;
+    }
+}
