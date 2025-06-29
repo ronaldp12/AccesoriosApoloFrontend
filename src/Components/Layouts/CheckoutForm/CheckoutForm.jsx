@@ -61,7 +61,7 @@ export const CheckoutForm = () => {
 
     return (
         <div className="checkout-container">
-            <div className="header">
+            <div className="header-checkout-form">
                 <div className="logo">
                     <Logo styleLogo='logo-checkout-form' />
                 </div>
@@ -71,13 +71,13 @@ export const CheckoutForm = () => {
                     <span>Inicio</span> / <span>Finalizar compra</span>
                 </div>
 
-            <div className="content-wrapper">
-                <div className="form-section">
+            <div className="content-wrapper-checkout-form">
+                <div className="form-section-checkout-form">
                     <h2>Dirección de envío</h2>
 
                     <div className="shipping-form">
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="nombre">Nombre *</label>
                             <input
                                 type="text"
@@ -88,7 +88,7 @@ export const CheckoutForm = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="apellido">Cédula</label>
                             <input
                                 type="text"
@@ -99,7 +99,7 @@ export const CheckoutForm = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="telefono">Número de teléfono</label>
                             <input
                                 type="tel"
@@ -110,7 +110,7 @@ export const CheckoutForm = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="pais">País / Región *</label>
                             <input
                                 type="text"
@@ -121,7 +121,7 @@ export const CheckoutForm = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="departamento">Departamento</label>
                             <input
                                 type="text"
@@ -132,7 +132,7 @@ export const CheckoutForm = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="municipio">Municipio</label>
                             <input
                                 type="text"
@@ -143,7 +143,7 @@ export const CheckoutForm = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="direccion">Dirección</label>
                             <input
                                 type="text"
@@ -154,7 +154,7 @@ export const CheckoutForm = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="form-group-checkout-form">
                             <label htmlFor="informacionAdicional">Información adicional</label>
                             <textarea
                                 id="informacionAdicional"
@@ -165,7 +165,7 @@ export const CheckoutForm = () => {
                             ></textarea>
                         </div>
 
-                        <div className="checkbox-group">
+                        <div className="checkbox-group-checkout-form">
                             <input
                                 type="checkbox"
                                 id="direccionPredeterminada"
@@ -178,18 +178,18 @@ export const CheckoutForm = () => {
                             </label>
                         </div>
 
-                        <button type="button" className="btn-guardar" onClick={handleGuardar}>
+                        <button type="button" className="btn-guardar-checkout-form" onClick={handleGuardar}>
                             Guardar
                         </button>
                     </div>
 
-                    <div className="productos-section">
+                    <div className="productos-section-checkout-form">
                         <h3>Productos a enviar (4)</h3>
-                        <div className="productos-grid">
+                        <div className="productos-grid-checkout-form">
                             {productos.map((producto) => (
-                                <div key={producto.id} className="producto-item">
+                                <div key={producto.id} className="producto-item-checkout-form">
                                     <img src={producto.imagen} alt={`Producto ${producto.id}`} />
-                                    <div className="producto-precio">
+                                    <div className="producto-precio-checkout-form">
                                         <span className="precio">{producto.precio}</span>
                                         <span className="moneda">{producto.moneda}</span>
                                     </div>
