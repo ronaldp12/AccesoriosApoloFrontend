@@ -1,6 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react';
+import { context } from '../../../Context/Context.jsx';
 
 export const UseProductsCart = () => {
+    const { userLogin, token, handleAddToCartLocal } = useContext(context);
+
     const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [cartSuccessMessage, setCartSuccessMessage] = useState('');
     const [cartErrorMessage, setCartErrorMessage] = useState('');
@@ -10,106 +13,8 @@ export const UseProductsCart = () => {
         setTimeout(() => {
             setCartSuccessMessage('');
             setCartErrorMessage('');
-        }, 3000);
+        }, 2000);
     }, []);
-
-    const addProductToCart = useCallback(async (referencia_producto, cantidad = 1, productName = '', productData = null, loadCartFromBackend = null) => {
-        setIsAddingToCart(true);
-        setAddingProductId(referencia_producto);
-        setCartErrorMessage('');
-        setCartSuccessMessage('');
-
-        try {
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                // Si no hay token, usar carrito local
-                return {
-                    success: true,
-                    isLocal: true,
-                    data: productData,
-                    mensaje: 'Producto agregado al carrito local'
-                };
-            }
-
-            const payload = {
-                referencia_producto,
-                cantidad
-            };
-
-            if (productData) {
-                payload.producto_info = {
-                    nombre: productData.title,
-                    marca: productData.brand,
-                    precio_actual: productData.price,
-                    precio_original: productData.originalPrice,
-                    descuento: productData.discount,
-                    url_imagen: productData.image,
-                    referencia: productData.referencia || productData.id,
-                    tipo: 'producto'
-                };
-            }
-
-            console.log('Payload enviado al backend:', payload);
-
-            const response = await fetch('https://accesoriosapolobackend.onrender.com/agregar-producto-carrito', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
-            console.log('Respuesta del backend al agregar producto:', data);
-
-            if (!response.ok) {
-                throw new Error(data.mensaje || 'Error al agregar producto al carrito');
-            }
-
-            setCartSuccessMessage(
-                productName
-                    ? `${productName} agregado al carrito exitosamente`
-                    : data.mensaje || 'Producto agregado al carrito'
-            );
-            clearMessages();
-
-            // Recargar el carrito usando la función del contexto
-            if (loadCartFromBackend && typeof loadCartFromBackend === 'function') {
-                try {
-                    await loadCartFromBackend();
-                    console.log('Carrito recargado automáticamente');
-                } catch (reloadError) {
-                    console.error('Error recargando carrito:', reloadError);
-                    // No mostrar error al usuario, el producto se agregó correctamente
-                }
-            }
-
-            return {
-                success: true,
-                data: data,
-                mensaje: data.mensaje
-            };
-
-        } catch (err) {
-            console.error('Error al agregar al carrito:', err);
-            setCartErrorMessage(err.message);
-            clearMessages();
-
-            return {
-                success: false,
-                error: err.message
-            };
-        } finally {
-            setIsAddingToCart(false);
-            setAddingProductId(null);
-        }
-    }, [clearMessages]);
-
-    const isProductAdding = useCallback((productId) => {
-        return isAddingToCart && addingProductId === productId;
-    }, [isAddingToCart, addingProductId]);
 
     const resetCartState = useCallback(() => {
         setIsAddingToCart(false);
@@ -118,14 +23,68 @@ export const UseProductsCart = () => {
         setAddingProductId(null);
     }, []);
 
+    const addProductToCart = useCallback(async (productData, cantidad = 1, loadCartFromBackend = null) => {
+        setIsAddingToCart(true);
+        setAddingProductId(productData.referencia || productData.id);
+        setCartErrorMessage('');
+        setCartSuccessMessage('');
+
+        // ---- CASO 1: Usuario NO está logueado ----
+        if (!userLogin) {
+            console.log("Usuario no logueado. Agregando producto al carrito LOCAL.");
+            const itemParaCarritoLocal = {
+                ...productData,
+                id: productData.referencia || productData.id,
+                quantity: cantidad,
+                type: 'product'
+            };
+            handleAddToCartLocal(itemParaCarritoLocal);
+            setCartSuccessMessage('Agregado al carrito');
+            clearMessages();
+            setIsAddingToCart(false);
+            setAddingProductId(null);
+            return { success: true, isLocal: true };
+        }
+
+        // ---- CASO 2: Usuario SÍ está logueado ----
+        console.log("Usuario logueado. Agregando producto al BACKEND.");
+        try {
+            const payload = {
+                referencia_producto: productData.referencia || productData.id,
+                cantidad
+            };
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/agregar-producto-carrito', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.mensaje || 'Error al agregar producto');
+            setCartSuccessMessage(data.mensaje || 'Producto agregado al carrito');
+            if (loadCartFromBackend) {
+                await loadCartFromBackend();
+            }
+            clearMessages();
+            return { success: true, data };
+        } catch (err) {
+            console.error('Error al agregar al carrito:', err);
+            setCartErrorMessage(err.message);
+            clearMessages();
+            return { success: false, error: err.message };
+        } finally {
+            setIsAddingToCart(false);
+            setAddingProductId(null);
+        }
+    }, [userLogin, token, handleAddToCartLocal, clearMessages]);
+
+    const isProductAdding = useCallback((productId) => {
+        return isAddingToCart && addingProductId === productId;
+    }, [isAddingToCart, addingProductId]);
+
     return {
-        // Estados
         isAddingToCart,
         cartSuccessMessage,
         cartErrorMessage,
-        addingProductId,
-
-        // Funciones
         addProductToCart,
         isProductAdding,
         resetCartState

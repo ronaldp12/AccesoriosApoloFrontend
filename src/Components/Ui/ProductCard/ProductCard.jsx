@@ -22,7 +22,6 @@ export const ProductCard = ({
   productCartFunctions,
   ...otherProps
 }) => {
-  // ✅ Todos los hooks deben estar en el nivel superior
   const { userLogin, handleAddToCartLocal } = useContext(context);
   const [showStickerModal, setShowStickerModal] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -60,16 +59,13 @@ export const ProductCard = ({
       };
 
       if (!userLogin) {
-        // ✅ Ahora handleAddToCartLocal está disponible desde el contexto
         handleAddToCartLocal(productData);
         console.log('Producto agregado al carrito local');
       } else {
         // Si está logueado, usar la funcionalidad existente
         const result = await productCartFunctions.addProductToCart(
-          referencia || id,
-          1,
-          title,
           productData,
+          1,
           productCartFunctions.loadCartFromBackend
         );
 
