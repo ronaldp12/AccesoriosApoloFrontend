@@ -1,21 +1,19 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import { context } from '../../../Context/Context.jsx';
 
 export const UseStickers = () => {
-    // 1. Estados propios del hook (sin cambios)
     const [stickers, setStickers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const [stickerDetail, setStickerDetail] = useState(null);
+    const [loadingDetail, setLoadingDetail] = useState(false);
+    const [errorDetail, setErrorDetail] = useState(null);
 
     const [isAddingToCart, setIsAddingToCart] = useState(false);
     const [cartSuccessMessage, setCartSuccessMessage] = useState('');
     const [cartErrorMessage, setCartErrorMessage] = useState('');
 
-    // 2. Integración con el Contexto Global
-    //    Obtenemos las herramientas necesarias:
-    //    - userLogin y token: para saber si hay sesión.
-    //    - handleAddToCartLocal: para agregar al carrito local si NO hay sesión.
-    //    - loadCartFromBackend: para refrescar el carrito si SÍ hay sesión.
     const { userLogin, token, handleAddToCartLocal, loadCartFromBackend } = useContext(context);
 
     // Función para limpiar mensajes después de un tiempo (sin cambios)
@@ -46,7 +44,7 @@ export const UseStickers = () => {
                     originalPrice: sticker.precio_descuento ? sticker.precio_unidad : null,
                     discount: sticker.descuento ? `${Math.round(sticker.descuento)}%` : null,
                     id_calcomania: sticker.id_calcomania,
-                    type: 'sticker' // Este tipo es genérico aquí, lo sobreescribiremos al agregar al carrito
+                    type: 'sticker'
                 }));
                 setStickers(mappedStickers);
             } else {
@@ -61,38 +59,74 @@ export const UseStickers = () => {
         }
     };
 
-    // 3. Lógica "Inteligente" para Agregar al Carrito (AQUÍ ESTÁ EL CAMBIO CLAVE)
-    const addStickerToCart = async (sticker, sizeConfig) => {
+    // SOLUCIÓN: Memoizar fetchStickerById con useCallback
+    const fetchStickerById = useCallback(async (id) => {
+        setLoadingDetail(true);
+        setErrorDetail(null);
+        setStickerDetail(null);
 
+        try {
+            const url = `https://accesoriosapolobackend.onrender.com/consultar-calcomanias-por-id/${id}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data);
+
+            if (data.success) {
+                const sticker = data.calcomania;
+                const mappedSticker = {
+                    id: sticker.id_calcomania,
+                    slug: `sticker-${sticker.id_calcomania}`,
+                    image: [sticker.url_archivo], // Array para compatibilidad con ProductDetailPage
+                    brand: 'Calcomanía',
+                    title: sticker.nombre,
+                    price: sticker.precio_descuento || sticker.precio_unidad,
+                    originalPrice: sticker.precio_descuento ? sticker.precio_unidad : null,
+                    currentPrice: sticker.precio_descuento || sticker.precio_unidad,
+                    discount: sticker.descuento || null,
+                    ahorro: sticker.ahorro || null,
+                    referencia: `CALC-${sticker.id_calcomania}`,
+                    id_calcomania: sticker.id_calcomania,
+                    type: 'sticker',
+                    tamano_x: sticker.tamano_x,
+                    tamano_y: sticker.tamano_y,
+                    descripcion: `Calcomanía ${sticker.nombre}. Tamaño: ${sticker.tamano_x}cm x ${sticker.tamano_y}cm`
+                };
+                setStickerDetail(mappedSticker);
+            } else {
+                setErrorDetail(data.mensaje);
+            }
+        } catch (err) {
+            setErrorDetail('Error al cargar el detalle de la calcomanía');
+        } finally {
+            setLoadingDetail(false);
+        }
+    }, []); // Dependencias vacías porque no depende de ningún valor externo
+
+    const addStickerToCart = async (sticker, sizeConfig) => {
         // ---- CASO 1: Usuario NO está logueado ----
         if (!userLogin) {
             console.log("Usuario no logueado. Agregando calcomanía del staff al carrito LOCAL.");
 
-            // Creamos el objeto exacto que el carrito local necesita.
-            // Es CRÍTICO que tenga 'type: "staff_sticker"' para la futura sincronización.
             const itemParaCarritoLocal = {
                 id: sticker.id,
                 title: sticker.title,
-                price: sticker.price, // Asumimos que el modal ya calculó el precio correcto
+                price: sticker.price,
                 originalPrice: sticker.originalPrice,
                 image: sticker.image,
                 brand: sticker.brand,
-                size: sizeConfig.size, // 'small', 'medium', o 'large'
+                size: sizeConfig.size,
                 quantity: sizeConfig.cantidad || 1,
-                type: 'staff_sticker' // ✨ ¡La clave para la sincronización!
+                type: 'staff_sticker'
             };
 
-            // Usamos la función del Context para añadirlo al carrito local
             handleAddToCartLocal(itemParaCarritoLocal);
 
-            // Damos feedback visual inmediato al usuario
             setCartSuccessMessage('Agregado al carrito');
             clearMessages();
-            return true; // Indicamos que la operación fue exitosa
+            return true;
         }
 
-        // ---- CASO 2: Usuario SÍ está logueado ----
-        // Aquí va la lógica que ya tenías, que habla con el backend.
+        // ---- CASO 2: Usuario SÍ está logueado
         console.log("Usuario logueado. Agregando calcomanía del staff al BACKEND.");
         try {
             setIsAddingToCart(true);
@@ -130,7 +164,7 @@ export const UseStickers = () => {
 
             if (data.success) {
                 setCartSuccessMessage(data.mensaje || 'Calcomanía agregada al carrito exitosamente');
-                await loadCartFromBackend(); // ✨ Refrescamos el carrito desde el backend para ver el item nuevo
+                await loadCartFromBackend();
                 clearMessages();
                 return true;
             } else {
@@ -166,12 +200,10 @@ export const UseStickers = () => {
         fetchStickers();
     };
 
-    // Cargar las calcomanías al montar (sin cambios)
     useEffect(() => {
         fetchStickers();
     }, []);
 
-    // 4. Retornamos todas las herramientas necesarias
     return {
         stickers,
         loading,
@@ -180,8 +212,12 @@ export const UseStickers = () => {
         isAddingToCart,
         cartSuccessMessage,
         cartErrorMessage,
-        addStickerToCart, // La función ahora es "inteligente"
+        addStickerToCart,
         getSizeDimensions,
-        calculateStickerPrice
+        calculateStickerPrice,
+        stickerDetail,
+        loadingDetail,
+        errorDetail,
+        fetchStickerById
     };
 };

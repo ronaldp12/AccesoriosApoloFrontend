@@ -105,6 +105,19 @@ export function App() {
         />
 
         <Route
+          path="/sticker/:id"
+          element={
+            <>
+              <Header />
+              <Container>
+                <ProductDetailPage />
+              </Container>
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
           path="/stickers/all"
           element={
             <>

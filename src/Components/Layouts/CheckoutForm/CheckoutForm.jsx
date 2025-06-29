@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import './CheckoutForm.css';
 import { Logo } from '../../Ui/Logo/Logo';
@@ -163,19 +162,6 @@ export const CheckoutForm = () => {
                                 onChange={handleInputChange}
                                 rows="3"
                             ></textarea>
-                        </div>
-
-                        <div className="checkbox-group-checkout-form">
-                            <input
-                                type="checkbox"
-                                id="direccionPredeterminada"
-                                name="direccionPredeterminada"
-                                checked={formData.direccionPredeterminada}
-                                onChange={handleInputChange}
-                            />
-                            <label htmlFor="direccionPredeterminada">
-                                Establecer como mi dirección predeterminada
-                            </label>
                         </div>
 
                         <button type="button" className="btn-guardar-checkout-form" onClick={handleGuardar}>

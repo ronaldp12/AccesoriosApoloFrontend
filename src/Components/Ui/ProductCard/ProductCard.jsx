@@ -161,7 +161,10 @@ export const ProductCard = ({
     );
   };
 
-  const productLink = `/product/${referencia || slug || id}`;
+  const productLink = isSticker()
+    ? `/sticker/${referencia || id}`
+    : `/product/${referencia || slug || id}`;
+  console.log('ProductCard - Link generado:', productLink, 'Para producto:', { id, slug, type, brand });
 
   const formatPrice = (price) => {
     return price.toLocaleString("es-CO", {
