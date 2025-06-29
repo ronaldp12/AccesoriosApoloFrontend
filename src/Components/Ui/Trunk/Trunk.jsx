@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { TrunkProductCard } from "../TrunkProductCard/TrunkProductCard.jsx";
 import "../Trunk/Trunk.css";
 
-export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange }) => {
+export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, isLocal = false  }) => {
     const trunkRef = useRef(null);
 
     const totalPrice = products.reduce(

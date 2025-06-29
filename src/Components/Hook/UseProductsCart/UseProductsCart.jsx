@@ -23,7 +23,13 @@ export const UseProductsCart = () => {
             const token = localStorage.getItem('token');
 
             if (!token) {
-                throw new Error('No se encontró token de autenticación');
+                // Si no hay token, usar carrito local
+                return {
+                    success: true,
+                    isLocal: true,
+                    data: productData,
+                    mensaje: 'Producto agregado al carrito local'
+                };
             }
 
             const payload = {

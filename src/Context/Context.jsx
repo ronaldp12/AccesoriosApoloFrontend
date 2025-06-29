@@ -29,7 +29,14 @@ export const Provider = ({ children }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isSaveSuccess, setIsSaveSuccess] = useState(false);
 
-    // 📦 Estados de modales de auth
+    const [localCartProducts, setLocalCartProducts] = useState(() => {
+        const storedCart = localStorage.getItem("localCartProducts");
+        return storedCart ? JSON.parse(storedCart) : [];
+    });
+
+    const [isLocalCart, setIsLocalCart] = useState(false);
+
+    // Estados de modales de auth
     const [registerOpen, setRegisterOpen] = useState(false);
     const [loginOpen, setLoginOpen] = useState(false);
 
@@ -64,15 +71,15 @@ export const Provider = ({ children }) => {
                     if (item.tipo === 'producto') {
                         return {
                             id: item.referencia,
-                        cartItemId: item.id_carrito_item,
-                        image: item.url_imagen || item.url_archivo,
-                        brand: item.marca,
-                        title: item.nombre,
-                        price: item.precio_actual,
-                        originalPrice: item.precio_unidad_original,
-                        quantity: item.cantidad,
-                        type: 'product',
-                        referencia: item.referencia
+                            cartItemId: item.id_carrito_item,
+                            image: item.url_imagen || item.url_archivo,
+                            brand: item.marca,
+                            title: item.nombre,
+                            price: item.precio_actual,
+                            originalPrice: item.precio_unidad_original,
+                            quantity: item.cantidad,
+                            type: 'product',
+                            referencia: item.referencia
                         };
                     }
                     else if (item.tipo === 'calcomania_cliente') {
@@ -215,10 +222,18 @@ export const Provider = ({ children }) => {
 
     useEffect(() => {
         if (token && userLogin) {
-            loadCartFromBackend();
+            // Si hay productos en carrito local, sincronizar primero
+            if (localCartProducts.length > 0) {
+                syncLocalCartToBackend();
+            } else {
+                loadCartFromBackend();
+            }
             loadUserStickers();
+            setIsLocalCart(false);
+        } else {
+            setIsLocalCart(true);
         }
-    }, [token, userLogin]);
+    }, [token, userLogin, localCartProducts.length]);
 
     const handleAddToCart = (item) => {
         const existingItem = cartProducts.find(p =>
@@ -354,17 +369,147 @@ export const Provider = ({ children }) => {
         }
     };
 
+    const syncLocalCartToBackend = async () => {
+        if (!token || localCartProducts.length === 0) return;
+
+        setIsLoadingCart(true);
+        try {
+            // Usamos Promise.all para ejecutar todas las sincronizaciones en paralelo
+            await Promise.all(localCartProducts.map(async (item) => {
+                console.log("Sincronizando item:", item);
+
+                // CASO 1: Calcomanía personal del cliente
+                if (item.type === 'sticker') {
+                    return fetch('https://accesoriosapolobackend.onrender.com/calcomanias/actualizar-y-agregar-carrito', {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id_calcomania: item.originalId, 
+                            tamano_x_nuevo: item.width,
+                            tamano_y_nuevo: item.height,
+                            cantidad: item.quantity
+                        })
+                    });
+                }
+                // CASO 2: Calcomanía del Staff
+                else if (item.type === 'staff_sticker') {
+                    const tamanoMap = { 'pequeño': 'pequeño', 'mediano': 'mediano', 'grande': 'grande' };
+                    return fetch('https://accesoriosapolobackend.onrender.com/agregar-calcomanias-staff', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            id_calcomania: item.id, 
+                            tamano: tamanoMap[item.size],
+                            cantidad: item.quantity
+                        })
+                    });
+                }
+                else {
+                    return fetch('https://accesoriosapolobackend.onrender.com/agregar-producto-carrito', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            referencia_producto: item.referencia || item.id,
+                            cantidad: item.quantity
+                        })
+                    });
+                }
+            }));
+
+            // Limpiar carrito local y cargar el carrito actualizado desde el backend
+            setLocalCartProducts([]);
+            localStorage.removeItem("localCartProducts"); 
+            await loadCartFromBackend(); // Esta función ya obtiene todo el carrito unificado
+            setSuccessMessage('Carrito sincronizado exitosamente');
+            setTimeout(() => setSuccessMessage(''), 3000);
+
+        } catch (error) {
+            console.error('Error sincronizando carrito:', error);
+            setErrorMessage('Error al sincronizar el carrito. Algunos productos pueden no haberse agregado.');
+        } finally {
+            setIsLoadingCart(false);
+        }
+    };
+
+    const handleAddToCartLocal = (item) => {
+
+        const localCartId = item.type === 'staff_sticker' ? `${item.id}-${item.size}` : item.id;
+
+        const existingItem = localCartProducts.find(p => p.localCartId === localCartId);
+
+        let updatedCart;
+        if (existingItem) {
+            updatedCart = localCartProducts.map(p =>
+                p.localCartId === localCartId
+                    ? { ...p, quantity: p.quantity + (item.quantity || 1) }
+                    : p
+            );
+        } else {
+            updatedCart = [...localCartProducts, { ...item, quantity: item.quantity || 1, localCartId }];
+        }
+        setLocalCartProducts(updatedCart);
+        console.log("Item agregado a carrito local:", item);
+    };
+
+    const handleRemoveProductLocal = (id, size = null) => {
+        const updatedCart = localCartProducts.filter(product => {
+            if (product.type === 'product') {
+                return product.id !== id;
+            } else if (product.type === 'sticker' || product.type === 'staff_sticker') {
+                return product.id !== id || (size && product.size !== size);
+            }
+            return true;
+        });
+        setLocalCartProducts(updatedCart);
+    };
+
+    const handleQuantityChangeLocal = (id, quantity, size = null) => {
+        if (quantity === 0) {
+            handleRemoveProductLocal(id, size);
+            return;
+        }
+
+        const updatedCart = localCartProducts.map(product => {
+            if (product.type === 'product') {
+                return product.id === id ? { ...product, quantity } : product;
+            } else if (product.type === 'sticker' || product.type === 'staff_sticker') {
+                if (product.id === id && (size ? product.size === size : true)) {
+                    return { ...product, quantity };
+                }
+            }
+            return product;
+        });
+        setLocalCartProducts(updatedCart);
+    };
+
     const handleLogout = () => {
         setName("");
         setToken("");
         setUserLogin(null);
         setSavedStickers([]);
         setCartProducts([]);
+        setLocalCartProducts([]);
+        setIsLocalCart(true);
         localStorage.removeItem("token");
         localStorage.removeItem("usuarioLogueado");
         localStorage.removeItem("nameRol");
         localStorage.removeItem("avatar");
+        localStorage.removeItem("localCartProducts");
     };
+
+    useEffect(() => {
+        localStorage.setItem("localCartProducts", JSON.stringify(localCartProducts));
+    }, [localCartProducts]);
+
 
     const getErrorMessage = (data, defaultMsg) => {
         return data.mensaje || data.message || defaultMsg;
@@ -678,6 +823,11 @@ export const Provider = ({ children }) => {
             loadCartFromBackend, isSavingSticker, setIsSavingSticker,
             isLoadingCart, setIsLoadingCart,
             isLoadingStickers, setIsLoadingStickers,
+
+            localCartProducts, setLocalCartProducts,
+            isLocalCart, setIsLocalCart,
+            handleAddToCartLocal, handleRemoveProductLocal, handleQuantityChangeLocal,
+            syncLocalCartToBackend,
 
         }}>
             {children}

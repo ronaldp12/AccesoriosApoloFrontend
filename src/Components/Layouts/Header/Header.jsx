@@ -25,7 +25,7 @@ export const Header = () => {
   const {
     cartProducts, handleRemoveProduct, handleQuantityChange, userLogin,
     registerOpen, openRegister, closeRegister,
-    loginOpen, openLogin, closeLogin,
+    loginOpen, openLogin, closeLogin, localCartProducts, isLocalCart, handleRemoveProductLocal, handleQuantityChangeLocal
   } = useContext(context);
 
 
@@ -48,7 +48,9 @@ export const Header = () => {
     }
   };
 
-  const totalItemsInCart = cartProducts.reduce((total, product) => total + product.quantity, 0);
+  const totalItemsInCart = isLocalCart
+    ? localCartProducts.reduce((total, product) => total + product.quantity, 0)
+    : cartProducts.reduce((total, product) => total + product.quantity, 0);
 
   useEffect(() => {
     let ticking = false;
@@ -138,9 +140,10 @@ export const Header = () => {
       <Trunk
         isOpen={isTrunkOpen}
         onClose={closeTrunk}
-        products={cartProducts}
-        onRemove={handleRemoveProduct}
-        onQuantityChange={handleQuantityChange}
+        products={isLocalCart ? localCartProducts : cartProducts}
+        onRemove={isLocalCart ? handleRemoveProductLocal : handleRemoveProduct}
+        onQuantityChange={isLocalCart ? handleQuantityChangeLocal : handleQuantityChange}
+        isLocal={isLocalCart}
       />
     </header>
   );

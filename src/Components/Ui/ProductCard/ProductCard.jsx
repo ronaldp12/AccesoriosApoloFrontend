@@ -22,7 +22,8 @@ export const ProductCard = ({
   productCartFunctions,
   ...otherProps
 }) => {
-  const { userLogin } = useContext(context);
+  // ✅ Todos los hooks deben estar en el nivel superior
+  const { userLogin, handleAddToCartLocal } = useContext(context);
   const [showStickerModal, setShowStickerModal] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [addedMessage, setAddedMessage] = useState(false);
@@ -38,12 +39,6 @@ export const ProductCard = ({
     e.preventDefault();
     e.stopPropagation();
 
-    if (!userLogin) {
-      console.log('Usuario debe iniciar sesión');
-      // Aquí puedes redirigir al login o mostrar un modal
-      return;
-    }
-
     if (isSticker()) {
       setShowStickerModal(true);
       return;
@@ -52,7 +47,6 @@ export const ProductCard = ({
     setIsAdding(true);
 
     try {
-      // ← Preparamos los datos del producto igual que en ProductDetailPage
       const productData = {
         id: id,
         title: title,
@@ -62,34 +56,34 @@ export const ProductCard = ({
         brand: brand,
         discount: discount,
         referencia: referencia || id,
-        type: type
+        type: type || 'product'
       };
 
-      // ← Llamamos a addProductToCart pasando loadCartFromBackend
-      const result = await productCartFunctions.addProductToCart(
-        referencia || id,
-        1, // cantidad
-        title, // nombre del producto
-        productData, // datos del producto
-        productCartFunctions.loadCartFromBackend // ← Pasamos loadCartFromBackend aquí
-      );
-
-      if (result && result.success) {
-        console.log('Producto agregado exitosamente desde ProductCard');
-        
-        // Simulamos un pequeño delay para la UX
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        setIsAdding(false);
-        setAddedMessage(true);
-
-        setTimeout(() => {
-          setAddedMessage(false);
-        }, 1200);
+      if (!userLogin) {
+        // ✅ Ahora handleAddToCartLocal está disponible desde el contexto
+        handleAddToCartLocal(productData);
+        console.log('Producto agregado al carrito local');
       } else {
-        console.error('Error al agregar producto:', result?.error);
-        setIsAdding(false);
+        // Si está logueado, usar la funcionalidad existente
+        const result = await productCartFunctions.addProductToCart(
+          referencia || id,
+          1,
+          title,
+          productData,
+          productCartFunctions.loadCartFromBackend
+        );
+
+        if (!result || !result.success) {
+          console.error('Error al agregar producto:', result?.error);
+          setIsAdding(false);
+          return;
+        }
       }
+
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setIsAdding(false);
+      setAddedMessage(true);
+      setTimeout(() => setAddedMessage(false), 1200);
 
     } catch (error) {
       console.error('Error en handleAddClick:', error);
@@ -254,7 +248,7 @@ export const ProductCard = ({
             price: originalPrice || price,        // ← Pasar precio SIN descuento como base
             originalPrice: originalPrice,         // ← Precio original
             discountedPrice: originalPrice ? price : null, // ← Precio con descuento
-            type,                      
+            type,
             discountPercent: discount ? parseInt(discount.replace('%', '')) : null,
             referencia: referencia || id,
             ...otherProps
