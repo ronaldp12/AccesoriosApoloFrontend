@@ -14,6 +14,8 @@ export const ConfigureStickerModal = ({
 }) => {
     const stickerCartFunctions = UseStickers();
 
+    const [showFloatingMessage, setShowFloatingMessage] = useState(false);
+
     const [isClosing, setIsClosing] = useState(false);
     const [selectedSize, setSelectedSize] = useState(null);
     const [customWidth, setCustomWidth] = useState("");
@@ -92,7 +94,6 @@ export const ConfigureStickerModal = ({
         }
     }, [selectedSize, customWidth, customHeight, sticker, isPersonalSticker, contextGetSizeDimensions, hookGetSizeDimensions, contextCalculatePrice, hookCalculatePrice]);
 
-    // ... (El resto de funciones como handleClose, resetModal, etc., se mantienen igual)
     const handleClose = () => {
         setIsClosing(true);
     };
@@ -139,21 +140,18 @@ export const ConfigureStickerModal = ({
         return checkStock(sticker, selectedSize);
     };
 
-    // ✅ ESTA ES LA FUNCIÓN CLAVE SIMPLIFICADA
     const handleAddToCart = async () => {
         if (!isValidConfiguration()) {
             return;
         }
 
         // CASO: Usuario NO logueado.
-        // Solo puede agregar calcomanías del staff al carrito local.
         if (!userLogin) {
             setIsAddingToCartLocal(true);
             setLocalSuccessMessage('');
             setLocalErrorMessage('');
 
             // Construimos el objeto para el carrito local.
-            // Asumimos que si no hay login, es una calcomanía del staff.
             const itemParaCarritoLocal = {
                 id: sticker.id, // ID de la calcomanía del staff
                 title: sticker.title,
@@ -162,22 +160,22 @@ export const ConfigureStickerModal = ({
                 image: sticker.image,
                 brand: sticker.brand,
                 size: selectedSize, // 'small', 'medium', 'large'
-                type: 'staff_sticker' // Tipo CRÍTICO para la sincronización posterior
+                type: 'staff_sticker'
             };
 
             handleAddToCartLocal(itemParaCarritoLocal);
 
-            setLocalSuccessMessage('Agregado al carrito');
+            setShowFloatingMessage(true);
             setTimeout(() => {
+                setShowFloatingMessage(false);
                 handleClose();
-            }, 1500);
+            }, 2000);
 
             setIsAddingToCartLocal(false);
             return;
         }
 
         // CASO: Usuario SÍ logueado.
-        // La lógica se mantiene igual, ya que maneja correctamente ambos tipos de calcomanías hacia el backend.
         setIsAddingToCartLocal(true);
         setLocalSuccessMessage('');
         setLocalErrorMessage('');
@@ -188,7 +186,6 @@ export const ConfigureStickerModal = ({
 
             if (isPersonalSticker) {
                 // Llama a la función del contexto para calcomanías personalizadas.
-                // Nota: las calcomanías personalizadas usan sus propias dimensiones.
                 const customSizeConfig = { width: parseInt(customWidth) || 5, height: parseInt(customHeight) || 5, size: 'custom' };
                 success = await handleAddStickerToCart(sticker, customSizeConfig);
             } else {
@@ -199,9 +196,11 @@ export const ConfigureStickerModal = ({
 
             if (success) {
                 await loadCartFromBackend();
+                setShowFloatingMessage(true);
                 setTimeout(() => {
+                    setShowFloatingMessage(false);
                     handleClose();
-                }, 1500);
+                }, 2000);
             }
         } catch (error) {
             console.error("Error al agregar al carrito en backend:", error);
@@ -209,8 +208,6 @@ export const ConfigureStickerModal = ({
             setIsAddingToCartLocal(false);
         }
     };
-
-    // ... (El resto del componente se mantiene igual)
 
     useEffect(() => {
         if (isOpen && sticker && isSticker() && !isPersonalSticker && !selectedSize) {
@@ -290,12 +287,6 @@ export const ConfigureStickerModal = ({
                     </div>
                 )}
 
-                {currentSuccessMessage && (
-                    <div className="status-message-register success">
-                        {currentSuccessMessage}
-                    </div>
-                )}
-
                 {currentErrorMessage && (
                     <div className="status-message-register error">
                         {currentErrorMessage}
@@ -324,6 +315,12 @@ export const ConfigureStickerModal = ({
                     </button>
                 </div>
             </div>
+            {showFloatingMessage && (
+                <div className="floating-message-sticker">
+                    <i className="fa-solid fa-check-circle"></i>
+                    <span>Item agregado al maletero</span>
+                </div>
+            )}
         </div>,
         document.getElementById('root')
     );

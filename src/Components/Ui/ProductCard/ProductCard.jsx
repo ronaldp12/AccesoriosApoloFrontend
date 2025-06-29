@@ -26,6 +26,7 @@ export const ProductCard = ({
   const [showStickerModal, setShowStickerModal] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [addedMessage, setAddedMessage] = useState(false);
+  const [showFloatingMessage, setShowFloatingMessage] = useState(false);
 
   const isSticker = () => {
     const normalizedBrand = brand?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -78,8 +79,8 @@ export const ProductCard = ({
 
       await new Promise(resolve => setTimeout(resolve, 800));
       setIsAdding(false);
-      setAddedMessage(true);
-      setTimeout(() => setAddedMessage(false), 1200);
+      setShowFloatingMessage(true);
+      setTimeout(() => setShowFloatingMessage(false), 3000);
 
     } catch (error) {
       console.error('Error en handleAddClick:', error);
@@ -148,10 +149,6 @@ export const ProductCard = ({
 
     if (isAddingProduct) {
       return <img src={wheelIcon} alt="cargando" className="wheel-loader" />;
-    }
-
-    if (addedMessage) {
-      return <span className="added-message">Agregado</span>;
     }
 
     return (
@@ -253,6 +250,13 @@ export const ProductCard = ({
           stickerCartFunctions={stickerCartFunctions}
           isPersonalSticker={false}
         />
+      )}
+
+      {showFloatingMessage && (
+        <div className="floating-message-product-card">
+          <i className="fa-solid fa-check-circle"></i>
+          <span>Item agregado al maletero</span>
+        </div>
       )}
     </>
   );

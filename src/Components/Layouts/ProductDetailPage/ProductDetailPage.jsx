@@ -16,6 +16,7 @@ export const ProductDetailPage = () => {
     const [quantity, setQuantity] = useState(1);
     const [isAnimating, setIsAnimating] = useState(false);
     const [showStickerModal, setShowStickerModal] = useState(false);
+    const [showFloatingMessage, setShowFloatingMessage] = useState(false);
 
     const imageRefs = useRef([]);
 
@@ -71,7 +72,11 @@ export const ProductDetailPage = () => {
                 id: product.id
             };
             const result = await addProductToCart(productData, quantity, loadCartFromBackend);
-            if (result.success) setQuantity(1);
+            if (result.success) {
+                setQuantity(1);
+                setShowFloatingMessage(true);
+                setTimeout(() => setShowFloatingMessage(false), 3000);
+            }
         } catch (err) {
             console.error('Error en handleAddClick:', err);
         }
@@ -224,8 +229,6 @@ export const ProductDetailPage = () => {
                             <button className="btn-secondary" onClick={handleAddClick} disabled={isCurrentProductAdding}>
                                 {isCurrentProductAdding ? (
                                     <img src={wheelIcon} alt="cargando" className="wheel-loader" />
-                                ) : showSuccessMessage ? (
-                                    <span className="added-message">Agregado</span>
                                 ) : (
                                     <>
                                         <ShoppingCart size={20} />
@@ -263,6 +266,13 @@ export const ProductDetailPage = () => {
                     }}
                     isPersonalSticker={false}
                 />
+            )}
+
+            {showFloatingMessage && (
+                <div className="floating-message-detail">
+                    <i className="fa-solid fa-check-circle"></i>
+                    <span>Item agregado al maletero</span>
+                </div>
             )}
         </>
     );
