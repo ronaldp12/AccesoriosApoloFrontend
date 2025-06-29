@@ -163,6 +163,14 @@ export const ProductCard = ({
 
   const productLink = `/product/${referencia || slug || id}`;
 
+  const formatPrice = (price) => {
+    return price.toLocaleString("es-CO", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true
+    });
+  };
+
   return (
     <>
       <Link to={productLink} className="product-card-link">
@@ -203,24 +211,15 @@ export const ProductCard = ({
             {originalPrice ? (
               <div className="prices-group">
                 <span className="original-price">
-                  ${originalPrice.toLocaleString("es-ES", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                  })}
+                  ${formatPrice(originalPrice)}
                 </span>
                 <p className="price discounted">
-                  ${price.toLocaleString("es-ES", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                  })}
+                  ${formatPrice(price)}
                 </p>
               </div>
             ) : (
               <p className="price">
-                ${price.toLocaleString("es-ES", {
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2
-                })}
+                ${formatPrice(price)}
               </p>
             )}
             <span className="icon-backpack-container">
@@ -239,8 +238,11 @@ export const ProductCard = ({
             image,
             brand,
             title,
-            price,
-            type,
+            price: originalPrice || price,        // ← Pasar precio SIN descuento como base
+            originalPrice: originalPrice,         // ← Precio original
+            discountedPrice: originalPrice ? price : null, // ← Precio con descuento
+            type,                      
+            discountPercent: discount ? parseInt(discount.replace('%', '')) : null,
             referencia: referencia || id,
             ...otherProps
           }}

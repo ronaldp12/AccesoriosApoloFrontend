@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ShoppingCart, Heart } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import './ProductDetailPage.css'
@@ -11,13 +11,14 @@ export const ProductDetailPage = () => {
     const [isAdding, setIsAdding] = useState(false);
     const [addedMessage, setAddedMessage] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [quantity, setQuantity] = useState(1);
+    const [isAnimating, setIsAnimating] = useState(false);
+    const imageRefs = useRef([]);
 
-    const { slug } = useParams(); // Este será la referencia del producto
+    const { slug } = useParams();
 
-    // Usar el hook modificado para obtener el producto por referencia
     const { product, loading, error } = useProductsBySubcategory(null, slug);
 
-    // Mostrar estados de carga y error
     if (loading) {
         return (
             <div className="loading-container">
@@ -39,25 +40,83 @@ export const ProductDetailPage = () => {
         return <div className="not-found">Producto no encontrado.</div>;
     }
 
-    const nextImage = () => {
-        if (product.image && product.image.length > 1) {
-            setCurrentImageIndex((prev) =>
-                prev === product.image.length - 1 ? 0 : prev + 1
-            );
+    const increaseQuantity = () => {
+        setQuantity(prev => prev + 1);
+    };
+
+    const decreaseQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(prev => prev - 1);
         }
     };
-    console.log (product)
+
+    const animateCarousel = (direction, newIndex) => {
+        if (isAnimating || !product.image || product.image.length <= 1) return;
+
+        setIsAnimating(true);
+
+        const currentImg = imageRefs.current[currentImageIndex];
+        const newImg = imageRefs.current[newIndex];
+
+        if (!currentImg || !newImg) return;
+
+        // Limpiar clases anteriores
+        imageRefs.current.forEach(img => {
+            if (img) {
+                img.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+            }
+        });
+
+        if (direction === 'next') {
+            currentImg.classList.add('active', 'slide-out-left');
+            newImg.classList.add('slide-in-right');
+        } else {
+            currentImg.classList.add('active', 'slide-out-right');
+            newImg.classList.add('slide-in-left');
+        }
+
+        // Después de la animación, actualizar el estado
+        setTimeout(() => {
+            setCurrentImageIndex(newIndex);
+            imageRefs.current.forEach(img => {
+                if (img) {
+                    img.classList.remove('active', 'slide-out-left', 'slide-out-right', 'slide-in-left', 'slide-in-right');
+                }
+            });
+            if (imageRefs.current[newIndex]) {
+                imageRefs.current[newIndex].classList.add('active');
+            }
+            setIsAnimating(false);
+        }, 500);
+    };
+
+    const nextImage = () => {
+        if (product.image && product.image.length > 1 && !isAnimating) {
+            const newIndex = currentImageIndex === product.image.length - 1 ? 0 : currentImageIndex + 1;
+            animateCarousel('next', newIndex);
+        }
+    };
 
     const prevImage = () => {
-        if (product.image && product.image.length > 1) {
-            setCurrentImageIndex((prev) =>
-                prev === 0 ? product.image.length - 1 : prev - 1
-            );
+        if (product.image && product.image.length > 1 && !isAnimating) {
+            const newIndex = currentImageIndex === 0 ? product.image.length - 1 : currentImageIndex - 1;
+            animateCarousel('prev', newIndex);
         }
+    };
+
+    const formatPrice = (price) => {
+        return price.toLocaleString("es-CO", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+            useGrouping: true
+        });
     };
 
     const goToImage = (index) => {
-        setCurrentImageIndex(index);
+        if (index !== currentImageIndex && !isAnimating) {
+            const direction = index > currentImageIndex ? 'next' : 'prev';
+            animateCarousel(direction, index);
+        }
     };
 
     const handleAddClick = () => {
@@ -69,7 +128,8 @@ export const ProductDetailPage = () => {
                 brand: product.brand,
                 title: product.title,
                 price: product.currentPrice || product.price,
-                referencia: product.referencia
+                referencia: product.referencia,
+                quantity: quantity
             });
             setIsAdding(false);
             setAddedMessage(true);
@@ -114,31 +174,38 @@ export const ProductDetailPage = () => {
                 {/* Galería de imágenes */}
                 <div className="image-gallery">
                     {product.image && product.image.length > 1 && (
-                        <button className="nav-btn nav-btn-left" onClick={prevImage}>
+                        <button
+                            className="nav-btn nav-btn-left"
+                            onClick={prevImage}
+                            disabled={isAnimating}
+                        >
                             <ChevronLeft size={20} />
                         </button>
                     )}
 
                     <div className="image-container">
                         <div className="main-image">
-                            <img
-                                src={product.image?.[currentImageIndex] || product.image?.[0]}
-                                alt={product.title}
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'contain',
-                                    backgroundColor: '#f8f9fa'
-                                }}
-                                onError={(e) => {
-                                    e.target.src = "/path/to/default-image.png";
-                                }}
-                            />
+                            {product.image && product.image.map((img, index) => (
+                                <img
+                                    key={index}
+                                    ref={el => imageRefs.current[index] = el}
+                                    src={img}
+                                    alt={`${product.title} - Imagen ${index + 1}`}
+                                    className={index === currentImageIndex ? 'active' : ''}
+                                    onError={(e) => {
+                                        e.target.src = "/path/to/default-image.png";
+                                    }}
+                                />
+                            ))}
                         </div>
                     </div>
 
                     {product.image && product.image.length > 1 && (
-                        <button className="nav-btn nav-btn-right" onClick={nextImage}>
+                        <button
+                            className="nav-btn nav-btn-right"
+                            onClick={nextImage}
+                            disabled={isAnimating}
+                        >
                             <ChevronRight size={20} />
                         </button>
                     )}
@@ -151,6 +218,7 @@ export const ProductDetailPage = () => {
                                     key={index}
                                     className={`dot-product-detail ${index === currentImageIndex ? 'active' : ''}`}
                                     onClick={() => goToImage(index)}
+                                    disabled={isAnimating}
                                 />
                             ))}
                         </div>
@@ -172,30 +240,68 @@ export const ProductDetailPage = () => {
                         </div>
                     </div>
 
+                    <div className="product-details">
+                        <div className="detail-item">
+                            <span className="detail-label">Referencia:</span>
+                            <span className="detail-value">{product.referencia}</span>
+                        </div>
+
+                        <div className="detail-item">
+                            <span className="detail-label">
+                                {product.brand?.toLowerCase() === 'calcomania' ? 'Calcomanía' : 'Marca:'}
+                            </span>
+                            <span className="detail-value">{product.brand}</span>
+                        </div>
+
+                        {product.brand?.toLowerCase() !== 'calcomania' && (
+                            <div className="detail-item">
+                                <span className="detail-label">Talla:</span>
+                                <span className="detail-value">{product.talla}</span>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Precios */}
                     <div className="price-section">
                         {product.originalPrice && (
                             <div className="price-container-product-detail">
-                                <span className="original-price-product-detail">
-                                    ${product.originalPrice.toLocaleString()} COP
-                                </span>
                                 {product.discount && (
                                     <span className="discount-badge-product-detail">{product.discount}</span>
                                 )}
+                                <span className="original-price-product-detail">
+                                    ${formatPrice(product.originalPrice)} COP
+                                </span>
                             </div>
                         )}
                         <div className="current-price">
-                            ${(product.currentPrice || product.price).toLocaleString()} COP
+                            ${formatPrice(product.currentPrice || product.price)} COP
                         </div>
                         {product.ahorro && (
                             <div className="installments">
-                                Ahorras ${product.ahorro.toLocaleString()} COP
+                                Ahorras ${formatPrice(product.ahorro)} COP
                             </div>
                         )}
                     </div>
 
                     {/* Botones de acción */}
                     <div className="action-buttons">
+                        <div className="quantity-selector">
+                            <button
+                                className="quantity-btn"
+                                onClick={decreaseQuantity}
+                                disabled={quantity <= 1}
+                            >
+                                -
+                            </button>
+                            <span className="quantity-display">{quantity}</span>
+                            <button
+                                className="quantity-btn"
+                                onClick={increaseQuantity}
+                            >
+                                +
+                            </button>
+                        </div>
+
                         <button className="btn-secondary" onClick={handleAddClick} disabled={isAdding}>
                             {isAdding ? (
                                 <img src={wheelIcon} alt="cargando" className="wheel-loader" />
@@ -203,15 +309,10 @@ export const ProductDetailPage = () => {
                                 <span className="added-message">Agregado</span>
                             ) : (
                                 <>
-                                    <Heart size={20} />
+                                    <ShoppingCart size={20} />
                                     AÑADIR AL MALETERO
                                 </>
                             )}
-                        </button>
-
-                        <button className="btn-primary">
-                            <ShoppingCart size={20} />
-                            COMPRAR AHORA
                         </button>
                     </div>
                 </div>
@@ -222,25 +323,8 @@ export const ProductDetailPage = () => {
                 <h2 className="section-title-description">DESCRIPCIÓN</h2>
                 <div className="description-table">
                     <div className="table-row">
-                        <span className="table-label">Referencia</span>
-                        <span className="table-value">{product.referencia}</span>
+                        <span className="table-value">{product.descripcion}</span>
                     </div>
-                    <div className="table-row">
-                        <span className="table-label">Marca</span>
-                        <span className="table-value">{product.brand}</span>
-                    </div>
-                    {product.talla && (
-                        <div className="table-row">
-                            <span className="table-label">Talla</span>
-                            <span className="table-value">{product.talla}</span>
-                        </div>
-                    )}
-                    {product.descripcion && (
-                        <div className="table-row">
-                            <span className="table-label">Descripción</span>
-                            <span className="table-value">{product.descripcion}</span>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

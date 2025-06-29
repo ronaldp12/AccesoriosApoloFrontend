@@ -9,6 +9,14 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange })
         (acc, product) => acc + product.price * product.quantity, 0
     );
 
+    const formatPrice = (price) => {
+    return price.toLocaleString("es-CO", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true
+    });
+  };
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (trunkRef.current && !trunkRef.current.contains(event.target) && isOpen) {
@@ -100,7 +108,7 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange })
                         <>
                             <div className="drawer-total">
                                 <p>Total:
-                                    <strong>${totalPrice.toLocaleString("es-ES", { maximumFractionDigits: 2 })}</strong>
+                                    <strong>${formatPrice(totalPrice)}</strong>
                                 </p>
                             </div>
 

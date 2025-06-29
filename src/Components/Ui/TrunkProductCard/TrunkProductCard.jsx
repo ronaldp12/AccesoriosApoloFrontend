@@ -7,8 +7,6 @@ export const TrunkProductCard = ({ product, onRemove, onQuantityChange }) => {
   const handleQuantityChange = (newQuantity) => {
     console.log('handleQuantityChange llamado:', { id, newQuantity, size, type });
 
-    // Permitir cualquier cantidad >= 0
-    // Si newQuantity es 0, el backend eliminará el item automáticamente
     if (newQuantity >= 0) {
       if (type === 'sticker') {
         console.log('Llamando onQuantityChange para sticker:', id, newQuantity, size);
@@ -42,11 +40,17 @@ export const TrunkProductCard = ({ product, onRemove, onQuantityChange }) => {
     const newQuantity = quantity + increment;
     console.log('Button click:', { increment, oldQuantity: quantity, newQuantity });
 
-    // Permitir cualquier cantidad >= 0
-    // Si newQuantity es 0, el backend eliminará el item
     if (newQuantity >= 0) {
       handleQuantityChange(newQuantity);
     }
+  };
+
+  const formatPrice = (price) => {
+    return price.toLocaleString("es-CO", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true
+    });
   };
 
   return (
@@ -69,7 +73,7 @@ export const TrunkProductCard = ({ product, onRemove, onQuantityChange }) => {
 
         <h4 className="product-name">{title}</h4>
         <p className="product-price">
-          ${(price * quantity).toLocaleString("es-ES", { maximumFractionDigits: 2 })}
+          ${formatPrice(price * quantity)}
         </p>
 
         <div className="quantity-section">
