@@ -19,17 +19,17 @@ export const CheckoutForm = () => {
         success,
         userInfo,
         isUserRegistered,
-        productos, // Estos son ahora los items del carrito real
-        resumenPedido, // Ahora viene de la API
+        productos,
+        resumenPedido,
         numeroItemsCarrito,
         carritoLoading,
         carritoError,
         updateFormData,
         handleSaveAddress,
-        handleFinalizePurchase,
         loadUserData,
         loadCarritoData,
-        loadLocalCartData // Nueva función
+        loadLocalCartData,
+        paymentData  // Agregar esta línea
     } = UseCheckout();
 
     // Cargar datos del usuario al montar el componente
@@ -41,7 +41,7 @@ export const CheckoutForm = () => {
         } else {
             loadLocalCartData();
         }
-    }, [loadUserData, loadCarritoData, loadLocalCartData, token]);
+    }, [token]); // Solo depender del token
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -55,6 +55,21 @@ export const CheckoutForm = () => {
             updateFormData("municipio", "");
         }
     };
+
+    const handleGoToPayment = async () => {
+    try {
+        const result = await handleSaveAddress();
+        if (result && result.id_factura_creada) {
+            // Esperar un poco para asegurar que el estado se actualice
+            setTimeout(() => {
+                navigate('/checkout/pago');
+            }, 100);
+        }
+    } catch (err) {
+        console.error('Error al preparar el pago:', err);
+    }
+};
+
 
     return (
         <div className="checkout-container">
@@ -333,10 +348,10 @@ export const CheckoutForm = () => {
 
                         <button
                             className="btn-finalizar"
-                            onClick={handleFinalizePurchase}
+                            onClick={handleGoToPayment} // Cambiar esta línea
                             disabled={loading || numeroItemsCarrito === 0}
                         >
-                            {loading ? 'Procesando...' : `Finalizar Compra (${numeroItemsCarrito})`}
+                            {loading ? 'Procesando...' : `Continuar al Pago (${numeroItemsCarrito})`}
                         </button>
                     </div>
                 </div>

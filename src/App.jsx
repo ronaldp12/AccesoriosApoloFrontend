@@ -38,6 +38,8 @@ import { StickersPage } from "./Components/Pages/StickersPage/StickersPage.jsx";
 import { RegisterModal } from "./Components/Layouts/RegisterModal/RegisterModal.jsx";
 import { LoginModal } from "./Components/Layouts/LoginModal/LoginModal.jsx";
 import { CheckoutForm } from "./Components/Layouts/CheckoutForm/CheckoutForm.jsx";
+import { PagoPage } from "./Components/Layouts/PagoPage/PagoPage.jsx";
+import { ThanksForYourPurchase } from "./Components/Pages/ThanksForYourPurchase/ThanksForYourPurchase.jsx";
 
 export function App() {
 
@@ -172,6 +174,29 @@ export function App() {
             </>
           }
         />
+
+        <Route
+          path="/gracias-por-tu-compra"
+          element={
+            <>
+              <Container>
+                <ThanksForYourPurchase />
+              </Container>
+            </>
+          }
+        />
+
+        <Route
+          path="/checkout/pago"
+          element={
+            <>
+              <Container>
+                <PagoPage />
+              </Container>
+            </>
+          }
+        />
+        
 
         <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/request-email" element={<RequestResetEmail />} />

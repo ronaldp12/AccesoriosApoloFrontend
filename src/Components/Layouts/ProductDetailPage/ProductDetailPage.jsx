@@ -201,8 +201,8 @@ export const ProductDetailPage = () => {
 
     return (
         <>
-            <div className="product-container">
-                <div className="product-layout">
+            <div className="product-container-product-detail">
+                <div className="product-layout-product-detail">
                     <div className="image-gallery">
                         {productData.image?.length > 1 && (
                             <button className="nav-btn nav-btn-left" onClick={prevImage} disabled={isAnimating}>
@@ -242,8 +242,8 @@ export const ProductDetailPage = () => {
                         )}
                     </div>
 
-                    <div className="product-info">
-                        <div className="product-header">
+                    <div className="product-info-product-detail">
+                        <div className="product-header-product-detail">
                             <h1 className="product-title">{productData.title}</h1>
                             {!isStickerType() && (
                                 <div className="rating-container">

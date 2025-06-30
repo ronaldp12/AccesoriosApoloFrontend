@@ -35,7 +35,12 @@ export const UseCheckout = () => {
     const [success, setSuccess] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const [isUserRegistered, setIsUserRegistered] = useState(false);
-    const [facturaId, setFacturaId] = useState('');
+    const [facturaId, setFacturaId] = useState(''); // Para datos de pago
+    const [paymentData, setPaymentData] = useState(() => {
+        // Intentar recuperar datos del sessionStorage
+        const saved = sessionStorage.getItem('paymentData');
+        return saved ? JSON.parse(saved) : null;
+    });
 
     const [carritoItems, setCarritoItems] = useState([]);
     const [numeroItemsCarrito, setNumeroItemsCarrito] = useState(0);
@@ -123,6 +128,12 @@ export const UseCheckout = () => {
         if (!direccion.trim()) {
             throw new Error('La dirección es obligatoria');
         }
+        if (!formData.departamento.trim()) {
+            throw new Error('El departamento es obligatorio');
+        }
+        if (!formData.municipio.trim()) {
+            throw new Error('El municipio es obligatorio');
+        }
 
         // Validaciones adicionales
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -139,87 +150,6 @@ export const UseCheckout = () => {
     }, [formData]);
 
     /**
-     * Envía la información de dirección de envío a la API
-     */
-    const submitShippingAddress = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            setSuccess(false);
-
-            // Validar formulario
-            validateForm();
-
-            // Preparar datos para la API
-            const direccionCompleta = `${formData.departamento} - ${formData.municipio} - ${formData.direccion}`.trim();
-
-            const apiData = {
-                nombre: formData.nombre.trim(),
-                cedula: formData.cedula.trim(),
-                telefono: formData.telefono.trim(),
-                correo: formData.correo.trim().toLowerCase(),
-                direccion: direccionCompleta,
-                informacion_adicional: formData.informacion_adicional?.trim() || null
-            };
-
-            console.log(apiData);
-
-
-            const headers = {
-                'Content-Type': 'application/json',
-            };
-
-            // Agregar token si existe
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-
-            const response = await fetch('https://accesoriosapolobackend.onrender.com/direccion-envio', {
-                method: 'POST',
-                headers: headers,
-                credentials: 'include', // Para manejar sesiones
-                body: JSON.stringify(apiData)
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.mensaje || 'Error al procesar la dirección de envío');
-            }
-
-            // Procesar respuesta exitosa
-            setSuccess(true);
-            setIsUserRegistered(result.usuario_existente_en_db);
-            setUserInfo(result.datos_usuario);
-            if (result.id_factura) {
-                // Guardar el ID de factura para usar en finalizar compra
-                setFacturaId(result.id_factura); // Necesitas agregar este estado
-            }
-
-            // Si el usuario tiene datos previos, opcionalmente prellenar algunos campos
-            if (result.datos_usuario) {
-                const {
-                    direccion_anterior,
-                    informacion_adicional_anterior
-                } = result.datos_usuario;
-
-                // Podrías mostrar esta información como sugerencia o prellenar
-                console.log('Dirección anterior disponible:', direccion_anterior);
-                console.log('Info adicional anterior:', informacion_adicional_anterior);
-            }
-
-            return result;
-
-        } catch (err) {
-            const errorMessage = err.message || 'Error inesperado al procesar la dirección';
-            setError(errorMessage);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    }, [formData, validateForm, token]);
-
-    /**
      * Maneja el guardado de la dirección (botón "Guardar")
      */
     const handleSaveAddress = useCallback(async () => {
@@ -231,9 +161,10 @@ export const UseCheckout = () => {
             // Validar formulario
             validateForm();
 
-            // Preparar datos para la API
+            // Armar dirección completa
             const direccionCompleta = `${formData.departamento} - ${formData.municipio} - ${formData.direccion}`.trim();
 
+            // Preparar datos base para la API
             const apiData = {
                 nombre: formData.nombre.trim(),
                 cedula: formData.cedula.trim(),
@@ -243,10 +174,14 @@ export const UseCheckout = () => {
                 informacion_adicional: formData.informacion_adicional?.trim() || null
             };
 
-            // 🔥 AGREGAR CARRITO SEGÚN EL ESTADO DEL USUARIO
+            // 🔥 Solo agregar carrito si NO está logueado
             if (!token) {
-                // Usuario no logueado: enviar carrito local
                 const carritoLocal = getLocalCartProducts();
+
+                if (carritoLocal.length === 0) {
+                    throw new Error('Tu carrito está vacío, agrega productos antes de continuar.');
+                }
+
                 apiData.carrito = carritoLocal.map(item => ({
                     tipo: item.type === 'staff_sticker' ? 'calcomania' : 'producto',
                     id_producto: item.type !== 'staff_sticker' ? item.id : null,
@@ -256,28 +191,33 @@ export const UseCheckout = () => {
                 }));
 
                 console.log('Enviando carrito local al backend:', apiData.carrito);
-            } else {
-                // Usuario logueado: el backend obtendrá el carrito de la DB
-                // No enviamos carrito en este caso
             }
 
             const headers = {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             };
 
-            // Agregar token si existe
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`;
             }
 
             const response = await fetch('https://accesoriosapolobackend.onrender.com/direccion-envio', {
                 method: 'POST',
-                headers: headers,
+                headers,
                 credentials: 'include',
                 body: JSON.stringify(apiData)
             });
 
             const result = await response.json();
+            if (result.id_factura_creada) {
+                const paymentInfo = {
+                    id_factura_temp: result.id_factura_creada,
+                    email_cliente: formData.correo
+                };
+                setPaymentData(paymentInfo);
+                // Guardar en sessionStorage para persistir entre rutas
+                sessionStorage.setItem('paymentData', JSON.stringify(paymentInfo));
+            }
 
             if (!response.ok) {
                 throw new Error(result.mensaje || 'Error al procesar la dirección de envío');
@@ -298,94 +238,6 @@ export const UseCheckout = () => {
             const errorMessage = err.message || 'Error inesperado al procesar la dirección';
             setError(errorMessage);
             throw err;
-        } finally {
-            setLoading(false);
-        }
-    }, [formData, validateForm, token, getLocalCartProducts]);
-
-    /**
- * Finaliza la compra usando la API de finalizar-compra
- */
-    const handleFinalizePurchase = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError(null);
-
-            // Validar formulario
-            validateForm();
-
-            // Preparar datos para la API
-            const apiData = {
-                nombre: formData.nombre.trim(),
-                cedula: formData.cedula.trim(),
-                telefono: formData.telefono.trim(),
-                correo: formData.correo.trim().toLowerCase(),
-                direccion: formData.direccion.trim(),
-                informacion_adicional: formData.informacion_adicional?.trim() || null
-            };
-
-            // 🔥 AGREGAR CARRITO PARA USUARIOS NO LOGUEADOS
-            if (!token) {
-                const carritoLocal = getLocalCartProducts();
-                apiData.carrito = carritoLocal.map(item => ({
-                    tipo: item.type === 'staff_sticker' ? 'calcomania' : 'producto',
-                    id_producto: item.type !== 'staff_sticker' ? item.id : null,
-                    id_calcomania: item.type === 'staff_sticker' ? item.id : null,
-                    cantidad: item.quantity,
-                    tamano: item.type === 'staff_sticker' ? item.size : null
-                }));
-
-                console.log('Enviando carrito local para finalizar compra:', apiData.carrito);
-            }
-
-            const headers = {
-                'Content-Type': 'application/json',
-            };
-
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-
-            const response = await fetch('https://accesoriosapolobackend.onrender.com/finalizar-compra', {
-                method: 'POST',
-                headers: headers,
-                credentials: 'include',
-                body: JSON.stringify(apiData)
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.mensaje || 'Error al finalizar la compra');
-            }
-
-            // Procesar respuesta exitosa
-            setSuccess(true);
-            setIsUserRegistered(result.nuevo_usuario_registrado);
-
-            // 🔥 LIMPIAR CARRITO LOCAL SOLO SI NO ESTÁ LOGUEADO
-            if (!token) {
-                localStorage.removeItem("localCartProducts");
-                setLocalProducts([]);
-                setLocalCartSummary({
-                    TotalArticulosSinDescuento: 0,
-                    DescuentoArticulos: 0,
-                    Subtotal: 0,
-                    PrecioEnvio: 14900,
-                    Total: 14900
-                });
-                setNumeroItemsCarrito(0);
-            }
-
-            console.log('Compra finalizada exitosamente:', result);
-
-            // Aquí podrías redirigir a una página de éxito
-            // navigate('/compra-exitosa');
-
-        } catch (err) {
-            const errorMessage = err.message || 'Error inesperado al finalizar la compra';
-            setError(errorMessage);
-            console.error('Error al finalizar compra:', err);
         } finally {
             setLoading(false);
         }
@@ -430,7 +282,7 @@ export const UseCheckout = () => {
                 // También actualizar la información del usuario
                 setUserInfo(userData);
                 setIsUserRegistered(true);
-                await loadCarritoData();
+                // await loadCarritoData();
             } else {
                 const errorData = await response.json();
                 console.error('Error al obtener datos del usuario:', errorData);
@@ -459,6 +311,11 @@ export const UseCheckout = () => {
         setIsUserRegistered(false);
     }, []);
 
+    const clearPaymentData = useCallback(() => {
+        setPaymentData(null);
+        sessionStorage.removeItem('paymentData');
+    }, []);
+
     const loadCarritoData = useCallback(async () => {
         try {
             if (!token) {
@@ -466,6 +323,7 @@ export const UseCheckout = () => {
                 return;
             }
 
+            console.log('Iniciando carga de carrito con token:', !!token);
             setCarritoLoading(true);
             setCarritoError(null);
 
@@ -479,21 +337,25 @@ export const UseCheckout = () => {
             });
 
             const result = await response.json();
+            console.log('Respuesta del carrito:', result);
 
             if (!response.ok) {
                 throw new Error(result.mensaje || 'Error al consultar el carrito');
             }
 
-            // Actualizar estados con los datos del carrito
-            setCarritoItems(result.articulos_en_carrito || []);
-            setNumeroItemsCarrito(result.numero_articulos_carrito || 0);
-            setResumenPedido(result.resumen_pedido || {
+            // CAMBIO: Asegurar que siempre haya un resumen válido
+            const resumenActualizado = result.resumen_pedido || {
                 TotalArticulosSinDescuento: 0,
                 DescuentoArticulos: 0,
                 Subtotal: 0,
                 PrecioEnvio: 14900,
-                Total: 0
-            });
+                Total: 14900
+            };
+
+            // Actualizar estados con los datos del carrito
+            setCarritoItems(result.articulos_en_carrito || []);
+            setNumeroItemsCarrito(result.numero_articulos_carrito || 0);
+            setResumenPedido(resumenActualizado);
 
             console.log('Carrito cargado exitosamente:', result);
 
@@ -507,14 +369,40 @@ export const UseCheckout = () => {
     }, [token]);
 
     useEffect(() => {
-        loadUserData();
-
         if (token) {
+            loadUserData();
             loadCarritoData();
         } else {
             loadLocalCartData();
         }
-    }, [loadUserData, loadCarritoData, loadLocalCartData, token]);
+    }, [token]);
+
+    // Agregar un segundo useEffect para debug
+    useEffect(() => {
+        console.log('Estados actuales:', {
+            token: !!token,
+            resumenPedido,
+            localCartSummary,
+            carritoItems: carritoItems.length,
+            localProducts: localProducts.length
+        });
+    }, [token, resumenPedido, localCartSummary, carritoItems, localProducts]);
+
+    const clearCartAfterPayment = useCallback(() => {
+        if (!token) {
+            localStorage.removeItem("localCartProducts");
+            setLocalProducts([]);
+            setLocalCartSummary({
+                TotalArticulosSinDescuento: 0,
+                DescuentoArticulos: 0,
+                Subtotal: 0,
+                PrecioEnvio: 14900,
+                Total: 14900
+            });
+            setNumeroItemsCarrito(0);
+        }
+        // Para usuarios logueados, el carrito se limpiará automáticamente por el backend
+    }, [token]);
 
     /**
      * Utilidades para el manejo de productos
@@ -558,7 +446,6 @@ export const UseCheckout = () => {
 
         // Funciones principales
         handleSaveAddress,
-        handleFinalizePurchase,
         loadUserData,
         loadCarritoData, // Nueva función
         resetForm,
@@ -573,6 +460,11 @@ export const UseCheckout = () => {
         productos: productosAMostrar,
         resumenPedido: resumenAMostrar,
         loadLocalCartData,
+
+        paymentData,
+        clearCartAfterPayment,
+        facturaId,
+        clearPaymentData
 
     };
 };
