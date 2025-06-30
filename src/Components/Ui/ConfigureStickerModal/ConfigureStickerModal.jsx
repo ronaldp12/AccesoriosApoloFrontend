@@ -133,7 +133,7 @@ export const ConfigureStickerModal = ({
         if (isSticker()) {
             return selectedSize !== null;
         }
-        return false; // Se simplifica, ya que la personalización de medidas es para calcos personales
+        return false; 
     };
 
     const getAvailableStock = () => {
@@ -212,7 +212,7 @@ export const ConfigureStickerModal = ({
 
     useEffect(() => {
         if (isOpen && sticker && isSticker() && !isPersonalSticker && !selectedSize) {
-            setSelectedSize('small');
+            setSelectedSize('pequeño');
         }
     }, [isOpen, sticker?.id, selectedSize]);
 
@@ -247,20 +247,20 @@ export const ConfigureStickerModal = ({
                     <p className="config-label">Tamaño de calcomanía</p>
                     <div className="size-options">
                         <button
-                            onClick={() => handleSizeSelect("small")}
-                            className={selectedSize === "small" ? "selected-size" : ""}
+                            onClick={() => handleSizeSelect("pequeño")}
+                            className={selectedSize === "pequeño" ? "selected-size" : ""}
                         >
                             Pequeño (5×5 cm)
                         </button>
                         <button
-                            onClick={() => handleSizeSelect("medium")}
-                            className={selectedSize === "medium" ? "selected-size" : ""}
+                            onClick={() => handleSizeSelect("mediano")}
+                            className={selectedSize === "mediano" ? "selected-size" : ""}
                         >
                             Mediano (7×5 cm)
                         </button>
                         <button
-                            onClick={() => handleSizeSelect("large")}
-                            className={selectedSize === "large" ? "selected-size" : ""}
+                            onClick={() => handleSizeSelect("grande")}
+                            className={selectedSize === "grande" ? "selected-size" : ""}
                         >
                             Grande (9×5 cm)
                         </button>

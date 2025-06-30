@@ -167,10 +167,13 @@ body {
     gap: 16px;
 }
 
+.producto-info small{
+    font-size: 0.8rem;
+}
+
 .producto-item-checkout-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 8px;
     padding: 12px;
     border: 1px solid #e5e7eb;
@@ -179,18 +182,21 @@ body {
 }
 
 .producto-item-checkout-form img {
-    width: 80px;
+    width: auto;
     height: 80px;
     object-fit: cover;
     border-radius: 4px;
     background: #e5e7eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .producto-precio-checkout-form {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 2px;
+    justify-content: center;
+    gap: 3px;
 }
 
 .producto-precio-checkout-form .precio {

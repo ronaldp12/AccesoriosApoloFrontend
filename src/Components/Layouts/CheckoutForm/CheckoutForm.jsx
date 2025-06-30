@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './CheckoutForm.css';
 import { Logo } from '../../Ui/Logo/Logo';
 import { useNavigate } from 'react-router-dom';
 import { UseCheckout } from '../../Hook/UseCheckout/UseCheckout.jsx';
 import { departamentosMunicipios } from "../../../data/data.js";
+import { context } from '../../../Context/Context.jsx';
 
 export const CheckoutForm = () => {
     const [municipiosDisponibles, setMunicipiosDisponibles] = useState([]);
+    const { token } = useContext(context);
 
     const navigate = useNavigate();
 
@@ -17,46 +19,29 @@ export const CheckoutForm = () => {
         success,
         userInfo,
         isUserRegistered,
-        productos,
-        resumenPedido,
+        productos, // Estos son ahora los items del carrito real
+        resumenPedido, // Ahora viene de la API
+        numeroItemsCarrito,
+        carritoLoading,
+        carritoError,
         updateFormData,
         handleSaveAddress,
         handleFinalizePurchase,
-        loadUserData
+        loadUserData,
+        loadCarritoData,
+        loadLocalCartData // Nueva función
     } = UseCheckout();
 
     // Cargar datos del usuario al montar el componente
     useEffect(() => {
         loadUserData();
-    }, [loadUserData]);
 
-    // Productos de ejemplo (puedes moverlos al hook si vienen de una API)
-    const productosEjemplo = [
-        {
-            id: 1,
-            imagen: '/api/placeholder/80/80',
-            precio: '$18.000',
-            moneda: 'COP'
-        },
-        {
-            id: 2,
-            imagen: '/api/placeholder/80/80',
-            precio: '$18.000',
-            moneda: 'COP'
-        },
-        {
-            id: 3,
-            imagen: '/api/placeholder/80/80',
-            precio: '$18.000',
-            moneda: 'COP'
-        },
-        {
-            id: 4,
-            imagen: '/api/placeholder/80/80',
-            precio: '$18.000',
-            moneda: 'COP'
+        if (token) {
+            loadCarritoData();
+        } else {
+            loadLocalCartData();
         }
-    ];
+    }, [loadUserData, loadCarritoData, loadLocalCartData, token]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -86,38 +71,6 @@ export const CheckoutForm = () => {
             <div className="content-wrapper-checkout-form">
                 <div className="form-section-checkout-form">
                     <h2>Dirección de envío</h2>
-
-                    {/* Mostrar mensajes de estado */}
-                    {error && (
-                        <div className="error-message" style={{
-                            background: '#fee',
-                            color: '#c33',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            marginBottom: '15px',
-                            border: '1px solid #fcc'
-                        }}>
-                            {error}
-                        </div>
-                    )}
-
-                    {success && (
-                        <div className="success-message" style={{
-                            background: '#efe',
-                            color: '#363',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            marginBottom: '15px',
-                            border: '1px solid #cfc'
-                        }}>
-                            ✓ Dirección guardada exitosamente
-                            {isUserRegistered && userInfo && (
-                                <div style={{ marginTop: '5px', fontSize: '0.9em' }}>
-                                    Usuario registrado: {userInfo.correo}
-                                </div>
-                            )}
-                        </div>
-                    )}
 
                     {/* Información del usuario si está registrado y tiene dirección anterior */}
                     {userInfo && (userInfo.direccion_anterior || userInfo.informacion_adicional_anterior) && (
@@ -281,15 +234,59 @@ export const CheckoutForm = () => {
                         </button>
                     </div>
 
+                    {/* Mostrar mensajes de estado */}
+                    {error && (
+                        <div className="error-message" style={{
+                            background: '#fee',
+                            color: '#c33',
+                            padding: '10px',
+                            borderRadius: '4px',
+                            marginBottom: '15px',
+                            border: '1px solid #fcc'
+                        }}>
+                            {error}
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="success-message" style={{
+                            background: '#efe',
+                            color: '#363',
+                            padding: '10px',
+                            borderRadius: '4px',
+                            marginBottom: '15px',
+                            border: '1px solid #cfc'
+                        }}>
+                            ✓ Dirección guardada exitosamente
+                            {isUserRegistered && userInfo && (
+                                <div style={{ marginTop: '5px', fontSize: '0.9em' }}>
+                                    Usuario registrado: {userInfo.correo}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <div className="productos-section-checkout-form">
-                        <h3>Productos a enviar ({productosEjemplo.length})</h3>
+                        <h3>Productos a enviar ({numeroItemsCarrito})</h3>
+                        {carritoLoading && <p>Cargando productos...</p>}
+                        {carritoError && <p style={{ color: 'red' }}>Error: {carritoError}</p>}
                         <div className="productos-grid-checkout-form">
-                            {productosEjemplo.map((producto) => (
-                                <div key={producto.id} className="producto-item-checkout-form">
-                                    <img src={producto.imagen} alt={`Producto ${producto.id}`} />
+                            {productos.map((item, index) => (
+                                <div key={index} className="producto-item-checkout-form">
+                                    <img
+                                        src={item.url_imagen_o_archivo || '/api/placeholder/80/80'}
+                                        alt={item.nombre}
+                                    />
+                                    <div className="producto-info">
+                                        <p>{item.nombre}</p>
+                                        {item.tamano && <p>Tamaño: {item.tamano}</p>}
+                                        <small>Cantidad: {item.cantidad}</small>
+                                    </div>
                                     <div className="producto-precio-checkout-form">
-                                        <span className="precio">{producto.precio}</span>
-                                        <span className="moneda">{producto.moneda}</span>
+                                        <span className="precio">
+                                            ${item.subtotalArticulo.toLocaleString()}
+                                        </span>
+                                        <span className="moneda">COP</span>
                                     </div>
                                 </div>
                             ))}
@@ -303,22 +300,27 @@ export const CheckoutForm = () => {
 
                         <div className="summary-line">
                             <span>Total de artículos</span>
-                            <span>$300.000</span>
+                            <span>${resumenPedido.TotalArticulosSinDescuento?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="summary-line discount">
                             <span>Descuento de artículos</span>
-                            <span>-$100.000</span>
+                            <span>-${resumenPedido.DescuentoArticulos?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="summary-line subtotal">
                             <span>Subtotal</span>
-                            <span>$200.000</span>
+                            <span>${resumenPedido.Subtotal?.toLocaleString() || '0'}</span>
+                        </div>
+
+                        <div className="summary-line">
+                            <span>Envío</span>
+                            <span>${resumenPedido.PrecioEnvio?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="summary-line total">
                             <span>Total a pagar</span>
-                            <span>$200.000</span>
+                            <span>${resumenPedido.Total?.toLocaleString() || '0'}</span>
                         </div>
 
                         <div className="terms-text">
@@ -332,9 +334,9 @@ export const CheckoutForm = () => {
                         <button
                             className="btn-finalizar"
                             onClick={handleFinalizePurchase}
-                            disabled={loading || !success}
+                            disabled={loading || numeroItemsCarrito === 0}
                         >
-                            {loading ? 'Procesando...' : `Finalizar Compra (${productosEjemplo.length})`}
+                            {loading ? 'Procesando...' : `Finalizar Compra (${numeroItemsCarrito})`}
                         </button>
                     </div>
                 </div>

@@ -387,7 +387,7 @@ export const Provider = ({ children }) => {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            id_calcomania: item.originalId, 
+                            id_calcomania: item.originalId,
                             tamano_x_nuevo: item.width,
                             tamano_y_nuevo: item.height,
                             cantidad: item.quantity
@@ -404,7 +404,7 @@ export const Provider = ({ children }) => {
                             'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify({
-                            id_calcomania: item.id, 
+                            id_calcomania: item.id,
                             tamano: tamanoMap[item.size],
                             cantidad: item.quantity
                         })
@@ -427,7 +427,7 @@ export const Provider = ({ children }) => {
 
             // Limpiar carrito local y cargar el carrito actualizado desde el backend
             setLocalCartProducts([]);
-            localStorage.removeItem("localCartProducts"); 
+            localStorage.removeItem("localCartProducts");
             await loadCartFromBackend(); // Esta función ya obtiene todo el carrito unificado
             setSuccessMessage('Carrito sincronizado exitosamente');
             setTimeout(() => setSuccessMessage(''), 3000);
@@ -441,7 +441,6 @@ export const Provider = ({ children }) => {
     };
 
     const handleAddToCartLocal = (item) => {
-
         const localCartId = item.type === 'staff_sticker' ? `${item.id}-${item.size}` : item.id;
 
         const existingItem = localCartProducts.find(p => p.localCartId === localCartId);
@@ -454,7 +453,13 @@ export const Provider = ({ children }) => {
                     : p
             );
         } else {
-            updatedCart = [...localCartProducts, { ...item, quantity: item.quantity || 1, localCartId }];
+            // Asegúrate de que se incluya originalPrice
+            updatedCart = [...localCartProducts, {
+                ...item,
+                quantity: item.quantity || 1,
+                localCartId,
+                originalPrice: item.originalPrice || item.price  // Agregar esta línea
+            }];
         }
         setLocalCartProducts(updatedCart);
         console.log("Item agregado a carrito local:", item);
@@ -489,6 +494,42 @@ export const Provider = ({ children }) => {
             return product;
         });
         setLocalCartProducts(updatedCart);
+    };
+
+    const getLocalCartProducts = () => {
+        const storedCart = localStorage.getItem("localCartProducts");
+        return storedCart ? JSON.parse(storedCart) : [];
+    };
+
+    const calculateLocalCartSummary = (products) => {
+        const totalSinDescuento = products.reduce((total, item) => {
+            // Usar originalPrice si existe, sino price
+            const priceToUse = item.originalPrice || item.price;
+            return total + (priceToUse * item.quantity);
+        }, 0);
+
+        const descuento = products.reduce((total, item) => {
+            if (item.originalPrice && item.price < item.originalPrice) {
+                return total + ((item.originalPrice - item.price) * item.quantity);
+            }
+            return total;
+        }, 0);
+
+        const subtotal = totalSinDescuento - descuento;
+        const envio = 14900;
+        const total = subtotal + envio;
+
+        return {
+            TotalArticulosSinDescuento: totalSinDescuento,
+            DescuentoArticulos: descuento,
+            Subtotal: subtotal,
+            PrecioEnvio: envio,
+            Total: total
+        };
+    };
+
+    const getLocalCartItemCount = (products) => {
+        return products.reduce((total, item) => total + item.quantity, 0);
     };
 
     const handleLogout = () => {
@@ -828,6 +869,11 @@ export const Provider = ({ children }) => {
             isLocalCart, setIsLocalCart,
             handleAddToCartLocal, handleRemoveProductLocal, handleQuantityChangeLocal,
             syncLocalCartToBackend,
+
+            getLocalCartProducts,
+            calculateLocalCartSummary,
+            getLocalCartItemCount,
+            localCartProducts
 
         }}>
             {children}
