@@ -1,21 +1,27 @@
 import { useEffect, useRef } from "react";
 import { TrunkProductCard } from "../TrunkProductCard/TrunkProductCard.jsx";
 import "../Trunk/Trunk.css";
+import { useNavigate } from "react-router-dom";
 
-export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, isLocal = false  }) => {
+export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, isLocal = false }) => {
     const trunkRef = useRef(null);
+    const navigate = useNavigate();
 
     const totalPrice = products.reduce(
         (acc, product) => acc + product.price * product.quantity, 0
     );
 
     const formatPrice = (price) => {
-    return price.toLocaleString("es-CO", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-      useGrouping: true
-    });
-  };
+        return price.toLocaleString("es-CO", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+            useGrouping: true
+        });
+    };
+
+    const handleToCheckout = () => {
+        navigate('/checkout');
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -113,7 +119,7 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, i
                             </div>
 
                             <div className="drawer-actions">
-                                <button className="buy-button">Comprar</button>
+                                <button onClick={handleToCheckout} className="buy-button">Comprar</button>
                             </div>
                         </>
                     )}

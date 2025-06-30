@@ -38,6 +38,11 @@ body {
     padding: 1rem;
 }
 
+.breadcrumb-checkout-form span:hover{
+    color: #014aad;
+    cursor: pointer;
+}
+
 /* Layout principal */
 .content-wrapper-checkout-form {
     display: flex;

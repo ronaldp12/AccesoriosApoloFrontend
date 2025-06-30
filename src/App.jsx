@@ -37,6 +37,7 @@ import { ScrollToTop } from "./Components/Ui/ScrollToTop/ScrollToTop.jsx";
 import { StickersPage } from "./Components/Pages/StickersPage/StickersPage.jsx";
 import { RegisterModal } from "./Components/Layouts/RegisterModal/RegisterModal.jsx";
 import { LoginModal } from "./Components/Layouts/LoginModal/LoginModal.jsx";
+import { CheckoutForm } from "./Components/Layouts/CheckoutForm/CheckoutForm.jsx";
 
 export function App() {
 
@@ -157,6 +158,17 @@ export function App() {
                 <ContactAboutUsHelp />
               </Container>
               <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/checkout"
+          element={
+            <>
+              <Container>
+                <CheckoutForm />
+              </Container>
             </>
           }
         />

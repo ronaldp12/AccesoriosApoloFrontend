@@ -245,10 +245,12 @@ export const ProductDetailPage = () => {
                     <div className="product-info">
                         <div className="product-header">
                             <h1 className="product-title">{productData.title}</h1>
-                            <div className="rating-container">
-                                <div className="stars">{renderStars()}</div>
-                                <span className="reviews-count">{productData.reviews || 0} valoraciones</span>
-                            </div>
+                            {!isStickerType() && (
+                                <div className="rating-container">
+                                    <div className="stars">{renderStars()}</div>
+                                    <span className="reviews-count">{productData.reviews || 0} valoraciones</span>
+                                </div>
+                            )}
                         </div>
 
                         <div className="product-details-product-detail">
@@ -288,13 +290,12 @@ export const ProductDetailPage = () => {
                         </div>
 
                         <div className="action-buttons">
-                            {!isStickerType() && (
                                 <div className="quantity-selector">
                                     <button className="quantity-btn" onClick={decreaseQuantity} disabled={quantity <= 1 || isCurrentProductAdding}>-</button>
                                     <span className="quantity-display">{quantity}</span>
                                     <button className="quantity-btn" onClick={increaseQuantity} disabled={isCurrentProductAdding}>+</button>
                                 </div>
-                            )}
+                            
                             <button className="btn-secondary" onClick={handleAddClick} disabled={isCurrentProductAdding}>
                                 {isCurrentProductAdding ? (
                                     <img src={wheelIcon} alt="cargando" className="wheel-loader" />
@@ -334,9 +335,10 @@ export const ProductDetailPage = () => {
                         type: 'sticker',
                         referencia: productData.referencia || productData.id,
                         discountPercent: productData.discount ? (typeof productData.discount === 'string' ? parseInt(productData.discount.replace('%', '')) : productData.discount) : null,
-                        id_calcomania: productData.id_calcomania || productData.id
+                        id_calcomania: productData.id_calcomania || productData.id,
                     }}
                     isPersonalSticker={false}
+                    quantity={quantity}
                 />
             )}
 

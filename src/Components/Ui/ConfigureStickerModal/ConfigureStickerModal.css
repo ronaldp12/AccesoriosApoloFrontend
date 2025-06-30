@@ -51,6 +51,10 @@
     font-size: 1.1rem;
 }
 
+.config-label span{
+    color: #014aad;
+}
+
 .size-options{
     display: flex;
     flex-wrap: wrap;

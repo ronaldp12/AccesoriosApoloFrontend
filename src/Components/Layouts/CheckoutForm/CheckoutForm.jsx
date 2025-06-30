@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './CheckoutForm.css';
 import { Logo } from '../../Ui/Logo/Logo';
+import { useNavigate } from 'react-router-dom';
 
 export const CheckoutForm = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         pais: 'Colombia',
         nombre: 'Colombia',
@@ -67,7 +70,7 @@ export const CheckoutForm = () => {
                 
             </div>
             <div className="breadcrumb-checkout-form">
-                    <span>Inicio</span> / <span>Finalizar compra</span>
+                    <span onClick={() => { navigate('/') }}>Inicio</span> / <span>Finalizar compra</span>
                 </div>
 
             <div className="content-wrapper-checkout-form">

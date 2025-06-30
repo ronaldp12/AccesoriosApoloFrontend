@@ -10,6 +10,7 @@ export const ConfigureStickerModal = ({
     onClose,
     sticker,
     brand,
+    quantity =1,
     isPersonalSticker = false
 }) => {
     const stickerCartFunctions = UseStickers();
@@ -190,7 +191,7 @@ export const ConfigureStickerModal = ({
                 success = await handleAddStickerToCart(sticker, customSizeConfig);
             } else {
                 // Llama a la función del hook UseStickers para calcomanías del staff.
-                const config = { ...sizeConfig, size: selectedSize, cantidad: 1 };
+                const config = { ...sizeConfig, size: selectedSize, cantidad: quantity };
                 success = await addStickerToCart(sticker, config);
             }
 
@@ -265,6 +266,8 @@ export const ConfigureStickerModal = ({
                         </button>
                     </div>
                 </div>
+
+                <p className="config-label">Cantidad: <span>{quantity}</span></p>
 
                 <div className="config-section">
                     <p className="config-label">Material</p>
