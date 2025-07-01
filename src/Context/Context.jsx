@@ -35,6 +35,7 @@ export const Provider = ({ children }) => {
     });
 
     const [isLocalCart, setIsLocalCart] = useState(false);
+    const [isTrunkOpen, setIsTrunkOpen] = useState(false);
 
     // Estados de modales de auth
     const [registerOpen, setRegisterOpen] = useState(false);
@@ -873,7 +874,9 @@ export const Provider = ({ children }) => {
             getLocalCartProducts,
             calculateLocalCartSummary,
             getLocalCartItemCount,
-            localCartProducts
+            localCartProducts,
+            isTrunkOpen,
+            setIsTrunkOpen,
 
         }}>
             {children}

@@ -12,7 +12,7 @@ export const Pagination = ({currentPage, setCurrentPage, totalPages}) => {
         <div className="pagination">
             <button className="prev" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}>
-                Prev
+                Ant
             </button>
             {pages.map((num) => (
                 <button
@@ -25,7 +25,7 @@ export const Pagination = ({currentPage, setCurrentPage, totalPages}) => {
             ))}
             <button className="next" onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}>
-                Next
+                Sig
             </button>
         </div>
     );

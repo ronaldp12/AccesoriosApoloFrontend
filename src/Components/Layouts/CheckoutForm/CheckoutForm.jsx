@@ -29,7 +29,7 @@ export const CheckoutForm = () => {
         loadUserData,
         loadCarritoData,
         loadLocalCartData,
-        paymentData  // Agregar esta línea
+        paymentData  
     } = UseCheckout();
 
     // Cargar datos del usuario al montar el componente
@@ -41,7 +41,7 @@ export const CheckoutForm = () => {
         } else {
             loadLocalCartData();
         }
-    }, [token]); // Solo depender del token
+    }, [token]); 
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -348,7 +348,7 @@ export const CheckoutForm = () => {
 
                         <button
                             className="btn-finalizar"
-                            onClick={handleGoToPayment} // Cambiar esta línea
+                            onClick={handleGoToPayment}
                             disabled={loading || numeroItemsCarrito === 0}
                         >
                             {loading ? 'Procesando...' : `Continuar al Pago (${numeroItemsCarrito})`}

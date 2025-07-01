@@ -18,7 +18,8 @@ export const StickersLayout = () => {
         setIsCropping,
         saveSticker,
         isLoading,
-        isSavingSticker
+        isSavingSticker,
+        setIsTrunkOpen,
     } = useContext(context);
 
     const navigate = useNavigate();
@@ -98,7 +99,7 @@ export const StickersLayout = () => {
                         )}
                         <button
                             className="sticker-upload-btn-primary"
-                            onClick={() => setConfigModalOpen(true)}
+                            onClick={() => setIsTrunkOpen(true)}
                             disabled={isSavingSticker}
                         >
                             COMPRAR

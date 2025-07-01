@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isTrunkOpen, setIsTrunkOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false)
@@ -25,7 +24,8 @@ export const Header = () => {
   const {
     cartProducts, handleRemoveProduct, handleQuantityChange, userLogin,
     registerOpen, openRegister, closeRegister,
-    loginOpen, openLogin, closeLogin, localCartProducts, isLocalCart, handleRemoveProductLocal, handleQuantityChangeLocal
+    loginOpen, openLogin, closeLogin, localCartProducts, isLocalCart, handleRemoveProductLocal, handleQuantityChangeLocal,
+    isTrunkOpen, setIsTrunkOpen
   } = useContext(context);
 
 
@@ -138,7 +138,6 @@ export const Header = () => {
       <WelcomeModal isOpen={isWelcomeModalOpen} onClose={closeWelcome} />
 
       <Trunk
-        isOpen={isTrunkOpen}
         onClose={closeTrunk}
         products={isLocalCart ? localCartProducts : cartProducts}
         onRemove={isLocalCart ? handleRemoveProductLocal : handleRemoveProduct}

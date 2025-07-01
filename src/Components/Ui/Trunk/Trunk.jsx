@@ -1,11 +1,13 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 import { TrunkProductCard } from "../TrunkProductCard/TrunkProductCard.jsx";
 import "../Trunk/Trunk.css";
 import { useNavigate } from "react-router-dom";
+import { context } from "../../../Context/Context.jsx";
 
-export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, isLocal = false }) => {
+export const Trunk = ({ onClose, products, onRemove, onQuantityChange, isLocal = false }) => {
     const trunkRef = useRef(null);
     const navigate = useNavigate();
+    const { isTrunkOpen, setIsTrunkOpen } = useContext(context);
 
     const totalPrice = products.reduce(
         (acc, product) => acc + product.price * product.quantity, 0
@@ -25,12 +27,12 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, i
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (trunkRef.current && !trunkRef.current.contains(event.target) && isOpen) {
+            if (trunkRef.current && !trunkRef.current.contains(event.target) && isTrunkOpen) {
                 onClose();
             }
         };
 
-        if (isOpen) {
+        if (isTrunkOpen) {
             const timer = setTimeout(() => {
                 document.addEventListener('mousedown', handleClickOutside);
                 document.addEventListener('touchstart', handleClickOutside);
@@ -42,10 +44,10 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, i
                 document.removeEventListener('touchstart', handleClickOutside);
             };
         }
-    }, [isOpen, onClose]);
+    }, [isTrunkOpen, onClose]);
 
     useEffect(() => {
-        if (isOpen) {
+        if (isTrunkOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -54,7 +56,7 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, i
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isOpen]);
+    }, [isTrunkOpen]);
 
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
@@ -73,17 +75,17 @@ export const Trunk = ({ isOpen, onClose, products, onRemove, onQuantityChange, i
     return (
         <>
             <div
-                className={`trunk-overlay ${isOpen ? "open" : ""}`}
+                className={`trunk-overlay ${isTrunkOpen ? "open" : ""}`}
                 onClick={handleOverlayClick}
             >
                 <div
                     ref={trunkRef}
-                    className={`drawer-trunk ${isOpen ? "open" : ""}`}
+                    className={`drawer-trunk ${isTrunkOpen ? "open" : ""}`}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="drawer-header">
                         <h2>MI MALETERO</h2>
-                        <button className="close-button" onClick={onClose}>×</button>
+                        <button className="close-button" onClick={() => setIsTrunkOpen(false)}>×</button>
                     </div>
                     <hr className="drawer-divider-trunk" />
 

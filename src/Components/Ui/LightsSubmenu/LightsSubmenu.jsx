@@ -1,8 +1,7 @@
 import '../LightsSubmenu/LightsSubmenu.css';
 import img1 from '../../../assets/images/img1-light.png';
 import img2 from '../../../assets/images/img2-light.png';
-import img3 from '../../../assets/images/img3-light.png';
-import img32 from '../../../assets/images/img3.2-light.png';
+import img3 from '../../../assets/images/img6-light.png';
 import img4 from '../../../assets/images/img4-light.png';
 
 import logo1 from '../../../assets/images/img1-marca.png';
@@ -19,7 +18,7 @@ export const LightsSubmenu = ({ onCloseSubmenu }) => {
     const fallbackItems = [
         { label: "Bombillos", img: img1 },
         { label: "Exploradoras", img: img2 },
-        { label: "Direccionales", img: [img3, img32] },
+        { label: "Direccionales", img: [img3] },
         { label: "Luces LED", img: img4 }
     ];
 

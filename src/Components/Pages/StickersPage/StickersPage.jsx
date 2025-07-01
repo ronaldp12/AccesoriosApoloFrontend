@@ -39,8 +39,7 @@ export const StickersPage = ({ onOpenRegister, onOpenLogin }) => {
 
     const handleUploadSticker = () => {
         if (userLogin && nameRol === 'cliente') {
-            navigate("/upload-sticker");
-            console.log('Navegando a subir calcomanía');
+            navigate("/stickers/upload");
         } else {
             setIsModalOpen(true);
         }
