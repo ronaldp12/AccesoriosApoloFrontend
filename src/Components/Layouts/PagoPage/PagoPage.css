@@ -1,0 +1,147 @@
+.pago-container-pago-page {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease;
+}
+
+.pago-content-pago-page {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    transition: all 0.3s ease;
+}
+
+.payment-info-pago-page h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.order-details-pago-page {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    margin-bottom: 20px;
+}
+
+.summary-line-pago-page {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.summary-line-pago-page.discount {
+    color: #d9534f;
+}
+
+.summary-line-pago-page.total {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.payment-method-pago-page {
+    margin-top: 20px;
+}
+
+.wompi-payment-section {
+    text-align: center;
+    margin: 30px 0 15px;
+}
+
+.btn-pagar-wompi {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.btn-pagar-wompi.active {
+    background-color: #014aad;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-pagar-wompi.disabled {
+    background-color: #ccc;
+    color: white;
+    cursor: not-allowed;
+}
+
+.payment-actions-pago-page {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-back-pago-page {
+    padding: 12px 25px;
+    background: #eee;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn-back-pago-page:hover {
+    background: #ddd;
+}
+
+.error-container {
+    text-align: center;
+    padding: 40px;
+}
+
+.error-message {
+    color: #d9534f;
+    margin: 20px 0;
+}
+
+.loading-message {
+    margin: 30px 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 820px) {
+    .pago-content-pago-page {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pago-content-pago-page {
+        padding: 15px;
+    }
+
+    .summary-line-pago-page {
+        font-size: 15px;
+    }
+
+    .btn-pagar-wompi {
+        width: 100%;
+    }
+}
+
+@media (max-width: 393px) {
+    .payment-actions-pago-page {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}

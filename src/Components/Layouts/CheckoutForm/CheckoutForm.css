@@ -14,7 +14,7 @@
     margin-bottom: 12px;
 }
 
-.logo-checkout-form{
+.logo-checkout-form {
     width: 8rem;
     height: 4rem;
 }
@@ -25,7 +25,7 @@
     padding: 1rem;
 }
 
-.breadcrumb-checkout-form span:hover{
+.breadcrumb-checkout-form span:hover {
     color: #014aad;
     cursor: pointer;
 }
@@ -98,7 +98,7 @@
     margin: 8px 0;
 }
 
-.select-checkout-form{
+.select-checkout-form {
     padding: 10px 12px;
     border: 1px solid #d1d5db;
     border-radius: 4px;
@@ -154,7 +154,7 @@
     gap: 16px;
 }
 
-.producto-info small{
+.producto-info small {
     font-size: 0.8rem;
 }
 
@@ -271,9 +271,42 @@
     background: #1d4ed8;
 }
 
-/* Responsive Design */
+.status-message {
+    padding: 12px 18px;
+    border-radius: 6px;
+    margin-bottom: 18px;
+    font-size: 15px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    opacity: 0;
+    animation: fadeInMessage 0.4s ease forwards;
+    text-align: left;
+}
 
-/* Móviles pequeños (393px) */
+.error-message {
+    background: #fee;
+    color: #c33;
+    border-color: #fcc;
+}
+
+.success-message {
+    background: #e6f1fc;
+    color: #014aad;
+    border-color: #b3d4f3;
+}
+
+.user-info {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #444;
+}
+
+@keyframes fadeInMessage {
+    to {
+        opacity: 1;
+    }
+}
+
 @media (max-width: 393px) {
     .checkout-container {
         margin: 0;

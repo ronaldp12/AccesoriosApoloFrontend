@@ -29,7 +29,7 @@ export const CheckoutForm = () => {
         loadUserData,
         loadCarritoData,
         loadLocalCartData,
-        paymentData  
+        paymentData
     } = UseCheckout();
 
     // Cargar datos del usuario al montar el componente
@@ -41,7 +41,7 @@ export const CheckoutForm = () => {
         } else {
             loadLocalCartData();
         }
-    }, [token]); 
+    }, [token]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -57,19 +57,18 @@ export const CheckoutForm = () => {
     };
 
     const handleGoToPayment = async () => {
-    try {
-        const result = await handleSaveAddress();
-        if (result && result.id_factura_creada) {
-            // Esperar un poco para asegurar que el estado se actualice
-            setTimeout(() => {
-                navigate('/checkout/pago');
-            }, 100);
+        try {
+            const result = await handleSaveAddress();
+            if (result && result.id_factura_creada) {
+                // Esperar un poco para asegurar que el estado se actualice
+                setTimeout(() => {
+                    navigate('/checkout/pago');
+                }, 100);
+            }
+        } catch (err) {
+            console.error('Error al preparar el pago:', err);
         }
-    } catch (err) {
-        console.error('Error al preparar el pago:', err);
-    }
-};
-
+    };
 
     return (
         <div className="checkout-container">
@@ -251,30 +250,16 @@ export const CheckoutForm = () => {
 
                     {/* Mostrar mensajes de estado */}
                     {error && (
-                        <div className="error-message" style={{
-                            background: '#fee',
-                            color: '#c33',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            marginBottom: '15px',
-                            border: '1px solid #fcc'
-                        }}>
+                        <div className="status-message error-message">
                             {error}
                         </div>
                     )}
 
                     {success && (
-                        <div className="success-message" style={{
-                            background: '#efe',
-                            color: '#363',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            marginBottom: '15px',
-                            border: '1px solid #cfc'
-                        }}>
-                            ✓ Dirección guardada exitosamente
+                        <div className="status-message success-message">
+                            Dirección guardada exitosamente
                             {isUserRegistered && userInfo && (
-                                <div style={{ marginTop: '5px', fontSize: '0.9em' }}>
+                                <div className="user-info">
                                     Usuario registrado: {userInfo.correo}
                                 </div>
                             )}
