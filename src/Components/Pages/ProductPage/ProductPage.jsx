@@ -111,7 +111,7 @@ export const ProductPage = () => {
     }
 
     if (priceFilter && productsToShow.length > 0) {
-        productsToShow = productsToShow.filter(product => product.price <= priceFilter);
+      productsToShow = productsToShow.filter(product => product.price <= priceFilter);
     }
 
     if (sortOrder && productsToShow.length > 0) {
@@ -237,6 +237,10 @@ export const ProductPage = () => {
           {isLoading ? (
             <div className="loading-container">
               <p>Cargando productos...</p>
+            </div>
+          ) : filteredProducts.length === 0 && (selectedSubcategory || selectedBrand) ? (
+            <div className="loading-container">
+              <p>Productos no encontrados para ese rango de precio</p>
             </div>
           ) : (
             <ProductGrid
