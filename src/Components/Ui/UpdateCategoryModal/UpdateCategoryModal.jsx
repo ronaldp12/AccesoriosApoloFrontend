@@ -140,7 +140,7 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
 
     const handleUpdate = useCallback(async () => {
         clearStatusMessages();
-        setIsLoading(true);
+        
 
         if (
             !formData.nombre_categoria.trim() ||
@@ -150,6 +150,8 @@ export const UpdateCategoryModal = ({ isOpen, onClose, idCategoria, onUpdateSucc
             setErrorMessage("Todos los campos son obligatorios.");
             return;
         }
+
+        setIsLoading(true);
         try {
             const response = await fetch("https://accesoriosapolobackend.onrender.com/actualizar-categoria", {
                 method: "PUT",
