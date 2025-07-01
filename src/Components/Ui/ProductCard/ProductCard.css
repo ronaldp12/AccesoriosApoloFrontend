@@ -206,7 +206,7 @@
 
 @media (min-width: 432px) and (max-width: 481px),
 (min-width: 395px) and (max-width: 431px),
-(max-width: 393px) {
+(max-width: 394px) {
     .product-card {
         width: 100%;
         max-width: 25rem;
@@ -216,5 +216,13 @@
     .product-card img {
         height: auto;
         max-height: 14rem;
+    }
+}
+
+@media (max-width: 394px) {
+    .product-card {
+        width: 100%;
+        max-width: 21rem;
+        height: auto;
     }
 }

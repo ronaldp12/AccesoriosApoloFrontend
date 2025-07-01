@@ -190,12 +190,12 @@ export const ProductPage = () => {
             </div>
           )}
 
-          <div className="img-category-container">
+          <div className="img-category-container-product-page">
             <h2>{getPageTitle()}</h2>
 
             {(!selectedBrand || selectedBrand !== 'Otros') && (
               <img
-                className="img-category"
+                className="img-category-product-page"
                 src={getDisplayImage()}
                 alt={`Imagen de ${selectedBrand || selectedCategory || 'categoría'}`}
               />

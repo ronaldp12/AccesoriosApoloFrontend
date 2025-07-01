@@ -6,7 +6,7 @@ export const ProductGrid = ({ products, stickerCartFunctions, productCartFunctio
     console.log('ProductGrid recibió:', products);
 
     return (
-        <div className="product-grid">
+        <div className="product-grid-product-page">
             {products.map((product) => (
                 <ProductCard
                     key={product.id}

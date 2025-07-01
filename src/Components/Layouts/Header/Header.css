@@ -108,7 +108,6 @@ body.header-fixed {
 }
 
 .header-scrolled .logo-header {
-    transform: scale(0.9);
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -452,6 +451,40 @@ body.header-fixed {
         display: block;
     }
 }
+
+@media (max-width: 431px) {
+  .container-header {
+    justify-content: space-between;
+    padding: 0.5rem 0.3rem;
+  }
+
+  .container-main {
+    flex: 1;
+    margin: 0 0.5rem;
+  }
+
+  .search-container {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .search-icon{
+    right: 12px;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .logo-header {
+    width: 3rem;
+  }
+
+  .hamburger-btn {
+    font-size: 1.8rem;
+  }
+}
+
 
 @media (min-width: 394px) and (max-width: 431px) {
 

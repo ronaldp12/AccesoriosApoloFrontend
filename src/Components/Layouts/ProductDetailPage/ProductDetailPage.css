@@ -449,12 +449,12 @@
 }
 
 @media (max-width: 820px) {
-    .product-layout {
+    .product-layout-product-detail {
         grid-template-columns: 1fr;
         gap: 30px;
     }
 
-    .product-container {
+    .product-container-product-detail {
         padding: 15px;
     }
 
@@ -464,7 +464,7 @@
 }
 
 @media (max-width: 480px) {
-    .product-container {
+    .product-container-product-detail {
         padding: 10px;
     }
 
@@ -523,7 +523,7 @@
 }
 
 @media (max-width: 393px) {
-    .product-container {
+    .product-container-product-detail {
         padding: 8px;
     }
 
