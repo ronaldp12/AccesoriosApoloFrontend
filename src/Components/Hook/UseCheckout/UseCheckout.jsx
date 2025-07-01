@@ -314,10 +314,11 @@ export const UseCheckout = () => {
             if (result.id_factura_creada) {
                 paymentInfo = {
                     id_factura_temp: result.id_factura_creada,
-                    email_cliente: formData.correo
+                    email_cliente: formData.correo,
+                    nombre_cliente: formData.nombre
                 };
                 setPaymentData(paymentInfo);
-                // Guardar en sessionStorage para persistir entre rutas
+                console.log('✅ paymentData actualizado:', paymentInfo);
                 sessionStorage.setItem('paymentData', JSON.stringify(paymentInfo));
             }
 

@@ -71,7 +71,7 @@ export const PagoPage = () => {
                     redirectUrl: REDIRECT_URL,
                     customerData: {
                         email: paymentData.email_cliente,
-                        fullName: paymentData.nombre_cliente || 'Cliente'
+                        fullName: paymentData.nombre_cliente || ''
                     }
                 });
 
