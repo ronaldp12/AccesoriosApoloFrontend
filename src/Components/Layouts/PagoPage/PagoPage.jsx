@@ -16,7 +16,9 @@ export const PagoPage = () => {
         token,
         clearCartAfterPayment,
         loadCarritoData,
-        loadLocalCartData
+        loadLocalCartData,
+        getWompiSignature,
+        createCheckout // ← Agregar esta línea
     } = UseCheckout();
 
     const WOMPI_PUBLIC_KEY = import.meta.env.VITE_WOMPI_PUBLIC_KEY;
@@ -80,6 +82,7 @@ export const PagoPage = () => {
     }, [paymentData, navigate, contextToken, resumenPedido, loadCarritoData]);
 
     // Inicializar el widget de Wompi cuando todo esté listo
+    // Inicializar el widget de Wompi cuando todo esté listo
     useEffect(() => {
         if (!isScriptLoaded || !paymentData || !WOMPI_PUBLIC_KEY) {
             return;
@@ -97,10 +100,14 @@ export const PagoPage = () => {
             existingWidget.innerHTML = '';
         }
 
-        initializeWompiWidget(summary);
-    }, [isScriptLoaded, paymentData, resumenPedido, localCartSummary, WOMPI_PUBLIC_KEY]);
+        // Hacer la inicialización async
+        initializeWompiWidget(summary).catch(error => {
+            console.error('Error al inicializar widget:', error);
+            setError(`Error al cargar el sistema de pagos: ${error.message}`);
+        });
+    }, [isScriptLoaded, paymentData, resumenPedido, localCartSummary, WOMPI_PUBLIC_KEY, getWompiSignature]);
 
-    const initializeWompiWidget = (summary) => {
+    const initializeWompiWidget = async (summary) => {
         try {
             // Validaciones previas
             if (!WOMPI_PUBLIC_KEY || WOMPI_PUBLIC_KEY === 'undefined') {
@@ -128,26 +135,33 @@ export const PagoPage = () => {
 
             const reference = generateReference();
 
-            console.log('📊 Inicializando widget de Wompi:', {
+            console.log('📊 Enviando datos al backend:', {
                 monto: summary.Total,
                 centavos: amountInCents,
                 referencia: reference,
                 email: paymentData.email_cliente,
-                facturaId: paymentData.id_factura_temp,
-                publicKey: WOMPI_PUBLIC_KEY.substring(0, 20) + '...'
+                facturaId: paymentData.id_factura_temp
             });
+
+            // ✅ Obtener la firma del backend enviando referencia y monto
+            const signatureData = await createCheckout(reference, amountInCents);
+
+            console.log('🔐 Firma obtenida:', signatureData.wompiCheckout.signature.integrity);
 
             // Verificar que el widget de Wompi esté disponible
             if (!window.WidgetCheckout) {
                 throw new Error('El widget de Wompi no está disponible. Recarga la página.');
             }
 
-            // Configuración del checkout
+            // Configuración del checkout con firma
             const checkoutConfig = {
                 currency: 'COP',
                 amountInCents: amountInCents,
-                reference: reference,
+                reference: reference,  // ✅ Usar la misma referencia
                 publicKey: WOMPI_PUBLIC_KEY,
+                signature: {
+                    integrity: signatureData.wompiCheckout.signature.integrity
+                },
                 redirectUrl: REDIRECT_URL || window.location.origin + '/gracias-por-tu-compra',
                 customerData: {
                     email: paymentData.email_cliente,
@@ -164,7 +178,7 @@ export const PagoPage = () => {
                 };
             }
 
-            console.log('🚀 Configuración del checkout:', checkoutConfig);
+            console.log('🚀 Configuración del checkout con firma:', checkoutConfig);
 
             // Crear el checkout
             const checkout = new window.WidgetCheckout(checkoutConfig);
@@ -200,7 +214,7 @@ export const PagoPage = () => {
 
         } catch (error) {
             console.error("❌ Error al inicializar el widget:", error);
-            setError(error.message);
+            setError(`Error al inicializar el pago: ${error.message}`);
         }
     };
 

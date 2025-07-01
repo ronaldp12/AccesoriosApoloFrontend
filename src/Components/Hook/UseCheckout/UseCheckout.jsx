@@ -37,7 +37,6 @@ export const UseCheckout = () => {
     const [isUserRegistered, setIsUserRegistered] = useState(false);
     const [facturaId, setFacturaId] = useState(''); // Para datos de pago
     const [paymentData, setPaymentData] = useState(() => {
-        // Intentar recuperar datos del sessionStorage
         const saved = sessionStorage.getItem('paymentData');
         return saved ? JSON.parse(saved) : null;
     });
@@ -47,7 +46,13 @@ export const UseCheckout = () => {
     const [carritoLoading, setCarritoLoading] = useState(false);
     const [carritoError, setCarritoError] = useState(null);
 
-    // Estado del carrito/productos (ejemplo)
+    // Agregar estos estados después de los existentes
+    const [checkoutData, setCheckoutData] = useState(null);
+    const [checkoutLoading, setCheckoutLoading] = useState(false);
+    const [checkoutError, setCheckoutError] = useState(null);
+    const [orderStatus, setOrderStatus] = useState(null);
+    const [orderStatusLoading, setOrderStatusLoading] = useState(false);
+
     const [productos, setProductos] = useState([]);
     const [resumenPedido, setResumenPedido] = useState({
         TotalArticulosSinDescuento: 0,
@@ -106,6 +111,101 @@ export const UseCheckout = () => {
             ...fields
         }));
     }, []);
+
+    /**
+ * Crea el checkout y obtiene los datos de pago de Wompi
+ */
+    const createCheckout = useCallback(async (reference, amountInCents) => {
+        try {
+            setCheckoutLoading(true);
+            setCheckoutError(null);
+
+            if (!paymentData?.id_factura_temp) {
+                throw new Error('No se encontró ID de factura. Primero guarda la dirección de envío.');
+            }
+
+            if (!reference) {
+                throw new Error('La referencia es requerida para generar la firma.');
+            }
+
+            if (!amountInCents || amountInCents <= 0) {
+                throw new Error('El monto es requerido para generar la firma.');
+            }
+
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/create-checkout', {
+                method: 'POST',
+                headers,
+                credentials: 'include',
+                body: JSON.stringify({
+                    id_factura: paymentData.id_factura_temp,
+                    reference: reference,           // ✅ Enviar referencia
+                    amount_in_cents: amountInCents  // ✅ Enviar monto
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.mensaje || 'Error al crear el checkout');
+            }
+
+            setCheckoutData(result);
+            return result;
+
+        } catch (err) {
+            const errorMessage = err.message || 'Error inesperado al crear el checkout';
+            setCheckoutError(errorMessage);
+            throw err;
+        } finally {
+            setCheckoutLoading(false);
+        }
+    }, [paymentData, token]);
+
+    /**
+     * Consulta el estado de una orden específica
+     */
+    const getOrderStatus = useCallback(async (id_factura) => {
+        try {
+            setOrderStatusLoading(true);
+
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            const response = await fetch(`https://accesoriosapolobackend.onrender.com/estado-orden/${id_factura}/status`, {
+                method: 'GET',
+                headers,
+                credentials: 'include'
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.mensaje || 'Error al consultar el estado de la orden');
+            }
+
+            setOrderStatus(result);
+            return result;
+
+        } catch (err) {
+            console.error('Error al consultar estado de orden:', err);
+            throw err;
+        } finally {
+            setOrderStatusLoading(false);
+        }
+    }, [token]);
 
     /**
      * Valida los campos requeridos antes de enviar
@@ -208,9 +308,11 @@ export const UseCheckout = () => {
                 body: JSON.stringify(apiData)
             });
 
+            let paymentInfo = null;
+
             const result = await response.json();
             if (result.id_factura_creada) {
-                const paymentInfo = {
+                paymentInfo = {
                     id_factura_temp: result.id_factura_creada,
                     email_cliente: formData.correo
                 };
@@ -230,6 +332,9 @@ export const UseCheckout = () => {
 
             if (result.id_factura_creada) {
                 setFacturaId(result.id_factura_creada);
+                // Después de setFacturaId(result.id_factura_creada);
+                console.log('Factura creada exitosamente:', result.id_factura_creada);
+                console.log('Datos de pago guardados:', paymentInfo);
             }
 
             return result;
@@ -242,6 +347,15 @@ export const UseCheckout = () => {
             setLoading(false);
         }
     }, [formData, validateForm, token, getLocalCartProducts]);
+
+    /**
+ * Limpia los datos del checkout
+ */
+    const clearCheckoutData = useCallback(() => {
+        setCheckoutData(null);
+        setCheckoutError(null);
+        setOrderStatus(null);
+    }, []);
 
     /**
      * Carga datos del usuario si está autenticado
@@ -419,6 +533,16 @@ export const UseCheckout = () => {
         setResumenPedido(summary);
     }, []);
 
+    useEffect(() => {
+        // Limpiar datos de checkout cuando cambie el token o se resetee
+        return () => {
+            if (!token) {
+                setCheckoutData(null);
+                setOrderStatus(null);
+            }
+        };
+    }, [token]);
+
     const productosAMostrar = token ? carritoItems : localProducts;
     const resumenAMostrar = token ? resumenPedido : localCartSummary;
 
@@ -464,7 +588,18 @@ export const UseCheckout = () => {
         paymentData,
         clearCartAfterPayment,
         facturaId,
-        clearPaymentData
+        clearPaymentData,
+
+        checkoutData,
+        checkoutLoading,
+        checkoutError,
+        orderStatus,
+        orderStatusLoading,
+
+        // Nuevas funciones
+        createCheckout,
+        getOrderStatus,
+        clearCheckoutData,
 
     };
 };
