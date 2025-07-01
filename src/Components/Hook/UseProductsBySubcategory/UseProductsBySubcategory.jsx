@@ -27,7 +27,7 @@ export const useProductsBySubcategory = (subcategoryName, productReferencia = nu
     const fetchProductsBySubcategory = async (subcategory) => {
         setLoading(true);
         setError(null);
-        setProduct(null); // Limpiar producto individual
+        setProduct(null);
 
         try {
             console.log('Fetching products for subcategory:', subcategory);

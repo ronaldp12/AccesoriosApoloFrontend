@@ -23,6 +23,7 @@ export const ProductPage = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [priceFilter, setPriceFilter] = useState(1000000);
   const location = useLocation();
   const { loadCartFromBackend } = useContext(context);
 
@@ -109,6 +110,10 @@ export const ProductPage = () => {
       productsToShow = [];
     }
 
+    if (priceFilter && productsToShow.length > 0) {
+        productsToShow = productsToShow.filter(product => product.price <= priceFilter);
+    }
+
     if (sortOrder && productsToShow.length > 0) {
       productsToShow = [...productsToShow].sort((a, b) => {
         switch (sortOrder) {
@@ -160,6 +165,8 @@ export const ProductPage = () => {
           isMobile={showMobileFilter}
           onClose={() => setShowMobileFilter(false)}
           onSelectSubcategory={setSelectedSubcategory}
+          currentCategory={selectedCategory}
+          onPriceFilterChange={setPriceFilter}
         />
 
         <div className="store-content">
@@ -239,7 +246,7 @@ export const ProductPage = () => {
                 isProductAdding,
                 isAddingToCart,
                 cartSuccessMessage,
-                cartErrorMessage, 
+                cartErrorMessage,
                 loadCartFromBackend
               }}
             />

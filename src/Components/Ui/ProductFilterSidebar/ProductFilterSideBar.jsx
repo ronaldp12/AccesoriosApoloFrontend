@@ -1,11 +1,16 @@
 import React, { useState } from "react";
+import { useSubcategories } from "../../Hook/UseSubcategories/UseSubcategories.jsx"; 
 import "./ProductFilterSidebar.css";
 
-export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory }) => {
-    const [priceLimit, setPriceLimit] = useState(300000);
+export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, currentCategory, onPriceFilterChange }) => {
+    const [priceLimit, setPriceLimit] = useState(1000000);
+
+    const { subcategories, loading, error } = useSubcategories(currentCategory);
 
     const handlePriceChange = (e) => {
-        setPriceLimit(Number(e.target.value));
+        const newPrice = Number(e.target.value);
+        setPriceLimit(newPrice);
+        onPriceFilterChange(newPrice);
     };
 
     return (
@@ -23,13 +28,28 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory })
                 </div>
             </div>
 
-            <ul>
-                <li onClick={() => onSelectSubcategory("Novedades")}>NOVEDADES</li>
-                <li onClick={() => onSelectSubcategory("Integral")}>CERRADOS O INTEGRALES</li>
-                <li onClick={() => onSelectSubcategory("Abatible")}>ABATIBLES</li>
-                <li onClick={() => onSelectSubcategory("Abierto")}>ABIERTOS</li>
-                <li onClick={() => onSelectSubcategory("Cross")}>CROSS</li>
-            </ul>
+            {/* Lista dinámica de subcategorías */}
+            <div className="subcategories-section">
+
+                {loading ? (
+                    <p>Cargando subcategorías...</p>
+                ) : error ? (
+                    <p>Error: {error}</p>
+                ) : (
+                    <ul>
+
+                        {/* Mostrar subcategorías dinámicas */}
+                        {subcategories.map((subcategory, index) => (
+                            <li
+                                key={index}
+                                onClick={() => onSelectSubcategory(subcategory.label)}
+                            >
+                                {subcategory.label.toUpperCase()}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
 
             <div className="filter-brand">
                 <h2>MOSTRAR POR MARCA</h2>
