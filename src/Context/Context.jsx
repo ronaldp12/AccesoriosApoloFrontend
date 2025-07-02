@@ -375,11 +375,9 @@ export const Provider = ({ children }) => {
 
         setIsLoadingCart(true);
         try {
-            // Usamos Promise.all para ejecutar todas las sincronizaciones en paralelo
             await Promise.all(localCartProducts.map(async (item) => {
                 console.log("Sincronizando item:", item);
 
-                // CASO 1: Calcomanía personal del cliente
                 if (item.type === 'sticker') {
                     return fetch('https://accesoriosapolobackend.onrender.com/calcomanias/actualizar-y-agregar-carrito', {
                         method: 'PUT',
@@ -395,9 +393,13 @@ export const Provider = ({ children }) => {
                         })
                     });
                 }
-                // CASO 2: Calcomanía del Staff
                 else if (item.type === 'staff_sticker') {
-                    const tamanoMap = { 'pequeño': 'pequeño', 'mediano': 'mediano', 'grande': 'grande' };
+                    // Verifica que este mapeo esté correcto - ya parece estar bien
+                    const tamanoMap = {
+                        'pequeño': 'pequeño',
+                        'mediano': 'mediano',
+                        'grande': 'grande'
+                    };
                     return fetch('https://accesoriosapolobackend.onrender.com/agregar-calcomanias-staff', {
                         method: 'POST',
                         headers: {
@@ -406,7 +408,7 @@ export const Provider = ({ children }) => {
                         },
                         body: JSON.stringify({
                             id_calcomania: item.id,
-                            tamano: tamanoMap[item.size],
+                            tamano: tamanoMap[item.size], // Esto debería funcionar ahora
                             cantidad: item.quantity
                         })
                     });
@@ -426,10 +428,9 @@ export const Provider = ({ children }) => {
                 }
             }));
 
-            // Limpiar carrito local y cargar el carrito actualizado desde el backend
             setLocalCartProducts([]);
             localStorage.removeItem("localCartProducts");
-            await loadCartFromBackend(); // Esta función ya obtiene todo el carrito unificado
+            await loadCartFromBackend();
             setSuccessMessage('Carrito sincronizado exitosamente');
             setTimeout(() => setSuccessMessage(''), 3000);
 
@@ -771,9 +772,9 @@ export const Provider = ({ children }) => {
 
     const getSizeDimensions = (size) => {
         const sizes = {
-            small: { width: 5, height: 5 },
-            medium: { width: 7, height: 5 },
-            large: { width: 9, height: 5 }
+            pequeño: { width: 5, height: 5 },
+            mediano: { width: 7, height: 5 },
+            grande: { width: 9, height: 5 }
         };
         return sizes[size] || null;
     };

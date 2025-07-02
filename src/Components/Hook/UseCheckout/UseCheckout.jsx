@@ -53,6 +53,8 @@ export const UseCheckout = () => {
     const [orderStatus, setOrderStatus] = useState(null);
     const [orderStatusLoading, setOrderStatusLoading] = useState(false);
 
+    const [lastAddressInfo, setLastAddressInfo] = useState(null);
+
     const [productos, setProductos] = useState([]);
     const [resumenPedido, setResumenPedido] = useState({
         TotalArticulosSinDescuento: 0,
@@ -113,6 +115,82 @@ export const UseCheckout = () => {
     }, []);
 
     /**
+     * Función auxiliar para desestructurar la dirección en formato "departamento-municipio-direccion"
+     */
+    const parseAddress = useCallback((direccionCompleta) => {
+        if (!direccionCompleta || typeof direccionCompleta !== 'string') {
+            return {
+                departamento: '',
+                municipio: '',
+                direccion: ''
+            };
+        }
+
+        // Dividir por ' - ' (espacio-guion-espacio)
+        const partes = direccionCompleta.split(' - ');
+
+        if (partes.length >= 3) {
+            return {
+                departamento: partes[0].trim(),
+                municipio: partes[1].trim(),
+                direccion: partes.slice(2).join(' - ').trim() // Por si la dirección tiene más guiones
+            };
+        } else if (partes.length === 2) {
+            // Caso donde solo hay departamento y municipio-direccion
+            return {
+                departamento: partes[0].trim(),
+                municipio: '',
+                direccion: partes[1].trim()
+            };
+        } else {
+            // Caso donde no hay separadores o formato inesperado
+            return {
+                departamento: '',
+                municipio: '',
+                direccion: direccionCompleta.trim()
+            };
+        }
+    }, []);
+
+    /**
+     * Obtiene la última dirección de envío del usuario
+     */
+    const getLastAddress = useCallback(async () => {
+        try {
+            if (!token) {
+                console.log('No hay token disponible para consultar última dirección');
+                return null;
+            }
+
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/ultima-direccion', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Última dirección obtenida:', result);
+                return result.data;
+            } else if (response.status === 404) {
+                // El usuario no tiene direcciones anteriores, esto es normal
+                console.log('Usuario sin direcciones anteriores');
+                return null;
+            } else {
+                const errorData = await response.json();
+                console.error('Error al obtener última dirección:', errorData);
+                return null;
+            }
+        } catch (err) {
+            console.error('Error al consultar última dirección:', err);
+            return null;
+        }
+    }, [token]);
+
+    /**
  * Crea el checkout y obtiene los datos de pago de Wompi
  */
     const createCheckout = useCallback(async (reference, amountInCents) => {
@@ -146,8 +224,8 @@ export const UseCheckout = () => {
                 credentials: 'include',
                 body: JSON.stringify({
                     id_factura: paymentData.id_factura_temp,
-                    reference: reference,           // ✅ Enviar referencia
-                    amount_in_cents: amountInCents  // ✅ Enviar monto
+                    reference: reference,
+                    amount_in_cents: amountInCents
                 })
             });
 
@@ -318,7 +396,6 @@ export const UseCheckout = () => {
                     nombre_cliente: formData.nombre
                 };
                 setPaymentData(paymentInfo);
-                console.log('✅ paymentData actualizado:', paymentInfo);
                 sessionStorage.setItem('paymentData', JSON.stringify(paymentInfo));
             }
 
@@ -360,6 +437,7 @@ export const UseCheckout = () => {
 
     /**
      * Carga datos del usuario si está autenticado
+     * ACTUALIZADA: Ahora también carga la última dirección de envío
      */
     const loadUserData = useCallback(async () => {
         try {
@@ -381,23 +459,73 @@ export const UseCheckout = () => {
 
             if (response.ok) {
                 const userData = await response.json();
+                console.log('Datos del usuario:', userData);
 
-                // Prellenar el formulario con los datos del usuario
+                // Obtener la última dirección de envío
+                const lastAddressData = await getLastAddress();
+
+                let addressFields = {
+                    departamento: '',
+                    municipio: '',
+                    direccion: '',
+                    informacion_adicional: ''
+                };
+
+                // Si hay una dirección anterior, desestructurarla
+                if (lastAddressData && lastAddressData.direccion) {
+                    console.log('Procesando última dirección:', lastAddressData.direccion);
+
+                    const parsedAddress = parseAddress(lastAddressData.direccion);
+                    addressFields = {
+                        departamento: parsedAddress.departamento,
+                        municipio: parsedAddress.municipio,
+                        direccion: parsedAddress.direccion,
+                        informacion_adicional: lastAddressData.informacion_adicional || ''
+                    };
+
+                    console.log('Dirección desestructurada:', addressFields);
+                    // Guardar la información de la dirección anterior para mostrar en el componente
+if (lastAddressData) {
+    setLastAddressInfo({
+        direccion_completa: lastAddressData.direccion,
+        informacion_adicional: lastAddressData.informacion_adicional,
+        direccion_desestructurada: addressFields
+    });
+}
+                } else {
+                    // Si no hay dirección anterior, usar la del perfil (si existe)
+                    console.log('No se encontró dirección anterior, usando datos del perfil');
+                    addressFields = {
+                        departamento: userData.usuario.departamento || '',
+                        municipio: userData.usuario.municipio || '',
+                        direccion: userData.usuario.direccion || '',
+                        informacion_adicional: userData.usuario.informacion_adicional || ''
+                    };
+                }
+
+                // Prellenar el formulario con los datos del usuario y la dirección
                 updateMultipleFields({
                     nombre: userData.usuario.nombre || '',
                     cedula: userData.usuario.cedula?.toString() || '',
                     telefono: userData.usuario.telefono || '',
                     correo: userData.usuario.correo || '',
-                    direccion: userData.usuario.direccion || '',
-                    informacion_adicional: userData.usuario.informacion_adicional || '',
-                    departamento: userData.usuario.departamento || '',
-                    municipio: userData.usuario.municipio || ''
+                    ...addressFields
                 });
 
                 // También actualizar la información del usuario
                 setUserInfo(userData);
                 setIsUserRegistered(true);
-                // await loadCarritoData();
+
+                console.log('Formulario prellenado con:', {
+                    datosUsuario: {
+                        nombre: userData.usuario.nombre,
+                        cedula: userData.usuario.cedula,
+                        telefono: userData.usuario.telefono,
+                        correo: userData.usuario.correo
+                    },
+                    datosDireccion: addressFields
+                });
+
             } else {
                 const errorData = await response.json();
                 console.error('Error al obtener datos del usuario:', errorData);
@@ -405,7 +533,7 @@ export const UseCheckout = () => {
         } catch (err) {
             console.error('Error cargando datos del usuario:', err);
         }
-    }, [token, updateMultipleFields]);
+    }, [token, updateMultipleFields, getLastAddress, parseAddress]);
 
     const resetForm = useCallback(() => {
         setFormData({
@@ -601,6 +729,8 @@ export const UseCheckout = () => {
         createCheckout,
         getOrderStatus,
         clearCheckoutData,
-
+        getLastAddress, // Nueva función expuesta
+        parseAddress, // Nueva función expuesta
+        lastAddressInfo
     };
 };

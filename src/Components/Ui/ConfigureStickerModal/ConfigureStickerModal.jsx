@@ -79,8 +79,8 @@ export const ConfigureStickerModal = ({
             if (isSticker() && sticker?.price && !isPersonalSticker) {
                 let basePrice = sticker.price;
                 let finalPrice = basePrice;
-                if (selectedSize === "medium") finalPrice = basePrice * 2.25;
-                else if (selectedSize === "large") finalPrice = basePrice * 4;
+                if (selectedSize === "mediano") finalPrice = basePrice * 2.25;
+                else if (selectedSize === "grande") finalPrice = basePrice * 4;
                 if (sticker.discountPercent && sticker.discountPercent > 0) {
                     const discountAmount = (finalPrice * sticker.discountPercent) / 100;
                     finalPrice = finalPrice - discountAmount;

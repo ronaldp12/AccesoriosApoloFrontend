@@ -29,7 +29,8 @@ export const CheckoutForm = () => {
         loadUserData,
         loadCarritoData,
         loadLocalCartData,
-        paymentData
+        paymentData,
+        lastAddressInfo
     } = UseCheckout();
 
     // Cargar datos del usuario al montar el componente
@@ -70,6 +71,15 @@ export const CheckoutForm = () => {
         }
     };
 
+    useEffect(() => {
+        if (formData.departamento) {
+            const departamentoSeleccionado = departamentosMunicipios.find(
+                (dep) => dep.departamento === formData.departamento
+            );
+            setMunicipiosDisponibles(departamentoSeleccionado ? departamentoSeleccionado.municipios : []);
+        }
+    }, [formData.departamento]);
+
     return (
         <div className="checkout-container">
             <div className="header-checkout-form">
@@ -85,25 +95,6 @@ export const CheckoutForm = () => {
             <div className="content-wrapper-checkout-form">
                 <div className="form-section-checkout-form">
                     <h2>Dirección de envío</h2>
-
-                    {/* Información del usuario si está registrado y tiene dirección anterior */}
-                    {userInfo && (userInfo.direccion_anterior || userInfo.informacion_adicional_anterior) && (
-                        <div className="previous-address-info" style={{
-                            background: '#f9f9f9',
-                            padding: '10px',
-                            borderRadius: '4px',
-                            marginBottom: '15px',
-                            border: '1px solid #ddd'
-                        }}>
-                            <h4>Información de envío anterior:</h4>
-                            {userInfo.direccion_anterior && (
-                                <p><strong>Dirección:</strong> {userInfo.direccion_anterior}</p>
-                            )}
-                            {userInfo.informacion_adicional_anterior && (
-                                <p><strong>Info adicional:</strong> {userInfo.informacion_adicional_anterior}</p>
-                            )}
-                        </div>
-                    )}
 
                     <div className="shipping-form">
                         <div className="form-group-checkout-form">

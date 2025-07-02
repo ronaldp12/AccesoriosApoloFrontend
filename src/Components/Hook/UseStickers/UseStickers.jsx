@@ -139,7 +139,7 @@ export const UseStickers = () => {
                 return false;
             }
 
-            const tamanoMap = { 'small': 'pequeño', 'medium': 'mediano', 'large': 'grande' };
+            const tamanoMap = { 'pequeño': 'pequeño', 'mediano': 'mediano', 'grande': 'grande' };
             const tamanoAPI = tamanoMap[sizeConfig.size];
 
             if (!tamanoAPI) {
@@ -185,11 +185,11 @@ export const UseStickers = () => {
     // Funciones de ayuda (sin cambios)
     const getSizeDimensions = (size) => {
         const dimensions = {
-            'small': { width: 5, height: 5, size: 'small' },
-            'medium': { width: 7, height: 5, size: 'medium' },
-            'large': { width: 9, height: 5, size: 'large' }
+            'pequeño': { width: 5, height: 5, size: 'pequeño' },
+            'mediano': { width: 7, height: 5, size: 'mediano' },
+            'grande': { width: 9, height: 5, size: 'grande' }
         };
-        return dimensions[size] || { width: 5, height: 5, size: 'small' };
+        return dimensions[size] || { width: 5, height: 5, size: 'pequeño' };
     };
 
     const calculateStickerPrice = (sticker, sizeConfig) => {
