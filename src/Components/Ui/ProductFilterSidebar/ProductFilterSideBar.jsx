@@ -1,16 +1,22 @@
-import React, { useState } from "react";
-import { useSubcategories } from "../../Hook/UseSubcategories/UseSubcategories.jsx"; 
+import React, { useState, useEffect } from "react";
+import { useSubcategories } from "../../Hook/UseSubcategories/UseSubcategories.jsx";
 import "./ProductFilterSidebar.css";
+import { useBrandsBySubcategory } from "../../Hook/UseSubcategories/UseSubcategories.jsx";
 
-export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, currentCategory, onPriceFilterChange }) => {
+export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, currentCategory, onPriceFilterChange, onSelectBrand, selectedSubcategory, brandFromURL, selectedBrand, }) => {
     const [priceLimit, setPriceLimit] = useState(1000000);
 
     const { subcategories, loading, error } = useSubcategories(currentCategory);
+    const { brands, loading: brandsLoading, error: brandsError } = useBrandsBySubcategory(selectedSubcategory);
 
     const handlePriceChange = (e) => {
         const newPrice = Number(e.target.value);
         setPriceLimit(newPrice);
         onPriceFilterChange(newPrice);
+    };
+
+    const handleSubcategorySelect = (subcategoryLabel) => {
+        onSelectSubcategory(subcategoryLabel);
     };
 
     return (
@@ -24,6 +30,10 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, c
                     <select>
                         <option value="">cascos</option>
                         <option value="">equipación carretera</option>
+                        <option value="">accesorios</option>
+                        <option value="">marcas</option>
+                        <option value="">luces</option>
+                        <option value="">limpieza</option>
                     </select>
                 </div>
             </div>
@@ -42,7 +52,8 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, c
                         {subcategories.map((subcategory, index) => (
                             <li
                                 key={index}
-                                onClick={() => onSelectSubcategory(subcategory.label)}
+                                onClick={() => handleSubcategorySelect(subcategory.label)}
+                                className={selectedSubcategory === subcategory.label ? 'active' : ''}
                             >
                                 {subcategory.label.toUpperCase()}
                             </li>
@@ -54,9 +65,37 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, c
             <div className="filter-brand">
                 <h2>MOSTRAR POR MARCA</h2>
                 <div className="filter-sort-brand">
-                    <select>
+                    <select
+                        value={selectedBrand || brandFromURL || ""}
+                        onChange={(e) => {
+                            onSelectBrand(e.target.value)
+                        }}
+                    >
                         <option value="">Selecciona la marca</option>
-                        <option value="">cascos</option>
+                        {brandFromURL ? (
+                            // Cuando está en modo marca, mostrar marcas fijas
+                            <>
+                                <option value="Ich">Ich</option>
+                                <option value="Shaft">Shaft</option>
+                                <option value="Hro">Hro</option>
+                                <option value="Arai">Arai</option>
+                                <option value="Shoei">Shoei</option>
+                                <option value="Otros">Otros</option>
+                            </>
+                        ) : (
+                            // Cuando NO está en modo marca, mantener lógica original
+                            brandsLoading ? (
+                                <option disabled>Cargando marcas...</option>
+                            ) : brandsError ? (
+                                <option disabled>Error al cargar marcas</option>
+                            ) : (
+                                brands.map((brand, index) => (
+                                    <option key={index} value={brand}>
+                                        {brand}
+                                    </option>
+                                ))
+                            )
+                        )}
                     </select>
                 </div>
             </div>

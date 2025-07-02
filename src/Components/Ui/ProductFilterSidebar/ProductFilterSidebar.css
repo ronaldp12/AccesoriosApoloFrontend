@@ -54,13 +54,26 @@
 .filter-sidebar li {
     cursor: pointer;
     padding: 8px 0;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
     font-size: 15px;
     font-weight: 500;
     font-family: "Barlow Condensed", sans-serif;
 }
 
 .filter-sidebar li:hover {
+    color: #014aad;
+}
+
+.filter-sidebar li.active {
+    color: #014aad;
+    font-weight: 600;
+    background-color: #f0f4ff;
+    padding-left: 10px;
+    border-left: 3px solid #014aad;
+    transition: all 0.3s ease; 
+}
+
+.filter-sidebar li.active:hover {
     color: #014aad;
 }
 

@@ -10,18 +10,18 @@ export const ConfigureStickerModal = ({
     onClose,
     sticker,
     brand,
-    quantity =1,
+    quantity = 1,
     isPersonalSticker = false
 }) => {
     const stickerCartFunctions = UseStickers();
 
     const [showFloatingMessage, setShowFloatingMessage] = useState(false);
-
     const [isClosing, setIsClosing] = useState(false);
     const [selectedSize, setSelectedSize] = useState(null);
     const [customWidth, setCustomWidth] = useState("");
     const [customHeight, setCustomHeight] = useState("");
     const [currentPrice, setCurrentPrice] = useState(0);
+    const [dimensionError, setDimensionError] = useState("");
 
     const [isAddingToCartLocal, setIsAddingToCartLocal] = useState(false);
     const [localSuccessMessage, setLocalSuccessMessage] = useState('');
@@ -29,7 +29,7 @@ export const ConfigureStickerModal = ({
 
     const {
         userLogin,
-        handleAddStickerToCart, // Función del contexto para calcomanías personalizadas
+        handleAddStickerToCart,
         calculateStickerPrice: contextCalculatePrice,
         getSizeDimensions: contextGetSizeDimensions,
         loadCartFromBackend,
@@ -37,7 +37,7 @@ export const ConfigureStickerModal = ({
     } = useContext(context);
 
     const {
-        addStickerToCart, // Función del hook para calcomanías generales
+        addStickerToCart,
         getSizeDimensions: hookGetSizeDimensions,
         calculateStickerPrice: hookCalculatePrice,
         checkStock,
@@ -47,9 +47,50 @@ export const ConfigureStickerModal = ({
     } = stickerCartFunctions || {};
 
     const isSticker = () => {
+        // Simplificamos la lógica
         const brandToCheck = brand || sticker?.brand;
-        const normalizedBrand = brandToCheck?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return normalizedBrand === "calcomania" || sticker?.type === 'sticker';
+        const typeToCheck = sticker?.type;
+
+        console.log('Checking if is sticker:', {
+            brand: brandToCheck,
+            type: typeToCheck,
+            sticker: sticker
+        });
+
+        // Si tiene type 'sticker', es sticker
+        if (typeToCheck === 'sticker') return true;
+
+        // Si el brand contiene 'calcomania' (sin importar acentos o case)
+        if (brandToCheck) {
+            const normalizedBrand = brandToCheck.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return normalizedBrand.includes("calcomania");
+        }
+
+        return true; // Por defecto asumimos que es sticker si llegamos hasta aquí
+    };
+
+    // Validar dimensiones personalizadas
+    const validateCustomDimensions = (width, height) => {
+        const w = parseInt(width);
+        const h = parseInt(height);
+
+        if (!width || !height) {
+            return "Debes ingresar ambas dimensiones";
+        }
+
+        if (isNaN(w) || isNaN(h)) {
+            return "Las dimensiones deben ser números válidos";
+        }
+
+        if (w < 5 || h < 5) {
+            return "Las dimensiones mínimas son 5cm x 5cm";
+        }
+
+        if (w > 20 || h > 30) {
+            return "Las dimensiones máximas son 20cm x 30cm";
+        }
+
+        return "";
     };
 
     useEffect(() => {
@@ -62,6 +103,17 @@ export const ConfigureStickerModal = ({
         }
     }, [localSuccessMessage, localErrorMessage]);
 
+    // Efecto para validar dimensiones personalizadas
+    useEffect(() => {
+        if (isPersonalSticker && customWidth && customHeight) {
+            const error = validateCustomDimensions(customWidth, customHeight);
+            setDimensionError(error);
+        } else {
+            setDimensionError("");
+        }
+    }, [customWidth, customHeight, isPersonalSticker]);
+
+    // Efecto para calcular precio
     useEffect(() => {
         if (!sticker) return;
 
@@ -69,7 +121,13 @@ export const ConfigureStickerModal = ({
         const getSizeDimensions = isPersonalSticker ? contextGetSizeDimensions : hookGetSizeDimensions;
         const calculatePrice = isPersonalSticker ? contextCalculatePrice : hookCalculatePrice;
 
-        if (selectedSize && getSizeDimensions) {
+        // Para calcomanías personalizadas con dimensiones custom
+        if (isPersonalSticker && customWidth && customHeight && !dimensionError) {
+            width = parseInt(customWidth);
+            height = parseInt(customHeight);
+        }
+        // Para tamaños predefinidos
+        else if (selectedSize && getSizeDimensions) {
             const dimensions = getSizeDimensions(selectedSize);
             width = dimensions?.width;
             height = dimensions?.height;
@@ -77,6 +135,7 @@ export const ConfigureStickerModal = ({
 
         if (width && height && !isNaN(width) && !isNaN(height)) {
             if (isSticker() && sticker?.price && !isPersonalSticker) {
+                // Lógica para calcomanías del staff
                 let basePrice = sticker.price;
                 let finalPrice = basePrice;
                 if (selectedSize === "mediano") finalPrice = basePrice * 2.25;
@@ -87,13 +146,14 @@ export const ConfigureStickerModal = ({
                 }
                 setCurrentPrice(finalPrice);
             } else if (calculatePrice) {
+                // Lógica para calcomanías personalizadas
                 setCurrentPrice(calculatePrice(width, height));
             }
         } else {
             const initialPrice = sticker?.discountedPrice || sticker?.price || 0;
             setCurrentPrice(initialPrice);
         }
-    }, [selectedSize, customWidth, customHeight, sticker, isPersonalSticker, contextGetSizeDimensions, hookGetSizeDimensions, contextCalculatePrice, hookCalculatePrice]);
+    }, [selectedSize, customWidth, customHeight, sticker, isPersonalSticker, dimensionError, contextGetSizeDimensions, hookGetSizeDimensions, contextCalculatePrice, hookCalculatePrice]);
 
     const handleClose = () => {
         setIsClosing(true);
@@ -114,10 +174,30 @@ export const ConfigureStickerModal = ({
         setCurrentPrice(sticker?.price || 0);
         setLocalSuccessMessage('');
         setLocalErrorMessage('');
+        setDimensionError('');
     };
 
     const handleSizeSelect = (size) => {
         setSelectedSize(size);
+        // Limpiar dimensiones personalizadas cuando se selecciona un tamaño predefinido
+        if (isPersonalSticker) {
+            setCustomWidth("");
+            setCustomHeight("");
+            setDimensionError("");
+        }
+    };
+
+    const handleCustomDimensionChange = (type, value) => {
+        if (type === 'width') {
+            setCustomWidth(value);
+        } else {
+            setCustomHeight(value);
+        }
+
+        // Limpiar selección de tamaño cuando se usan dimensiones personalizadas
+        if (value && selectedSize) {
+            setSelectedSize(null);
+        }
     };
 
     const getSizeConfig = () => {
@@ -130,10 +210,36 @@ export const ConfigureStickerModal = ({
     };
 
     const isValidConfiguration = () => {
+        console.log('Validando configuración:', {
+            isSticker: isSticker(),
+            isPersonalSticker,
+            selectedSize,
+            customWidth,
+            customHeight,
+            dimensionError,
+            brand: brand || sticker?.brand,
+            stickerType: sticker?.type
+        });
+
         if (isSticker()) {
-            return selectedSize !== null;
+            if (isPersonalSticker) {
+                // Para calcomanías personalizadas: debe tener tamaño fijo O dimensiones custom válidas
+                const hasValidSize = selectedSize !== null;
+                const hasValidCustom = customWidth && customHeight &&
+                    !dimensionError &&
+                    parseInt(customWidth) > 0 && parseInt(customHeight) > 0;
+
+                console.log('Personal sticker validation:', { hasValidSize, hasValidCustom });
+                return hasValidSize || hasValidCustom;
+            } else {
+                // Para calcomanías del staff: solo tamaño seleccionado
+                const isValid = selectedSize !== null;
+                console.log('Staff sticker validation:', { isValid, selectedSize });
+                return isValid;
+            }
         }
-        return false; 
+        console.log('No es sticker');
+        return false;
     };
 
     const getAvailableStock = () => {
@@ -154,14 +260,16 @@ export const ConfigureStickerModal = ({
 
             // Construimos el objeto para el carrito local.
             const itemParaCarritoLocal = {
-                id: sticker.id, // ID de la calcomanía del staff
+                id: sticker.id,
                 title: sticker.title,
                 price: currentPrice,
                 originalPrice: sticker.originalPrice,
                 image: sticker.image,
                 brand: sticker.brand,
-                size: selectedSize, // 'small', 'medium', 'large'
-                type: 'staff_sticker'
+                size: selectedSize || 'custom',
+                customDimensions: (isPersonalSticker && customWidth && customHeight) ?
+                    { width: parseInt(customWidth), height: parseInt(customHeight) } : null,
+                type: isPersonalSticker ? 'personal_sticker' : 'staff_sticker'
             };
 
             handleAddToCartLocal(itemParaCarritoLocal);
@@ -186,11 +294,20 @@ export const ConfigureStickerModal = ({
             const sizeConfig = getSizeConfig();
 
             if (isPersonalSticker) {
-                // Llama a la función del contexto para calcomanías personalizadas.
-                const customSizeConfig = { width: parseInt(customWidth) || 5, height: parseInt(customHeight) || 5, size: 'custom' };
-                success = await handleAddStickerToCart(sticker, customSizeConfig);
+                // Para calcomanías personalizadas
+                let configToUse;
+                if (customWidth && customHeight) {
+                    configToUse = {
+                        width: parseInt(customWidth),
+                        height: parseInt(customHeight),
+                        size: 'custom'
+                    };
+                } else {
+                    configToUse = sizeConfig;
+                }
+                success = await handleAddStickerToCart(sticker, configToUse);
             } else {
-                // Llama a la función del hook UseStickers para calcomanías del staff.
+                // Para calcomanías del staff
                 const config = { ...sizeConfig, size: selectedSize, cantidad: quantity };
                 success = await addStickerToCart(sticker, config);
             }
@@ -245,6 +362,8 @@ export const ConfigureStickerModal = ({
 
                 <div className="config-section">
                     <p className="config-label">Tamaño de calcomanía</p>
+
+                    {/* Botones de tamaño fijo - siempre se muestran */}
                     <div className="size-options">
                         <button
                             onClick={() => handleSizeSelect("pequeño")}
@@ -265,6 +384,43 @@ export const ConfigureStickerModal = ({
                             Grande (9×5 cm)
                         </button>
                     </div>
+
+                    {/* Solo mostrar inputs personalizados si es calcomanía personal */}
+                    {isPersonalSticker && (
+                        <div className="dimensions-inputs">
+                            <p className="config-label">Personaliza las dimensiones:</p>
+
+                            <div className="dimension-input-group">
+                                <label>Ancho (cm): (Min: 5, Max: 20)</label>
+                                <input
+                                    type="number"
+                                    value={customWidth}
+                                    onChange={(e) => handleCustomDimensionChange('width', e.target.value)}
+                                    min="5"
+                                    max="20"
+                                    placeholder="5-20"
+                                />
+                            </div>
+
+                            <div className="dimension-input-group">
+                                <label>Alto (cm): (Min: 5, Max: 30)</label>
+                                <input
+                                    type="number"
+                                    value={customHeight}
+                                    onChange={(e) => handleCustomDimensionChange('height', e.target.value)}
+                                    min="5"
+                                    max="30"
+                                    placeholder="5-30"
+                                />
+                            </div>
+
+                            {dimensionError && (
+                                <div className="dimension-error">
+                                    {dimensionError}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <p className="config-label">Cantidad: <span>{quantity}</span></p>
@@ -304,9 +460,25 @@ export const ConfigureStickerModal = ({
                         className="buy-btn"
                         onClick={handleAddToCart}
                         disabled={
-                            !isValidConfiguration() ||
-                            isCurrentlyAdding ||
-                            (!isPersonalSticker && availableStock !== null && availableStock <= 0 && userLogin)
+                            (() => {
+                                const validConfig = !isValidConfiguration();
+                                const adding = isCurrentlyAdding;
+                                const dimError = isPersonalSticker && dimensionError;
+                                const stockIssue = !isPersonalSticker && availableStock !== null && availableStock <= 0 && userLogin;
+
+                                console.log('Button disabled conditions:', {
+                                    validConfig,
+                                    adding,
+                                    dimError,
+                                    stockIssue,
+                                    isPersonalSticker,
+                                    dimensionError,
+                                    availableStock,
+                                    userLogin
+                                });
+
+                                return validConfig || adding || dimError || stockIssue;
+                            })()
                         }
                     >
                         {isCurrentlyAdding ? (

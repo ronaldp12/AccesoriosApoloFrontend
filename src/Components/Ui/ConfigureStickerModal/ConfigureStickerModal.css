@@ -88,9 +88,14 @@
     gap: 8px;
 }
 
+.preview-image{
+    background-color: #eeeded;
+    border-radius: 8px;
+}
+
 .preview-image img {
     width: 150px;
-    height: auto;
+    height: 150px;
     border-radius: 8px;
 }
 
