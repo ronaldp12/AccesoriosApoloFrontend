@@ -73,14 +73,14 @@ export const ProductPage = () => {
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedBrand("");
-    setBrandFromURL(""); 
+    setBrandFromURL("");
 
     if (categoryFromURL) setSelectedCategory(decodeURIComponent(categoryFromURL));
     if (subcategoryFromURL) setSelectedSubcategory(decodeURIComponent(subcategoryFromURL));
     if (brandFromURL) {
       const decodedBrand = decodeURIComponent(brandFromURL);
       setSelectedBrand(decodedBrand);
-      setBrandFromURL(decodedBrand); 
+      setBrandFromURL(decodedBrand);
     }
 
     resetCartState();
@@ -187,7 +187,7 @@ export const ProductPage = () => {
       : apiError;
 
   const getPageTitle = () => {
-    if (brandFromURL) { 
+    if (brandFromURL) {
       return brandFromURL === 'Otros' ? 'Otras Marcas' : `Marca ${brandFromURL}`;
     }
     if (selectedSubcategory) {
@@ -200,9 +200,15 @@ export const ProductPage = () => {
   };
 
   const getDisplayImage = () => {
-    if (brandFromURL && brandFromURL !== 'Otros') {
-      return getBrandImage(brandFromURL);
+    // Solo cambiar imagen si estamos en modo marca (brandFromURL existe)
+    if (brandFromURL) {
+      // En modo marca, usar selectedBrand si existe, sino brandFromURL
+      const currentBrand = selectedBrand || brandFromURL;
+      if (currentBrand && currentBrand !== 'Otros') {
+        return getBrandImage(currentBrand);
+      }
     }
+    // Si no estamos en modo marca, usar imagen de categoría
     return getCategoryImage(selectedCategory);
   };
 
@@ -226,7 +232,7 @@ export const ProductPage = () => {
           onSelectSubcategory={handleSubcategorySelect}
           currentCategory={selectedCategory}
           onPriceFilterChange={setPriceFilter}
-          onSelectBrand={handleBrandSelect} 
+          onSelectBrand={handleBrandSelect}
           selectedSubcategory={selectedSubcategory}
           brandFromURL={brandFromURL}
           selectedBrand={selectedBrand}
@@ -261,13 +267,13 @@ export const ProductPage = () => {
           )}
 
           <div className="img-category-container-product-page">
-             {!brandFromURL && <h2>{getPageTitle()}</h2>}
+            {!brandFromURL && <h2>{getPageTitle()}</h2>}
 
             {(!brandFromURL || brandFromURL !== 'Otros') && ( // Cambiar selectedBrand por brandFromURL
               <img
                 className="img-category-product-page"
                 src={getDisplayImage()}
-                alt={`Imagen de ${brandFromURL || selectedCategory || 'categoría'}`} // Cambiar selectedBrand por brandFromURL
+                alt={`Imagen de ${brandFromURL ? (selectedBrand || brandFromURL) : selectedCategory || 'categoría'}`}
               />
             )}
 
