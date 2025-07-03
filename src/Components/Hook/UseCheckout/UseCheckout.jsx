@@ -49,6 +49,7 @@ export const UseCheckout = () => {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
+    const [backendCartSummary, setBackendCartSummary] = useState(null);
     const [isUserRegistered, setIsUserRegistered] = useState(false);
     const [facturaId, setFacturaId] = useState(''); // Para datos de pago
     const [paymentData, setPaymentData] = useState(() => {
@@ -614,6 +615,12 @@ export const UseCheckout = () => {
             setCarritoItems(result.articulos_en_carrito || []);
             setNumeroItemsCarrito(result.numero_articulos_carrito || 0);
 
+            // ⭐ NUEVO: Guardar el resumen del backend
+            if (result.resumen_pedido) {
+                setBackendCartSummary(result.resumen_pedido);
+                console.log('Resumen del backend guardado:', result.resumen_pedido);
+            }
+
             console.log('Carrito cargado exitosamente:', result);
 
         } catch (err) {
@@ -689,18 +696,29 @@ export const UseCheckout = () => {
         };
     }, [token]);
 
+    
+
     // CORREGIDO: Definir productos y resumen que se van a mostrar
     const productosAMostrar = token ? carritoItems : localProducts;
     const resumenAMostrar = token ?
-        // Para usuarios logueados, construir el resumen desde carritoItems
-        {
-            TotalArticulosSinDescuento: carritoItems.reduce((sum, item) => sum + (item.precio_original || item.subtotalArticulo), 0),
-            DescuentoArticulos: carritoItems.reduce((sum, item) => sum + (item.descuento_total || 0), 0),
-            Subtotal: carritoItems.reduce((sum, item) => sum + item.subtotalArticulo, 0),
+        // Para usuarios logueados, usar el resumen del backend
+        (backendCartSummary || {
+            TotalArticulosSinDescuento: 0,
+            DescuentoArticulos: 0,
+            Subtotal: 0,
             PrecioEnvio: 14900,
-            Total: carritoItems.reduce((sum, item) => sum + item.subtotalArticulo, 0) + 14900
-        } :
+            Total: 14900
+        }) :
+        // Para usuarios no logueados, usar el resumen local
         localCartSummary;
+
+    console.log('🔍 DEBUG - Estados de resumen:', {
+    token: !!token,
+    backendCartSummary,
+    localCartSummary,
+    resumenAMostrar,
+    carritoItems: carritoItems.length
+});
 
     return {
         // Estado del formulario
@@ -756,6 +774,7 @@ export const UseCheckout = () => {
         clearCheckoutData,
         getLastAddress,
         parseAddress,
-        lastAddressInfo
+        lastAddressInfo,
+        backendCartSummary,
     };
 };

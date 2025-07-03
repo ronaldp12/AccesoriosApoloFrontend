@@ -7,7 +7,6 @@ import { VerifyAccount } from "./Components/Ui/VerifyAccount/VerifyAccount.jsx";
 import { ProfileData } from "./Components/Ui/ProfileData/ProfileData.jsx";
 import { ProfileLayout } from "./Components/Layouts/ProfileLayout/ProfileLayout.jsx";
 import { ProfileOrders } from "./Components/Ui/ProfileOrders/ProfileOrders.jsx";
-import { WishList } from "./Components/Ui/WishList/WishList.jsx";
 import { WelcomeModal } from "./Components/Layouts/WelcomeModal/WelcomeModal.jsx";
 import { useContext, useState } from "react";
 import { context } from "./Context/Context.jsx";
@@ -49,7 +48,7 @@ export function App() {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const location = useLocation();
-  const hideChatbotRoutes = ['/checkout', '/checkout/pago'];
+  const hideChatbotRoutes = ['/checkout', '/checkout/pago', '/gracias-por-tu-compra'];
   const shouldShowChatbot = !hideChatbotRoutes.includes(location.pathname);
 
   const handleOpenRegister = () => {
@@ -224,7 +223,6 @@ export function App() {
 
           <Route index element={<ProfileData />} />
           <Route path="orders" element={<ProfileOrders />} />
-          <Route path="wish-list" element={<WishList />} />
         </Route>
 
         <Route

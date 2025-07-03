@@ -24,6 +24,7 @@ export const ProfileOrders = () => {
       });
 
       const result = await response.json();
+      console.log('Historial de pedidos:', result);
       if (result.success) {
         // Agrupar productos por factura
         const pedidosAgrupados = agruparPorFactura(result.data);
@@ -51,7 +52,7 @@ export const ProfileOrders = () => {
       return acc;
     }, {});
 
-    return Object.values(grouped);
+    return Object.values(grouped).sort((a, b) => b.id_factura - a.id_factura);
   };
 
   const toggleExpandOrder = (facturaId) => {
@@ -122,7 +123,7 @@ export const ProfileOrders = () => {
             className={`star ${star <= (currentRating || 0) ? 'filled' : ''} ${disabled ? 'disabled' : ''}`}
             onClick={() => !disabled && onRatingChange(itemId, star)}
           >
-            ★
+            <i className={`fa-star ${star <= (currentRating || 0) ? 'fa-solid' : 'fa-regular'}`}></i>
           </span>
         ))}
       </div>
@@ -137,6 +138,15 @@ export const ProfileOrders = () => {
       </div>
     );
   }
+
+  const formatPrice = (price) => {
+    return Number(price).toLocaleString("es-CO", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      useGrouping: true
+    });
+  };
+
 
   return (
     <div className={styles.ordersContainer}>
@@ -164,7 +174,7 @@ export const ProfileOrders = () => {
                   <p className={styles.ordersTitle}>{productosPrincipal.nombre_item}</p>
                   <p className={styles.ordersQuantity}><strong>CANT {productosPrincipal.cantidad}</strong></p>
                   <p className={styles.orderAddress}>{pedido.direccion}</p>
-                  <p className={styles.orderPrice}><strong>${productosPrincipal.precio_unidad.toLocaleString()} COP</strong></p>
+                  <p className={styles.orderPrice}><strong>${formatPrice(productosPrincipal.precio_unidad)} COP</strong></p>
 
                   {/* Calificación del producto principal */}
                   {productosPrincipal.tipo_item === 'producto' && (
@@ -188,6 +198,9 @@ export const ProfileOrders = () => {
                   )}
                 </div>
 
+
+              </div>
+              <div>
                 {/* Flecha expandible si hay más productos */}
                 {productosRestantes.length > 0 && (
                   <div className={styles.expandSection}>
@@ -195,7 +208,8 @@ export const ProfileOrders = () => {
                       className={styles.expandButton}
                       onClick={() => toggleExpandOrder(pedido.id_factura)}
                     >
-                      <span className={styles.expandArrow}>{isExpanded ? '▲' : '▼'}</span>
+                      <span className={styles.expandArrow}>{isExpanded ? <i class="fas fa-chevron-up"></i>
+                        : <i className="fas fa-chevron-down"></i>}</span>
                       <span className={styles.productCount}>({productosRestantes.length} productos)</span>
                     </button>
                   </div>
@@ -217,7 +231,7 @@ export const ProfileOrders = () => {
                         <div className={styles.orderDetails}>
                           <p className={styles.ordersTitle}>{producto.nombre_item}</p>
                           <p className={styles.ordersQuantity}><strong>CANT {producto.cantidad}</strong></p>
-                          <p className={styles.orderPrice}><strong>${producto.precio_unidad.toLocaleString()} COP</strong></p>
+                          <p className={styles.orderPrice}><strong>${formatPrice(producto.precio_unidad)} COP</strong></p>
 
                           {/* Calificación del producto adicional */}
                           {producto.tipo_item === 'producto' && (

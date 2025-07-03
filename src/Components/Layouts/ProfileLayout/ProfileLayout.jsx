@@ -38,10 +38,6 @@ export const ProfileLayout = () => {
                         className={location.pathname === '/profile/orders' ? 'active' : ''}
                     >Pedidos
                     </button>
-                    <button onClick={() => navigate('/profile/wish-list')}
-                        className={location.pathname === '/profile/wish-list' ? 'active' : ''}
-                    >Lista de deseos
-                    </button>
 
                     <button className='logout' onClick={ openConfirmLogout }
                     > <span><i className="bi bi-box-arrow-left"></i></span>Salir

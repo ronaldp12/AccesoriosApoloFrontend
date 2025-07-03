@@ -6,10 +6,11 @@ import imgAvatar from '../../../assets/icons/avatar-chatbot2.png';
 export const FloatingChatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState([
         {
             id: 1,
-            text: "¡Hola! Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?",
+            text: "¡Hola! Soy tu asistente virtual de Accesorios Apolo. ¿En qué puedo ayudarte hoy?",
             isBot: true,
             timestamp: new Date()
         }
@@ -24,29 +25,68 @@ export const FloatingChatbot = () => {
         scrollToBottom();
     }, [messages]);
 
-    const handleSendMessage = () => {
-        if (message.trim() === '') return;
+    const sendMessageToAPI = async (userMessage) => {
+        try {
+            const response = await fetch('https://accesoriosapolobackend.onrender.com/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: userMessage
+                })
+            });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.respuesta || "Lo siento, no pude procesar tu solicitud en este momento.";
+        } catch (error) {
+            console.error('Error al enviar mensaje:', error);
+            return "Lo siento, hubo un problema de conexión. Por favor, inténtalo de nuevo.";
+        }
+    };
+
+    const handleSendMessage = async () => {
+        if (message.trim() === '' || isLoading) return;
+
+        const userMessage = message.trim();
         const newMessage = {
-            id: messages.length + 1,
-            text: message,
+            id: Date.now(),
+            text: userMessage,
             isBot: false,
             timestamp: new Date()
         };
 
         setMessages(prev => [...prev, newMessage]);
         setMessage('');
+        setIsLoading(true);
 
-        // Simular respuesta del bot después de 1 segundo
-        setTimeout(() => {
-            const botResponse = {
-                id: messages.length + 2,
-                text: "Gracias por tu mensaje. Esta sería la respuesta de tu backend una vez que lo conectes.",
+        try {
+            const botResponse = await sendMessageToAPI(userMessage);
+
+            const botMessage = {
+                id: Date.now() + 1,
+                text: botResponse,
                 isBot: true,
                 timestamp: new Date()
             };
-            setMessages(prev => [...prev, botResponse]);
-        }, 1000);
+
+            setMessages(prev => [...prev, botMessage]);
+        } catch (error) {
+            console.error('Error:', error);
+            const errorMessage = {
+                id: Date.now() + 1,
+                text: "Lo siento, hubo un error al procesar tu mensaje. Por favor, inténtalo de nuevo.",
+                isBot: true,
+                timestamp: new Date()
+            };
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleKeyPress = (e) => {
@@ -76,7 +116,9 @@ export const FloatingChatbot = () => {
                             </div>
                             <div>
                                 <h3 className={styles.botName}>Asistente Virtual</h3>
-                                <p className={styles.botStatus}>En línea</p>
+                                <p className={styles.botStatus}>
+                                    {isLoading ? 'Escribiendo...' : 'En línea'}
+                                </p>
                             </div>
                         </div>
                         <button
@@ -107,6 +149,25 @@ export const FloatingChatbot = () => {
                                 </div>
                             </div>
                         ))}
+
+                        {/* Indicador de carga */}
+                        {isLoading && (
+                            <div className={`${styles.messageWrapper} ${styles.botMessage}`}>
+                                <div className={styles.messageContent}>
+                                    <div className={`${styles.messageAvatar} ${styles.botMessageAvatar}`}>
+                                        <Bot size={12} />
+                                    </div>
+                                    <div className={`${styles.messageBubble} ${styles.botBubble}`}>
+                                        <div className={styles.typingIndicator}>
+                                            <span></span>
+                                            <span></span>
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
                         <div ref={messagesEndRef} />
                     </div>
 
@@ -120,11 +181,12 @@ export const FloatingChatbot = () => {
                                 onKeyPress={handleKeyPress}
                                 placeholder="Escribe tu mensaje..."
                                 className={styles.messageInput}
+                                disabled={isLoading}
                             />
                             <button
                                 onClick={handleSendMessage}
-                                disabled={message.trim() === ''}
-                                className={`${styles.sendButton} ${message.trim() === '' ? styles.sendButtonDisabled : ''}`}
+                                disabled={message.trim() === '' || isLoading}
+                                className={`${styles.sendButton} ${(message.trim() === '' || isLoading) ? styles.sendButtonDisabled : ''}`}
                             >
                                 <Send size={14} />
                             </button>

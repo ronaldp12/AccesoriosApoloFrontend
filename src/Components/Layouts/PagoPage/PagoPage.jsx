@@ -12,18 +12,71 @@ export const PagoPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isCheckoutReady, setIsCheckoutReady] = useState(false);
     const [checkoutInstance, setCheckoutInstance] = useState(null);
+    const [dataLoaded, setDataLoaded] = useState(false); // ⭐ NUEVO: Para controlar cuando los datos están listos
 
     const {
         paymentData,
         resumenPedido,
-        localCartSummary,
+        backendCartSummary,
+        carritoLoading, // ⭐ NUEVO: Para saber si el carrito está cargando
         clearCartAfterPayment,
         createCheckout,
+        loadUserData,
+        loadCarritoData,
+        loadLocalCartData
     } = UseCheckout();
 
     const WOMPI_PUBLIC_KEY = import.meta.env.VITE_WOMPI_PUBLIC_KEY;
     const REDIRECT_URL = import.meta.env.VITE_WOMPI_REDIRECT_URL;
-    const summary = resumenPedido;
+
+    // ⭐ CORREGIDO: Determinar el resumen correcto y si los datos están listos
+    const getSummaryAndStatus = () => {
+        if (contextToken) {
+            // Para usuarios logueados
+            const isReady = !carritoLoading && backendCartSummary !== null;
+            const summary = backendCartSummary || {
+                TotalArticulosSinDescuento: 0,
+                DescuentoArticulos: 0,
+                Subtotal: 0,
+                PrecioEnvio: 14900,
+                Total: 14900
+            };
+            return { summary, isReady };
+        } else {
+            // Para usuarios no logueados
+            const summary = resumenPedido;
+            const isReady = summary && summary.Total > 14900; // Verificar que hay productos
+            return { summary, isReady };
+        }
+    };
+
+    const { summary, isReady } = getSummaryAndStatus();
+
+    // ⭐ NUEVO: Effect para controlar cuando los datos están listos
+    useEffect(() => {
+        console.log('🔍 Verificando si los datos están listos:', {
+            contextToken: !!contextToken,
+            carritoLoading,
+            backendCartSummary: !!backendCartSummary,
+            resumenPedido,
+            isReady
+        });
+
+        setDataLoaded(isReady);
+    }, [contextToken, carritoLoading, backendCartSummary, resumenPedido, isReady]);
+
+    useEffect(() => {
+        console.log('🔍 useEffect ejecutándose:', { contextToken: !!contextToken });
+
+        if (contextToken) {
+            console.log('📡 Cargando datos de usuario logueado...');
+            loadUserData();
+            loadCarritoData();
+        } else {
+            console.log('💾 Cargando datos locales...');
+            loadLocalCartData();
+        }
+    }, [contextToken, loadUserData, loadCarritoData, loadLocalCartData]);
 
     useEffect(() => {
         if (document.querySelector('script[src*="checkout.wompi.co/widget.js"]')) {
@@ -44,20 +97,40 @@ export const PagoPage = () => {
         }
     }, [paymentData, navigate]);
 
+    // ⭐ CORREGIDO: Esperar a que los datos estén completamente cargados
     useEffect(() => {
-        if (!isScriptLoaded || !paymentData || !WOMPI_PUBLIC_KEY) return;
-        if (!summary || summary.Total <= 0) {
+        if (!isScriptLoaded || !paymentData || !WOMPI_PUBLIC_KEY || !dataLoaded) {
+            console.log('⏳ Esperando datos:', {
+                isScriptLoaded,
+                paymentData: !!paymentData,
+                WOMPI_PUBLIC_KEY: !!WOMPI_PUBLIC_KEY,
+                dataLoaded
+            });
+            return;
+        }
+
+        if (!summary || summary.Total <= 14900) { // Solo envío, sin productos
+            console.log('⚠️ No hay productos en el carrito');
             setIsLoading(true);
             return;
         }
+
         if (isCheckoutReady) return;
 
+        console.log('✅ Preparando widget de Wompi con resumen:', summary);
         setIsLoading(false);
 
         const prepareWompiWidget = async (summaryData) => {
             try {
                 const amountInCents = Math.round(summaryData.Total * 100);
                 const reference = `REF-${paymentData.id_factura_temp}-${Date.now()}`;
+
+                console.log('💰 Creando checkout con:', {
+                    reference,
+                    amountInCents,
+                    total: summaryData.Total
+                });
+
                 const signatureData = await createCheckout(reference, amountInCents);
 
                 if (!window.WidgetCheckout) throw new Error('Wompi no disponible.');
@@ -77,15 +150,17 @@ export const PagoPage = () => {
 
                 setCheckoutInstance(checkout);
                 setIsCheckoutReady(true);
+                console.log('✅ Widget de Wompi listo');
 
             } catch (err) {
+                console.error('❌ Error al preparar widget:', err);
                 setError(`Error al inicializar: ${err.message}`);
             }
         };
 
         prepareWompiWidget(summary);
 
-    }, [isScriptLoaded, paymentData, summary, isCheckoutReady, createCheckout, WOMPI_PUBLIC_KEY, REDIRECT_URL]);
+    }, [isScriptLoaded, paymentData, summary, isCheckoutReady, createCheckout, WOMPI_PUBLIC_KEY, REDIRECT_URL, dataLoaded]);
 
     const handlePagarClick = () => {
         if (checkoutInstance && isCheckoutReady) {
@@ -117,14 +192,42 @@ export const PagoPage = () => {
         );
     }
 
-    if (isLoading) {
+    // ⭐ CORREGIDO: Mostrar cargando mientras se obtienen los datos
+    if (isLoading || !dataLoaded) {
         return (
             <div className="pago-container-pago-page">
                 <h1>Finalizar Pago</h1>
-                <p className="loading-message">Cargando resumen del pedido...</p>
+                <p className="loading-message">
+                    {contextToken ? 'Cargando datos del carrito...' : 'Cargando resumen del pedido...'}
+                </p>
+                {contextToken && carritoLoading && (
+                    <p className="loading-message">Consultando carrito del servidor...</p>
+                )}
             </div>
         );
     }
+
+    // ⭐ VERIFICACIÓN: Asegurarse de que hay productos antes de mostrar
+    if (!summary || summary.Total <= 14900) {
+        return (
+            <div className="pago-container-pago-page">
+                <div className="error-container">
+                    <h2>Carrito Vacío</h2>
+                    <p>No hay productos en tu carrito para procesar el pago.</p>
+                    <button className="btn-back" onClick={() => navigate('/checkout')}>Volver al Checkout</button>
+                </div>
+            </div>
+        );
+    }
+
+    console.log('🔍 PAGOPAGE - Summary usado:', {
+        resumenPedido,
+        backendCartSummary,
+        summary,
+        paymentData,
+        contextToken: !!contextToken,
+        dataLoaded
+    });
 
     return (
         <div className="pago-container-pago-page">
