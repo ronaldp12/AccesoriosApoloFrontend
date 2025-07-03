@@ -40,12 +40,17 @@ import { LoginModal } from "./Components/Layouts/LoginModal/LoginModal.jsx";
 import { CheckoutForm } from "./Components/Layouts/CheckoutForm/CheckoutForm.jsx";
 import { PagoPage } from "./Components/Layouts/PagoPage/PagoPage.jsx";
 import { ThanksForYourPurchase } from "./Components/Pages/ThanksForYourPurchase/ThanksForYourPurchase.jsx";
+import { FloatingChatbot } from "./Components/Ui/FloatingChatbot/FloatingChatbot.jsx";
+import { useLocation } from 'react-router-dom';
 
 export function App() {
 
   const { isWelcomeOpen, setIsWelcomeOpen } = useContext(context);
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const location = useLocation();
+  const hideChatbotRoutes = ['/checkout', '/checkout/pago'];
+  const shouldShowChatbot = !hideChatbotRoutes.includes(location.pathname);
 
   const handleOpenRegister = () => {
     setShowRegister(true);
@@ -196,7 +201,7 @@ export function App() {
             </>
           }
         />
-        
+
 
         <Route path="/verify-account" element={<VerifyAccount />} />
         <Route path="/request-email" element={<RequestResetEmail />} />
@@ -249,6 +254,7 @@ export function App() {
       <WelcomeModal isOpen={isWelcomeOpen} onClose={() => setIsWelcomeOpen(false)} />
       {showRegister && <RegisterModal onClose={handleCloseRegister} />}
       {showLogin && <LoginModal onClose={handleCloseLogin} />}
+      {shouldShowChatbot && <FloatingChatbot />}
     </>
   );
 }

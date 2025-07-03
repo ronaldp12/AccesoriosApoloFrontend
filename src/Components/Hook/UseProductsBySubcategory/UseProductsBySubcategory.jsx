@@ -46,7 +46,7 @@ export const useProductsBySubcategory = (subcategoryName, productReferencia = nu
                     price: product.precio_descuento || product.precio_unidad,
                     originalPrice: product.precio_descuento ? product.precio_unidad : null,
                     rating: product.promedio_calificacion,
-                    discount: product.descuento ? `${product.descuento}%` : null,
+                    discount: product.descuento ? `${product.descuento}` : null,
                     referencia: product.referencia,
                     promedio_calificacion: product.promedio_calificacion,
                     descripcion: product.descripcion,

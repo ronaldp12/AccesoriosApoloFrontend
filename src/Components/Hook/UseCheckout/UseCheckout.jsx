@@ -21,12 +21,27 @@ export const UseCheckout = () => {
     });
 
     const [localProducts, setLocalProducts] = useState([]);
-    const [localCartSummary, setLocalCartSummary] = useState({
-        TotalArticulosSinDescuento: 0,
-        DescuentoArticulos: 0,
-        Subtotal: 0,
-        PrecioEnvio: 14900,
-        Total: 14900
+    const [localCartSummary, setLocalCartSummary] = useState(() => {
+        try {
+            const savedPaymentData = sessionStorage.getItem('paymentData');
+            if (savedPaymentData) {
+                const parsedData = JSON.parse(savedPaymentData);
+                // Si encontramos un resumen guardado, lo usamos
+                if (parsedData.summary) {
+                    return parsedData.summary;
+                }
+            }
+        } catch (e) {
+            console.error("Error al leer el resumen del sessionStorage", e);
+        }
+        // Si no, volvemos al valor por defecto
+        return {
+            TotalArticulosSinDescuento: 0,
+            DescuentoArticulos: 0,
+            Subtotal: 0,
+            PrecioEnvio: 14900,
+            Total: 14900
+        };
     });
 
     // Estados de la UI y manejo de respuesta
@@ -55,14 +70,9 @@ export const UseCheckout = () => {
 
     const [lastAddressInfo, setLastAddressInfo] = useState(null);
 
-    const [productos, setProductos] = useState([]);
-    const [resumenPedido, setResumenPedido] = useState({
-        TotalArticulosSinDescuento: 0,
-        DescuentoArticulos: 0,
-        Subtotal: 0,
-        PrecioEnvio: 14900,
-        Total: 0
-    });
+    // CORREGIDO: Eliminar estos estados duplicados que causan confusión
+    // const [productos, setProductos] = useState([]);
+    // const [resumenPedido, setResumenPedido] = useState({...});
 
     const updateFormData = useCallback((field, value) => {
         setFormData(prev => ({
@@ -79,14 +89,13 @@ export const UseCheckout = () => {
     const loadLocalCartData = useCallback(() => {
         const localCart = getLocalCartProducts();
 
-        // Transformar los productos locales al formato esperado por el componente
         const transformedProducts = localCart.map(item => ({
-            nombre: item.name || item.title || `Producto ${item.id}`,
+            nombre: item.title,
             cantidad: item.quantity,
-            subtotalArticulo: item.price * item.quantity,
-            url_imagen_o_archivo: item.image || item.url_imagen_o_archivo || '/api/placeholder/80/80',
-            tamano: item.size || null,
-            localCartId: item.localCartId
+            subtotalArticulo: item.price * item.quantity, // Usamos el precio final guardado
+            precio_antes_descuento: item.priceBeforeDiscount * item.quantity,
+            url_imagen_o_archivo: item.image,
+            tamano: item.size
         }));
 
         setLocalProducts(transformedProducts);
@@ -97,7 +106,7 @@ export const UseCheckout = () => {
         const itemCount = getLocalCartItemCount(localCart);
         setNumeroItemsCarrito(itemCount);
 
-        console.log('Carrito local cargado:', {
+        console.log('Checkout -> Carrito local cargado con resumen:', {
             productos: transformedProducts,
             resumen: summary,
             totalItems: itemCount
@@ -191,8 +200,8 @@ export const UseCheckout = () => {
     }, [token]);
 
     /**
- * Crea el checkout y obtiene los datos de pago de Wompi
- */
+     * Crea el checkout y obtiene los datos de pago de Wompi
+     */
     const createCheckout = useCallback(async (reference, amountInCents) => {
         try {
             setCheckoutLoading(true);
@@ -390,10 +399,24 @@ export const UseCheckout = () => {
 
             const result = await response.json();
             if (result.id_factura_creada) {
+                // CORREGIDO: Usar el resumen correcto según el tipo de usuario
+                const summaryToSave = token ?
+                    // Para usuarios logueados, usar los datos del carrito del servidor
+                    {
+                        TotalArticulosSinDescuento: result.resumen_pedido?.TotalArticulosSinDescuento || 0,
+                        DescuentoArticulos: result.resumen_pedido?.DescuentoArticulos || 0,
+                        Subtotal: result.resumen_pedido?.Subtotal || 0,
+                        PrecioEnvio: result.resumen_pedido?.PrecioEnvio || 14900,
+                        Total: result.resumen_pedido?.Total || 14900
+                    } :
+                    // Para usuarios no logueados, usar el resumen local
+                    localCartSummary;
+
                 paymentInfo = {
                     id_factura_temp: result.id_factura_creada,
                     email_cliente: formData.correo,
-                    nombre_cliente: formData.nombre
+                    nombre_cliente: formData.nombre,
+                    summary: summaryToSave
                 };
                 setPaymentData(paymentInfo);
                 sessionStorage.setItem('paymentData', JSON.stringify(paymentInfo));
@@ -410,7 +433,6 @@ export const UseCheckout = () => {
 
             if (result.id_factura_creada) {
                 setFacturaId(result.id_factura_creada);
-                // Después de setFacturaId(result.id_factura_creada);
                 console.log('Factura creada exitosamente:', result.id_factura_creada);
                 console.log('Datos de pago guardados:', paymentInfo);
             }
@@ -424,11 +446,11 @@ export const UseCheckout = () => {
         } finally {
             setLoading(false);
         }
-    }, [formData, validateForm, token, getLocalCartProducts]);
+    }, [formData, validateForm, token, getLocalCartProducts, localCartSummary]);
 
     /**
- * Limpia los datos del checkout
- */
+     * Limpia los datos del checkout
+     */
     const clearCheckoutData = useCallback(() => {
         setCheckoutData(null);
         setCheckoutError(null);
@@ -485,13 +507,13 @@ export const UseCheckout = () => {
 
                     console.log('Dirección desestructurada:', addressFields);
                     // Guardar la información de la dirección anterior para mostrar en el componente
-if (lastAddressData) {
-    setLastAddressInfo({
-        direccion_completa: lastAddressData.direccion,
-        informacion_adicional: lastAddressData.informacion_adicional,
-        direccion_desestructurada: addressFields
-    });
-}
+                    if (lastAddressData) {
+                        setLastAddressInfo({
+                            direccion_completa: lastAddressData.direccion,
+                            informacion_adicional: lastAddressData.informacion_adicional,
+                            direccion_desestructurada: addressFields
+                        });
+                    }
                 } else {
                     // Si no hay dirección anterior, usar la del perfil (si existe)
                     console.log('No se encontró dirección anterior, usando datos del perfil');
@@ -586,19 +608,9 @@ if (lastAddressData) {
                 throw new Error(result.mensaje || 'Error al consultar el carrito');
             }
 
-            // CAMBIO: Asegurar que siempre haya un resumen válido
-            const resumenActualizado = result.resumen_pedido || {
-                TotalArticulosSinDescuento: 0,
-                DescuentoArticulos: 0,
-                Subtotal: 0,
-                PrecioEnvio: 14900,
-                Total: 14900
-            };
-
             // Actualizar estados con los datos del carrito
             setCarritoItems(result.articulos_en_carrito || []);
             setNumeroItemsCarrito(result.numero_articulos_carrito || 0);
-            setResumenPedido(resumenActualizado);
 
             console.log('Carrito cargado exitosamente:', result);
 
@@ -618,18 +630,18 @@ if (lastAddressData) {
         } else {
             loadLocalCartData();
         }
-    }, [token]);
+    }, [token, loadUserData, loadCarritoData, loadLocalCartData]);
 
     // Agregar un segundo useEffect para debug
     useEffect(() => {
         console.log('Estados actuales:', {
             token: !!token,
-            resumenPedido,
             localCartSummary,
             carritoItems: carritoItems.length,
-            localProducts: localProducts.length
+            localProducts: localProducts.length,
+            numeroItemsCarrito
         });
-    }, [token, resumenPedido, localCartSummary, carritoItems, localProducts]);
+    }, [token, localCartSummary, carritoItems, localProducts, numeroItemsCarrito]);
 
     const clearCartAfterPayment = useCallback(() => {
         if (!token) {
@@ -648,18 +660,21 @@ if (lastAddressData) {
     }, [token]);
 
     /**
-     * Utilidades para el manejo de productos
+     * Utilidades para el manejo de productos (mantenidas para compatibilidad)
      */
     const addProduct = useCallback((product) => {
-        setProductos(prev => [...prev, product]);
+        // Esta función ya no se usa, pero se mantiene para compatibilidad
+        console.warn('addProduct is deprecated, use context functions instead');
     }, []);
 
     const removeProduct = useCallback((productId) => {
-        setProductos(prev => prev.filter(p => p.id !== productId));
+        // Esta función ya no se usa, pero se mantiene para compatibilidad
+        console.warn('removeProduct is deprecated, use context functions instead');
     }, []);
 
     const updateOrderSummary = useCallback((summary) => {
-        setResumenPedido(summary);
+        // Esta función ya no se usa, pero se mantiene para compatibilidad
+        console.warn('updateOrderSummary is deprecated, summaries are calculated automatically');
     }, []);
 
     useEffect(() => {
@@ -672,8 +687,18 @@ if (lastAddressData) {
         };
     }, [token]);
 
+    // CORREGIDO: Definir productos y resumen que se van a mostrar
     const productosAMostrar = token ? carritoItems : localProducts;
-    const resumenAMostrar = token ? resumenPedido : localCartSummary;
+    const resumenAMostrar = token ?
+        // Para usuarios logueados, construir el resumen desde carritoItems
+        {
+            TotalArticulosSinDescuento: carritoItems.reduce((sum, item) => sum + (item.precio_original || item.subtotalArticulo), 0),
+            DescuentoArticulos: carritoItems.reduce((sum, item) => sum + (item.descuento_total || 0), 0),
+            Subtotal: carritoItems.reduce((sum, item) => sum + item.subtotalArticulo, 0),
+            PrecioEnvio: 14900,
+            Total: carritoItems.reduce((sum, item) => sum + item.subtotalArticulo, 0) + 14900
+        } :
+        localCartSummary;
 
     return {
         // Estado del formulario
@@ -686,9 +711,9 @@ if (lastAddressData) {
         userInfo,
         isUserRegistered,
 
-        // Productos y resumen (actualizados)
-        productos: carritoItems, // Cambiar de productos a carritoItems
-        resumenPedido,
+        // CORREGIDO: Productos y resumen definitivos
+        productos: productosAMostrar,
+        resumenPedido: resumenAMostrar,
         numeroItemsCarrito,
         carritoLoading,
         carritoError,
@@ -700,8 +725,9 @@ if (lastAddressData) {
         // Funciones principales
         handleSaveAddress,
         loadUserData,
-        loadCarritoData, // Nueva función
+        loadCarritoData,
         resetForm,
+        loadLocalCartData,
 
         // Funciones de productos (mantenidas para compatibilidad)
         addProduct,
@@ -710,9 +736,6 @@ if (lastAddressData) {
 
         // Función de validación expuesta
         validateForm,
-        productos: productosAMostrar,
-        resumenPedido: resumenAMostrar,
-        loadLocalCartData,
 
         paymentData,
         clearCartAfterPayment,
@@ -729,8 +752,8 @@ if (lastAddressData) {
         createCheckout,
         getOrderStatus,
         clearCheckoutData,
-        getLastAddress, // Nueva función expuesta
-        parseAddress, // Nueva función expuesta
+        getLastAddress,
+        parseAddress,
         lastAddressInfo
     };
 };

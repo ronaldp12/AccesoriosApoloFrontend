@@ -25,6 +25,7 @@ import { useFilteredProducts } from "../../Hook/UseSubcategories/UseSubcategorie
 import { UseProductsCart } from "../../Hook/UseProductsCart/UseProductsCart.jsx";
 import { context } from "../../../Context/Context.jsx";
 import { UseProductsByBrand } from "../../Hook/UseProductsByBrand/UseProductsByBrand.jsx";
+import { UseCategories } from "../../Hook/UseCategories/UseCategories.jsx";
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -63,6 +64,12 @@ export const ProductPage = () => {
     loading: filteredLoading,
     error: filteredError
   } = useFilteredProducts(selectedSubcategory, selectedBrand);
+
+  const {
+    products: categoryProducts,
+    loading: categoryLoading,
+    error: categoryError
+  } = UseCategories(selectedCategory && !selectedSubcategory && !selectedBrand ? selectedCategory : null);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -130,9 +137,13 @@ export const ProductPage = () => {
     else if (selectedSubcategory) {
       productsToShow = apiProducts;
     }
-    // CAMBIAR ESTA PARTE: Si solo hay marca, usar productos por marca
+    // Si solo hay marca, usar productos por marca
     else if (selectedBrand) {
-      productsToShow = brandProducts; // Cambiar de [] a brandProducts
+      productsToShow = brandProducts;
+    }
+    // NUEVO: Si solo hay categoría, usar productos por categoría
+    else if (selectedCategory) {
+      productsToShow = categoryProducts;
     }
     // Si no hay selección, mostrar array vacío
     else {
@@ -178,13 +189,21 @@ export const ProductPage = () => {
     ? filteredLoading
     : selectedBrand && !selectedSubcategory
       ? brandLoading
-      : apiLoading;
+      : selectedSubcategory
+        ? apiLoading
+        : selectedCategory
+          ? categoryLoading
+          : false;
 
   const currentError = selectedBrand && selectedSubcategory
     ? filteredError
     : selectedBrand && !selectedSubcategory
       ? brandError
-      : apiError;
+      : selectedSubcategory
+        ? apiError
+        : selectedCategory
+          ? categoryError
+          : null;
 
   const getPageTitle = () => {
     if (brandFromURL) {
@@ -223,6 +242,13 @@ export const ProductPage = () => {
     setSelectedBrand(brandName);
   };
 
+  const handleCategorySelect = (categoryName) => {
+    console.log("Manejando categoría en ProductPage:", categoryName);
+    setSelectedCategory(categoryName);
+    setSelectedSubcategory(""); // Limpiar subcategoría
+    setSelectedBrand(""); // Limpiar marca
+  };
+
   return (
     <>
       <div className="store-container">
@@ -236,6 +262,7 @@ export const ProductPage = () => {
           selectedSubcategory={selectedSubcategory}
           brandFromURL={brandFromURL}
           selectedBrand={selectedBrand}
+          onSelectCategory={handleCategorySelect}
         />
 
         <div className="store-content">
@@ -307,12 +334,14 @@ export const ProductPage = () => {
             <div className="loading-container">
               <p>Cargando productos...</p>
             </div>
-          ) : finalProducts.length === 0 && (selectedSubcategory || selectedBrand) ? (
+          ) : finalProducts.length === 0 && (selectedSubcategory || selectedBrand || selectedCategory) ? (
             <div className="loading-container">
               <p>
                 {selectedBrand && selectedSubcategory
                   ? `No se encontraron productos de la marca "${selectedBrand}" en la subcategoría "${selectedSubcategory}"`
-                  : "Productos no encontrados para ese rango de precio"
+                  : selectedCategory
+                    ? `No se encontraron productos en la categoría "${selectedCategory}"`
+                    : "Productos no encontrados para ese rango de precio"
                 }
               </p>
             </div>

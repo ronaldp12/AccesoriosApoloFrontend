@@ -504,29 +504,28 @@ export const Provider = ({ children }) => {
     };
 
     const calculateLocalCartSummary = (products) => {
-        const totalSinDescuento = products.reduce((total, item) => {
-            // Usar originalPrice si existe, sino price
-            const priceToUse = item.originalPrice || item.price;
-            return total + (priceToUse * item.quantity);
-        }, 0);
+        let totalArticulosSinDescuento = 0;
+        let subtotalConDescuento = 0;
 
-        const descuento = products.reduce((total, item) => {
-            if (item.originalPrice && item.price < item.originalPrice) {
-                return total + ((item.originalPrice - item.price) * item.quantity);
-            }
-            return total;
-        }, 0);
+        products.forEach(item => {
+            // El subtotal es la suma de los precios finales (ya con descuento)
+            subtotalConDescuento += item.price * item.quantity;
 
-        const subtotal = totalSinDescuento - descuento;
+            // El total "sin descuento" es la suma de los precios antes de aplicar el descuento,
+            // que ya incluyen el incremento por tamaño. Si no existe, usamos el precio final.
+            totalArticulosSinDescuento += (item.priceBeforeDiscount || item.price) * item.quantity;
+        });
+
+        const descuentoCalculado = totalArticulosSinDescuento - subtotalConDescuento;
         const envio = 14900;
-        const total = subtotal + envio;
+        const totalFinal = subtotalConDescuento + envio;
 
         return {
-            TotalArticulosSinDescuento: totalSinDescuento,
-            DescuentoArticulos: descuento,
-            Subtotal: subtotal,
+            TotalArticulosSinDescuento: totalArticulosSinDescuento,
+            DescuentoArticulos: descuentoCalculado,
+            Subtotal: subtotalConDescuento,
             PrecioEnvio: envio,
-            Total: total
+            Total: totalFinal
         };
     };
 

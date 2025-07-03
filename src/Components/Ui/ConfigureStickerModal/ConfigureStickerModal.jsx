@@ -258,18 +258,25 @@ export const ConfigureStickerModal = ({
             setLocalSuccessMessage('');
             setLocalErrorMessage('');
 
+            let priceBeforeDiscount = sticker.price; // Empezamos con el precio base del sticker
+            if (selectedSize === "mediano") {
+                priceBeforeDiscount = sticker.price * 2.25;
+            } else if (selectedSize === "grande") {
+                priceBeforeDiscount = sticker.price * 4;
+            }
+
             // Construimos el objeto para el carrito local.
-            const itemParaCarritoLocal = {
+             const itemParaCarritoLocal = {
                 id: sticker.id,
                 title: sticker.title,
-                price: currentPrice,
-                originalPrice: sticker.originalPrice,
+                price: currentPrice, // Precio final con descuento (ej: 25.600)
+                originalPrice: sticker.price, // Precio base unitario (ej: 8.000)
+                priceBeforeDiscount: priceBeforeDiscount, // Precio con incremento, sin descuento (ej: 32.000)
+                discountPercent: sticker.discountPercent || 0, // ¡¡NUEVO Y CRUCIAL!!
                 image: sticker.image,
                 brand: sticker.brand,
                 size: selectedSize || 'custom',
-                customDimensions: (isPersonalSticker && customWidth && customHeight) ?
-                    { width: parseInt(customWidth), height: parseInt(customHeight) } : null,
-                type: isPersonalSticker ? 'personal_sticker' : 'staff_sticker'
+                type: 'staff_sticker' // O la lógica que determine el tipo
             };
 
             handleAddToCartLocal(itemParaCarritoLocal);

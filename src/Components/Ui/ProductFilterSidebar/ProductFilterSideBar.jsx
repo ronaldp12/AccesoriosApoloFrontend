@@ -3,8 +3,9 @@ import { useSubcategories } from "../../Hook/UseSubcategories/UseSubcategories.j
 import "./ProductFilterSidebar.css";
 import { useBrandsBySubcategory } from "../../Hook/UseSubcategories/UseSubcategories.jsx";
 
-export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, currentCategory, onPriceFilterChange, onSelectBrand, selectedSubcategory, brandFromURL, selectedBrand, }) => {
+export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, currentCategory, onPriceFilterChange, onSelectBrand, selectedSubcategory, brandFromURL, selectedBrand, onSelectCategory }) => {
     const [priceLimit, setPriceLimit] = useState(1000000);
+    const [selectedCategory, setSelectedCategory] = useState(currentCategory || "");
 
     const { subcategories, loading, error } = useSubcategories(currentCategory);
     const { brands, loading: brandsLoading, error: brandsError } = useBrandsBySubcategory(selectedSubcategory);
@@ -27,13 +28,20 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, c
             <div className="filter-title">
                 <h2>FILTROS</h2>
                 <div className="filter-sort">
-                    <select>
-                        <option value="">cascos</option>
-                        <option value="">equipación carretera</option>
-                        <option value="">accesorios</option>
-                        <option value="">marcas</option>
-                        <option value="">luces</option>
-                        <option value="">limpieza</option>
+                    <select
+                        value={selectedCategory}
+                        onChange={(e) => {
+                            const newCategory = e.target.value;
+                            setSelectedCategory(newCategory);
+                            onSelectCategory(newCategory);
+                        }}
+                    >
+                        <option value="">Selecciona categoría</option>
+                        <option value="Cascos">Cascos</option>
+                        <option value="Equipacion Carretera">Equipación carretera</option>
+                        <option value="Accesorios">Accesorios</option>
+                        <option value="Luces">Luces</option>
+                        <option value="Limpieza">Limpieza</option>
                     </select>
                 </div>
             </div>

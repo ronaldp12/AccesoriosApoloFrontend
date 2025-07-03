@@ -23,7 +23,7 @@ export const PagoPage = () => {
 
     const WOMPI_PUBLIC_KEY = import.meta.env.VITE_WOMPI_PUBLIC_KEY;
     const REDIRECT_URL = import.meta.env.VITE_WOMPI_REDIRECT_URL;
-    const summary = contextToken ? resumenPedido : localCartSummary;
+    const summary = resumenPedido;
 
     useEffect(() => {
         if (document.querySelector('script[src*="checkout.wompi.co/widget.js"]')) {
