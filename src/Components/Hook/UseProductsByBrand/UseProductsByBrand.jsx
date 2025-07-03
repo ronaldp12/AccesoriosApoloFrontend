@@ -34,7 +34,7 @@ export const UseProductsByBrand = (marca) => {
                         title: producto.nombre,
                         price: producto.precio_descuento || producto.precio_unidad, 
                         originalPrice: producto.precio_descuento ? producto.precio_unidad : null, 
-                        rating: producto.promedio_calificacion,
+                        rating: producto.calificacion,
                         discount: producto.descuento || null, 
                         referencia: producto.referencia
                     }));

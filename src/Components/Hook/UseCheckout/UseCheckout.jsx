@@ -70,10 +70,6 @@ export const UseCheckout = () => {
 
     const [lastAddressInfo, setLastAddressInfo] = useState(null);
 
-    // CORREGIDO: Eliminar estos estados duplicados que causan confusión
-    // const [productos, setProductos] = useState([]);
-    // const [resumenPedido, setResumenPedido] = useState({...});
-
     const updateFormData = useCallback((field, value) => {
         setFormData(prev => ({
             ...prev,
@@ -89,14 +85,20 @@ export const UseCheckout = () => {
     const loadLocalCartData = useCallback(() => {
         const localCart = getLocalCartProducts();
 
-        const transformedProducts = localCart.map(item => ({
-            nombre: item.title,
-            cantidad: item.quantity,
-            subtotalArticulo: item.price * item.quantity, // Usamos el precio final guardado
-            precio_antes_descuento: item.priceBeforeDiscount * item.quantity,
-            url_imagen_o_archivo: item.image,
-            tamano: item.size
-        }));
+        const transformedProducts = localCart.map(item => {
+            // La misma lógica de fallback que en el contexto
+            const precioBase = item.priceBeforeDiscount || item.originalPrice || item.price;
+
+            return {
+                nombre: item.title,
+                cantidad: item.quantity,
+                subtotalArticulo: item.price * item.quantity, // Precio final
+                // Usamos el precio base que calculamos para el precio original
+                precio_antes_descuento: precioBase * item.quantity,
+                url_imagen_o_archivo: item.image,
+                tamano: item.size
+            };
+        });
 
         setLocalProducts(transformedProducts);
 

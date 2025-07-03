@@ -508,13 +508,16 @@ export const Provider = ({ children }) => {
         let subtotalConDescuento = 0;
 
         products.forEach(item => {
-            // El subtotal es la suma de los precios finales (ya con descuento)
-            subtotalConDescuento += item.price * item.quantity;
+    // El precio final (con descuento) siempre es 'price'
+    subtotalConDescuento += item.price * item.quantity;
 
-            // El total "sin descuento" es la suma de los precios antes de aplicar el descuento,
-            // que ya incluyen el incremento por tamaño. Si no existe, usamos el precio final.
-            totalArticulosSinDescuento += (item.priceBeforeDiscount || item.price) * item.quantity;
-        });
+    // Para el precio original, probamos en este orden:
+    // 1. ¿Existe 'priceBeforeDiscount'? (para calcomanías)
+    // 2. Si no, ¿existe 'originalPrice'? (para productos)
+    // 3. Si no, usamos 'price' como último recurso.
+    const precioBase = item.priceBeforeDiscount || item.originalPrice || item.price;
+    totalArticulosSinDescuento += precioBase * item.quantity;
+});
 
         const descuentoCalculado = totalArticulosSinDescuento - subtotalConDescuento;
         const envio = 14900;

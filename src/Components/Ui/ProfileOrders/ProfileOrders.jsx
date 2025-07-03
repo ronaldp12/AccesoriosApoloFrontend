@@ -167,23 +167,25 @@ export const ProfileOrders = () => {
                   <p className={styles.orderPrice}><strong>${productosPrincipal.precio_unidad.toLocaleString()} COP</strong></p>
 
                   {/* Calificación del producto principal */}
-                  <div className={styles.ratingSection}>
-                    <StarRating
-                      itemId={productosPrincipal.id_item}
-                      currentRating={productosPrincipal.calificacion_usuario || ratings[productosPrincipal.id_item]}
-                      onRatingChange={handleRatingChange}
-                      disabled={productosPrincipal.calificacion_usuario}
-                    />
-                    {!productosPrincipal.calificacion_usuario && (
-                      <button
-                        className={styles.rateButton}
-                        onClick={() => enviarCalificacion(productosPrincipal.id_item, productosPrincipal.id_item)}
-                        disabled={submittingRating[productosPrincipal.id_item]}
-                      >
-                        {submittingRating[productosPrincipal.id_item] ? 'Enviando...' : 'Calificar'}
-                      </button>
-                    )}
-                  </div>
+                  {productosPrincipal.tipo_item === 'producto' && (
+                    <div className={styles.ratingSection}>
+                      <StarRating
+                        itemId={productosPrincipal.id_item}
+                        currentRating={productosPrincipal.calificacion_usuario || ratings[productosPrincipal.id_item]}
+                        onRatingChange={handleRatingChange}
+                        disabled={productosPrincipal.calificacion_usuario}
+                      />
+                      {!productosPrincipal.calificacion_usuario && (
+                        <button
+                          className={styles.rateButton}
+                          onClick={() => enviarCalificacion(productosPrincipal.id_item, productosPrincipal.id_item)}
+                          disabled={submittingRating[productosPrincipal.id_item]}
+                        >
+                          {submittingRating[productosPrincipal.id_item] ? 'Enviando...' : 'Calificar'}
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Flecha expandible si hay más productos */}
@@ -218,23 +220,25 @@ export const ProfileOrders = () => {
                           <p className={styles.orderPrice}><strong>${producto.precio_unidad.toLocaleString()} COP</strong></p>
 
                           {/* Calificación del producto adicional */}
-                          <div className={styles.ratingSection}>
-                            <StarRating
-                              itemId={producto.id_item}
-                              currentRating={producto.calificacion_usuario || ratings[producto.id_item]}
-                              onRatingChange={handleRatingChange}
-                              disabled={producto.calificacion_usuario}
-                            />
-                            {!producto.calificacion_usuario && (
-                              <button
-                                className={styles.rateButton}
-                                onClick={() => enviarCalificacion(producto.id_item, producto.id_item)}
-                                disabled={submittingRating[producto.id_item]}
-                              >
-                                {submittingRating[producto.id_item] ? 'Enviando...' : 'Calificar'}
-                              </button>
-                            )}
-                          </div>
+                          {producto.tipo_item === 'producto' && (
+                            <div className={styles.ratingSection}>
+                              <StarRating
+                                itemId={producto.id_item}
+                                currentRating={producto.calificacion_usuario || ratings[producto.id_item]}
+                                onRatingChange={handleRatingChange}
+                                disabled={producto.calificacion_usuario}
+                              />
+                              {!producto.calificacion_usuario && (
+                                <button
+                                  className={styles.rateButton}
+                                  onClick={() => enviarCalificacion(producto.id_item, producto.id_item)}
+                                  disabled={submittingRating[producto.id_item]}
+                                >
+                                  {submittingRating[producto.id_item] ? 'Enviando...' : 'Calificar'}
+                                </button>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

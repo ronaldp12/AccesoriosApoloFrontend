@@ -34,7 +34,7 @@ export const UseCategories = (categoryName) => {
                         price: Number(product.precio_descuento || product.precio_unidad),
                         originalPrice: product.precio_descuento ? Number(product.precio_unidad) : null,
                         discount: product.descuento ? `${product.descuento}` : null,
-                        rating: product.promedio_calificacion || 0,
+                        rating: product.calificacion || 0,
                         image: product.url_imagen,
                         slug: product.referencia, // Usando referencia como slug
                         type: 'product' // Tipo por defecto
