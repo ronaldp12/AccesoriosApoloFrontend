@@ -26,6 +26,7 @@ import { UseProductsCart } from "../../Hook/UseProductsCart/UseProductsCart.jsx"
 import { context } from "../../../Context/Context.jsx";
 import { UseProductsByBrand } from "../../Hook/UseProductsByBrand/UseProductsByBrand.jsx";
 import { UseCategories } from "../../Hook/UseCategories/UseCategories.jsx";
+import { UseProductsWithDiscount } from "../../Hook/UseProductsWithDiscount/UseProductsWithDiscount.jsx";
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -35,6 +36,7 @@ export const ProductPage = () => {
   const [sortOrder, setSortOrder] = useState("");
   const [priceFilter, setPriceFilter] = useState(1000000);
   const [brandFromURL, setBrandFromURL] = useState("");
+  const [showDiscounts, setShowDiscounts] = useState(false);
   const location = useLocation();
   const { loadCartFromBackend } = useContext(context);
 
@@ -71,16 +73,26 @@ export const ProductPage = () => {
     error: categoryError
   } = UseCategories(selectedCategory && !selectedSubcategory && !selectedBrand ? selectedCategory : null);
 
+  const {
+    products: discountProducts,
+    loading: discountLoading,
+    error: discountError
+  } = UseProductsWithDiscount(showDiscounts && selectedCategory ? selectedCategory : null);
+
+  const categoriesWithDiscounts = ["Cascos", "Equipacion Carretera", "Accesorios", "Luces"];
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const categoryFromURL = queryParams.get("category");
     const subcategoryFromURL = queryParams.get("subcategory");
     const brandFromURL = queryParams.get("brand");
+    const discountsFromURL = queryParams.get("discounts"); // NUEVO
 
     setSelectedCategory("");
     setSelectedSubcategory("");
     setSelectedBrand("");
     setBrandFromURL("");
+    setShowDiscounts(false); // NUEVO
 
     if (categoryFromURL) setSelectedCategory(decodeURIComponent(categoryFromURL));
     if (subcategoryFromURL) setSelectedSubcategory(decodeURIComponent(subcategoryFromURL));
@@ -89,6 +101,7 @@ export const ProductPage = () => {
       setSelectedBrand(decodedBrand);
       setBrandFromURL(decodedBrand);
     }
+    if (discountsFromURL === 'true') setShowDiscounts(true); // NUEVO
 
     resetCartState();
   }, [location.search, resetCartState]);
@@ -130,7 +143,11 @@ export const ProductPage = () => {
   const getFilteredProducts = () => {
     let productsToShow = [];
 
-    if (selectedBrand && selectedSubcategory) {
+    if (showDiscounts && selectedCategory) {
+      productsToShow = discountProducts;
+    }
+
+    else if (selectedBrand && selectedSubcategory) {
       productsToShow = filteredProducts;
     }
     // Si solo hay subcategoría, usar productos de subcategoría
@@ -185,25 +202,29 @@ export const ProductPage = () => {
 
   const finalProducts = getFilteredProducts();
 
-  const isLoading = selectedBrand && selectedSubcategory
-    ? filteredLoading
-    : selectedBrand && !selectedSubcategory
-      ? brandLoading
-      : selectedSubcategory
-        ? apiLoading
-        : selectedCategory
-          ? categoryLoading
-          : false;
+  const isLoading = showDiscounts && selectedCategory
+    ? discountLoading
+    : selectedBrand && selectedSubcategory
+      ? filteredLoading
+      : selectedBrand && !selectedSubcategory
+        ? brandLoading
+        : selectedSubcategory
+          ? apiLoading
+          : selectedCategory
+            ? categoryLoading
+            : false;
 
-  const currentError = selectedBrand && selectedSubcategory
-    ? filteredError
-    : selectedBrand && !selectedSubcategory
-      ? brandError
-      : selectedSubcategory
-        ? apiError
-        : selectedCategory
-          ? categoryError
-          : null;
+  const currentError = showDiscounts && selectedCategory
+    ? discountError
+    : selectedBrand && selectedSubcategory
+      ? filteredError
+      : selectedBrand && !selectedSubcategory
+        ? brandError
+        : selectedSubcategory
+          ? apiError
+          : selectedCategory
+            ? categoryError
+            : null;
 
   const getPageTitle = () => {
     if (brandFromURL) {
@@ -235,19 +256,29 @@ export const ProductPage = () => {
     console.log("Manejando subcategoría en ProductPage:", subcategoryLabel);
     setSelectedSubcategory(subcategoryLabel);
     setSelectedBrand(""); // Limpiar marca cuando cambie subcategoría
+    setShowDiscounts(false);
   };
 
   const handleBrandSelect = (brandName) => {
     console.log("Manejando marca en ProductPage:", brandName);
     setSelectedBrand(brandName);
+    setShowDiscounts(false);
   };
 
   const handleCategorySelect = (categoryName) => {
     console.log("Manejando categoría en ProductPage:", categoryName);
     setSelectedCategory(categoryName);
-    setSelectedSubcategory(""); // Limpiar subcategoría
-    setSelectedBrand(""); // Limpiar marca
+    setSelectedSubcategory("");
+    setSelectedBrand("");
+
+    // Si la nueva categoría está en las de descuento, dejar el modo descuentos activo
+    if (categoriesWithDiscounts.includes(categoryName)) {
+      setShowDiscounts(true);
+    } else {
+      setShowDiscounts(false);
+    }
   };
+
 
   return (
     <>
@@ -296,7 +327,7 @@ export const ProductPage = () => {
           <div className="img-category-container-product-page">
             {!brandFromURL && <h2>{getPageTitle()}</h2>}
 
-            {(!brandFromURL || brandFromURL !== 'Otros') && ( // Cambiar selectedBrand por brandFromURL
+            {(!brandFromURL || brandFromURL !== 'Otros') && (
               <img
                 className="img-category-product-page"
                 src={getDisplayImage()}
@@ -304,7 +335,7 @@ export const ProductPage = () => {
               />
             )}
 
-            {!brandFromURL && ( // Cambiar selectedBrand por brandFromURL
+            {!brandFromURL && (
               <div className="logo-brand-container">
                 <img className="logo-category-1" src={logo1} alt="logo 1" />
                 <img className="logo-category-1" src={logo2} alt="logo 2" />

@@ -34,20 +34,12 @@ export const BrandSubmenu = ({ onCloseSubmenu }) => {
         }
     };
 
-    const handleVerMasClick = () => {
-        navigate('/products');
-
-        if (onCloseSubmenu) {
-            onCloseSubmenu();
-        }
-    };
-
     return (
         <div className="brand-submenu">
             <div className='submenu-title-brand'>
                 <h2>Marcas</h2>
                 <span
-                    onClick={handleVerMasClick}
+                    onClick={() => handleBrandClick('Ver-más')}
                     style={{ cursor: 'pointer' }}
                 >
                     Ver más

@@ -15,12 +15,11 @@ export const DiscountSection = () => {
 
       <div className="cards-container">
         <DiscountCard imagen={img1} titulo={"cascos"}/>
-        <DiscountCard imagen={img2} titulo={"chaquetas"}/>
-        <DiscountCard imagen={img3} titulo={"guantes"}/>
-        <DiscountCard imagen={img4} titulo={"gafas"}/>
+        <DiscountCard imagen={img2} titulo={"equipación carretera"}/>
+        <DiscountCard imagen={img3} titulo={"accesorios"}/>
+        <DiscountCard imagen={img4} titulo={"luces"}/>
       </div>
 
-      <button className="ver-btn">VER</button>
     </section>
     <div className='dots-container'>
 

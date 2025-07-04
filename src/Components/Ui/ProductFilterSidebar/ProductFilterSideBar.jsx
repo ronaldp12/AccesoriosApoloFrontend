@@ -2,13 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useSubcategories } from "../../Hook/UseSubcategories/UseSubcategories.jsx";
 import "./ProductFilterSidebar.css";
 import { useBrandsBySubcategory } from "../../Hook/UseSubcategories/UseSubcategories.jsx";
+import { UseBrandsByCategory } from "../../Hook/UseCategories/UseCategories.jsx";
 
 export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, currentCategory, onPriceFilterChange, onSelectBrand, selectedSubcategory, brandFromURL, selectedBrand, onSelectCategory }) => {
     const [priceLimit, setPriceLimit] = useState(1000000);
     const [selectedCategory, setSelectedCategory] = useState(currentCategory || "");
 
+    useEffect(() => {
+        setSelectedCategory(currentCategory || "");
+    }, [currentCategory]);
+
     const { subcategories, loading, error } = useSubcategories(currentCategory);
     const { brands, loading: brandsLoading, error: brandsError } = useBrandsBySubcategory(selectedSubcategory);
+
+    const { brands: categoryBrands, loading: categoryBrandsLoading, error: categoryBrandsError } = UseBrandsByCategory(currentCategory);
 
     const handlePriceChange = (e) => {
         const newPrice = Number(e.target.value);
@@ -48,14 +55,12 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, c
 
             {/* Lista dinámica de subcategorías */}
             <div className="subcategories-section">
-
                 {loading ? (
                     <p>Cargando subcategorías...</p>
                 ) : error ? (
                     <p>Error: {error}</p>
                 ) : (
                     <ul>
-
                         {/* Mostrar subcategorías dinámicas */}
                         {subcategories.map((subcategory, index) => (
                             <li
@@ -90,8 +95,8 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, c
                                 <option value="Shoei">Shoei</option>
                                 <option value="Otros">Otros</option>
                             </>
-                        ) : (
-                            // Cuando NO está en modo marca, mantener lógica original
+                        ) : selectedSubcategory ? (
+                            // Si hay subcategoría seleccionada, mostrar marcas por subcategoría
                             brandsLoading ? (
                                 <option disabled>Cargando marcas...</option>
                             ) : brandsError ? (
@@ -103,7 +108,20 @@ export const ProductFilterSidebar = ({ isMobile, onClose, onSelectSubcategory, c
                                     </option>
                                 ))
                             )
-                        )}
+                        ) : currentCategory ? (
+                            // CAMBIO CLAVE: Usar currentCategory en lugar de selectedCategory
+                            categoryBrandsLoading ? (
+                                <option disabled>Cargando marcas...</option>
+                            ) : categoryBrandsError ? (
+                                <option disabled>Error al cargar marcas</option>
+                            ) : (
+                                categoryBrands.map((brand, index) => (
+                                    <option key={index} value={brand}>
+                                        {brand}
+                                    </option>
+                                ))
+                            )
+                        ) : null}
                     </select>
                 </div>
             </div>
