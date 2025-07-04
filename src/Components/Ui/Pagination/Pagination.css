@@ -34,3 +34,11 @@
   color: #fff;
   border: 1px solid #014aad;
 }
+
+.pagination .dots {
+  padding: 0.5rem 0.8rem;
+  color: #555;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}

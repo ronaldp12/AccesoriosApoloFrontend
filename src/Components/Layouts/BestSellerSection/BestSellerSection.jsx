@@ -1,43 +1,49 @@
 import { PromoBanner } from "../../Ui/PromoBanner/PromoBanner.jsx";
 import { ProductCard } from "../../Ui/ProductCard/ProductCard.jsx";
-import img1 from "../../../assets/images/img1-sale.jpg";
 import "../BestSellerSection/BestSellerSection.css";
+import { useTopDiscountProducts } from "../../Hook/useTopDiscountProducts/useTopDiscountProducts.jsx";
 
 export const BestSellersSection = () => {
+  const { topDiscountProducts, loadingTopDiscounts, errorTopDiscounts } = useTopDiscountProducts();
+  console.log(topDiscountProducts);
+
   return (
     <section className="best-sellers-section">
       <div className="section-header-best-sellers">
-        <h2>LO MAS VENDIDO</h2>
-        <button>VER MAS</button>
+        <h2>MEJOR DESCUENTO</h2>
       </div>
 
       <div className="products-container">
-        <PromoBanner discount="30" text="OFF" subtext="ON ALL PRODUCTS" />
-        <ProductCard 
-          id={1}
-          image={img1}
-          brand="PROTAPER"
-          title="Puños Pro Taper K107 Cerrado Negro Azul"
-          price={18000}
-          rating={5}
-        />
-        <ProductCard 
-          id={2}
-          image={img1}
-          brand="PROTAPER"
-          title="Casco Integral XYZ"
-          price={18000}
-          rating={5}
-          discount="-10%"
-        />
-        <ProductCard 
-          id={3}
-          image={img1}
-          brand="PROTAPER"
-          title="Protector Tanque"
-          price={18000}
-          rating={5}
-        />
+        {loadingTopDiscounts ? (
+          <p>Cargando productos...</p>
+        ) : errorTopDiscounts ? (
+          <p>{errorTopDiscounts}</p>
+        ) : (
+          <>
+            {topDiscountProducts.length > 0 && (
+              <PromoBanner
+                discount={topDiscountProducts[0].descuento}
+                text="OFF"
+                subtext="ON ALL PRODUCTS"
+              />
+            )}
+
+            {topDiscountProducts.map((product) => (
+              <ProductCard
+                key={product.referencia}
+                id={product.referencia}
+                image={product.url_imagen}
+                brand={product.marca}
+                title={product.nombre}
+                price={product.precio_descuento || product.precio_unidad}
+                originalPrice={product.precio_unidad}
+                discount={`${product.descuento}%`}
+                rating={product.calificacion}
+                referencia={product.referencia}
+              />
+            ))}
+          </>
+        )}
       </div>
     </section>
   );

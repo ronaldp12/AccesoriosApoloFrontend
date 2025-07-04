@@ -48,8 +48,16 @@ export function App() {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const location = useLocation();
-  const hideChatbotRoutes = ['/checkout', '/checkout/pago', '/gracias-por-tu-compra'];
-  const shouldShowChatbot = !hideChatbotRoutes.includes(location.pathname);
+  const hideChatbotRoutes = [
+    '/checkout',
+    '/checkout/pago',
+    '/gracias-por-tu-compra',
+    '/verify-account',
+    '/request-email',
+    '/change-password',
+  ];
+
+  const shouldShowChatbot = !hideChatbotRoutes.includes(location.pathname) && !location.pathname.startsWith("/dashboard");
 
   const handleOpenRegister = () => {
     setShowRegister(true);

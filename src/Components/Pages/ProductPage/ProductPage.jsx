@@ -13,6 +13,7 @@ import img2 from '../../../assets/images/img-shaft-category-brand.png';
 import img3 from '../../../assets/images/img-hro-category-brand.png';
 import img4 from '../../../assets/images/img-arai-category-brand.png';
 import img5 from '../../../assets/images/img-shoei-category-brand.png';
+import img6 from '../../../assets/images/img-brands-category-brand.png';
 
 import { ProductFilterSidebar } from "../../Ui/ProductFilterSidebar/ProductFilterSideBar";
 import imgHelmet from "../../../assets/images/img1-helmet-product.png";
@@ -128,6 +129,7 @@ export const ProductPage = () => {
       'Hro': img3,
       'Arai': img4,
       'Shoei': img5,
+      'Ver-más': img6,
     };
     return brandImages[brand] || imgDefault;
   };
@@ -325,8 +327,17 @@ export const ProductPage = () => {
           )}
 
           <div className="img-category-container-product-page">
-            {!brandFromURL && <h2>{getPageTitle()}</h2>}
+            {/* Si es Ver-más mostramos Marcas */}
+            {brandFromURL === 'Ver-más' && (
+              <h2 className="product-page-title">Marcas</h2>
+            )}
 
+            {/* Si no es una marca Ver-más ni Otros, mostrar título de categoría/subcategoría */}
+            {(!brandFromURL && getPageTitle()) && (
+              <h2 className="product-page-title">{getPageTitle()}</h2>
+            )}
+
+            {/* Mostrar imagen, excepto para Otros */}
             {(!brandFromURL || brandFromURL !== 'Otros') && (
               <img
                 className="img-category-product-page"
@@ -335,6 +346,7 @@ export const ProductPage = () => {
               />
             )}
 
+            {/* Logos cuando no hay marca seleccionada */}
             {!brandFromURL && (
               <div className="logo-brand-container">
                 <img className="logo-category-1" src={logo1} alt="logo 1" />
@@ -344,6 +356,7 @@ export const ProductPage = () => {
               </div>
             )}
           </div>
+
 
           <div className="order-by-container">
             <button

@@ -11,22 +11,25 @@ export const ProfileData = () => {
     const [editedData, setEditedData] = useState({});
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPasswordValidation, setShowPasswordValidation] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
+    const [toasts, setToasts] = useState([]);
 
-    useEffect(() => {
-        if (successMessage) {
-            const timer = setTimeout(() => setSuccessMessage(""), 1500);
-            return () => clearTimeout(timer);
-        }
-    }, [successMessage]);
+    const showToast = (message, type = 'success') => {
+        const id = Date.now();
+        const newToast = { id, message, type };
 
-    useEffect(() => {
-        if (errorMessage) {
-            const timer = setTimeout(() => setErrorMessage(""), 1500);
-            return () => clearTimeout(timer);
-        }
-    }, [errorMessage]);
+        setToasts(prev => [...prev, newToast]);
+
+        // Auto-remover después de 4 segundos
+        setTimeout(() => {
+            setToasts(prev => prev.map(toast =>
+                toast.id === id ? { ...toast, exiting: true } : toast
+            ));
+
+            setTimeout(() => {
+                setToasts(prev => prev.filter(toast => toast.id !== id));
+            }, 300);
+        }, 4000);
+    };
 
     useEffect(() => {
         if (!token) return;
@@ -97,6 +100,7 @@ export const ProfileData = () => {
         // Ocultar validaciones al perder el foco
         setShowPasswordValidation(false);
     };
+
     const passwordsMatch = () => {
         return editedData.contrasena === confirmPassword;
     };
@@ -111,12 +115,12 @@ export const ProfileData = () => {
 
         if (isEditing && editedData.contrasena) {
             if (!isPasswordValid()) {
-                setErrorMessage("La contraseña no cumple con los requisitos.");
+                showToast("La contraseña no cumple con los requisitos.", 'error');
                 return;
             }
 
             if (!passwordsMatch()) {
-                setErrorMessage("Las contraseñas no coinciden.");
+                showToast("Las contraseñas no coinciden.", 'error');
                 return;
             }
         }
@@ -136,20 +140,20 @@ export const ProfileData = () => {
             const result = await response.json();
 
             if (response.ok) {
-                setSuccessMessage("Información editada con éxito.");
+                showToast("Información editada con éxito.", 'success');
                 setProfileData(prev => ({
                     ...prev,
                     ...editedData
                 }));
                 setIsEditing(false);
-                setConfirmPassword(''); 
-                setShowPasswordValidation(false); 
+                setConfirmPassword('');
+                setShowPasswordValidation(false);
             } else {
-                setErrorMessage(getErrorMessage(result, "Error al editar información."));
+                showToast(getErrorMessage(result, "Error al editar información."), 'error');
             }
         } catch (error) {
             console.error('Error al guardar perfil:', error);
-            setErrorMessage("Hubo un error al editar información.");
+            showToast("Hubo un error al editar información.", 'error');
         } finally {
             setIsLoading(false);
         }
@@ -163,18 +167,6 @@ export const ProfileData = () => {
                     <div className="profile-data-loader">
                         <img src={wheelIcon} alt="Cargando..." className="profile-data-spinner" />
                         <p className="profile-loading-text">Cargando perfil...</p>
-                    </div>
-                )}
-
-                {successMessage && (
-                    <div className="alert-profile-data success">
-                        {successMessage}
-                    </div>
-                )}
-
-                {errorMessage && (
-                    <div className="alert-profile-data error">
-                        {errorMessage}
                     </div>
                 )}
 
@@ -274,6 +266,20 @@ export const ProfileData = () => {
                     </>
                 )}
             </div>
+
+            {/* Toast notifications */}
+            {toasts.length > 0 && (
+                <div className="toastContainer">
+                    {toasts.map(toast => (
+                        <div
+                            key={toast.id}
+                            className={`toast ${toast.type} ${toast.exiting ? 'exiting' : ''}`}
+                        >
+                            {toast.message}
+                        </div>
+                    ))}
+                </div>
+            )}
         </main>
     );
 };
