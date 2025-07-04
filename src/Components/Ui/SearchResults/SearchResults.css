@@ -1,75 +1,110 @@
+/* SearchResults.css - Usando estilos originales */
 .search-results {
-    position: absolute;
-    top: 40px;
-    left: -4rem;
-    right: 0;
-    background: #fff;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    z-index: 9999;
-    width: 18rem;
-    max-height: 400px;
-    overflow-y: auto;
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-    transition: all 0.3s ease;
+  position: absolute;
+  top: 40px;
+  left: -4rem;
+  right: 0;
+  background: #fff;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  width: 18rem;
+  max-height: 400px;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .search-results.show {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .search-result-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 14px;
-    cursor: pointer;
-    transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .search-result-item:hover {
-    background: #f5f5f5;
+  background: #f5f5f5;
 }
 
 .result-image {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 4px;
-    margin-right: 12px;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
 }
 
 .result-info h4 {
-    font-size: 14px;
-    margin: 0;
-    font-weight: 500;
+  font-size: 14px;
+  margin: 0;
+  font-weight: 500;
 }
 
 .result-prices {
-    margin-top: 4px;
+  margin-top: 4px;
+  text-align: left;
 }
 
 .discount-price {
-    font-size: 14px;
-    font-weight: bold;
-    color: #333;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
 }
 
 .original-price {
-    font-size: 12px;
-    color: #999;
-    margin-left: 6px;
-    text-decoration: line-through;
+  font-size: 12px;
+  color: #999;
+  margin-left: 6px;
+  text-decoration: line-through;
 }
 
 .no-results {
-    padding: 14px;
-    text-align: center;
-    color: #666;
-    font-size: 14px;
+  padding: 14px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Estados de carga y error - manteniendo tu estilo */
+.search-loading,
+.search-error {
+  padding: 14px;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.search-error {
+  color: #d32f2f;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e0e0e0;
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 8px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 394px) {
@@ -109,8 +144,8 @@
   }
 }
 
-@media (min-width: 395px) and (max-width: 431px){
-    .search-results {
+@media (min-width: 395px) and (max-width: 431px) {
+  .search-results {
     top: 52px;
     border-radius: 0 0 7px 7px;
     max-height: 350px;
@@ -159,8 +194,8 @@
   }
 }
 
-@media (min-width: 482px) and (max-width: 821px){
-    .search-results {
+@media (min-width: 482px) and (max-width: 821px) {
+  .search-results {
     top: 52px;
     border-radius: 0 0 7px 7px;
     max-height: 350px;

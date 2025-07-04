@@ -7,10 +7,30 @@ export const ProfileOrders = () => {
   const [ratings, setRatings] = useState({});
   const [loading, setLoading] = useState(true);
   const [submittingRating, setSubmittingRating] = useState({});
+  const [expandingStates, setExpandingStates] = useState({});
+  const [toasts, setToasts] = useState([]);
 
   useEffect(() => {
     obtenerHistorialPedidos();
   }, []);
+
+  const showToast = (message, type = 'success') => {
+    const id = Date.now();
+    const newToast = { id, message, type };
+
+    setToasts(prev => [...prev, newToast]);
+
+    // Auto-remover después de 4 segundos
+    setTimeout(() => {
+      setToasts(prev => prev.map(toast =>
+        toast.id === id ? { ...toast, exiting: true } : toast
+      ));
+
+      setTimeout(() => {
+        setToasts(prev => prev.filter(toast => toast.id !== id));
+      }, 300);
+    }, 4000);
+  };
 
   const obtenerHistorialPedidos = async () => {
     try {
@@ -56,10 +76,21 @@ export const ProfileOrders = () => {
   };
 
   const toggleExpandOrder = (facturaId) => {
-    setExpandedOrders(prev => ({
-      ...prev,
-      [facturaId]: !prev[facturaId]
-    }));
+    if (expandedOrders[facturaId]) {
+      setExpandingStates(prev => ({ ...prev, [facturaId]: 'exiting' }));
+
+      setTimeout(() => {
+        setExpandedOrders(prev => ({ ...prev, [facturaId]: false }));
+        setExpandingStates(prev => ({ ...prev, [facturaId]: null }));
+      }, 600);
+    } else {
+      setExpandedOrders(prev => ({ ...prev, [facturaId]: true }));
+      setExpandingStates(prev => ({ ...prev, [facturaId]: 'entering' }));
+
+      setTimeout(() => {
+        setExpandingStates(prev => ({ ...prev, [facturaId]: 'entered' }));
+      }, 50);
+    }
   };
 
   const handleRatingChange = (itemId, rating) => {
@@ -71,7 +102,7 @@ export const ProfileOrders = () => {
 
   const enviarCalificacion = async (referencia, itemId) => {
     if (!ratings[itemId]) {
-      alert('Por favor selecciona una calificación');
+      showToast('Por favor selecciona una calificación', 'error');
       return;
     }
 
@@ -93,8 +124,7 @@ export const ProfileOrders = () => {
 
       const result = await response.json();
       if (result.success) {
-        alert('¡Gracias por tu calificación!');
-        // Actualizar el estado local para mostrar que ya fue calificado
+        showToast('¡Gracias por tu calificación!', 'success');
         setPedidos(prev => prev.map(pedido => ({
           ...pedido,
           productos: pedido.productos.map(producto =>
@@ -104,11 +134,11 @@ export const ProfileOrders = () => {
           )
         })));
       } else {
-        alert('Error al enviar calificación: ' + result.message);
+        showToast('Error al enviar calificación: ' + result.message, 'error');
       }
     } catch (error) {
       console.error('Error al enviar calificación:', error);
-      alert('Error de conexión al enviar calificación');
+      showToast('Error de conexión al enviar calificación', 'error');
     } finally {
       setSubmittingRating(prev => ({ ...prev, [itemId]: false }));
     }
@@ -146,7 +176,6 @@ export const ProfileOrders = () => {
       useGrouping: true
     });
   };
-
 
   return (
     <div className={styles.ordersContainer}>
@@ -208,8 +237,12 @@ export const ProfileOrders = () => {
                       className={styles.expandButton}
                       onClick={() => toggleExpandOrder(pedido.id_factura)}
                     >
-                      <span className={styles.expandArrow}>{isExpanded ? <i class="fas fa-chevron-up"></i>
-                        : <i className="fas fa-chevron-down"></i>}</span>
+                      <span
+                        className={`${styles.expandArrow} ${expandingStates[pedido.id_factura] === 'entered' ? styles.rotated : ''}`}
+                      >
+                        <i className="fas fa-chevron-down"></i>
+                      </span>
+
                       <span className={styles.productCount}>({productosRestantes.length} productos)</span>
                     </button>
                   </div>
@@ -217,8 +250,10 @@ export const ProfileOrders = () => {
               </div>
 
               {/* Productos adicionales expandidos */}
-              {isExpanded && productosRestantes.length > 0 && (
-                <div className={styles.expandedProducts}>
+              {(isExpanded || expandingStates[pedido.id_factura]) && productosRestantes.length > 0 && (
+                <div className={`${styles.expandedProducts} ${expandingStates[pedido.id_factura] ? styles[expandingStates[pedido.id_factura]] : styles.entered
+                  }`}
+                >
                   {productosRestantes.map((producto) => (
                     <div key={producto.id_item} className={styles.additionalProduct}>
                       <div className={styles.orderInfo}>
@@ -260,8 +295,21 @@ export const ProfileOrders = () => {
                 </div>
               )}
             </div>
+
           );
         })
+      )}
+      {toasts.length > 0 && (
+        <div className={styles.toastContainer}>
+          {toasts.map(toast => (
+            <div
+              key={toast.id}
+              className={`${styles.toast} ${styles[toast.type]} ${toast.exiting ? styles.exiting : ''}`}
+            >
+              {toast.message}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
