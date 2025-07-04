@@ -35,7 +35,6 @@ export const SearchBar = () => {
 
       const results = await response.json();
 
-      // Transformar los datos de la API al formato esperado por SearchResults
       const transformedResults = results.map(item => ({
         id: item.id,
         title: item.nombre,
@@ -48,14 +47,13 @@ export const SearchBar = () => {
         originalPrice: item.precio_unidad,
         discount: item.precio_descuento ? true : false,
         stock: item.stock_general,
-        tipo: item.tipo, // 'producto' o 'calcomania'
-        slug: generateSlug(item.nombre, item.id) // Generar slug basado en nombre e id
+        tipo: item.tipo, 
+        slug: item.id 
       }));
 
       setFilteredProducts(transformedResults);
     } catch (error) {
       if (error.name === 'AbortError') {
-        // Request fue cancelado, no hacer nada
         return;
       }
 
@@ -65,17 +63,6 @@ export const SearchBar = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // Función para generar slug (puedes ajustar según tu lógica)
-  const generateSlug = (nombre, id) => {
-    const slug = nombre
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-    return `${slug}-${id}`;
   };
 
   const handleInputChange = (e) => {

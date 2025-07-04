@@ -42,7 +42,7 @@ export const SearchResults = ({ results, onClose, isLoading, error }) => {
     const handleProductClick = (product) => {
         // Navegar según el tipo de producto
         const route = product.tipo === 'calcomania'
-            ? `/calcomania/${product.slug}`
+            ? `/sticker/${product.id}`
             : `/product/${product.slug}`;
 
         navigate(route);

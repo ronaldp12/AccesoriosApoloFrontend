@@ -18,8 +18,7 @@ export const LightsSubmenu = ({ onCloseSubmenu }) => {
     const fallbackItems = [
         { label: "Bombillos", img: img1 },
         { label: "Exploradoras", img: img2 },
-        { label: "Direccionales", img: [img3] },
-        { label: "Luces LED", img: img4 }
+        { label: "Direccionales", img: [img3] }
     ];
 
     const lightBrandLogos = [logo1, logo2, logo3, logo4, logo5];
