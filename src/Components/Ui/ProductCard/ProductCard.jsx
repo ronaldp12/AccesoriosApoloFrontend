@@ -209,7 +209,7 @@ export const ProductCard = ({
           <p className="brand">{brand}</p>
           <p className="title-product-card">{title}</p>
 
-          <div className="price-container">
+          <div className="price-container-product-card">
             {originalPrice ? (
               <div className="prices-group">
                 <span className="original-price">

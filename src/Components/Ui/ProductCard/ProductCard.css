@@ -80,7 +80,7 @@
     color: #ccc;
 }
 
-.price-container {
+.price-container-product-card {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -210,7 +210,7 @@
     .product-card {
         width: 100%;
         max-width: 25rem;
-        height: auto;
+        min-height: 29rem;
     }
 
     .product-card img {
@@ -223,6 +223,7 @@
     .product-card {
         width: 100%;
         max-width: 21rem;
-        height: auto;
+        min-height: 33rem;
     }
+    
 }
