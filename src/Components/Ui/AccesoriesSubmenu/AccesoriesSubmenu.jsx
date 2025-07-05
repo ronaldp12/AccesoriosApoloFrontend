@@ -6,6 +6,7 @@ import img4 from '../../../assets/images/img4-accesories.png';
 import img5 from '../../../assets/images/img5-accesories.png';
 import img6 from '../../../assets/images/img6-accesories.png';
 import img7 from '../../../assets/images/img7-accesories.png';
+import { useState, useEffect } from 'react';
 
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
@@ -17,6 +18,24 @@ import { useSubcategories } from '../../Hook/UseSubcategories/UseSubcategories.j
 
 export const AccesoriesSubmenu = ({ onCloseSubmenu }) => {
     const { subcategories, loading, error } = useSubcategories("Accesorios");
+    const [isExiting, setIsExiting] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsVisible(true);
+        }, 10);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Función mejorada para cerrar el submenú con animación
+    const handleCloseSubmenu = () => {
+        setIsExiting(true);
+        setTimeout(() => {
+            onCloseSubmenu();
+        }, 300); // Tiempo de la animación de salida
+    };
 
     const fallbackItems = [
         { label: "Llaveros", img: img1 },
@@ -40,10 +59,10 @@ export const AccesoriesSubmenu = ({ onCloseSubmenu }) => {
     return (
         <>
 
-            <div className="accesories-submenu">
+            <div className={`accesories-submenu ${isVisible ? 'visible' : ''} ${isExiting ? 'submenu-exit' : ''}`}>
 
-                <Link to={`/products?category=${encodeURIComponent("Accesorios")}`} className='submenu-title-accesories'
-                    onClick={onCloseSubmenu}>
+                <Link to={`/products?category=${encodeURIComponent("Accesorios")}`} className='submenu-title'
+                    onClick={handleCloseSubmenu}>
                     <h2>Accesorios</h2>
                     <span>Ver más </span>
                 </Link>
@@ -54,8 +73,9 @@ export const AccesoriesSubmenu = ({ onCloseSubmenu }) => {
                         <Link
                             key={`${item.label}-${index}`}
                             to={`/products?category=${encodeURIComponent("Accesorios")}&subcategory=${encodeURIComponent(item.label)}`}
+                            style={{ '--item-index': index }}
                             className={`submenu-item ${loading ? 'loading' : ''}`}
-                            onClick={onCloseSubmenu}
+                            onClick={handleCloseSubmenu}
                         >
                             <div className="item-image-container">
                                 <img

@@ -4,6 +4,7 @@ import img2 from '../../../assets/images/img2-cleaning.png';
 import img3 from '../../../assets/images/img3-cleaning.png';
 import img4 from '../../../assets/images/img4-cleaning.png';
 import img5 from '../../../assets/images/img5-cleaning.png';
+import { useState, useEffect } from 'react';
 
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
@@ -15,6 +16,22 @@ import { useSubcategories } from '../../Hook/UseSubcategories/UseSubcategories.j
 
 export const CleaningSubmenu = ({ onCloseSubmenu }) => {
     const { subcategories, loading, error } = useSubcategories("Limpieza");
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsVisible(true);
+        }, 10);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Función mejorada para cerrar el submenú con animación
+    const handleCloseSubmenu = () => {
+        setIsExiting(true);
+        setTimeout(() => {
+            onCloseSubmenu();
+        }, 300); // Tiempo de la animación de salida
+    };
 
     const fallbackItems = [
         { label: "Desengrasante", img: [img1] },
@@ -35,8 +52,8 @@ export const CleaningSubmenu = ({ onCloseSubmenu }) => {
 
     return (
         <div className="cleaning-submenu">
-            <Link to={`/products?category=${encodeURIComponent("Limpieza")}`} className='submenu-title-cleaning'
-                onClick={onCloseSubmenu}>
+            <Link to={`/products?category=${encodeURIComponent("Limpieza")}`} className='submenu-title'
+                onClick={handleCloseSubmenu}>
                 <h2>Limpieza</h2>
                 <span>Ver más </span>
             </Link>
@@ -47,8 +64,9 @@ export const CleaningSubmenu = ({ onCloseSubmenu }) => {
                     <Link
                         key={`${item.label}-${index}`}
                         to={`/products?category=${encodeURIComponent("Limpieza")}&subcategory=${encodeURIComponent(item.label)}`}
+                        style={{ '--item-index': index }}
                         className={`submenu-item ${loading ? 'loading' : ''}`}
-                        onClick={onCloseSubmenu}
+                        onClick={handleCloseSubmenu}
                     >
                         <div className="item-image-container">
                             <img

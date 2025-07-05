@@ -1,5 +1,6 @@
 import '../HelmetSubmenu/HelmetSubmenu.css';
 import { useSubcategories } from '../../Hook/UseSubcategories/UseSubcategories.jsx';
+import { useState, useEffect } from 'react';
 import logo1 from '../../../assets/images/img1-marca.png';
 import logo2 from '../../../assets/images/img2-marca.png';
 import logo3 from '../../../assets/images/img3-marca.png';
@@ -16,6 +17,25 @@ import { Link } from "react-router-dom";
 
 export const HelmetSubmenu = ({ onCloseSubmenu }) => {
   const { subcategories, loading, error } = useSubcategories("Cascos");
+  const [isVisible, setIsVisible] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+
+  // Efecto para manejar la animación de entrada
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 10);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Función mejorada para cerrar el submenú con animación
+  const handleCloseSubmenu = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onCloseSubmenu();
+    }, 300); // Tiempo de la animación de salida
+  };
 
   const fallbackItems = [
     { label: "Novedades", img: img1 },
@@ -36,22 +56,25 @@ export const HelmetSubmenu = ({ onCloseSubmenu }) => {
 
   return (
     <>
-      <div className="helmets-submenu">
-        <Link to={`/products?category=${encodeURIComponent("Cascos")}`} className='submenu-title'
-          onClick={onCloseSubmenu}>
+      <div className={`helmets-submenu ${isVisible ? 'visible' : ''} ${isExiting ? 'submenu-exit' : ''}`}>
+        <Link
+          to={`/products?category=${encodeURIComponent("Cascos")}`}
+          className='submenu-title'
+          onClick={handleCloseSubmenu}
+        >
           <h2>Cascos</h2>
           <span>Ver más </span>
         </Link>
 
         <div className="container-helmets2">
-
-          {/* Mostrar items (fallback durante carga, API data cuando esté listo) */}
+          {/* Mostrar items con animación progresiva */}
           {helmetItems.map((item, index) => (
             <Link
               key={`${item.label}-${index}`}
               to={`/products?category=${encodeURIComponent("Cascos")}&subcategory=${encodeURIComponent(item.label)}`}
               className={`submenu-item ${loading ? 'loading' : ''}`}
-              onClick={onCloseSubmenu}
+              style={{ '--item-index': index }}
+              onClick={handleCloseSubmenu}
             >
               <div className="item-image-container">
                 <img
@@ -71,7 +94,13 @@ export const HelmetSubmenu = ({ onCloseSubmenu }) => {
           <p>Marcas destacadas</p>
           <div className='brands-logos'>
             {helmetBrandLogos.map((logo, i) => (
-              <img key={i} className={`logo${i + 1}`} src={logo} alt={`brand logo ${i + 1}`} />
+              <img
+                key={i}
+                className={`logo${i + 1}`}
+                src={logo}
+                alt={`brand logo ${i + 1}`}
+                style={{ animationDelay: `${0.3 + i * 0.1}s` }}
+              />
             ))}
           </div>
         </div>

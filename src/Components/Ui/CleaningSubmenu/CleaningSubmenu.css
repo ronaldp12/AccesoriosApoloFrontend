@@ -13,6 +13,15 @@
     justify-content: center;
     align-items: center;
     display: flex;
+    animation: slideInDown 0.3s ease forwards;
+}
+
+.cleaning-submenu.visible {
+    animation: slideInDown 0.3s ease forwards;
+}
+
+.cleaning-submenu.submenu-exit {
+    animation: slideOutUp 0.3s ease forwards;
 }
 
 .container-cleaning2 {
@@ -45,11 +54,11 @@
     font-size: 12px;
     padding-top: 1.1rem;
     color: #014aad;
+    cursor: pointer;
 }
 
 .submenu-title-cleaning span:hover {
     text-decoration: underline;
-    cursor: pointer;
 }
 
 .submenu-item {
@@ -97,36 +106,63 @@
     gap: 2rem;
 }
 
+.logo1,
+.logo2,
+.logo3,
+.logo4,
+.logo5 {
+    cursor: pointer;
+}
+
 .logo1 {
     width: 3rem !important;
     height: 1.3rem !important;
-    cursor: pointer;
 }
 
 .logo2 {
     width: 4rem !important;
     height: 1rem !important;
-    cursor: pointer;
     margin-top: 0.4rem;
 }
 
 .logo3 {
     width: 5rem !important;
     height: 2rem !important;
-    cursor: pointer;
 }
 
-.logo4 {
-    width: 4rem !important;
-    height: 2rem !important;
-    cursor: pointer;
-}
-
+.logo4,
 .logo5 {
     width: 4rem !important;
     height: 2rem !important;
-    cursor: pointer;
 }
+
+/* ANIMACIONES */
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOutUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* RESPONSIVE */
 
 @media (max-width: 394px) {
     .cleaning-submenu {
@@ -143,8 +179,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-left: 0;
-        padding-right: 0;
+        padding: 0;
     }
 
     .submenu-item {
@@ -155,7 +190,7 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding-left: 0;
+        padding: 0;
     }
 
     .submenu-title-cleaning h2 {
@@ -186,47 +221,26 @@
         gap: 0.6rem;
     }
 
-    .logo1 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-    }
-
-    .logo2 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 2.8rem;
-        height: 1.6rem;
-        cursor: pointer;
-    }
-
+    .logo1,
+    .logo2,
+    .logo3,
+    .logo4,
     .logo5 {
         width: 2.8rem;
         height: 1.6rem;
-        cursor: pointer;
     }
 
+    .logo2 {
+        margin-bottom: 0.5rem;
+    }
 }
 
 @media (min-width: 395px) and (max-width: 431px) {
     .cleaning-submenu {
         position: static;
         width: 15.2rem;
-        margin-top: 0;
         padding-top: 1rem;
         border-top: 2px solid #00235b;
-        overflow-x: hidden;
         margin-bottom: 8px;
     }
 
@@ -234,8 +248,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-left: 0;
-        padding-right: 0;
+        padding: 0;
     }
 
     .submenu-item {
@@ -246,7 +259,7 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding-left: 0;
+        padding: 0;
     }
 
     .submenu-title-cleaning h2 {
@@ -260,57 +273,25 @@
 
     .container-brands {
         flex-direction: column;
-        height: auto;
         padding: 1rem 0;
     }
 
-    .container-brands p {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
     .brands-logos {
-        width: 100%;
-        display: flex;
-        justify-content: center;
         flex-wrap: wrap;
         gap: 0.6rem;
     }
 
-    .container-brands img {
-        width: 60px;
-        height: 60px;
-    }
-
-    .logo1 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
-
-    .logo2 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 3.2rem;
-        height: 1.8rem;
-        cursor: pointer;
-    }
-
+    .logo1,
+    .logo2,
+    .logo3,
+    .logo4,
     .logo5 {
         width: 3.2rem;
         height: 1.8rem;
-        cursor: pointer;
+    }
+
+    .logo2 {
+        margin-bottom: 0.5rem;
     }
 }
 
@@ -318,10 +299,8 @@
     .cleaning-submenu {
         position: static;
         width: 16.3rem;
-        margin-top: 0;
         padding-top: 1rem;
         border-top: 2px solid #00235b;
-        overflow-x: hidden;
         margin-bottom: 8px;
     }
 
@@ -329,8 +308,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-left: 0;
-        padding-right: 0;
+        padding: 0;
     }
 
     .submenu-item {
@@ -341,7 +319,7 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding-left: 0;
+        padding: 0;
     }
 
     .submenu-title-cleaning h2 {
@@ -353,59 +331,22 @@
         padding-top: 0.5rem;
     }
 
-    .container-brands {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 0;
-    }
-
-    .container-brands p {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
     .brands-logos {
-        width: 100%;
-        display: flex;
-        justify-content: center;
         flex-wrap: wrap;
         gap: 0.6rem;
     }
 
-    .container-brands img {
-        width: 60px;
-        height: 60px;
-    }
-
-    .logo1 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-    }
-
-    .logo2 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 3.6rem;
-        height: 2rem;
-        cursor: pointer;
-    }
-
+    .logo1,
+    .logo2,
+    .logo3,
+    .logo4,
     .logo5 {
         width: 3.6rem;
         height: 2rem;
-        cursor: pointer;
+    }
+
+    .logo2 {
+        margin-bottom: 0.5rem;
     }
 }
 
@@ -413,10 +354,8 @@
     .cleaning-submenu {
         position: static;
         width: 18rem;
-        margin-top: 0;
         padding-top: 1rem;
         border-top: 2px solid #00235b;
-        overflow-x: hidden;
         margin-bottom: 8px;
     }
 
@@ -424,8 +363,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-left: 0;
-        padding-right: 0;
+        padding: 0;
     }
 
     .submenu-item {
@@ -437,7 +375,7 @@
         align-items: center;
         text-align: center;
         font-size: 23px;
-        padding-left: 0;
+        padding: 0;
     }
 
     .submenu-title-cleaning h2 {
@@ -450,58 +388,21 @@
         font-size: 15px;
     }
 
-    .container-brands {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 0;
-    }
-
-    .container-brands p {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
     .brands-logos {
-        width: 100%;
-        display: flex;
-        justify-content: center;
         flex-wrap: wrap;
         gap: 0.6rem;
     }
 
-    .container-brands img {
-        width: 60px;
-        height: 60px;
-    }
-
-    .logo1 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-    }
-
-    .logo2 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-        margin-bottom: 0.5rem;
-    }
-
-    .logo3 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-    }
-
-    .logo4 {
-        width: 4.2rem;
-        height: 2.2rem;
-        cursor: pointer;
-    }
-
+    .logo1,
+    .logo2,
+    .logo3,
+    .logo4,
     .logo5 {
         width: 4.2rem;
         height: 2.2rem;
-        cursor: pointer;
+    }
+
+    .logo2 {
+        margin-bottom: 0.5rem;
     }
 }

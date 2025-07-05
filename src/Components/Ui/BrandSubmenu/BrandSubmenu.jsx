@@ -5,9 +5,28 @@ import img2 from '../../../assets/images/img2-marca.png';
 import img3 from '../../../assets/images/img3-marca.png';
 import img4 from '../../../assets/images/img4-marca.png';
 import img5 from '../../../assets/images/img5-marca.png';
+import { useState, useEffect } from 'react';
 
 export const BrandSubmenu = ({ onCloseSubmenu }) => {
     const navigate = useNavigate();
+    const [isExiting, setIsExiting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsVisible(true);
+        }, 10);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Función mejorada para cerrar el submenú con animación
+    const handleCloseSubmenu = () => {
+        setIsExiting(true);
+        setTimeout(() => {
+            onCloseSubmenu();
+        }, 300); // Tiempo de la animación de salida
+    };
 
     const brands = [
         { name: 'Ich', image: img1 },
@@ -21,7 +40,7 @@ export const BrandSubmenu = ({ onCloseSubmenu }) => {
         navigate(`/products?brand=${encodeURIComponent(brandName)}`);
 
         if (onCloseSubmenu) {
-            onCloseSubmenu();
+            handleCloseSubmenu();
         }
     };
 
@@ -30,13 +49,13 @@ export const BrandSubmenu = ({ onCloseSubmenu }) => {
         navigate(`/products?brand=Otros`);
 
         if (onCloseSubmenu) {
-            onCloseSubmenu();
+            handleCloseSubmenu();
         }
     };
 
     return (
-        <div className="brand-submenu">
-            <div className='submenu-title-brand'>
+        <div className={`brand-submenu ${isVisible ? 'visible' : ''} ${isExiting ? 'submenu-exit' : ''}`}>
+            <div className='submenu-title'>
                 <h2>Marcas</h2>
                 <span
                     onClick={() => handleBrandClick('Ver-más')}
@@ -52,7 +71,7 @@ export const BrandSubmenu = ({ onCloseSubmenu }) => {
                         key={index}
                         className="submenu-item"
                         onClick={() => handleBrandClick(brand.name)}
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', '--item-index': index }}
                     >
                         <img src={brand.image} alt={brand.name} />
                         <p>{brand.name}</p>
@@ -63,7 +82,7 @@ export const BrandSubmenu = ({ onCloseSubmenu }) => {
                 <div
                     className="submenu-item"
                     onClick={handleOtrosClick}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', '--item-index': brands.length }}
                 >
                     <div
                         style={{

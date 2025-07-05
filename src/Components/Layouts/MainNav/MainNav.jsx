@@ -8,6 +8,7 @@ import { LightsSubmenu } from '../../Ui/LightsSubmenu/LightsSubmenu.jsx';
 import { CleaningSubmenu } from '../../Ui/CleaningSubmenu/CleaningSubmenu.jsx';
 import { BrandSubmenu } from '../../Ui/BrandSubmenu/BrandSubmenu.jsx';
 import { AccesoriesSubmenu } from '../../Ui/AccesoriesSubmenu/AccesoriesSubmenu.jsx';
+import { useState } from 'react';
 
 export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
   const helmetMenu = useSubmenu();
@@ -18,6 +19,30 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
   const cleaningMenu = useSubmenu();
   const accesoriesMenu = useSubmenu();
 
+  const [activeSubmenu, setActiveSubmenu] = useState(null);
+  const [transitioning, setTransitioning] = useState(false);
+
+  const handleSubmenuHover = (submenuName, isHovering, submenuHook) => {
+    if (isHovering) {
+      if (activeSubmenu && activeSubmenu !== submenuName) {
+        setTransitioning(true);
+        setTimeout(() => {
+          setActiveSubmenu(submenuName);
+          submenuHook.handleHover(true);
+          setTransitioning(false);
+        }, 150);
+      } else {
+        setActiveSubmenu(submenuName);
+        submenuHook.handleHover(true);
+      }
+    } else {
+      submenuHook.handleHover(false);
+      setTimeout(() => {
+        setActiveSubmenu(null);
+      }, 300);
+    }
+  };
+
   return (
     <div className={styleContainer}>
       <NavLink className="navlink" to="/">
@@ -25,70 +50,78 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
       </NavLink>
 
       <div
-        className="container-helmets"
+        className={`container-helmets ${transitioning ? 'submenu-transition' : ''}`}
         ref={helmetMenu.submenuRef}
-        onMouseEnter={() => helmetMenu.handleHover(true)}
-        onMouseLeave={() => helmetMenu.handleHover(false)}
+        onMouseEnter={() => handleSubmenuHover('helmet', true, helmetMenu)}
+        onMouseLeave={() => handleSubmenuHover('helmet', false, helmetMenu)}
         onClick={helmetMenu.handleClick}
       >
         <Item styleLi="item">
           <span className="nav-cascos">Cascos</span>
         </Item>
         {helmetMenu.isOpen && (
-          <HelmetSubmenu onCloseSubmenu={() => helmetMenu.handleHover(false)} />
+          <HelmetSubmenu
+            onCloseSubmenu={() => handleSubmenuHover('helmet', false, helmetMenu)}
+          />
         )}
       </div>
 
       <div
-        className="container-equipment"
+        className={`container-equipment ${transitioning ? 'submenu-transition' : ''}`}
         ref={equipmentMenu.submenuRef}
-        onMouseEnter={() => equipmentMenu.handleHover(true)}
-        onMouseLeave={() => equipmentMenu.handleHover(false)}
+        onMouseEnter={() => handleSubmenuHover('equipment', true, equipmentMenu)}
+        onMouseLeave={() => handleSubmenuHover('equipment', false, equipmentMenu)}
         onClick={equipmentMenu.handleClick}
       >
         <Item styleLi="item-extend">
           <span className="nav-cascos">Equipación Carretera</span>
         </Item>
         {equipmentMenu.isOpen && (
-          <EquipmentRideSubmenu onCloseSubmenu={() => equipmentMenu.handleHover(false)} />
+          <EquipmentRideSubmenu
+            onCloseSubmenu={() => handleSubmenuHover('equipment', false, equipmentMenu)}
+          />
         )}
       </div>
 
       <div
-        className="container-helmets"
+        className={`container-helmets ${transitioning ? 'submenu-transition' : ''}`}
         ref={accesoriesMenu.submenuRef}
-        onMouseEnter={() => accesoriesMenu.handleHover(true)}
-        onMouseLeave={() => accesoriesMenu.handleHover(false)}
+        onMouseEnter={() => handleSubmenuHover('accesories', true, accesoriesMenu)}
+        onMouseLeave={() => handleSubmenuHover('accesories', false, accesoriesMenu)}
         onClick={accesoriesMenu.handleClick}
       >
         <Item styleLi="item">
           <span className="nav-cascos">Accesorios</span>
         </Item>
         {accesoriesMenu.isOpen && (
-          <AccesoriesSubmenu onCloseSubmenu={() => accesoriesMenu.handleHover(false)} />
+          <AccesoriesSubmenu
+            onCloseSubmenu={() => handleSubmenuHover('accesories', false, accesoriesMenu)}
+          />
         )}
       </div>
 
       <div
-        className="container-brand"
+        className={`container-brand ${transitioning ? 'submenu-transition' : ''}`}
         ref={brandMenu.submenuRef}
-        onMouseEnter={() => brandMenu.handleHover(true)}
-        onMouseLeave={() => brandMenu.handleHover(false)}
+        onMouseEnter={() => handleSubmenuHover('brand', true, brandMenu)}
+        onMouseLeave={() => handleSubmenuHover('brand', false, brandMenu)}
         onClick={brandMenu.handleClick}
       >
         <Item styleLi="item">
           <span className="nav-cascos">Marcas</span>
         </Item>
         {brandMenu.isOpen && (
-          <BrandSubmenu onCloseSubmenu={() => brandMenu.handleHover(false)} />
+          <BrandSubmenu
+            onCloseSubmenu={() => handleSubmenuHover('brand', false, brandMenu)}
+          />
         )}
       </div>
 
       <div
-        className="container-sticker"
+        className={`container-sticker ${transitioning ? 'submenu-transition' : ''}`}
         ref={stickerMenu.submenuRef}
-        onMouseEnter={() => stickerMenu.handleHover(true)}
-        onMouseLeave={() => stickerMenu.handleHover(false)}
+        onMouseEnter={() => handleSubmenuHover('sticker', true, stickerMenu)}
+        onMouseLeave={() => handleSubmenuHover('sticker', false, stickerMenu)}
         onClick={stickerMenu.handleClick}
       >
         <Item styleLi="item">
@@ -98,38 +131,42 @@ export const MainNav = ({ styleContainer, onOpenRegister, onOpenLogin }) => {
           <StickerSubmenu
             onOpenRegister={onOpenRegister}
             onOpenLogin={onOpenLogin}
-            onCloseSubmenu={() => stickerMenu.handleHover(false)}
+            onCloseSubmenu={() => handleSubmenuHover('sticker', false, stickerMenu)}
           />
         )}
       </div>
 
       <div
-        className="container-light"
+        className={`container-light ${transitioning ? 'submenu-transition' : ''}`}
         ref={lightMenu.submenuRef}
-        onMouseEnter={() => lightMenu.handleHover(true)}
-        onMouseLeave={() => lightMenu.handleHover(false)}
+        onMouseEnter={() => handleSubmenuHover('light', true, lightMenu)}
+        onMouseLeave={() => handleSubmenuHover('light', false, lightMenu)}
         onClick={lightMenu.handleClick}
       >
         <Item styleLi="item">
           <span className="nav-cascos">Luces</span>
         </Item>
         {lightMenu.isOpen && (
-          <LightsSubmenu onCloseSubmenu={() => lightMenu.handleHover(false)} />
+          <LightsSubmenu
+            onCloseSubmenu={() => handleSubmenuHover('light', false, lightMenu)}
+          />
         )}
       </div>
 
       <div
-        className="container-cleaning"
+        className={`container-cleaning ${transitioning ? 'submenu-transition' : ''}`}
         ref={cleaningMenu.submenuRef}
-        onMouseEnter={() => cleaningMenu.handleHover(true)}
-        onMouseLeave={() => cleaningMenu.handleHover(false)}
+        onMouseEnter={() => handleSubmenuHover('cleaning', true, cleaningMenu)}
+        onMouseLeave={() => handleSubmenuHover('cleaning', false, cleaningMenu)}
         onClick={cleaningMenu.handleClick}
       >
         <Item styleLi="item">
           <span className="nav-cascos">Limpieza</span>
         </Item>
         {cleaningMenu.isOpen && (
-          <CleaningSubmenu onCloseSubmenu={() => cleaningMenu.handleHover(false)} />
+          <CleaningSubmenu
+            onCloseSubmenu={() => handleSubmenuHover('cleaning', false, cleaningMenu)}
+          />
         )}
       </div>
     </div>

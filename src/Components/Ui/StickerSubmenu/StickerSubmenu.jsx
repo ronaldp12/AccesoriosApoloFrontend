@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import '../StickerSubmenu/StickerSubmenu.css';
 import img1 from '../../../assets/images/img1-sticker.png';
 import img2 from '../../../assets/images/img2-sticker.png';
@@ -12,6 +12,22 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
   const { userLogin, nameRol } = useContext(context);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 10);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Función mejorada para cerrar el submenú con animación
+  const handleCloseSubmenu = () => {
+    setIsExiting(true);
+    setTimeout(() => {
+      onCloseSubmenu();
+    }, 300); // Tiempo de la animación de salida
+  };
 
   const handleUploadSticker = () => {
     if (userLogin && nameRol === 'cliente') {
@@ -51,18 +67,18 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
   return (
     <>
       <div className="sticker-submenu">
-        <div className='submenu-title-sticker' onClick={handleViewStickers} style={{ cursor: 'pointer' }}>
+        <div className='submenu-title' onClick={handleViewStickers} style={{ cursor: 'pointer' }}>
           <h2>Calcomanías</h2>
           <span>Ver más </span>
         </div>
 
         <div className="container-stickers2">
-          <div className="submenu-item" onClick={handleViewStickers} style={{ cursor: 'pointer' }}>
+          <div className="submenu-item" onClick={handleViewStickers} style={{ cursor: 'pointer', '--item-index': 0 }}>
             <img src={img1} alt="Ver Calcomanías" />
             <p>Ver Calcomanías</p>
           </div>
 
-          <div className="submenu-item" onClick={handleUploadSticker} style={{ cursor: 'pointer' }}>
+          <div className="submenu-item" onClick={handleUploadSticker} style={{ cursor: 'pointer', '--item-index': 2 }}>
             <img src={img2} alt="Subir Calcomanía" />
             <p>Sube tu Calcomanía</p>
           </div>

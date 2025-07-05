@@ -17,28 +17,23 @@ header {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.container-helmets {
-    position: relative;
-}
-
-.container-equipment {
-    position: relative;
-}
-
-.container-brand {
-    position: relative;
-}
-
-.container-sticker {
-    position: relative;
-}
-
-.container-light {
-    position: relative;
-}
-
+.container-helmets,
+.container-equipment,
+.container-brand,
+.container-sticker,
+.container-light,
 .container-cleaning {
     position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container-helmets:hover,
+.container-equipment:hover,
+.container-brand:hover,
+.container-sticker:hover,
+.container-light:hover,
+.container-cleaning:hover {
+    transform: translateY(-2px);
 }
 
 .topnav {

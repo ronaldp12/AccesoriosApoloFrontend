@@ -13,6 +13,9 @@
   justify-content: center;
   align-items: center;
   display: flex;
+  animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 12px 12px;
 }
 
 .container-helmets2 {
@@ -42,7 +45,7 @@
   color: #014aad;
 }
 
-.submenu-title span:hover{
+.submenu-title span:hover {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -53,6 +56,17 @@
   margin-bottom: 2rem;
   cursor: pointer;
   text-decoration: none;
+  animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: calc(var(--item-index, 0) * 0.1s);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+
+.submenu-item:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
 }
 
 .submenu-item img {
@@ -60,6 +74,44 @@
   height: 80px;
   object-fit: contain;
   margin-bottom: 8px;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.submenu-item:hover img {
+  transform: rotate(5deg) scale(1.1);
+  filter: brightness(1.1);
+}
+
+.submenu-title,
+.submenu-title-equipment {
+  animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
+}
+
+.submenu-title:hover,
+.submenu-title-equipment:hover {
+  transform: translateX(10px);
+  color: #014aad;
+}
+
+.container-brands {
+  animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: 0.2s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+/* Animación de logos de marcas */
+.brands-logos img {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  filter: grayscale(0.5);
+}
+
+.brands-logos img:hover {
+  filter: grayscale(0);
+  transform: scale(1.1) rotate(2deg);
 }
 
 .submenu-item p {
@@ -89,34 +141,98 @@
 }
 
 .logo1 {
-    width: 3rem !important;
-    height: 1.3rem !important;
-    cursor: pointer;
+  width: 3rem !important;
+  height: 1.3rem !important;
+  cursor: pointer;
 }
 
 .logo2 {
-    width: 4rem !important;
-    height: 1rem !important;
-    cursor: pointer;
-    margin-top: 0.4rem;
+  width: 4rem !important;
+  height: 1rem !important;
+  cursor: pointer;
+  margin-top: 0.4rem;
 }
 
 .logo3 {
-    width: 5rem !important;
-    height: 2rem !important;
-    cursor: pointer;
+  width: 5rem !important;
+  height: 2rem !important;
+  cursor: pointer;
 }
 
 .logo4 {
-    width: 4rem !important;
-    height: 2rem !important;
-    cursor: pointer;
+  width: 4rem !important;
+  height: 2rem !important;
+  cursor: pointer;
 }
 
 .logo5 {
-    width: 4rem !important;
-    height: 2rem !important;
-    cursor: pointer;
+  width: 4rem !important;
+  height: 2rem !important;
+  cursor: pointer;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.submenu-exit {
+  animation: slideOutUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }
 
 @media (max-width: 394px) {
@@ -147,6 +263,11 @@
     align-items: center;
     text-align: center;
     padding-left: 0;
+  }
+
+  .submenu-title h2 {
+    padding: 0;
+    font-size: 18px;
   }
 
   .submenu-title span {
@@ -351,5 +472,81 @@
     width: 60px;
     height: 60px;
   }
+
+  .helmets-submenu,
+  .equipment-submenu {
+    animation: mobileSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .submenu-item {
+    animation-delay: calc(var(--item-index, 0) * 0.05s);
+  }
 }
 
+@keyframes mobileSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.submenu-item.loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Transición suave entre submenús */
+.submenu-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de blur cuando se cambia de submenú */
+.submenu-blur {
+  filter: blur(2px);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+/* Animación para los spans del título */
+.submenu-title span,
+.submenu-title-equipment span,
+.submenu-title-accesories span {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.submenu-title span::after,
+.submenu-title-equipment span::after,
+.submenu-title-accesories span::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #014aad, transparent);
+  transition: left 0.5s;
+}
+
+.submenu-title span:hover::after,
+.submenu-title-equipment span:hover::after,
+.submenu-title-accesories span:hover::after {
+  left: 100%;
+}
