@@ -1,4 +1,4 @@
-.welcome-modal-overlay {
+.welcomeModalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -15,12 +15,12 @@
     backdrop-filter: blur(3px);
 }
 
-.welcome-modal-overlay.active {
+.welcomeModalOverlay.active {
     opacity: 1;
     pointer-events: auto;
 }
 
-.welcome-modal-box {
+.welcomeModalBox {
     position: relative;
     width: 50rem;
     height: 30rem;
@@ -42,7 +42,7 @@
     animation: slideBounce 0.6s ease-out forwards;
 }
 
-.welcome-modal-box.active {
+.welcomeModalBox.active {
     opacity: 1;
     transform: translateY(0) scale(1);
 }
@@ -75,15 +75,15 @@
     }
 }
 
-.welcome-modal-box.animated {
+.welcomeModalBox.animated {
     animation: slideBounce 0.6s ease-out forwards;
 }
 
-.welcome-modal-box.closing {
+.welcomeModalBox.closing {
     animation: slideOut 0.5s ease-out forwards;
 }
 
-.close-btn {
+.closeBtn {
     position: absolute;
     top: -40px;
     right: -30px;
@@ -102,11 +102,11 @@
     z-index: 1000;
 }
 
-.close-btn:hover {
+.closeBtn:hover {
     background-color: #555;
 }
 
-.welcome-modal-form-container {
+.welcomeModalFormContainer {
     width: 50%;
     height: 100%;
     padding: 40px 30px;
@@ -116,18 +116,18 @@
     justify-content: flex-end;
 }
 
-.welcome-modal-form-container p {
+.welcomeModalFormContainer p {
     text-align: center;
 }
 
-.welcome-modal-form-container h2 {
+.welcomeModalFormContainer h2 {
     font-size: 40px;
     font-weight: bold;
     margin-bottom: 30px;
     text-align: center;
 }
 
-.welcome-group-bottom {
+.welcomeGroupBottom {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -135,7 +135,7 @@
     margin-bottom: 2.5rem;
 }
 
-.welcome-submit-btn {
+.welcomeSubmitBtn {
     background: url("../../../assets/images/img-btn-flama.png") no-repeat center center;
     background-size: cover;
     border: none;
@@ -155,11 +155,11 @@
     margin-top: 2rem;
 }
 
-.welcome-submit-btn:focus{
+.welcomeSubmitBtn:focus {
     border: none;
 }
 
-.welcome-submit-btn span {
+.welcomeSubmitBtn span {
     position: relative;
     z-index: 1;
     text-align: center;
@@ -167,95 +167,95 @@
     text-transform: uppercase;
 }
 
-.welcome-submit-btn:hover {
+.welcomeSubmitBtn:hover {
     background: url("../../../assets/images/img2-btn-flama.png") no-repeat center center;
     background-size: cover;
 }
 
 @media (max-width: 394px) {
-    .welcome-modal-box {
+    .welcomeModalBox {
         background-image: url("../../../assets/images/img-welcome-mobile3.png");
         flex-direction: column;
         width: 84%;
         height: 60%;
     }
 
-    .welcome-modal-form-container {
+    .welcomeModalFormContainer {
         width: 100%;
         padding: 20px;
     }
 
-    .welcome-modal-form-container h2 {
+    .welcomeModalFormContainer h2 {
         font-size: 30px;
         margin-top: 1rem;
     }
 }
 
 @media (min-width: 395px) and (max-width: 431px) {
-    .welcome-modal-box {
+    .welcomeModalBox {
         background-image: url("../../../assets/images/img-welcome-mobile3.png");
         flex-direction: column;
         width: 84%;
         height: 50%;
     }
 
-    .welcome-modal-form-container {
+    .welcomeModalFormContainer {
         width: 100%;
         padding: 20px;
     }
 
-    .welcome-modal-form-container h2 {
+    .welcomeModalFormContainer h2 {
         font-size: 32px;
     }
 }
 
 @media (min-width: 432px) and (max-width: 481px) {
-    .welcome-modal-box {
+    .welcomeModalBox {
         background-image: url("../../../assets/images/img-welcome-mobile3.png");
         flex-direction: column;
         width: 84%;
         height: 50%;
     }
 
-    .welcome-modal-form-container {
+    .welcomeModalFormContainer {
         width: 100%;
         padding: 20px;
     }
 
-    .welcome-modal-form-container h2 {
+    .welcomeModalFormContainer h2 {
         font-size: 38px;
         margin-top: 0;
     }
 
-    .welcome-modal-form-container p {
+    .welcomeModalFormContainer p {
         font-size: 18px;
         margin-top: 0;
     }
 }
 
 @media (min-width: 482px) and (max-width: 822px) {
-    .welcome-modal-box {
+    .welcomeModalBox {
         flex-direction: column;
         width: 75%;
         height: 35%;
     }
 
-    .welcome-modal-form-container {
+    .welcomeModalFormContainer {
         width: 100%;
         padding: 20px;
     }
 
-    .welcome-modal-form-container h2 {
+    .welcomeModalFormContainer h2 {
         font-size: 38px;
         margin-top: 0;
     }
 
-    .welcome-modal-form-container p {
+    .welcomeModalFormContainer p {
         font-size: 18px;
         margin-top: 0;
     }
 
-    .welcome-submit-btn {
+    .welcomeSubmitBtn {
         margin-right: 4.5rem;
     }
 }

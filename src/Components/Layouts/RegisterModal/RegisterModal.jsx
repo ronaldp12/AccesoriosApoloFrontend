@@ -39,7 +39,7 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                 window.google.accounts.id.renderButton(
                     googleButtonRef.current,
                     {
-                        type: "icon",
+                        type: "standard",
                         theme: "filled_blue",
                         size: "big",
                         shape: "circle",
@@ -365,10 +365,6 @@ export const RegisterModal = ({ isOpen, onClose }) => {
                             <div className="divider">o</div>
 
                             <div ref={socialIconsRef} className="social-icons">
-                                <button type="button" className="social facebook">
-                                    <img src={iconFacebook} alt="facebook" />
-                                </button>
-                                <span className="divider-vertical"></span>
 
                                 <div ref={googleButtonRef} id="google-signin-button-register">
                                     <div style={{

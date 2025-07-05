@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import "./WelcomeModal.css";
+import styles from "./WelcomeModal.module.css";
 import { context } from "../../../Context/Context.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -15,14 +15,14 @@ export const WelcomeModal = ({ isOpen, onClose }) => {
     }, [isOpen]);
 
     const handleEnter = () => {
-        setIsClosing(true); 
+        setIsClosing(true);
         setUserLogin(name);
-        
+
         setTimeout(() => {
-            setIsVisible(false); 
-            navigate("/"); 
+            setIsVisible(false);
+            navigate("/");
             setIsClosing(false);
-        }, 500); 
+        }, 500);
     };
 
     const handleClose = () => {
@@ -37,26 +37,26 @@ export const WelcomeModal = ({ isOpen, onClose }) => {
     if (!isVisible) return null;
 
     return (
-        <div className={`welcome-modal-overlay ${isOpen ? "active" : ""}`}>
+        <div className={`${styles.welcomeModalOverlay} ${isOpen ? styles.active : ""}`}>
             <div
-                className={`welcome-modal-box ${isOpen ? "active animated" : ""} ${isClosing ? "closing" : ""
+                className={`${styles.welcomeModalBox} ${isOpen ? `${styles.active} ${styles.animated}` : ""} ${isClosing ? styles.closing : ""
                     }`}
             >
-                <button className="close-btn" onClick={handleClose}>
+                <button className={styles.closeBtn} onClick={handleClose}>
                     ×
                 </button>
 
-                <div className="welcome-modal-form-container">
+                <div className={styles.welcomeModalFormContainer}>
                     <h2>¡BIENVENIDO!</h2>
                     <p>
                         {name}, comienza a disfrutar de la experiencia de llevar tu moto al
                         mil, diseña y crea tus calcomanías a tu estilo
                     </p>
 
-                    <div className="welcome-group-bottom">
+                    <div className={styles.welcomeGroupBottom}>
                         <button
                             type="button"
-                            className="welcome-submit-btn"
+                            className={styles.welcomeSubmitBtn}
                             onClick={handleEnter}
                         >
                             <span>Entrar</span>

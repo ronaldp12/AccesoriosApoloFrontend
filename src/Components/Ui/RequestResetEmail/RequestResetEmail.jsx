@@ -1,8 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./RequestResetEmail.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { Logo } from "../Logo/Logo";
-import { NavLink } from "react-router-dom";
 import { context } from "../../../Context/Context.jsx";
 import wheelIcon from "../../../assets/icons/img1-loader.png";
 
@@ -11,6 +10,59 @@ export const RequestResetEmail = () => {
     const [status, setStatus] = useState("idle");
     const navigate = useNavigate();
     const { isLoading, setIsLoading } = useContext(context);
+
+    const headerRef = useRef(null);
+    const titleRef = useRef(null);
+    const subtitleRef = useRef(null);
+    const formRef = useRef(null);
+    const bottomRef = useRef(null);
+
+    const animateElements = () => {
+        const elements = [
+            headerRef.current,
+            titleRef.current,
+            subtitleRef.current,
+            formRef.current,
+            bottomRef.current,
+        ];
+
+        elements.forEach((el) => {
+            if (el) {
+                el.style.opacity = "0";
+                el.style.transform = "translateY(30px)";
+                el.style.transition = "all 0.6s ease";
+            }
+        });
+
+        setTimeout(() => {
+            headerRef.current.style.opacity = "1";
+            headerRef.current.style.transform = "translateY(0)";
+        }, 100);
+
+        setTimeout(() => {
+            titleRef.current.style.opacity = "1";
+            titleRef.current.style.transform = "translateY(0)";
+        }, 200);
+
+        setTimeout(() => {
+            subtitleRef.current.style.opacity = "1";
+            subtitleRef.current.style.transform = "translateY(0)";
+        }, 300);
+
+        setTimeout(() => {
+            formRef.current.style.opacity = "1";
+            formRef.current.style.transform = "translateY(0)";
+        }, 400);
+
+        setTimeout(() => {
+            bottomRef.current.style.opacity = "1";
+            bottomRef.current.style.transform = "translateY(0)";
+        }, 500);
+    };
+
+    useEffect(() => {
+        animateElements();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,23 +98,22 @@ export const RequestResetEmail = () => {
 
     return (
         <div className="reset-email-container">
-            <div className="reset-email-header">
+            <div ref={headerRef} className="reset-email-header">
                 <NavLink to="/">
                     <button className="back-btn">
                         <iconify-icon icon="fluent:ios-arrow-24-filled" className="arrow-back" />
                     </button>
                 </NavLink>
-
                 <Logo styleContainer="container-logo-reset" styleLogo="logo-reset-email" />
             </div>
 
-            <h2 className="reset-email-title">Recuperar Contraseña</h2>
-            <p className="reset-email-subtitle">
+            <h2 ref={titleRef} className="reset-email-title">Recuperar Contraseña</h2>
+            <p ref={subtitleRef} className="reset-email-subtitle">
                 Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
             </p>
 
-            <form onSubmit={handleSubmit} className="reset-email-form">
-                <div className="input-field">
+            <form ref={formRef} onSubmit={handleSubmit} className="reset-email-form">
+                <div className="input-field-reset-email">
                     <label>
                         Correo electrónico <span>*</span>
                     </label>
@@ -107,9 +158,10 @@ export const RequestResetEmail = () => {
                 )}
             </form>
 
-            <div className="reset-email-bottom">
+            <div ref={bottomRef} className="reset-email-bottom">
                 <p>
-                    ¿Recordaste tu contraseña? <span onClick={() => navigate("/")}>Iniciar Sesión</span>
+                    ¿Recordaste tu contraseña?{" "}
+                    <span onClick={() => navigate("/")}>Iniciar Sesión</span>
                 </p>
             </div>
         </div>

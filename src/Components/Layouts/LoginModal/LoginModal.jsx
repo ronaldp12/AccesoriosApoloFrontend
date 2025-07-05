@@ -34,7 +34,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                 window.google.accounts.id.renderButton(
                     googleButtonRef.current,
                     {
-                        type: "icon",
+                        type: "standard",
                         theme: "filled_blue",
                         size: "big",
                         shape: "circle",
@@ -330,11 +330,6 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
                             <div className="login-divider">o</div>
 
                             <div ref={socialIconsRef} className="login-social-icons">
-                                <button type="button" className="social facebook">
-                                    <img src={iconFacebook} alt="facebook" />
-                                </button>
-
-                                <span className="divider-vertical"></span>
 
                                 <div ref={googleButtonRef} id="google-signin-button">
                                     <div style={{
