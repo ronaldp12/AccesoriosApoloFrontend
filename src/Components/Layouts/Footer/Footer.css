@@ -219,6 +219,11 @@ footer {
 .social-icons-footer-bottom {
   display: flex;
   gap: 15px;
+  padding-right: 1rem;
+}
+
+.social-icons-footer-bottom a {
+  text-decoration: none;
 }
 
 .social-icons-footer-bottom i {
