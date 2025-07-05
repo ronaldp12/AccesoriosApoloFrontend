@@ -28,6 +28,7 @@ import { context } from "../../../Context/Context.jsx";
 import { UseProductsByBrand } from "../../Hook/UseProductsByBrand/UseProductsByBrand.jsx";
 import { UseCategories } from "../../Hook/UseCategories/UseCategories.jsx";
 import { UseProductsWithDiscount } from "../../Hook/UseProductsWithDiscount/UseProductsWithDiscount.jsx";
+import { ProductCardSkeleton } from "../../Ui/ProductCardSkeleton/ProductCardSkeleton.jsx";
 
 export const ProductPage = () => {
   const [showMobileFilter, setShowMobileFilter] = useState(false);
@@ -311,21 +312,6 @@ export const ProductPage = () => {
             </div>
           </div>
 
-          {/* Mensajes del carrito */}
-          {cartSuccessMessage && (
-            <div className="cart-message success">
-              <i className="fa-solid fa-check-circle"></i>
-              {cartSuccessMessage}
-            </div>
-          )}
-
-          {cartErrorMessage && (
-            <div className="cart-message error">
-              <i className="fa-solid fa-exclamation-triangle"></i>
-              {cartErrorMessage}
-            </div>
-          )}
-
           <div className="img-category-container-product-page">
             {/* Si es Ver-más mostramos Marcas */}
             {brandFromURL === 'Ver-más' && (
@@ -375,8 +361,10 @@ export const ProductPage = () => {
           </div>
 
           {isLoading ? (
-            <div className="loading-container">
-              <p>Cargando productos...</p>
+            <div className="product-grid-product-page">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <ProductCardSkeleton key={index} />
+              ))}
             </div>
           ) : finalProducts.length === 0 && (selectedSubcategory || selectedBrand || selectedCategory) ? (
             <div className="loading-container">
