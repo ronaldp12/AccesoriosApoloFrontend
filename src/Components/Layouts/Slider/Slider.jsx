@@ -22,12 +22,12 @@ export const Slider = () => {
   return (
     <>
 
-      <div className="slider">
-        <div className="slider-inner">
+      <div className="slider-home">
+        <div className="slider-inner-home">
           {images.map((image, index) => (
             <div
               key={index}
-              className={`slide ${index === currentIndex ? "active" : ""}`}
+              className={`slide-home ${index === currentIndex ? "active" : ""}`}
             >
               <img src={image} alt={`Slide ${index}`} />
             </div>
