@@ -4,9 +4,22 @@ import "../BestSellerSection/BestSellerSection.css";
 import { useTopDiscountProducts } from "../../Hook/useTopDiscountProducts/useTopDiscountProducts.jsx";
 import { ProductCardSkeleton } from "../../Ui/ProductCardSkeleton/ProductCardSkeleton.jsx";
 import { PromoBannerSkeleton } from "../PromoBannerSkeleton/PromoBannerSkeleton.jsx";
+import { UseProductsCart } from "../../Hook/UseProductsCart/UseProductsCart.jsx"; 
+import { useContext } from "react"; 
+import { context } from "../../../Context/Context.jsx"; 
 
 export const BestSellersSection = () => {
   const { topDiscountProducts, loadingTopDiscounts, errorTopDiscounts } = useTopDiscountProducts();
+  const { loadCartFromBackend } = useContext(context); 
+
+  const {
+    isAddingToCart,
+    cartSuccessMessage,
+    cartErrorMessage,
+    addProductToCart,
+    isProductAdding,
+    resetCartState
+  } = UseProductsCart();
 
   return (
     <section className="best-sellers-section">
@@ -46,6 +59,15 @@ export const BestSellersSection = () => {
                 discount={`${product.descuento}%`}
                 rating={product.calificacion}
                 referencia={product.referencia}
+
+                productCartFunctions={{
+                  addProductToCart,
+                  isProductAdding,
+                  isAddingToCart,
+                  cartSuccessMessage,
+                  cartErrorMessage,
+                  loadCartFromBackend
+                }}
               />
             ))}
           </>
