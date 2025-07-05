@@ -3,6 +3,7 @@ import { ProductCard } from "../../Ui/ProductCard/ProductCard.jsx";
 import "../BestSellerSection/BestSellerSection.css";
 import { useTopDiscountProducts } from "../../Hook/useTopDiscountProducts/useTopDiscountProducts.jsx";
 import { ProductCardSkeleton } from "../../Ui/ProductCardSkeleton/ProductCardSkeleton.jsx";
+import { PromoBannerSkeleton } from "../PromoBannerSkeleton/PromoBannerSkeleton.jsx";
 
 export const BestSellersSection = () => {
   const { topDiscountProducts, loadingTopDiscounts, errorTopDiscounts } = useTopDiscountProducts();
@@ -16,6 +17,7 @@ export const BestSellersSection = () => {
       <div className="products-container">
         {loadingTopDiscounts ? (
           <>
+            <PromoBannerSkeleton />
             {Array.from({ length: 4 }).map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))}
