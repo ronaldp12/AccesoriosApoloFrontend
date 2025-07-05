@@ -2,10 +2,11 @@ import { PromoBanner } from "../../Ui/PromoBanner/PromoBanner.jsx";
 import { ProductCard } from "../../Ui/ProductCard/ProductCard.jsx";
 import "../BestSellerSection/BestSellerSection.css";
 import { useTopDiscountProducts } from "../../Hook/useTopDiscountProducts/useTopDiscountProducts.jsx";
+import { PromoBannerSkeleton } from "../../Ui/PromoBannerSkeleton/PromoBannerSkeleton.JSX";
+import { ProductCardSkeleton } from "../../Ui/ProductCardSkeleton/ProductCardSkeleton.jsx";
 
 export const BestSellersSection = () => {
   const { topDiscountProducts, loadingTopDiscounts, errorTopDiscounts } = useTopDiscountProducts();
-  console.log(topDiscountProducts);
 
   return (
     <section className="best-sellers-section">
@@ -15,7 +16,12 @@ export const BestSellersSection = () => {
 
       <div className="products-container">
         {loadingTopDiscounts ? (
-          <p>Cargando productos...</p>
+          <>
+            <PromoBannerSkeleton />
+            {Array.from({ length: 4 }).map((_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))}
+          </>
         ) : errorTopDiscounts ? (
           <p>{errorTopDiscounts}</p>
         ) : (
