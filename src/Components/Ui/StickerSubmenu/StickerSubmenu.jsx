@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import '../StickerSubmenu/StickerSubmenu.css';
 import img1 from '../../../assets/images/img1-sticker.png';
 import img2 from '../../../assets/images/img2-sticker.png';
@@ -6,7 +7,6 @@ import img2 from '../../../assets/images/img2-sticker.png';
 import { context } from '../../../Context/Context.jsx';
 import { WelcomeNoLoginModal } from '../../Layouts/WelcomeNoLoginModal/WelcomeNoLoginModal.jsx';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) => {
   const { userLogin, nameRol } = useContext(context);
@@ -21,12 +21,25 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
     return () => clearTimeout(timer);
   }, []);
 
-  // Función mejorada para cerrar el submenú con animación
+  // Agregar/remover clase al body cuando el modal está abierto
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+
+    // Cleanup al desmontar
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isModalOpen]);
+
   const handleCloseSubmenu = () => {
     setIsExiting(true);
     setTimeout(() => {
       onCloseSubmenu();
-    }, 300); // Tiempo de la animación de salida
+    }, 300);
   };
 
   const handleUploadSticker = () => {
@@ -85,12 +98,16 @@ export const StickerSubmenu = ({ onOpenRegister, onOpenLogin, onCloseSubmenu }) 
         </div>
       </div>
 
-      <WelcomeNoLoginModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onOpenRegister={handleRegisterFromModal}
-        onOpenLogin={handleLoginFromModal}
-      />
+      {/* Renderizar el modal usando portal para sacarlo del DOM del submenú */}
+      {isModalOpen && createPortal(
+        <WelcomeNoLoginModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onOpenRegister={handleRegisterFromModal}
+          onOpenLogin={handleLoginFromModal}
+        />,
+        document.body // Renderizar directamente en el body
+      )}
     </>
   );
 };
