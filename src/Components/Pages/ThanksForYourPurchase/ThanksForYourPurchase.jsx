@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { context } from '../../../Context/Context.jsx'; 
 import './ThanksForYourPurchase.css';
 
 export function ThanksForYourPurchase() {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { token, userLogin, name, checkAndRestoreAuthState } = useContext(context);
     const [transactionId, setTransactionId] = useState(null);
     const [reference, setReference] = useState(null);
 
@@ -11,7 +14,15 @@ export function ThanksForYourPurchase() {
         const params = new URLSearchParams(location.search);
         setTransactionId(params.get('transaction_id'));
         setReference(params.get('reference'));
-    }, [location]);
+
+        if (checkAndRestoreAuthState) {
+            checkAndRestoreAuthState();
+        }
+    }, [location, checkAndRestoreAuthState]);
+
+    const handleVolver = () => {
+        navigate('/');
+    };
 
     return (
         <div className="gracias-compra-container">
@@ -23,7 +34,6 @@ export function ThanksForYourPurchase() {
                         <path className="check-mark" fill="none" d="M20 34 l8 8 l16 -16" />
                     </svg>
                 </div>
-
 
                 <h1>¡Gracias por tu compra!</h1>
                 <p className="mensaje-secundario">Tu pedido está siendo procesado y te notificaremos cuando esté en camino.</p>
@@ -43,7 +53,9 @@ export function ThanksForYourPurchase() {
                 <p className="info-extra">También recibirás un correo con los detalles y, si es tu primera compra, las credenciales de acceso.</p>
 
                 <div className="acciones-finales">
-                    <a href="/" className="btn-volver-inicio">Volver al inicio</a>
+                    <button onClick={handleVolver} className="btn-volver-inicio">
+                        Volver al inicio
+                    </button>
                 </div>
             </div>
         </div>

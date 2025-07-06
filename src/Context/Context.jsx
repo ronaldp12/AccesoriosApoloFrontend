@@ -508,16 +508,16 @@ export const Provider = ({ children }) => {
         let subtotalConDescuento = 0;
 
         products.forEach(item => {
-    // El precio final (con descuento) siempre es 'price'
-    subtotalConDescuento += item.price * item.quantity;
+            // El precio final (con descuento) siempre es 'price'
+            subtotalConDescuento += item.price * item.quantity;
 
-    // Para el precio original, probamos en este orden:
-    // 1. ¿Existe 'priceBeforeDiscount'? (para calcomanías)
-    // 2. Si no, ¿existe 'originalPrice'? (para productos)
-    // 3. Si no, usamos 'price' como último recurso.
-    const precioBase = item.priceBeforeDiscount || item.originalPrice || item.price;
-    totalArticulosSinDescuento += precioBase * item.quantity;
-});
+            // Para el precio original, probamos en este orden:
+            // 1. ¿Existe 'priceBeforeDiscount'? (para calcomanías)
+            // 2. Si no, ¿existe 'originalPrice'? (para productos)
+            // 3. Si no, usamos 'price' como último recurso.
+            const precioBase = item.priceBeforeDiscount || item.originalPrice || item.price;
+            totalArticulosSinDescuento += precioBase * item.quantity;
+        });
 
         const descuentoCalculado = totalArticulosSinDescuento - subtotalConDescuento;
         const envio = 14900;
@@ -824,6 +824,50 @@ export const Provider = ({ children }) => {
         }
     };
 
+    const checkAndRestoreAuthState = () => {
+        const storedToken = localStorage.getItem("token");
+        const storedUserLogin = localStorage.getItem("usuarioLogueado");
+        const storedName = localStorage.getItem("usuarioLogueado");
+        const storedAvatar = localStorage.getItem("avatar");
+        const storedNameRol = localStorage.getItem("nameRol");
+
+        if (storedToken && storedUserLogin) {
+            // Solo actualizar si los valores no coinciden
+            if (token !== storedToken) {
+                setToken(storedToken);
+                console.log('Token restaurado desde localStorage');
+            }
+            if (userLogin !== storedUserLogin) {
+                setUserLogin(storedUserLogin);
+                console.log('UserLogin restaurado desde localStorage');
+            }
+            if (name !== storedName) {
+                setName(storedName);
+                console.log('Name restaurado desde localStorage');
+            }
+            if (avatar !== storedAvatar) {
+                setAvatar(storedAvatar);
+            }
+            if (nameRol !== storedNameRol) {
+                setNameRol(storedNameRol);
+            }
+
+            setIsLocalCart(false);
+            console.log('Estado de autenticación restaurado completamente');
+            return true;
+        } else {
+            // Si no hay token, asegurarse de que el estado esté limpio
+            setIsLocalCart(true);
+            console.log('No hay datos de autenticación en localStorage');
+            return false;
+        }
+    };
+
+    useEffect(() => {
+        // Verificar estado de autenticación al inicializar el contexto
+        checkAndRestoreAuthState();
+    }, []);
+
     return (
         <context.Provider value={{
             // Estados y funciones existentes
@@ -880,6 +924,7 @@ export const Provider = ({ children }) => {
             localCartProducts,
             isTrunkOpen,
             setIsTrunkOpen,
+            checkAndRestoreAuthState
 
         }}>
             {children}
