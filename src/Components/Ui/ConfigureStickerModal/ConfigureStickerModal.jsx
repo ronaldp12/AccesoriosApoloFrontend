@@ -398,7 +398,11 @@ export const ConfigureStickerModal = ({
                             <p className="config-label">Personaliza las dimensiones:</p>
 
                             <div className="dimension-input-group">
-                                <label>Ancho (cm): (Min: 5, Max: 20)</label>
+                                <div className="dimension-label">
+                                    <label>Ancho (cm)</label>
+                                    <small>(Min: 5, Max: 20)</small>
+                                </div>
+                                
                                 <input
                                     type="number"
                                     value={customWidth}
@@ -410,7 +414,10 @@ export const ConfigureStickerModal = ({
                             </div>
 
                             <div className="dimension-input-group">
-                                <label>Alto (cm): (Min: 5, Max: 30)</label>
+                                <div className="dimension-label">
+                                    <label>Alto (cm)</label>
+                                    <small>(Min: 5, Max: 30)</small>
+                                </div>
                                 <input
                                     type="number"
                                     value={customHeight}

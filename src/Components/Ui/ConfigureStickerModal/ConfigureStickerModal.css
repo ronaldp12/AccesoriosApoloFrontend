@@ -21,7 +21,7 @@
     border-radius: 18px;
     z-index: 9999;
     padding: 24px;
-    max-width: 400px;
+    max-width: 480px;
     width: 90%;
     position: relative;
     text-align: left;
@@ -291,6 +291,33 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.dimension-input-group{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.dimension-input-group input {
+    width: 70px;
+    height: 2rem;
+    padding: 8px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.dimension-input-group small{
+    font-size: 0.8rem;
+    color: #6b6b6b;
+}
+
+.dimension-label{
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.6rem;
 }
 
 .floating-message-sticker {

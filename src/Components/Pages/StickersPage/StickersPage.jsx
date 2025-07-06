@@ -10,6 +10,7 @@ import { context } from "../../../Context/Context";
 import { useNavigate } from "react-router-dom";
 import { WelcomeNoLoginModal } from "../../Layouts/WelcomeNoLoginModal/WelcomeNoLoginModal";
 import imgHelmet from "../../../assets/images/img1-helmet-product.png";
+import { ProductCardSkeleton } from "../../Ui/ProductCardSkeleton/ProductCardSkeleton.jsx";
 
 export const StickersPage = ({ onOpenRegister, onOpenLogin }) => {
     const [sortOrder, setSortOrder] = useState("");
@@ -168,9 +169,10 @@ export const StickersPage = ({ onOpenRegister, onOpenLogin }) => {
                     </div>
 
                     {stickersLoading ? (
-                        <div className="loading-container">
-                            <div className="loader"></div>
-                            <p>Cargando calcomanías...</p>
+                        <div className="product-grid-product-page">
+                            {Array.from({ length: 8 }).map((_, index) => (
+                                <ProductCardSkeleton key={index} />
+                            ))}
                         </div>
                     ) : stickersError ? (
                         <div className="error-container">
