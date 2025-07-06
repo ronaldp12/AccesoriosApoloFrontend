@@ -8,6 +8,9 @@ import { context } from '../../../Context/Context.jsx';
 
 export const CheckoutForm = () => {
     const [municipiosDisponibles, setMunicipiosDisponibles] = useState([]);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [paymentLoading, setPaymentLoading] = useState(false);
+    const [isAddressSaved, setIsAddressSaved] = useState(false);
     const { token } = useContext(context);
 
     const navigate = useNavigate();
@@ -44,9 +47,21 @@ export const CheckoutForm = () => {
         }
     }, [token]);
 
+    // Solo marcar como guardado cuando el usuario presiona el botón guardar exitosamente
+    useEffect(() => {
+    if (success && !saveLoading) {
+        setIsAddressSaved(true);
+    }
+}, [success, saveLoading]);
+
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         updateFormData(name, type === "checkbox" ? checked : value);
+
+        // Si se modifica cualquier campo después de haber guardado, marcar como no guardado
+        if (isAddressSaved) {
+            setIsAddressSaved(false);
+        }
 
         if (name === "departamento") {
             const departamentoSeleccionado = departamentosMunicipios.find(
@@ -57,7 +72,25 @@ export const CheckoutForm = () => {
         }
     };
 
+    const handleSave = async () => {
+        setSaveLoading(true);
+        setIsAddressSaved(false); // Resetear estado antes de guardar
+        try {
+            const result = await handleSaveAddress();
+            if (result) {
+                // El estado se marcará como guardado en el useEffect cuando success sea true
+                console.log('Dirección guardada exitosamente');
+            }
+        } catch (err) {
+            console.error('Error al guardar la dirección:', err);
+            setIsAddressSaved(false);
+        } finally {
+            setSaveLoading(false);
+        }
+    };
+
     const handleGoToPayment = async () => {
+        setPaymentLoading(true);
         try {
             const result = await handleSaveAddress();
             if (result && result.id_factura_creada) {
@@ -68,6 +101,8 @@ export const CheckoutForm = () => {
             }
         } catch (err) {
             console.error('Error al preparar el pago:', err);
+        } finally {
+            setPaymentLoading(false);
         }
     };
 
@@ -79,6 +114,17 @@ export const CheckoutForm = () => {
             setMunicipiosDisponibles(departamentoSeleccionado ? departamentoSeleccionado.municipios : []);
         }
     }, [formData.departamento]);
+
+    // Verificar si el formulario está completo
+    const isFormComplete = () => {
+        return formData.nombre &&
+            formData.cedula &&
+            formData.telefono &&
+            formData.correo &&
+            formData.departamento &&
+            formData.municipio &&
+            formData.direccion;
+    };
 
     return (
         <div className="checkout-container">
@@ -106,7 +152,7 @@ export const CheckoutForm = () => {
                                 value={formData.nombre}
                                 onChange={handleInputChange}
                                 required
-                                disabled={loading}
+                                disabled={saveLoading}
                             />
                         </div>
 
@@ -119,7 +165,7 @@ export const CheckoutForm = () => {
                                 value={formData.cedula}
                                 onChange={handleInputChange}
                                 required
-                                disabled={loading}
+                                disabled={saveLoading}
                                 placeholder="Solo números"
                             />
                         </div>
@@ -133,7 +179,7 @@ export const CheckoutForm = () => {
                                 value={formData.telefono}
                                 onChange={handleInputChange}
                                 required
-                                disabled={loading}
+                                disabled={saveLoading}
                             />
                         </div>
 
@@ -146,7 +192,7 @@ export const CheckoutForm = () => {
                                 value={formData.correo}
                                 onChange={handleInputChange}
                                 required
-                                disabled={loading}
+                                disabled={saveLoading}
                                 placeholder="ejemplo@correo.com"
                             />
                         </div>
@@ -160,7 +206,7 @@ export const CheckoutForm = () => {
                                 readOnly
                                 value={formData.pais}
                                 onChange={handleInputChange}
-                                disabled={loading}
+                                disabled={saveLoading}
                             />
                         </div>
 
@@ -172,7 +218,7 @@ export const CheckoutForm = () => {
                                 className='select-checkout-form'
                                 value={formData.departamento}
                                 onChange={handleInputChange}
-                                disabled={loading}
+                                disabled={saveLoading}
                             >
                                 <option value="">Selecciona un departamento</option>
                                 {departamentosMunicipios.map((dep) => (
@@ -191,7 +237,7 @@ export const CheckoutForm = () => {
                                 className='select-checkout-form'
                                 value={formData.municipio}
                                 onChange={handleInputChange}
-                                disabled={loading || municipiosDisponibles.length === 0}
+                                disabled={saveLoading || municipiosDisponibles.length === 0}
                             >
                                 <option value="">Selecciona un municipio</option>
                                 {municipiosDisponibles.map((mun) => (
@@ -211,7 +257,7 @@ export const CheckoutForm = () => {
                                 value={formData.direccion}
                                 onChange={handleInputChange}
                                 required
-                                disabled={loading}
+                                disabled={saveLoading}
                                 placeholder="Calle, número, barrio"
                             />
                         </div>
@@ -224,7 +270,7 @@ export const CheckoutForm = () => {
                                 value={formData.informacion_adicional}
                                 onChange={handleInputChange}
                                 rows="3"
-                                disabled={loading}
+                                disabled={saveLoading}
                                 placeholder="Referencias, instrucciones especiales, etc."
                             ></textarea>
                         </div>
@@ -232,10 +278,10 @@ export const CheckoutForm = () => {
                         <button
                             type="button"
                             className="btn-guardar-checkout-form"
-                            onClick={handleSaveAddress}
-                            disabled={loading}
+                            onClick={handleSave}
+                            disabled={saveLoading || !isFormComplete()}
                         >
-                            {loading ? 'Guardando...' : 'Guardar'}
+                            {saveLoading ? 'Guardando...' : isAddressSaved ? 'Guardado ✓' : 'Guardar'}
                         </button>
                     </div>
 
@@ -248,12 +294,7 @@ export const CheckoutForm = () => {
 
                     {success && (
                         <div className="status-message success-message">
-                            Dirección guardada exitosamente
-                            {isUserRegistered && userInfo && (
-                                <div className="user-info">
-                                    Usuario registrado: {userInfo.correo}
-                                </div>
-                            )}
+                            Información guardada exitosamente
                         </div>
                     )}
 
@@ -323,11 +364,12 @@ export const CheckoutForm = () => {
                         </div>
 
                         <button
-                            className="btn-finalizar"
+                            className={`btn-finalizar ${!isAddressSaved ? 'disabled' : ''}`}
                             onClick={handleGoToPayment}
-                            disabled={loading || numeroItemsCarrito === 0}
+                            disabled={paymentLoading || numeroItemsCarrito === 0 || !isAddressSaved}
+                            title={!isAddressSaved ? 'Primero guarda la dirección de envío' : ''}
                         >
-                            {loading ? 'Procesando...' : `Continuar al Pago (${numeroItemsCarrito})`}
+                            {paymentLoading ? 'Procesando...' : `Continuar al Pago (${numeroItemsCarrito})`}
                         </button>
                     </div>
                 </div>
