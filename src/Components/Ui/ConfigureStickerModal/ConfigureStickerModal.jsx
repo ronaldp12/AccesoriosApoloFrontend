@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import "./ConfigureStickerModal.css";
 import { X, Loader2 } from "lucide-react";
 import ReactDOM from 'react-dom';
@@ -26,6 +26,11 @@ export const ConfigureStickerModal = ({
     const [isAddingToCartLocal, setIsAddingToCartLocal] = useState(false);
     const [localSuccessMessage, setLocalSuccessMessage] = useState('');
     const [localErrorMessage, setLocalErrorMessage] = useState('');
+
+    const [maintainAspectRatio, setMaintainAspectRatio] = useState(true);
+    const [imageAspectRatio, setImageAspectRatio] = useState(null);
+    const [showAspectRatioOption, setShowAspectRatioOption] = useState(false);
+    const [isCalculatingAspect, setIsCalculatingAspect] = useState(false);
 
     const {
         userLogin,
@@ -93,6 +98,23 @@ export const ConfigureStickerModal = ({
         return "";
     };
 
+    const getImageDimensions = useCallback((imageSrc) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                resolve({
+                    width: img.naturalWidth,
+                    height: img.naturalHeight,
+                    aspectRatio: img.naturalWidth / img.naturalHeight
+                });
+            };
+            img.onerror = () => {
+                resolve(null);
+            };
+            img.src = imageSrc;
+        });
+    }, []);
+
     useEffect(() => {
         if (localSuccessMessage || localErrorMessage) {
             const timer = setTimeout(() => {
@@ -112,6 +134,22 @@ export const ConfigureStickerModal = ({
             setDimensionError("");
         }
     }, [customWidth, customHeight, isPersonalSticker]);
+
+    useEffect(() => {
+        if (isOpen && sticker?.image && isPersonalSticker) {
+            setIsCalculatingAspect(true);
+            getImageDimensions(sticker.image)
+                .then((dimensions) => {
+                    if (dimensions) {
+                        setImageAspectRatio(dimensions.aspectRatio);
+                        setShowAspectRatioOption(true);
+                    }
+                })
+                .finally(() => {
+                    setIsCalculatingAspect(false);
+                });
+        }
+    }, [isOpen, sticker?.image, isPersonalSticker, getImageDimensions]);
 
     // Efecto para calcular precio
     useEffect(() => {
@@ -175,6 +213,9 @@ export const ConfigureStickerModal = ({
         setLocalSuccessMessage('');
         setLocalErrorMessage('');
         setDimensionError('');
+        setMaintainAspectRatio(true);
+        setShowAspectRatioOption(false);
+        setImageAspectRatio(null);
     };
 
     const handleSizeSelect = (size) => {
@@ -190,8 +231,20 @@ export const ConfigureStickerModal = ({
     const handleCustomDimensionChange = (type, value) => {
         if (type === 'width') {
             setCustomWidth(value);
+            if (maintainAspectRatio && imageAspectRatio && value) {
+                const newHeight = Math.round(value / imageAspectRatio);
+                if (newHeight >= 5 && newHeight <= 30) {
+                    setCustomHeight(newHeight.toString());
+                }
+            }
         } else {
             setCustomHeight(value);
+            if (maintainAspectRatio && imageAspectRatio && value) {
+                const newWidth = Math.round(value * imageAspectRatio);
+                if (newWidth >= 5 && newWidth <= 20) {
+                    setCustomWidth(newWidth.toString());
+                }
+            }
         }
 
         // Limpiar selección de tamaño cuando se usan dimensiones personalizadas
@@ -266,7 +319,7 @@ export const ConfigureStickerModal = ({
             }
 
             // Construimos el objeto para el carrito local.
-             const itemParaCarritoLocal = {
+            const itemParaCarritoLocal = {
                 id: sticker.id,
                 title: sticker.title,
                 price: currentPrice, // Precio final con descuento (ej: 25.600)
@@ -402,7 +455,7 @@ export const ConfigureStickerModal = ({
                                     <label>Ancho (cm)</label>
                                     <small>(Min: 5, Max: 20)</small>
                                 </div>
-                                
+
                                 <input
                                     type="number"
                                     value={customWidth}
@@ -410,6 +463,7 @@ export const ConfigureStickerModal = ({
                                     min="5"
                                     max="20"
                                     placeholder="5-20"
+                                    disabled={isCalculatingAspect}
                                 />
                             </div>
 
@@ -425,8 +479,24 @@ export const ConfigureStickerModal = ({
                                     min="5"
                                     max="30"
                                     placeholder="5-30"
+                                    disabled={isCalculatingAspect}
                                 />
                             </div>
+
+                            {/* Checkbox para mantener aspecto */}
+                            {showAspectRatioOption && imageAspectRatio && (
+                                <div className="aspect-ratio-control">
+                                    <label className="aspect-ratio-label">
+                                        <input
+                                            type="checkbox"
+                                            checked={maintainAspectRatio}
+                                            onChange={(e) => setMaintainAspectRatio(e.target.checked)}
+                                        />
+                                        Mantener relación de aspecto
+                                        <small>({imageAspectRatio.toFixed(2)}:1)</small>
+                                    </label>
+                                </div>
+                            )}
 
                             {dimensionError && (
                                 <div className="dimension-error">
