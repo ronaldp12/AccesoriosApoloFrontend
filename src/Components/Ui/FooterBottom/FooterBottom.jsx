@@ -3,7 +3,7 @@ import { Logo } from "../Logo/Logo";
 export const FooterBottom = () => (
     <div className="footer-bottom">
         <div className="footer-bottom-content">
-            <Logo />
+            <Logo styleContainer="footer-bottom-logo-container" styleLogo="footer-bottom-logo" />
             <span>ACCESORIOS APOLO - 2025</span>
         </div>
 

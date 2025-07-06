@@ -236,6 +236,16 @@ footer {
   color: #001ba3;
 }
 
+.footer-bottom-logo-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-bottom-logo{
+  margin: 0;
+}
 
 @media (min-width: 481px) and (max-width: 820px) {
   .company-info p {
