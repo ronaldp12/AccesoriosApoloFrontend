@@ -31,7 +31,7 @@ export const PreviewSaleClient = ({ invoiceId, isModal = false, onClose }) => {
                 const ventaData = result.data;
                 setInvoiceData(ventaData);
             } else {
-                setError(result.mensaje || 'Error al obtener los datos de la factura');
+                setError(result.mensaje || 'Error al obtener los datos de la venta');
             }
         } catch (err) {
             console.error('Error fetching sale data:', err);
@@ -69,7 +69,7 @@ export const PreviewSaleClient = ({ invoiceId, isModal = false, onClose }) => {
             return (
                 <div className="sale-loading-state">
                     <img src={wheelIcon} alt="Cargando..." className="manage-sale-spinner" />
-                    <p>Cargando factura venta...</p>
+                    <p>Cargando recibo venta...</p>
                 </div>
             );
         }
@@ -109,7 +109,7 @@ export const PreviewSaleClient = ({ invoiceId, isModal = false, onClose }) => {
                         </div>
                     </div>
                     <div className="sale-title">
-                        <h1>FACTURA VENTA</h1>
+                        <h1>RECIBO VENTA</h1>
                     </div>
                 </div>
 
@@ -117,7 +117,7 @@ export const PreviewSaleClient = ({ invoiceId, isModal = false, onClose }) => {
                 <div className="sale-info">
                     <div className="sale-number">
                         <div className="info-row-header">
-                            <span className="label">FACTURA VENTA #</span>
+                            <span className="label">RECIBO VENTA #</span>
                             <span className="label">FECHA</span>
                         </div>
                     </div>

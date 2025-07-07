@@ -570,7 +570,7 @@ export const ConfigureStickerModal = ({
                                 <Loader2 className="animate-spin" size={16} />
                                 Agregando...
                             </>
-                        ) : 'Agregar al carrito'}
+                        ) : 'Agregar al maletero'}
                     </button>
                 </div>
             </div>

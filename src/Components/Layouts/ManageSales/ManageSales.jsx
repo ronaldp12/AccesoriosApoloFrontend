@@ -139,7 +139,7 @@ export const ManageSales = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Id Factura</th>
+                            <th>Id Recibo</th>
                             <th>Cédula</th>
                             <th>Nombre Cliente</th>
                             <th>Fecha Compra</th>

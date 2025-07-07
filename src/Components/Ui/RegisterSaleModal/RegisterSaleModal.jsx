@@ -1004,7 +1004,7 @@ export const RegisterSaleModal = ({ isOpen, onClose, onRegisterSuccess }) => {
                                         checked={saleData.enviar_correo}
                                         onChange={handleSaleChange}
                                     />
-                                    <span>Enviar factura por correo</span>
+                                    <span>Enviar recibo por correo</span>
                                 </label>
                             </div>
                         </div>
